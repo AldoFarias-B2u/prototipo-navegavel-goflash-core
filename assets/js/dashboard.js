@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeAllPopovers() {
     if (appsPopover) appsPopover.classList.remove('show');
     if (userPopover) userPopover.classList.remove('show');
+    if (appsBtn) appsBtn.classList.remove('active');
+    if (userBtn) userBtn.classList.remove('active');
   }
 
   if (appsBtn && appsPopover) {
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeAllPopovers();
       if (!isVisible) {
         appsPopover.classList.add('show');
+        appsBtn.classList.add('active');
       }
     });
   }
@@ -53,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeAllPopovers();
       if (!isVisible) {
         userPopover.classList.add('show');
+        userBtn.classList.add('active');
       }
     });
   }
@@ -61,9 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     if (appsPopover && !appsPopover.contains(e.target) && e.target !== appsBtn) {
       appsPopover.classList.remove('show');
+      if (appsBtn) appsBtn.classList.remove('active');
     }
     if (userPopover && !userPopover.contains(e.target) && e.target !== userBtn) {
       userPopover.classList.remove('show');
+      if (userBtn) userBtn.classList.remove('active');
     }
   });
 

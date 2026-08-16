@@ -61,15 +61,16 @@ html {
   outline: none;
 }
 
-.topbar-btn:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+.topbar-btn:hover,
+.topbar-btn.active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .topbar-btn:active {
   transform: scale(0.95);
 }
 
-.topbar-btn .material-symbols-outlined {
+.topbar-btn .material-icons {
   font-size: 26px;
 }
 
@@ -92,7 +93,7 @@ html {
   padding: 2px;
 }
 
-.topbar-avatar-btn .material-symbols-outlined {
+.topbar-avatar-btn .material-icons {
   font-size: 32px;
   color: #ffffff;
 }
@@ -102,15 +103,15 @@ html {
    -------------------------------------------------------------------------- */
 .popover-container {
   position: absolute;
-  top: 54px;
+  top: 56px;
   right: 0;
   background-color: #ffffff;
   border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   z-index: 1050;
   display: none;
   opacity: 0;
-  transform: translateY(-8px) scale(0.98);
+  transform: translateY(-6px) scale(0.98);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -131,21 +132,30 @@ html {
   border-bottom: 8px solid #ffffff;
 }
 
-/* Popover de Módulos (Grid de 9 pontos - Img 1) */
+/* Popover de Módulos (Grid de 9 pontos - Idêntico ao Original) */
 #appsPopover {
-  width: 320px;
-  padding: 1.5rem 1.25rem;
+  width: 330px;
+  padding: 1.25rem 0.75rem;
 }
 
 #appsPopover .popover-arrow {
-  right: 48px;
+  right: 50px;
 }
 
-.apps-grid {
+.apps-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem 0.5rem;
-  text-align: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.apps-row.apps-row-top {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 1.25rem;
+}
+
+.apps-row.apps-row-bottom {
+  padding-top: 1.25rem;
 }
 
 .app-shortcut-item {
@@ -153,51 +163,42 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   padding: 8px 4px;
   border-radius: 6px;
-  color: #555555;
+  color: #616161;
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
   cursor: pointer;
 }
 
 .app-shortcut-item:hover {
-  background-color: #f1f3f9;
-  color: var(--primary-color);
+  background-color: #f5f6f8;
   transform: translateY(-2px);
 }
 
-.app-shortcut-icon-box {
-  width: 46px;
-  height: 46px;
-  border-radius: 6px;
-  background-color: #5f6368;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color var(--transition-fast);
+.app-shortcut-icon {
+  font-size: 42px !important;
+  color: #616161;
+  line-height: 1;
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 
-.app-shortcut-item:hover .app-shortcut-icon-box {
-  background-color: var(--primary-color);
-}
-
-.app-shortcut-icon-box .material-symbols-outlined {
-  font-size: 26px;
+.app-shortcut-item:hover .app-shortcut-icon {
+  color: var(--primary-color);
 }
 
 .app-shortcut-label {
   font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: #5f6368;
+  color: #616161;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 88px;
+  max-width: 90px;
+  text-align: center;
 }
 
 /* Popover de Usuário (Img 2) */
