@@ -482,39 +482,42 @@ html {
   transform: scale(1.02);
 }
 
-/* Faixa Roxa Inferior do Hero */
+/* Faixa Roxa Inferior do Hero (Idêntica à Referência Original) */
 .hero-bottom-bar {
   background-color: #6530b5;
-  height: 90px;
+  height: 110px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 3.5rem;
   position: relative;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  z-index: 20;
 }
 
 .hero-bottom-logo {
-  height: 38px;
-  max-width: 170px;
+  height: 56px;
+  max-width: 250px;
   width: auto;
   object-fit: contain;
-  opacity: 0.95;
+  opacity: 0.98;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
 }
 
-/* Botão Flutuante Amarelo (FAB) */
+/* Botão Flutuante Amarelo (FAB) Centralizado na Divisa */
 .hero-scroll-fab {
   position: absolute;
-  top: -28px;
-  right: 48px;
-  width: 58px;
-  height: 58px;
+  top: -30px;
+  right: 3.5rem;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: #ffeb3b;
   background: linear-gradient(135deg, #fff176 0%, #ffd600 100%);
   color: #212121;
   border: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -534,7 +537,7 @@ html {
   transform: scale(0.95);
 }
 
-.hero-scroll-fab .material-symbols-outlined {
+.hero-scroll-fab .material-icons {
   font-size: 32px;
   font-weight: 700;
 }
@@ -826,28 +829,26 @@ html {
   }
 }
 
-@media (max-width: 576px) {
-  .topbar-avatar-btn {
-    display: none; /* Idêntico à Img 5 (somente menu, GOFLASH e grid no topo mobile) */
-  }
-
-  .hero-scroll-fab {
-    right: 20px;
-    top: -24px;
-    width: 50px;
-    height: 50px;
-  }
-
-  .hero-scroll-fab .material-symbols-outlined {
-    font-size: 26px;
-  }
-
+@media (max-width: 768px) {
   .hero-bottom-bar {
+    height: 85px;
     padding: 0 1.25rem;
   }
 
   .hero-bottom-logo {
-    height: 32px;
+    height: 42px;
+    max-width: 180px;
+  }
+
+  .hero-scroll-fab {
+    right: 1.5rem;
+    top: -25px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .hero-scroll-fab .material-icons {
+    font-size: 26px;
   }
 
   #appsPopover {
