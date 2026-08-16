@@ -1,0 +1,39 @@
+{
+  "name": "goflash-core-prototype",
+  "displayName": "Goflash CORE - Protótipo Navegável",
+  "version": "1.9.4.0",
+  "releaseDate": "2026-08-16",
+  "author": "B2U Sistemas",
+  "modules": [
+    {
+      "id": "auth",
+      "name": "Autenticação",
+      "status": "concluido",
+      "version": "1.0.0"
+    },
+    {
+      "id": "dashboard",
+      "name": "Painel Principal (Home)",
+      "status": "concluido",
+      "version": "1.1.0"
+    },
+    {
+      "id": "operacao",
+      "name": "Módulo de Operação",
+      "status": "concluido",
+      "version": "1.1.0"
+    },
+    {
+      "id": "gerencial",
+      "name": "Módulo Gerencial",
+      "status": "planejado",
+      "version": "0.0.0"
+    },
+    {
+      "id": "financeiro",
+      "name": "Módulo Financeiro",
+      "status": "planejado",
+      "version": "0.0.0"
+    }
+  ]
+}
