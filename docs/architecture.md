@@ -104,7 +104,17 @@ flowchart TD
 
 ---
 
-## 6. Mocks e Dados Simulados
+## 6. Subsistema Centralizado de Navegação e Histórico (`NavigationManager`)
+
+Para desacoplar os botões de retorno (Voltar) de rotas fixas e garantir navegação precisa em múltiplos níveis, o módulo [`assets/js/navigation.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/navigation.js) gerencia a pilha de rotas e sub-visões:
+
+- **Pilha em `sessionStorage` (`goflash_nav_history_stack`)**: Registra a ordem real percorrida pelo usuário (`Home → Operação → Planos (Lista) → Detalhes`).
+- **HTML5 History API (`pushState` e `popstate`)**: Permite transicionar entre sub-visões internas sem recarregar a página e sincroniza com o botão Voltar físico/nativo do navegador e gestos mobile.
+- **Contrato Declarativo Universal**: Qualquer elemento com `data-nav="back"` e `data-fallback-url="..."` é automaticamente interceptado pelo `NavigationManager`, executando o retorno para a tela/sub-visão anterior sem necessidade de código acoplado na página.
+
+---
+
+## 7. Mocks e Dados Simulados
 
 - **Usuário Simulado**:
   - `username`: `"B2U"` / `"b2u"`

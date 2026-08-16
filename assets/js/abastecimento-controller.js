@@ -87,20 +87,34 @@ document.addEventListener('DOMContentLoaded', () => {
   let modalSelectedProductIds = new Set(); // IDs selecionados no modal de adição
 
   /**
-   * Inicialização
+   * Inicialização e Roteamento de Sub-Visões
    */
   function init() {
     populateModalSelects();
-    renderPlansTable();
     setupEventListeners();
 
-    // ID na URL para abrir direto
+    // Registra o manipulador de sub-visões no NavigationManager
+    if (window.NavigationManager) {
+      window.NavigationManager.onViewChange((state) => {
+        handleRouteState(state);
+      });
+    }
+
+    // Processa a rota inicial no carregamento da página
+    handleRouteState(window.history.state);
+  }
+
+  /**
+   * Processa o estado da rota / URL
+   */
+  function handleRouteState(state) {
     const urlParams = new URLSearchParams(window.location.search);
-    const urlPlanId = urlParams.get('id');
-    if (urlPlanId) {
-      showDetailView(urlPlanId);
+    const planId = (state && state.id) || urlParams.get('id');
+
+    if (planId) {
+      showDetailView(planId, false);
     } else {
-      showListView();
+      showListView(false);
     }
   }
 
@@ -126,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Exibe a Tela de Listagem (Imagem 1)
    */
-  function showListView() {
+  function showListView(pushToHistory = true) {
     currentActivePlanId = null;
     isEditMode = false;
     selectedItemIndices.clear();
@@ -135,6 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (planListView) planListView.style.display = 'block';
     if (fabRedAdd) fabRedAdd.style.display = 'flex';
     if (stickyBatchBar) stickyBatchBar.classList.remove('show');
+
+    if (pushToHistory && window.NavigationManager) {
+      window.NavigationManager.pushSubView({ view: 'list' }, 'Planos de Abastecimento', 'planos-abastecimento.html');
+    }
 
     renderPlansTable();
   }
@@ -228,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Exibe a Tela de Detalhes do Plano (Imagem 3)
    */
-  function showDetailView(planId) {
+  function showDetailView(planId, pushToHistory = true) {
     const plano = planos.find(p => p.id === planId);
     if (!plano) return;
 
@@ -240,6 +258,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (planListView) planListView.style.display = 'none';
     if (fabRedAdd) fabRedAdd.style.display = 'none';
     if (planDetailView) planDetailView.classList.add('show');
+
+    // Registra sub-visão no NavigationManager se for navegação explícita
+    if (pushToHistory && window.NavigationManager) {
+      window.NavigationManager.pushSubView(
+        { view: 'detail', id: planId },
+        `${plano.codigo} - ${plano.nome}`,
+        `?id=${planId}`
+      );
+    }
 
     // Estado da Interface de Edição
     if (fabEditHero) fabEditHero.style.display = 'flex';
