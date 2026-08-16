@@ -1,0 +1,385 @@
+/* ==========================================================================
+   GOFLASH CORE - ESTILOS GLOBAIS DE PÁGINAS DE MÓDULOS (OPERACIONAL / GERENCIAL)
+   Arquitetura modular, escalável e padronizada para navegação interna
+   ========================================================================== */
+
+.module-page-body {
+  background-color: #f1f3f6;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   Header da Página de Módulo (Dark Purple)
+   -------------------------------------------------------------------------- */
+.module-topbar {
+  background-color: #23143d;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.module-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.module-page-title {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  user-select: none;
+}
+
+/* Barra de Pesquisa Centralizada do Header */
+.module-search-wrapper {
+  flex-grow: 1;
+  max-width: 480px;
+  margin: 0 1.5rem;
+  position: relative;
+}
+
+.module-search-box {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  height: 38px;
+  padding: 0 12px;
+  transition: all var(--transition-fast);
+}
+
+.module-search-box:focus-within {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
+.module-search-box .search-icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.module-search-input {
+  width: 100%;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 400;
+  background: transparent;
+}
+
+.module-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.module-search-clear {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: none;
+  font-size: 18px;
+  padding: 2px;
+}
+
+.module-search-clear.show {
+  display: flex;
+}
+
+.module-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   Banner Hero Superior do Módulo (Roxo com Título Grande)
+   -------------------------------------------------------------------------- */
+.module-hero-banner {
+  background-color: #23143d;
+  padding: 2rem 2.5rem 3.5rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.module-hero-headline {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  color: #432a68;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  user-select: none;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Layout Principal de Conteúdo (Grid de 2 Colunas)
+   -------------------------------------------------------------------------- */
+.module-main-content {
+  flex-grow: 1;
+  padding: 0 2rem 3rem 2rem;
+  margin-top: -1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.module-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Card Principal Esquerdo (Grande Card Branco com Seções)
+   -------------------------------------------------------------------------- */
+.module-primary-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 2rem 2rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+/* Grupo / Seção de Itens */
+.module-section-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.module-group-title {
+  color: #757575;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  user-select: none;
+}
+
+/* Grade de Itens (2 Colunas no Desktop) */
+.module-items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  row-gap: 1.5rem;
+}
+
+/* Item de Acesso a Tela / Funcionalidade */
+.module-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.module-feature-item:hover {
+  background-color: #f5f6f8;
+  transform: translateX(3px);
+}
+
+.module-feature-icon {
+  font-size: 32px !important;
+  color: #616161;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: color var(--transition-fast);
+}
+
+.module-feature-item:hover .module-feature-icon {
+  color: var(--primary-color);
+}
+
+.module-feature-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.module-feature-title {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #5f6368;
+  line-height: 1.3;
+  transition: color var(--transition-fast);
+}
+
+.module-feature-item:hover .module-feature-title {
+  color: #202124;
+}
+
+.module-feature-description {
+  font-size: 0.78rem;
+  color: #757575;
+  line-height: 1.45;
+  margin-top: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Coluna Lateral Direita (Cards Independentes de Relatórios / Integrações / Config)
+   -------------------------------------------------------------------------- */
+.module-sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.module-side-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-side-card .module-group-title {
+  margin-bottom: 1rem;
+}
+
+.module-side-card .module-items-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.module-side-card .module-feature-item {
+  padding: 6px 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Estados de Busca e Filtro Dinâmico
+   -------------------------------------------------------------------------- */
+.module-feature-item.search-hidden {
+  display: none !important;
+}
+
+.module-section-group.search-hidden,
+.module-side-card.search-hidden {
+  display: none !important;
+}
+
+/* Destaque de Termo Pesquisado */
+mark.search-highlight {
+  background-color: #fff176;
+  color: #212121;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Mensagem de Nenhum Resultado Encontrado */
+.module-no-results {
+  display: none;
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  grid-column: 1 / -1;
+}
+
+.module-no-results.show {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.no-results-icon {
+  font-size: 48px;
+  color: #9e9e9e;
+}
+
+.no-results-title {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+.no-results-desc {
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+.btn-clear-search {
+  margin-top: 8px;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-clear-search:hover {
+  background-color: var(--primary-hover);
+}
+
+/* --------------------------------------------------------------------------
+   Responsividade (Mobile & Tablets)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .module-grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .module-sidebar-column {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .module-main-content {
+    padding: 0 1rem 2rem 1rem;
+    margin-top: -1rem;
+  }
+
+  .module-hero-banner {
+    padding: 1.5rem 1.25rem 2.5rem 1.25rem;
+  }
+
+  .module-primary-card {
+    padding: 1.5rem 1.25rem;
+    gap: 1.75rem;
+  }
+
+  .module-items-grid {
+    grid-template-columns: 1fr;
+    row-gap: 1.25rem;
+  }
+
+  .module-sidebar-column {
+    grid-template-columns: 1fr;
+  }
+
+  .module-search-wrapper {
+    margin: 0 0.5rem;
+  }
+
+  .module-page-title {
+    display: none; /* Em telas muito pequenas o título fica no hero */
+  }
+}

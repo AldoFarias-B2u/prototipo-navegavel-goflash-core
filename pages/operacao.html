@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Operação</title>
+  
+  <!-- CSS Global, Componentes, Dashboard e Module-View -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+</head>
+<body class="module-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR (COM BARRA DE PESQUISA DINÂMICA)
+       ======================================================================== -->
+  <header class="module-topbar" id="mainTopbar">
+    <div class="module-topbar-left">
+      <button class="topbar-btn" id="menuToggle" title="Menu Principal" aria-label="Abrir Menu">
+        <span class="material-icons">menu</span>
+      </button>
+      <span class="module-page-title">Operação</span>
+    </div>
+
+    <!-- Barra de Pesquisa Dinâmica Centralizada -->
+    <div class="module-search-wrapper">
+      <div class="module-search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          id="moduleSearchInput" 
+          class="module-search-input" 
+          placeholder="Pesquisar tela ou funcionalidade... (Ctrl+K)" 
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <span class="material-icons module-search-clear" id="searchClearBtn" title="Limpar busca">close</span>
+      </div>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" title="Filtrar" aria-label="Filtrar">
+        <span class="material-icons">filter_list</span>
+      </button>
+
+      <button class="topbar-btn" title="Atualizar Página" aria-label="Atualizar" onclick="location.reload()">
+        <span class="material-icons">refresh</span>
+      </button>
+
+      <button class="topbar-btn" title="Mais Opções" aria-label="Mais Opções">
+        <span class="material-icons">more_vert</span>
+      </button>
+
+      <!-- Botão Grid de Módulos (9 pontos) -->
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <!-- Botão Avatar do Usuário -->
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- --------------------------------------------------------------------
+           POPOVER 1: GRADE DE MÓDULOS (IMG 1)
+           -------------------------------------------------------------------- -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        
+        <!-- Linha Superior -->
+        <div class="apps-row apps-row-top">
+          <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </a>
+
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+
+          <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </a>
+        </div>
+
+        <!-- Linha Inferior -->
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+
+          <a href="#" class="app-shortcut-item" title="Painel de Controles">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- --------------------------------------------------------------------
+           POPOVER 2: MENU DE USUÁRIO (IMG 2)
+           -------------------------------------------------------------------- -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name" id="popoverUserName">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL (IDÊNTICO À REFERÊNCIA)
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name" id="drawerUserName">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <a href="./dashboard.html" class="drawer-item">
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
+        <span>GOFLASH</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <div class="drawer-section-title">Módulos</div>
+      
+      <a href="#" class="drawer-item">
+        <span class="material-icons">insert_chart</span>
+        <span>Gerencial</span>
+      </a>
+      <a href="./operacao.html" class="drawer-item active">
+        <span class="material-icons">local_shipping</span>
+        <span>Operação</span>
+      </a>
+      <a href="#" class="drawer-item">
+        <span class="material-icons">credit_card</span>
+        <span>Financeiro</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <div class="drawer-section-title">Configurações</div>
+      
+      <a href="#" class="drawer-item">
+        <span class="material-icons">tune</span>
+        <span>Painel de Controles</span>
+      </a>
+      <a href="#" class="drawer-item">
+        <span class="material-icons">more_horiz</span>
+        <span>Sobre</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <div class="drawer-section-title">Encerrar</div>
+      
+      <a href="#" class="drawer-item action-logout">
+        <span class="material-icons">exit_to_app</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       BANNER HERO SUPERIOR DO MÓDULO (OPERAÇÃO)
+       ======================================================================== -->
+  <section class="module-hero-banner">
+    <h1 class="module-hero-headline">OPERAÇÃO</h1>
+  </section>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL (GRID DE 2 COLUNAS IDÊNTICO À IMAGEM)
+       ======================================================================== -->
+  <main class="module-main-content">
+    
+    <div class="module-grid-layout">
+      
+      <!-- ====================================================================
+           COLUNA ESQUERDA: CARD PRINCIPAL UNIFICADO (VAREJO, AUTÔNOMA, PRODUTOS)
+           ==================================================================== -->
+      <section class="module-primary-card" aria-label="Operações Principais">
+        
+        <!-- SEÇÃO 1: VAREJO -->
+        <div class="module-section-group">
+          <h2 class="module-group-title">Varejo</h2>
+          
+          <div class="module-items-grid">
+            
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">shopping_bag</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Vendas de Varejo</span>
+                <p class="module-feature-description">
+                  Documentos gerenciais da venda de varejo. Também chamado de ticket. A NFC-e é baseada neste documento.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">shopping_bag</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Pré-vendas de Varejo</span>
+                <p class="module-feature-description">
+                  Pré-venda ou pedido de varejo. Este documento dá origem à venda de varejo ou ticket.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">store</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Conferência de Movimento de Loja</span>
+                <p class="module-feature-description">
+                  Aqui é possível conferir o movimento das lojas da rede e iniciar a integração com o módulo financeiro.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">person</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Consumidor</span>
+                <p class="module-feature-description">
+                  Consumidor de lojas e canais de varejo
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">badge</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Vendedores</span>
+                <p class="module-feature-description">
+                  Vendedores de lojas e outros canais de vendas de varejo
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">storefront</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Lojas</span>
+                <p class="module-feature-description">
+                  Cadastro de lojas ou filiais de vendas
+                </p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- SEÇÃO 2: OPERAÇÃO LOJA AUTÔNOMA -->
+        <div class="module-section-group">
+          <h2 class="module-group-title">Operação loja autônoma</h2>
+          
+          <div class="module-items-grid">
+            
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">format_list_bulleted</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Pedidos de Abastecimento</span>
+                <p class="module-feature-description">
+                  Pedidos de abastecimento para lojas autonomas
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">event_busy</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Validade de produtos</span>
+                <p class="module-feature-description">
+                  Consulta de validade de produtos
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">bookmark</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Planos de Abastecimento</span>
+                <p class="module-feature-description">
+                  Planos de abastecimento para lojas autonomas
+                </p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- SEÇÃO 3: PRODUTOS -->
+        <div class="module-section-group">
+          <h2 class="module-group-title">Produtos</h2>
+          
+          <div class="module-items-grid">
+            
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">widgets</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Produtos</span>
+                <p class="module-feature-description">
+                  Cadastro de produtos e mercadorias ofertadas pela organização.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">room_service</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Serviços</span>
+                <p class="module-feature-description">
+                  Cadastro de serviços ofertados pela organização.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">waves</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Looks de Produto</span>
+                <p class="module-feature-description">
+                  Combinações de produtos a fim de criar um look.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">menu_book</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Lookbooks</span>
+                <p class="module-feature-description">
+                  Livro de looks da organização.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">collections_bookmark</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Coleções</span>
+                <p class="module-feature-description">
+                  Coleções de produtos lançados. Geralmente por temporadas
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">stars</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Marcas e Grifes</span>
+                <p class="module-feature-description">
+                  Marcas e grifes referentes a esta organização.
+                </p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           COLUNA DIREITA: CARDS INDEPENDENTES (RELATÓRIOS, INTEGRAÇÕES, CONFIG)
+           ==================================================================== -->
+      <aside class="module-sidebar-column">
+        
+        <!-- CARD 1: RELATÓRIOS -->
+        <article class="module-side-card">
+          <h2 class="module-group-title">Relatórios</h2>
+          <div class="module-items-stack">
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">insert_chart</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Relatórios do Operacional</span>
+                <p class="module-feature-description">
+                  Central de relatórios do módulo de varejo. Todos os relatórios, indicadores e comparativos em um só lugar.
+                </p>
+              </div>
+            </a>
+          </div>
+        </article>
+
+        <!-- CARD 2: INTEGRAÇÕES -->
+        <article class="module-side-card">
+          <h2 class="module-group-title">Integrações</h2>
+          <div class="module-items-stack">
+            
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">sync</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Painel de Integração com Terceiros</span>
+                <p class="module-feature-description">
+                  Acompanhe a saúde da integração de dados do core com sistemas de terceiros, verifique possíveis gaps na integração de dados e se existe necessidade de alguma intervenção humana.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">sync</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Painel de Integração de Lojas</span>
+                <p class="module-feature-description">
+                  Acompanhe a saúde da sincronização de dados entre o core e as suas lojas, verifique possíveis gaps na sincronização de dados e se existe necessidade de alguma intervenção humana.
+                </p>
+              </div>
+            </a>
+
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">sync</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Painel de Integração de Franchising</span>
+                <p class="module-feature-description">
+                  Acompanhe a saúde da sincronização de dados entre o core e as suas lojas, verifique possíveis gaps na sincronização de dados e se existe necessidade de alguma intervenção humana.
+                </p>
+              </div>
+            </a>
+
+          </div>
+        </article>
+
+        <!-- CARD 3: CONFIGURAÇÕES -->
+        <article class="module-side-card">
+          <h2 class="module-group-title">Configurações</h2>
+          <div class="module-items-stack">
+            <a href="#" class="module-feature-item">
+              <span class="material-icons module-feature-icon">settings</span>
+              <div class="module-feature-text">
+                <span class="module-feature-title">Configurar Operação</span>
+                <p class="module-feature-description">
+                  Configurações de preferências específicas do módulo de operações.
+                </p>
+              </div>
+            </a>
+          </div>
+        </article>
+
+      </aside>
+
+      <!-- Mensagem amigável de Nenhum Resultado -->
+      <div class="module-no-results" id="noResultsBox">
+        <span class="material-icons no-results-icon">search_off</span>
+        <h3 class="no-results-title">Nenhum resultado encontrado</h3>
+        <p class="no-results-desc">Não encontramos telas correspondentes para <strong id="noResultsQuery">""</strong>.</p>
+        <button class="btn-clear-search" id="resetSearchBtn">Limpar Pesquisa</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/module-search.js"></script>
+</body>
+</html>
