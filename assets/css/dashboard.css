@@ -1,0 +1,822 @@
+/* ==========================================================================
+   GOFLASH CORE - ESTILOS DO DASHBOARD (HOME PAGE IDÊNTICA AO PRINT)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Layout Geral & Scroll
+   -------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+
+.dashboard-page-body {
+  background-color: var(--bg-login);
+  color: var(--text-main);
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* --------------------------------------------------------------------------
+   Header / Barra de Topo Fixa e Dinâmica
+   -------------------------------------------------------------------------- */
+.goflash-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #23143d; /* Hero Header */
+}
+
+/* Quando rola para a segunda seção ou quando o header fica roxo */
+.goflash-topbar.scrolled-header {
+  background-color: #6530b5;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  outline: none;
+}
+
+.topbar-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.topbar-btn:active {
+  transform: scale(0.95);
+}
+
+.topbar-btn .material-symbols-outlined {
+  font-size: 26px;
+}
+
+.topbar-brand-title {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.topbar-avatar-btn {
+  padding: 2px;
+}
+
+.topbar-avatar-btn .material-symbols-outlined {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Popovers / Menus Flutuantes do Topo
+   -------------------------------------------------------------------------- */
+.popover-container {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 1050;
+  display: none;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.popover-container.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Setinha triangular superior do Popover */
+.popover-arrow {
+  position: absolute;
+  top: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #ffffff;
+}
+
+/* Popover de Módulos (Grid de 9 pontos - Img 1) */
+#appsPopover {
+  width: 320px;
+  padding: 1.5rem 1.25rem;
+}
+
+#appsPopover .popover-arrow {
+  right: 48px;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 0.5rem;
+  text-align: center;
+}
+
+.app-shortcut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border-radius: 6px;
+  color: #555555;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.app-shortcut-item:hover {
+  background-color: #f1f3f9;
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.app-shortcut-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  background-color: #5f6368;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.app-shortcut-item:hover .app-shortcut-icon-box {
+  background-color: var(--primary-color);
+}
+
+.app-shortcut-icon-box .material-symbols-outlined {
+  font-size: 26px;
+}
+
+.app-shortcut-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #5f6368;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 88px;
+}
+
+/* Popover de Usuário (Img 2) */
+#userPopover {
+  width: 310px;
+  padding: 1.25rem;
+}
+
+#userPopover .popover-arrow {
+  right: 12px;
+}
+
+.user-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.user-popover-avatar {
+  font-size: 58px;
+  color: #9e9e9e;
+  flex-shrink: 0;
+}
+
+.user-popover-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-popover-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #202124;
+}
+
+.user-popover-role {
+  font-size: 0.82rem;
+  color: #70757a;
+  margin-top: 3px;
+}
+
+.user-popover-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+
+.user-popover-config-btn {
+  background: transparent;
+  color: #5f6368;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.user-popover-config-btn:hover {
+  background-color: #f1f3f4;
+  color: #202124;
+}
+
+.user-popover-logout-btn {
+  background-color: #6530b5;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 8px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(101, 48, 181, 0.3);
+  transition: background-color var(--transition-fast);
+}
+
+.user-popover-logout-btn:hover {
+  background-color: #532499;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar / Drawer Lateral (Menu Hambúrguer - Img 3)
+   -------------------------------------------------------------------------- */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.goflash-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 280px;
+  max-width: 85vw;
+  background-color: #ffffff;
+  z-index: 1200;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.goflash-drawer.open {
+  transform: translateX(0);
+}
+
+/* Cabeçalho Roxo da Sidebar */
+.drawer-header {
+  background-color: #6530b5;
+  color: #ffffff;
+  padding: 1.5rem 1.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 140px;
+}
+
+.drawer-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.drawer-avatar-icon {
+  font-size: 58px;
+  color: #ffffff;
+}
+
+.drawer-header-logo {
+  height: 38px;
+  width: auto;
+  opacity: 0.95;
+}
+
+.drawer-user-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.drawer-version-tag {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 2px;
+}
+
+/* Corpo e Itens de Navegação da Sidebar */
+.drawer-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0.75rem 0;
+}
+
+.drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 1.5rem;
+  color: #3c4043;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  text-decoration: none;
+}
+
+.drawer-item:hover {
+  background-color: #f1f3f4;
+  color: var(--primary-color);
+}
+
+.drawer-item.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.drawer-item .material-symbols-outlined {
+  font-size: 22px;
+  color: #5f6368;
+}
+
+.drawer-item:hover .material-symbols-outlined,
+.drawer-item.active .material-symbols-outlined {
+  color: var(--primary-color);
+}
+
+.drawer-section-title {
+  padding: 1rem 1.5rem 0.35rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #80868b;
+  letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   SEÇÃO 1: HERO SECTION (DARK PURPLE) (IMG 1 & IMG 5)
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #23143d;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hero-center-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 1.5rem 2rem 1.5rem;
+}
+
+/* Marca D'Água Central */
+.hero-watermark-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 520px;
+  width: 90vw;
+  user-select: none;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.hero-watermark-symbol {
+  width: 160px;
+  height: 160px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.hero-watermark-text {
+  font-size: clamp(3.2rem, 11vw, 6.5rem);
+  font-weight: 700;
+  color: #65547d;
+  letter-spacing: -2px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.hero-watermark-text span {
+  font-weight: 400;
+  color: #55446c;
+}
+
+/* Faixa Roxa Inferior do Hero */
+.hero-bottom-bar {
+  background-color: #6530b5;
+  height: 90px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.hero-bottom-logo {
+  height: 38px;
+  width: auto;
+  opacity: 0.95;
+}
+
+/* Botão Flutuante Amarelo (FAB) */
+.hero-scroll-fab {
+  position: absolute;
+  top: -28px;
+  right: 48px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #ffeb3b;
+  background: linear-gradient(135deg, #fff176 0%, #ffd600 100%);
+  color: #212121;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  z-index: 50;
+  outline: none;
+  animation: pulseFab 2.5s infinite;
+}
+
+.hero-scroll-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hero-scroll-fab:active {
+  transform: scale(0.95);
+}
+
+.hero-scroll-fab .material-symbols-outlined {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+@keyframes pulseFab {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* --------------------------------------------------------------------------
+   SEÇÃO 2: GRID DE MÓDULOS ERP (IMG 4)
+   -------------------------------------------------------------------------- */
+.modules-section {
+  min-height: 100vh;
+  background-color: #f1f3f6;
+  padding: 5.5rem 1.5rem 4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modules-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  flex-grow: 1;
+}
+
+.modules-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: stretch;
+  margin-top: 1rem;
+}
+
+/* Card do Módulo */
+.module-item-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.module-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Banner Superior Colorido do Card */
+.module-card-banner {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.module-card-banner.banner-gerencial {
+  background-color: #4a69bd;
+}
+
+.module-card-banner.banner-operacao {
+  background-color: #7356bf;
+}
+
+.module-card-banner.banner-financeiro {
+  background-color: #5ebd74;
+}
+
+.module-banner-icon-box {
+  width: 90px;
+  height: 90px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.module-banner-icon-box .material-symbols-outlined {
+  font-size: 58px;
+  color: #ffffff;
+}
+
+/* Corpo do Card */
+.module-card-body {
+  padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.module-card-title {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #333333;
+  margin-bottom: 0.85rem;
+}
+
+.module-card-description {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #666666;
+  flex-grow: 1;
+  margin-bottom: 1.75rem;
+}
+
+.module-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.module-action-btn {
+  background: transparent;
+  color: #666666;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.module-action-btn:hover {
+  background-color: #f1f3f4;
+  color: var(--primary-color);
+}
+
+/* --------------------------------------------------------------------------
+   Rodapé Institucional Roxo
+   -------------------------------------------------------------------------- */
+.goflash-footer {
+  background-color: #6530b5;
+  color: #ffffff;
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin-top: 3rem;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-logo {
+  height: 38px;
+  width: auto;
+}
+
+.footer-slogan {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+.footer-nav-col h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+}
+
+.footer-nav-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-nav-col ul li a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+}
+
+.footer-nav-col ul li a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-social-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.social-icon-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.social-icon-link:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.social-icon-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.footer-help-btn {
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.footer-help-btn .material-symbols-outlined {
+  font-size: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsividade (Mobile & Tablet - Img 5)
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .modules-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .topbar-avatar-btn {
+    display: none; /* Idêntico à Img 5 (somente menu, GOFLASH e grid no topo mobile) */
+  }
+
+  .hero-scroll-fab {
+    right: 20px;
+    top: -24px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .hero-scroll-fab .material-symbols-outlined {
+    font-size: 26px;
+  }
+
+  .hero-bottom-bar {
+    padding: 0 1.25rem;
+  }
+
+  .hero-bottom-logo {
+    height: 32px;
+  }
+
+  #appsPopover {
+    width: 290px;
+    right: -10px;
+  }
+
+  #appsPopover .popover-arrow {
+    right: 20px;
+  }
+
+  #userPopover {
+    width: 280px;
+    right: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}

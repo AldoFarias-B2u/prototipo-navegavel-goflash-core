@@ -1,0 +1,188 @@
+/* ==========================================================================
+   GOFLASH CORE - ESTILOS DA TELA DE LOGIN
+   ========================================================================== */
+
+.login-page-body {
+  background: var(--bg-login-gradient);
+  background-color: var(--bg-login);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+.login-main-container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Logo GoFlash Topo
+   -------------------------------------------------------------------------- */
+.login-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.login-logo {
+  width: 240px;
+  max-width: 80vw;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  transition: transform var(--transition-normal);
+}
+
+.login-logo:hover {
+  transform: scale(1.02);
+}
+
+/* --------------------------------------------------------------------------
+   Card de Autenticação
+   -------------------------------------------------------------------------- */
+.login-card {
+  width: 100%;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Avatar Circular Superior */
+.login-avatar-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.8rem;
+}
+
+.login-avatar-icon {
+  font-size: 76px;
+  color: #70757a;
+  user-select: none;
+}
+
+/* Formulário de Login */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.login-form .input-group {
+  margin-bottom: 1.3rem;
+}
+
+.login-button-wrapper {
+  margin-top: 0.6rem;
+  margin-bottom: 1.1rem;
+}
+
+.login-options-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Dica de Acesso Rápido para Protótipo (Sutil no rodapé) */
+.login-demo-helper {
+  margin-top: 1.8rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.login-demo-helper strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.login-demo-helper .badge-key {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: #f1f3f5;
+  margin: 0 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsividade Mobile & Tablet
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .login-page-body {
+    padding: 1rem 0.75rem;
+    align-items: flex-start;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 2rem);
+  }
+
+  .login-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .login-logo {
+    width: 200px;
+  }
+
+  .login-card {
+    padding: 2rem 1.5rem 1.75rem 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .login-avatar-icon {
+    font-size: 64px;
+  }
+
+  .login-avatar-wrapper {
+    margin-bottom: 1.4rem;
+  }
+
+  .btn-primary {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-height: 650px) {
+  .login-page-body {
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .login-header {
+    margin-bottom: 1rem;
+  }
+
+  .login-logo {
+    width: 180px;
+  }
+
+  .login-card {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .login-avatar-wrapper {
+    margin-bottom: 1rem;
+  }
+
+  .login-avatar-icon {
+    font-size: 52px;
+  }
+
+  .login-demo-helper {
+    margin-top: 1rem;
+  }
+}

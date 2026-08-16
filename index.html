@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#261543">
+  <title>Goflash CORE - Acesso ao Sistema</title>
+  
+  <!-- CSS Global, Componentes e Login -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body class="login-page-body">
+
+  <main class="login-main-container">
+    
+    <!-- Logotipo Goflash -->
+    <header class="login-header">
+      <img src="assets/images/logo-goflash.svg" alt="Logotipo Goflash" class="login-logo">
+    </header>
+
+    <!-- Card de Autenticação Central -->
+    <section class="md-card login-card" id="loginCard" aria-label="Formulário de Acesso">
+      
+      <!-- Ícone Circular de Usuário -->
+      <div class="login-avatar-wrapper">
+        <span class="material-icons login-avatar-icon">account_circle</span>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="loginForm" class="login-form" novalidate autocomplete="on">
+        
+        <!-- Campo: Usuário -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">account_circle</span>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              class="input-field" 
+              placeholder="b2u" 
+              value="b2u"
+              required 
+              autocapitalize="none"
+              autocomplete="username"
+              spellcheck="false"
+            >
+          </div>
+        </div>
+
+        <!-- Campo: Senha -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">lock</span>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="input-field" 
+              placeholder="senha" 
+              required 
+              autocomplete="current-password"
+            >
+            <button type="button" id="togglePassword" class="input-action-btn" title="Exibir/Ocultar Senha" tabindex="-1">
+              <span class="material-icons" style="font-size: 20px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botão de Ação: FAZER LOGIN -->
+        <div class="login-button-wrapper">
+          <button type="submit" id="loginBtn" class="btn-primary">
+            FAZER LOGIN
+          </button>
+        </div>
+
+        <!-- Opções Adicionais: Continuar conectado -->
+        <div class="login-options-wrapper">
+          <label class="checkbox-container" for="rememberMe">
+            <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+            <span class="custom-checkmark"></span>
+            <span>Continuar conectado</span>
+          </label>
+        </div>
+
+      </form>
+
+    </section>
+
+    <!-- Indicador de Credenciais para o Protótipo -->
+    <footer class="login-demo-helper">
+      <span>Usuário: <span class="badge-key">B2U</span> &nbsp;|&nbsp; Senha: <span class="badge-key">b2u@sistemas</span></span>
+    </footer>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="assets/js/toast.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Painel de Módulos</title>
+  
+  <!-- CSS Global, Componentes e Dashboard -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body class="dashboard-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR (FIXO & DINÂMICO NO SCROLL)
+       ======================================================================== -->
+  <header class="goflash-topbar" id="mainTopbar">
+    <div class="topbar-left">
+      <button class="topbar-btn" id="menuToggle" title="Menu Principal" aria-label="Abrir Menu">
+        <span class="material-icons">menu</span>
+      </button>
+      <span class="topbar-brand-title">GOFLASH</span>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Botão Grid de Módulos (9 pontos) -->
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <!-- Botão Avatar do Usuário -->
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- --------------------------------------------------------------------
+           POPOVER 1: GRADE DE MÓDULOS (IMG 1)
+           -------------------------------------------------------------------- -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-grid">
+          
+          <div class="app-shortcut-item" title="Módulo Gerencial">
+            <div class="app-shortcut-icon-box">
+              <span class="material-icons">leaderboard</span>
+            </div>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </div>
+
+          <div class="app-shortcut-item" title="Módulo Operação">
+            <div class="app-shortcut-icon-box">
+              <span class="material-icons">local_shipping</span>
+            </div>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </div>
+
+          <div class="app-shortcut-item" title="Módulo Financeiro">
+            <div class="app-shortcut-icon-box">
+              <span class="material-icons">credit_card</span>
+            </div>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </div>
+
+          <div class="app-shortcut-item" title="Home">
+            <div class="app-shortcut-icon-box">
+              <span class="material-icons">dashboard</span>
+            </div>
+            <span class="app-shortcut-label">HOME</span>
+          </div>
+
+          <div class="app-shortcut-item" title="Painel de Controles">
+            <div class="app-shortcut-icon-box">
+              <span class="material-icons">tune</span>
+            </div>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- --------------------------------------------------------------------
+           POPOVER 2: MENU DE USUÁRIO (IMG 2)
+           -------------------------------------------------------------------- -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name" id="popoverUserName">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL (IMG 3)
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <!-- Cabeçalho Roxo do Drawer -->
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-goflash.svg" alt="Goflash" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-name" id="drawerUserName">B2U</div>
+      <div class="drawer-version-tag">1.9.4.0</div>
+    </div>
+
+    <!-- Lista de Links -->
+    <div class="drawer-body">
+      <a href="#" class="drawer-item">
+        <span class="material-icons">change_history</span>
+        <span>GOFLASH</span>
+      </a>
+
+      <div class="drawer-section-title">Módulos</div>
+      
+      <a href="#modulesSection" class="drawer-item">
+        <span class="material-icons">leaderboard</span>
+        <span>Gerencial</span>
+      </a>
+      <a href="#modulesSection" class="drawer-item">
+        <span class="material-icons">local_shipping</span>
+        <span>Operação</span>
+      </a>
+      <a href="#modulesSection" class="drawer-item">
+        <span class="material-icons">credit_card</span>
+        <span>Financeiro</span>
+      </a>
+
+      <div class="drawer-section-title">Configurações</div>
+      
+      <a href="#" class="drawer-item">
+        <span class="material-icons">tune</span>
+        <span>Painel de Controles</span>
+      </a>
+      <a href="#" class="drawer-item">
+        <span class="material-icons">more_horiz</span>
+        <span>Sobre</span>
+      </a>
+
+      <div class="drawer-section-title">Encerrar</div>
+      
+      <a href="#" class="drawer-item action-logout">
+        <span class="material-icons">logout</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       SEÇÃO 1: HERO (DARK PURPLE + MARCA D'ÁGUA + FAB AMARELO) (IMG 1, 2, 5)
+       ======================================================================== -->
+  <section class="hero-section" id="heroSection">
+    
+    <!-- Centro: Grande Marca D'água Goflash -->
+    <div class="hero-center-content">
+      <div class="hero-watermark-wrapper">
+        <svg class="hero-watermark-symbol" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Retângulo Arredondado Externo -->
+          <rect x="10" y="10" width="140" height="140" rx="34" stroke="#65547d" stroke-width="12" fill="none" opacity="0.6"/>
+          <!-- Hélice / Símbolo Interno de 3 pontas -->
+          <path d="M 80 32 C 84 56 102 72 128 78 C 104 84 88 102 82 128 C 76 104 58 88 32 82 C 56 76 74 58 80 32 Z" 
+                fill="#f1f3f7" opacity="0.85" />
+          <circle cx="80" cy="80" r="10" fill="#23143d" />
+        </svg>
+        <div class="hero-watermark-text">
+          go<span>flash</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Faixa Roxa Inferior com Logo e Botão FAB Amarelo -->
+    <div class="hero-bottom-bar">
+      <img src="../assets/images/logo-goflash.svg" alt="Logotipo Goflash" class="hero-bottom-logo">
+      
+      <!-- Botão Amarelo de Rolagem (FAB) -->
+      <button class="hero-scroll-fab" id="scrollFab" title="Ver Módulos" aria-label="Rolar para os módulos">
+        <span class="material-icons">keyboard_arrow_down</span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ========================================================================
+       SEÇÃO 2: GRID DE MÓDULOS ERP (IMG 4)
+       ======================================================================== -->
+  <section class="modules-section" id="modulesSection">
+    <div class="modules-container">
+      
+      <div class="modules-row">
+        
+        <!-- CARD 1: GERENCIAL -->
+        <article class="module-item-card">
+          <div class="module-card-banner banner-gerencial">
+            <div class="module-banner-icon-box">
+              <span class="material-icons">leaderboard</span>
+            </div>
+          </div>
+          <div class="module-card-body">
+            <h2 class="module-card-title">Gerencial</h2>
+            <p class="module-card-description">
+              Módulo de gestão do sistema. Destinado aos gestores, conta com indicadores, dashboards e reports gerenciais, com visões mais macro-estratégicas da empresa.
+            </p>
+            <div class="module-card-footer">
+              <button class="module-action-btn">ABRIR</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 2: OPERAÇÃO -->
+        <article class="module-item-card">
+          <div class="module-card-banner banner-operacao">
+            <div class="module-banner-icon-box">
+              <span class="material-icons">local_shipping</span>
+            </div>
+          </div>
+          <div class="module-card-body">
+            <h2 class="module-card-title">Operação</h2>
+            <p class="module-card-description">
+              Módulo de operação. Destinado aos usuários e operadores que necessitam de dados mais analíticos e a sua manutenção, no tocante à operação do negócio. Acesso a cadastros, listagens, manutenções de dados e manipulação da informação no dia a dia.
+            </p>
+            <div class="module-card-footer">
+              <button class="module-action-btn">ABRIR</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 3: FINANCEIRO -->
+        <article class="module-item-card">
+          <div class="module-card-banner banner-financeiro">
+            <div class="module-banner-icon-box">
+              <span class="material-icons">credit_card</span>
+            </div>
+          </div>
+          <div class="module-card-body">
+            <h2 class="module-card-title">Financeiro</h2>
+            <p class="module-card-description">
+              Módulo Financeiro. Gestão e controle financeiro do negócio. Aqui estão tanto dados sintéticos quanto dados analíticos, mais técnicos no contexto financeiro. Também está disponibilizado nele a parte fiscal do sistema, ou seja, emissão e importação de XML de notas fiscais.
+            </p>
+            <div class="module-card-footer">
+              <button class="module-action-btn">ABRIR</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================================
+         RODAPÉ INSTITUCIONAL ROXO (IMG 4)
+         ====================================================================== -->
+    <footer class="goflash-footer">
+      <div class="footer-container">
+        
+        <!-- Logo e Slogan -->
+        <div class="footer-brand-col">
+          <img src="../assets/images/logo-goflash.svg" alt="Goflash Logo" class="footer-logo">
+          <span class="footer-slogan">Keep it Simple</span>
+        </div>
+
+        <!-- Coluna Módulos -->
+        <div class="footer-nav-col">
+          <h4>Módulos</h4>
+          <ul>
+            <li><a href="#modulesSection">Gerencial</a></li>
+            <li><a href="#modulesSection">Operação</a></li>
+            <li><a href="#modulesSection">Financeiro</a></li>
+          </ul>
+        </div>
+
+        <!-- Coluna Mídias Sociais -->
+        <div class="footer-nav-col">
+          <h4>Mídias Sociais</h4>
+          <div class="footer-social-icons">
+            <a href="#" class="social-icon-link" title="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+            </a>
+            <a href="#" class="social-icon-link" title="LinkedIn">
+              <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="#" class="social-icon-link" title="Twitter / X">
+              <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" class="social-icon-link" title="Instagram">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Coluna Ajuda -->
+        <div class="footer-nav-col">
+          <h4>Ajuda</h4>
+          <button class="footer-help-btn" title="Central de Ajuda">
+            <span class="material-icons">help</span>
+          </button>
+        </div>
+
+      </div>
+    </footer>
+
+  </section>
+
+  <!-- Scripts -->
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>
