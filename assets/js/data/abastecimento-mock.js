@@ -22,15 +22,14 @@ const AbastecimentoMock = {
     { id: 'HIGIENE', nome: 'Higiene e Conveniência' }
   ],
 
-  // 3. Catálogo de Produtos com Imagens Realistas SVG
+  // 3. Catálogo de Produtos com Imagens Reais
   produtos: [
     {
       id: 'prod-01',
       ean: '7898938890113',
       nome: 'Energético Ultra Fiesta Mango Zero Açúcar Monster Lata 473ml',
       grupo: 'BEBIDAS',
-      thumbColor: '#00838f',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/monster-mango.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -39,8 +38,7 @@ const AbastecimentoMock = {
       ean: '7898341430123',
       nome: 'Suco Uva Caixa 200ml',
       grupo: 'BEBIDAS',
-      thumbColor: '#c2185b',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/suco-uva.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -49,8 +47,7 @@ const AbastecimentoMock = {
       ean: '7894900701715',
       nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 1l',
       grupo: 'BEBIDAS',
-      thumbColor: '#d32f2f',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/coca-zero-1l.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -59,8 +56,7 @@ const AbastecimentoMock = {
       ean: '7898770420011',
       nome: 'Energético Ultra Strawberry Dreams Zero Açúcar Monster Lata 473ml',
       grupo: 'BEBIDAS',
-      thumbColor: '#ad1457',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/monster-strawberry.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -69,8 +65,7 @@ const AbastecimentoMock = {
       ean: '1220000250222',
       nome: 'Energético Ultra Watermelon Zero Açúcar Monster Lata 473ml',
       grupo: 'BEBIDAS',
-      thumbColor: '#2e7d32',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/monster-watermelon.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -79,8 +74,7 @@ const AbastecimentoMock = {
       ean: '7891991008785',
       nome: 'Refrigerante Zero Açúcar Guaraná Antarctica Garrafa 1,5l',
       grupo: 'BEBIDAS',
-      thumbColor: '#fbc02d',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/guarana-zero.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -89,8 +83,7 @@ const AbastecimentoMock = {
       ean: '7894900701609',
       nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 600ml',
       grupo: 'BEBIDAS',
-      thumbColor: '#b71c1c',
-      icone: 'local_drink',
+      imagem: '../assets/images/products/coca-zero-600ml.jpg',
       idealPadrao: 10,
       minimoPadrao: 2
     },
@@ -99,8 +92,7 @@ const AbastecimentoMock = {
       ean: '7892840222018',
       nome: 'Batata Ruffles Original 76g',
       grupo: 'SNACKS',
-      thumbColor: '#f57f17',
-      icone: 'fastfood',
+      imagem: '../assets/images/products/ruffles-chips.jpg',
       idealPadrao: 12,
       minimoPadrao: 3
     },
@@ -109,8 +101,7 @@ const AbastecimentoMock = {
       ean: '7892840222025',
       nome: 'Doritos Queijo Nacho 78g',
       grupo: 'SNACKS',
-      thumbColor: '#e65100',
-      icone: 'fastfood',
+      imagem: '../assets/images/products/doritos-snack.jpg',
       idealPadrao: 15,
       minimoPadrao: 4
     },
@@ -119,8 +110,7 @@ const AbastecimentoMock = {
       ean: '7891000248815',
       nome: 'Chocolate Bis ao Leite 126g',
       grupo: 'DOCES',
-      thumbColor: '#0277bd',
-      icone: 'cake',
+      imagem: '../assets/images/products/bis-wafer.jpg',
       idealPadrao: 14,
       minimoPadrao: 3
     }

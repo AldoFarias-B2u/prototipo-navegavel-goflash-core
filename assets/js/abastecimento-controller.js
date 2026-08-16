@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <tr>
           <td>
             <div class="product-code-cell">
-              <div class="product-thumb-box" style="background-color: ${prod.thumbColor};">
-                <span class="material-icons" style="font-size: 22px;">${prod.icone || 'local_drink'}</span>
+              <div class="product-thumb-box">
+                <img src="${prod.imagem || '../assets/images/products/monster-mango.jpg'}" alt="${prod.nome}" class="product-thumb-img" onerror="this.style.display='none';">
               </div>
               <a href="#" class="product-ean-link" onclick="event.preventDefault();">${prod.ean}</a>
             </div>
