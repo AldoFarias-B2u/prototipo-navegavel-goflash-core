@@ -191,7 +191,7 @@
     </div>
 
     <!-- ----------------------------------------------------------------------
-         TELA 3: DETALHES DO PLANO E LISTAGEM DE PRODUTOS (IMG 3)
+         TELA 3: DETALHES DO PLANO E LISTAGEM DE PRODUTOS (IMG 3 + MODO EDIÇÃO)
          ---------------------------------------------------------------------- -->
     <div class="plan-detail-view-container" id="planDetailView">
       
@@ -248,10 +248,33 @@
           </div>
         </div>
 
-        <!-- FAB Roxo de Edição -->
-        <button class="fab-edit-hero" title="Editar Informações do Plano" aria-label="Editar" onclick="window.AbastecimentoController.openNewPlanModal()">
+        <!-- FAB Roxo de Edição (Modo Visualização) -->
+        <button class="fab-edit-hero" id="fabEditHero" title="Entrar no Modo de Edição" aria-label="Editar">
           <span class="material-icons">edit</span>
         </button>
+
+        <!-- Ações do MODO DE EDIÇÃO ATIVO -->
+        <div class="edit-mode-actions-group" id="editModeActionsGroup">
+          <button type="button" class="btn-edit-action btn-edit-add-products" id="btnOpenAddProducts" title="Adicionar novos produtos ao plano">
+            <span class="material-icons">add_circle_outline</span>
+            + Adicionar Produtos
+          </button>
+          <button type="button" class="btn-edit-action btn-edit-cancel" id="btnCancelEditMode" title="Descartar alterações">
+            Cancelar
+          </button>
+          <button type="button" class="btn-edit-action btn-edit-save" id="btnSaveEditMode" title="Salvar todas as alterações">
+            <span class="material-icons">check</span>
+            Salvar Alterações
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Informativo do Modo de Edição -->
+      <div class="edit-mode-banner-alert" id="editModeBannerAlert">
+        <div class="edit-mode-banner-text">
+          <span class="material-icons">mode_edit</span>
+          <span><strong>Modo de Edição Ativo:</strong> Ajuste as quantidades individualmente com os botões +/&minus; ou selecione múltiplos itens para edição em lote.</span>
+        </div>
       </div>
 
       <!-- Seção de Produtos -->
@@ -302,7 +325,152 @@
   </main>
 
   <!-- ========================================================================
-       BOTÃO FLUTUANTE FAB VERMELHO (CANTO INFERIOR DIREITO - IMG 1 e 2)
+       BARRA FLUTUANTE DE AÇÕES EM LOTE (STICKY BATCH BAR)
+       ======================================================================== -->
+  <aside class="sticky-batch-bar" id="stickyBatchBar" role="region" aria-label="Ações em Lote">
+    <span class="batch-count-badge" id="batchCountBadge">0 selecionados</span>
+    <button type="button" class="btn-batch-action btn-batch-edit" id="btnOpenBatchEdit">
+      <span class="material-icons">edit_note</span>
+      Editar Estoque em Lote
+    </button>
+    <button type="button" class="btn-batch-action btn-batch-delete" id="btnDeleteBatch">
+      <span class="material-icons">delete</span>
+      Remover Selecionados
+    </button>
+    <button type="button" class="btn-batch-uncheck" id="btnUncheckBatch" title="Desmarcar Todos">
+      <span class="material-icons">close</span>
+    </button>
+  </aside>
+
+  <!-- ========================================================================
+       MODAL DE EDIÇÃO DE ESTOQUE EM LOTE
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="batchEditModal" role="dialog" aria-modal="true">
+    <div class="batch-edit-modal-box">
+      <div class="official-modal-header">
+        <span class="official-modal-title">EDITAR ESTOQUE EM LOTE</span>
+        <span class="material-icons official-modal-close" id="btnCloseBatchEdit">close</span>
+      </div>
+
+      <div class="official-modal-body">
+        <p style="font-size: 0.85rem; color: #555; line-height: 1.4;">
+          Informe os novos valores que serão aplicados para <strong>todos os produtos selecionados</strong>:
+        </p>
+
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="batchIdealInput">Novo Estoque Ideal</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">inventory_2</span>
+            <input type="number" id="batchIdealInput" class="modal-underline-input" value="12" min="1">
+          </div>
+        </div>
+
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="batchMinInput">Novo Mínimo Crítico</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">warning_amber</span>
+            <input type="number" id="batchMinInput" class="modal-underline-input" value="3" min="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelBatchEdit">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyBatchEdit">APLICAR EM LOTE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL MULTICRITÉRIO DE INSERÇÃO DE PRODUTOS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="addProductsModal" role="dialog" aria-modal="true">
+    <div class="add-products-modal-box">
+      <!-- Cabeçalho Roxo -->
+      <div class="official-modal-header">
+        <span class="official-modal-title">ADICIONAR PRODUTOS AO PLANO</span>
+        <span class="material-icons official-modal-close" id="btnCloseAddModal">close</span>
+      </div>
+
+      <div class="official-modal-body">
+        <!-- Parâmetros Padrão de Estoque -->
+        <div class="modal-defaults-box">
+          <div class="modal-defaults-title-group">
+            <span class="modal-defaults-title">Parâmetros Padrão de Inserção</span>
+            <span class="modal-defaults-subtitle">Valores que serão atribuídos automaticamente aos produtos selecionados</span>
+          </div>
+
+          <div class="modal-defaults-inputs">
+            <div class="default-input-item">
+              <label for="addModalDefaultIdeal">Estoque Ideal:</label>
+              <input type="number" id="addModalDefaultIdeal" class="default-input-val" value="12" min="1">
+            </div>
+            <div class="default-input-item">
+              <label for="addModalDefaultMin">Mínimo Crítico:</label>
+              <input type="number" id="addModalDefaultMin" class="default-input-val" value="3" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros Multicritério (Nome/Código, Grupo, Marca e Fornecedor) -->
+        <div class="multicriteria-filters-grid">
+          <div class="filter-search-box" style="height: 40px; min-width: 100%;">
+            <span class="material-icons">search</span>
+            <input type="text" id="addModalSearch" class="filter-search-input" placeholder="Pesquisar por nome ou código EAN...">
+          </div>
+
+          <select id="addModalGroup" class="filter-field-select" aria-label="Filtrar Grupo">
+            <option value="">Todos os Grupos</option>
+          </select>
+
+          <select id="addModalBrand" class="filter-field-select" aria-label="Filtrar Marca">
+            <option value="">Todas as Marcas</option>
+          </select>
+
+          <select id="addModalSupplier" class="filter-field-select" aria-label="Filtrar Fornecedor">
+            <option value="">Todos os Fornecedores</option>
+          </select>
+        </div>
+
+        <!-- Barra de Ações Rápidas de Seleção -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: #424242;" id="addModalCountSelected">0 produto(s) selecionado(s)</span>
+          <button type="button" class="btn-secondary" style="height: 32px; font-size: 0.78rem; padding: 0 10px;" id="btnSelectAllFiltered">
+            Selecionar Todos os Filtrados
+          </button>
+        </div>
+
+        <!-- Grade de Produtos -->
+        <div class="modal-products-list-container">
+          <table class="modal-products-table">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">Sel.</th>
+                <th>Produto / Foto</th>
+                <th>Grupo</th>
+                <th>Marca</th>
+                <th>Fornecedor</th>
+              </tr>
+            </thead>
+            <tbody id="addModalProductsBody">
+              <!-- Renderizado dinamicamente via abastecimento-controller.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelAddModal">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmAddProducts">
+          INSERIR NO PLANO
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BOTÃO FLUTUANTE FAB VERMELHO (CANTO INFERIOR DIREITO - LISTA)
        ======================================================================== -->
   <button class="fab-red-add" id="fabRedAdd" title="Criar Novo Plano de Abastecimento" aria-label="Novo Plano">
     <span class="material-icons">add</span>
