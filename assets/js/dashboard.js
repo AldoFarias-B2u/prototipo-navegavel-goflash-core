@@ -100,8 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Transição de Cor do Header no Scroll (Dark Purple -> Purple)
   function handleScroll() {
     if (!topbar) return;
-    const heroHeight = window.innerHeight * 0.7;
-    if (window.scrollY > 80 || window.scrollY >= heroHeight) {
+    
+    // Se o header já possui a classe declarativa de topo roxo claro (.topbar-primary), mantém o padrão
+    if (topbar.classList.contains('topbar-primary')) {
+      return;
+    }
+
+    // Para páginas com Hero Banner (Dashboard, Módulos Operação/Gerencial/Financeiro)
+    const hasHero = document.querySelector('.dashboard-hero, .module-hero-banner');
+    const scrollThreshold = hasHero ? 35 : 10;
+
+    if (window.scrollY > scrollThreshold) {
       topbar.classList.add('scrolled-header');
     } else {
       topbar.classList.remove('scrolled-header');

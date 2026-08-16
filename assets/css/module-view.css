@@ -12,10 +12,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   Header da Página de Módulo (Dark Purple)
+   Header da Página de Módulo (Dark Purple / Roxo Claro Dinâmico)
    -------------------------------------------------------------------------- */
 .module-topbar {
-  background-color: #23143d;
+  background-color: var(--topbar-bg-dark, #23143d);
   height: 64px;
   display: flex;
   align-items: center;
@@ -25,6 +25,14 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: background-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+/* Quando rola a página ou em páginas internas com header roxo claro padrão */
+.module-topbar.scrolled-header,
+.module-topbar.topbar-primary {
+  background-color: var(--primary-color, #6530b5);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
 }
 
 .module-topbar-left {
@@ -53,17 +61,29 @@
 .module-search-box {
   display: flex;
   align-items: center;
-  background-color: #543f70;
+  background-color: var(--topbar-search-bg-dark, #543f70);
   border: none;
   border-radius: 4px;
   height: 40px;
   padding: 0 14px;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .module-search-box:focus-within {
-  background-color: #614a82;
+  background-color: var(--topbar-search-bg-focus-dark, #614a82);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+/* Barra de pesquisa quando o Header está no tom Roxo Claro (Scroll ou Página Interna) */
+.module-topbar.scrolled-header .module-search-box,
+.module-topbar.topbar-primary .module-search-box {
+  background-color: var(--topbar-search-bg-light, rgba(255, 255, 255, 0.18));
+}
+
+.module-topbar.scrolled-header .module-search-box:focus-within,
+.module-topbar.topbar-primary .module-search-box:focus-within {
+  background-color: var(--topbar-search-bg-focus-light, rgba(255, 255, 255, 0.28));
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
 }
 
 .module-search-box .search-icon {

@@ -22,12 +22,21 @@ Este documento é a especificação viva e o guia de referência do **Design Sys
 | `--primary-hover` | `#532499` | Hover de botões primários e interações principais |
 | `--primary-active` | `#451b82` | Estado ativo/pressionado de botões |
 | `--primary-light` | `#ece3f9` | Fundo de badges suaves e seleções sutis |
-| `--primary-dark` | `#2b124c` | Variações escuras secundárias |
-| *(Header / Hero Dark)* | `#23143d` | Topbar do ERP, fundo do Hero e cabeçalho de módulos |
-| *(Search Background)* | `#543f70` | Fundo sólido da barra de pesquisa no header dos módulos |
-| *(Search Focus)* | `#614a82` | Fundo da barra de pesquisa em estado de foco |
+| `--topbar-bg-dark` | `#23143d` | Topbar do ERP em páginas com Hero Banner (estado de repouso no topo) |
+| `--topbar-bg-primary` | `#6530b5` | Topbar do ERP após rolagem (`.scrolled-header`) e páginas internas padrão (`.topbar-primary`) |
+| `--topbar-search-bg-dark` | `#543f70` | Fundo sólido da barra de pesquisa no header escuro |
+| `--topbar-search-bg-focus-dark` | `#614a82` | Fundo da barra de pesquisa em estado de foco no header escuro |
+| `--topbar-search-bg-light` | `rgba(255,255,255,0.18)` | Fundo da barra de pesquisa no header roxo claro |
+| `--topbar-search-bg-focus-light` | `rgba(255,255,255,0.28)` | Fundo da barra de pesquisa em foco no header roxo claro |
 
-### 2.2 Cores Temáticas dos Módulos ERP
+### 2.2 Padrão de Comportamento do Header (Topbar)
+1. **Páginas com Hero Banner (`dashboard.html`, `operacao.html`)**:
+   - Posição no topo (`scrollY <= 35px`): Fundo `#23143d` escuro com busca `#543f70`.
+   - Ao descer a barra de rolagem: Classe `.scrolled-header` adicionada dinamicamente via JS, transicionando suavemente para roxo claro `#6530b5`, busca adaptada e sombra de elevação.
+2. **Páginas Internas / Operacionais (`planos-abastecimento.html` e futuras listagens/telas)**:
+   - Header fixado diretamente em roxo claro `#6530b5` com a classe declarativa `.topbar-primary`.
+
+### 2.3 Cores Temáticas dos Módulos ERP
 | Módulo | Hex | Uso |
 |---|---|---|
 | **Gerencial** | `#3f51b5` | Banner azul do card Gerencial e barras do gráfico |
