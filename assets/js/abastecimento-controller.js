@@ -34,10 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const detailPlanFilial = document.getElementById('detailPlanFilial');
   const detailPlanAtivo = document.getElementById('detailPlanAtivo');
   const detailProductsTableBody = document.getElementById('detailProductsTableBody');
+  const productsTableCard = document.getElementById('productsTableCard');
+  const productsCardsGrid = document.getElementById('productsCardsGrid');
+  const btnToggleProductsView = document.getElementById('btnToggleProductsView');
+  const toggleViewIcon = document.getElementById('toggleViewIcon');
+  const toggleViewLabel = document.getElementById('toggleViewLabel');
 
   // Estado Local
   let planos = AbastecimentoMock.getPlanos();
   let currentActivePlanId = null;
+  let isCardViewMode = false; // false = Tabela Oficial, true = Cards Atraentes
 
   /**
    * Inicialização
@@ -145,6 +151,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
+   * Alterna entre visualização de Tabela e Cards Atraentes
+   */
+  function toggleProductsView() {
+    isCardViewMode = !isCardViewMode;
+    applyProductsViewMode();
+    if (typeof Toast !== 'undefined') {
+      Toast.info(isCardViewMode ? 'Modo de visualização em Cards ativado.' : 'Modo de visualização em Tabela ativado.');
+    }
+  }
+
+  function applyProductsViewMode() {
+    if (!productsTableCard || !productsCardsGrid) return;
+
+    if (isCardViewMode) {
+      productsTableCard.style.display = 'none';
+      productsCardsGrid.classList.add('show');
+      if (toggleViewIcon) toggleViewIcon.textContent = 'view_list';
+      if (toggleViewLabel) toggleViewLabel.textContent = 'Ver em Tabela';
+      if (btnToggleProductsView) btnToggleProductsView.classList.add('active');
+    } else {
+      productsTableCard.style.display = 'block';
+      productsCardsGrid.classList.remove('show');
+      if (toggleViewIcon) toggleViewIcon.textContent = 'grid_view';
+      if (toggleViewLabel) toggleViewLabel.textContent = 'Ver em Cards';
+      if (btnToggleProductsView) btnToggleProductsView.classList.remove('active');
+    }
+  }
+
+  /**
    * Exibe a Tela de Detalhes do Plano (Imagem 3)
    */
   function showDetailView(planId) {
@@ -163,59 +198,113 @@ document.addEventListener('DOMContentLoaded', () => {
     if (detailPlanFilial) detailPlanFilial.textContent = plano.filialNome;
     if (detailPlanAtivo) detailPlanAtivo.innerHTML = plano.status === 'ativo' ? '<span class="material-icons">check</span>' : '';
 
-    // Renderiza a lista de produtos
+    // Aplica o modo de visualização atual
+    applyProductsViewMode();
+
+    // Renderiza a lista de produtos em ambos os formatos
     renderDetailProducts(plano);
   }
 
   /**
-   * Renderiza a Tabela de Produtos do Plano com Fotos e Badges (Imagem 3)
+   * Renderiza a Tabela e os Cards de Produtos do Plano (Tabela Img 3 e Cards Atraentes)
    */
   function renderDetailProducts(plano) {
-    if (!detailProductsTableBody) return;
-
     const itens = plano.itens || [];
 
+    // Estado Vazio
     if (itens.length === 0) {
-      detailProductsTableBody.innerHTML = `
-        <tr>
-          <td colspan="5" style="text-align: center; padding: 3rem; color: #757575;">
+      if (detailProductsTableBody) {
+        detailProductsTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 3rem; color: #757575;">
+              <span class="material-icons" style="font-size: 40px; color: #b0bec5; display: block; margin-bottom: 6px;">inventory_2</span>
+              Nenhum produto cadastrado neste plano de abastecimento.
+            </td>
+          </tr>
+        `;
+      }
+      if (productsCardsGrid) {
+        productsCardsGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #fff; border-radius: 6px; color: #757575;">
             <span class="material-icons" style="font-size: 40px; color: #b0bec5; display: block; margin-bottom: 6px;">inventory_2</span>
             Nenhum produto cadastrado neste plano de abastecimento.
-          </td>
-        </tr>
-      `;
+          </div>
+        `;
+      }
       return;
     }
 
-    detailProductsTableBody.innerHTML = itens.map(item => {
-      const prod = AbastecimentoMock.getProdutoById(item.produtoId);
-      if (!prod) return '';
+    // 1. Renderiza a Tabela Oficial (Imagem 3)
+    if (detailProductsTableBody) {
+      detailProductsTableBody.innerHTML = itens.map(item => {
+        const prod = AbastecimentoMock.getProdutoById(item.produtoId);
+        if (!prod) return '';
 
-      return `
-        <tr>
-          <td>
-            <div class="product-code-cell">
-              <div class="product-thumb-box">
-                <img src="${prod.imagem || '../assets/images/products/monster-mango.jpg'}" alt="${prod.nome}" class="product-thumb-img" onerror="this.style.display='none';">
+        return `
+          <tr>
+            <td>
+              <div class="product-code-cell">
+                <div class="product-thumb-box">
+                  <img src="${prod.imagem || '../assets/images/products/monster-mango.jpg'}" alt="${prod.nome}" class="product-thumb-img" onerror="this.style.display='none';">
+                </div>
+                <a href="#" class="product-ean-link" onclick="event.preventDefault();">${prod.ean}</a>
               </div>
-              <a href="#" class="product-ean-link" onclick="event.preventDefault();">${prod.ean}</a>
+            </td>
+            <td>
+              <span class="product-name-bold">${prod.nome}</span>
+            </td>
+            <td>
+              <span class="product-group-tag">${prod.grupo}</span>
+            </td>
+            <td style="text-align: center;">
+              <span class="pill-ideal">${item.estoqueIdeal}</span>
+            </td>
+            <td style="text-align: center;">
+              <span class="pill-minimo">${item.estoqueMinimo}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 2. Renderiza a Grade de Cards Atraentes
+    if (productsCardsGrid) {
+      productsCardsGrid.innerHTML = itens.map(item => {
+        const prod = AbastecimentoMock.getProdutoById(item.produtoId);
+        if (!prod) return '';
+
+        return `
+          <article class="product-card-item">
+            <div class="product-card-image-wrap">
+              <span class="product-card-category-badge">${prod.grupo}</span>
+              <img src="${prod.imagem || '../assets/images/products/monster-mango.jpg'}" alt="${prod.nome}" class="product-card-img">
             </div>
-          </td>
-          <td>
-            <span class="product-name-bold">${prod.nome}</span>
-          </td>
-          <td>
-            <span class="product-group-tag">${prod.grupo}</span>
-          </td>
-          <td style="text-align: center;">
-            <span class="pill-ideal">${item.estoqueIdeal}</span>
-          </td>
-          <td style="text-align: center;">
-            <span class="pill-minimo">${item.estoqueMinimo}</span>
-          </td>
-        </tr>
-      `;
-    }).join('');
+            
+            <div class="product-card-body">
+              <div class="product-card-info-top">
+                <a href="#" class="product-card-ean" onclick="event.preventDefault();">
+                  <span class="material-icons" style="font-size: 14px;">qr_code_2</span>
+                  ${prod.ean}
+                </a>
+                <h3 class="product-card-name" title="${prod.nome}">${prod.nome}</h3>
+              </div>
+
+              <div class="product-card-metrics">
+                <div class="product-card-metric-box metric-ideal">
+                  <span class="metric-label-title">Estoque Ideal</span>
+                  <span class="metric-value-num">${item.estoqueIdeal}</span>
+                </div>
+
+                <div class="product-card-metric-box metric-minimo">
+                  <span class="metric-label-title">Mín. Crítico</span>
+                  <span class="metric-value-num">${item.estoqueMinimo}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
   }
 
   /**
@@ -347,6 +436,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Alternância de visualização entre Tabela e Cards de produtos
+    if (btnToggleProductsView) {
+      btnToggleProductsView.addEventListener('click', toggleProductsView);
+    }
+
     // Retorno para a lista pelo breadcrumb
     if (detailBreadcrumbLink) {
       detailBreadcrumbLink.addEventListener('click', (e) => {
@@ -360,7 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.AbastecimentoController = {
     showDetailView,
     showListView,
-    openNewPlanModal
+    openNewPlanModal,
+    toggleProductsView
   };
 
   init();

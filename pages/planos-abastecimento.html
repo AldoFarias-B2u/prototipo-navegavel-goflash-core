@@ -259,12 +259,15 @@
         <div class="products-section-header">
           <h2 class="products-section-title">Produtos</h2>
           <div class="products-header-actions">
-            <span class="material-icons btn-header-view-toggle" title="Alternar Visualização">grid_view</span>
+            <button type="button" class="btn-header-view-toggle" id="btnToggleProductsView" title="Alternar entre Lista e Cards de Produtos">
+              <span class="material-icons" id="toggleViewIcon">grid_view</span>
+              <span id="toggleViewLabel">Ver em Cards</span>
+            </button>
           </div>
         </div>
 
-        <!-- Tabela de Produtos com Fotos e Badges -->
-        <div class="products-table-card">
+        <!-- 1. Tabela de Produtos com Fotos e Badges -->
+        <div class="products-table-card" id="productsTableCard">
           <table class="products-official-table" aria-label="Grade de Produtos do Plano">
             <thead>
               <tr>
@@ -286,6 +289,11 @@
             <span>Página 1 / 1</span>
             <span class="pagination-btn">PRÓXIMA &rsaquo;</span>
           </div>
+        </div>
+
+        <!-- 2. Grid Atraente de Cards de Produtos -->
+        <div class="products-cards-grid" id="productsCardsGrid" aria-label="Grade Visual de Produtos">
+          <!-- Renderizado via abastecimento-controller.js -->
         </div>
       </section>
 

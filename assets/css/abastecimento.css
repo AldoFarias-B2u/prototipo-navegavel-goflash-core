@@ -519,12 +519,182 @@
 .btn-header-view-toggle {
   color: #757575;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px 10px;
   border-radius: 4px;
+  background-color: #f1f3f6;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  user-select: none;
 }
 
 .btn-header-view-toggle:hover {
+  color: #6530b5;
+  border-color: #6530b5;
+  background-color: #ede7f6;
+}
+
+.btn-header-view-toggle.active {
+  background-color: #6530b5;
+  color: #ffffff;
+  border-color: #6530b5;
+}
+
+/* --------------------------------------------------------------------------
+   Visualização em Cards de Produtos (Card Grid Atraente)
+   -------------------------------------------------------------------------- */
+.products-cards-grid {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.products-cards-grid.show {
+  display: grid;
+}
+
+.product-card-item {
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.product-card-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(101, 48, 181, 0.14);
+  border-color: #d1c4e9;
+}
+
+.product-card-image-wrap {
+  height: 160px;
+  background: radial-gradient(circle, #ffffff 40%, #f7f7f9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.product-card-img {
+  max-height: 136px;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.product-card-item:hover .product-card-img {
+  transform: scale(1.08);
+}
+
+.product-card-category-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(35, 20, 61, 0.85);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.4px;
+  backdrop-filter: blur(2px);
+}
+
+.product-card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-card-info-top {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-card-name {
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #212121;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.7em;
+}
+
+.product-card-ean {
+  font-size: 0.78rem;
+  color: #1976d2;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.product-card-ean:hover {
+  text-decoration: underline;
+}
+
+.product-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.product-card-metric-box {
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-card-metric-box.metric-ideal {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #2e7d32;
+}
+
+.product-card-metric-box.metric-minimo {
+  background-color: #fff3e0;
+  border: 1px solid #ffe0b2;
+  color: #e65100;
+}
+
+.metric-label-title {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+  opacity: 0.9;
+}
+
+.metric-value-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 /* Tabela de Produtos com Thumbnails e Badges */
