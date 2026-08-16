@@ -153,13 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Feedback de clique nos itens do módulo
+  // Feedback de clique nos itens do módulo (apenas para links ainda em mock '#')
   allItems.forEach(item => {
     item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const title = item.querySelector('.module-feature-title')?.textContent || 'Funcionalidade';
-      if (typeof Toast !== 'undefined') {
-        Toast.info(`Abrindo ${title.trim()}... (Protótipo Navegável)`);
+      const href = item.getAttribute('href');
+      if (!href || href === '#') {
+        e.preventDefault();
+        const title = item.querySelector('.module-feature-title')?.textContent || 'Funcionalidade';
+        if (typeof Toast !== 'undefined') {
+          Toast.info(`Abrindo ${title.trim()}... (Protótipo Navegável)`);
+        }
       }
     });
   });

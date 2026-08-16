@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Planos de Abastecimento</title>
+  
+  <!-- CSS Global, Componentes, Dashboard, Module-View e Abastecimento -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+  <link rel="stylesheet" href="../assets/css/abastecimento.css">
+</head>
+<body class="module-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR
+       ======================================================================== -->
+  <header class="module-topbar" id="mainTopbar">
+    <div class="module-topbar-left">
+      <button class="topbar-btn" id="menuToggle" title="Menu Principal" aria-label="Abrir Menu">
+        <span class="material-icons">menu</span>
+      </button>
+      <a href="./operacao.html" class="topbar-btn" title="Voltar para Operação" style="margin-right: 4px;">
+        <span class="material-icons">arrow_back</span>
+      </a>
+      <span class="module-page-title">Planos de Abastecimento</span>
+    </div>
+
+    <!-- Barra de Pesquisa Rápida Centralizada -->
+    <div class="module-search-wrapper">
+      <div class="module-search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          id="planSearchInput" 
+          class="module-search-input" 
+          placeholder="Pesquisar plano ou filial... (Ctrl+K)" 
+          autocomplete="off"
+        >
+      </div>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" title="Atualizar Lista" onclick="location.reload()">
+        <span class="material-icons">refresh</span>
+      </button>
+
+      <!-- Botão Grid de Módulos (9 pontos) -->
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <!-- Botão Avatar do Usuário -->
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 Pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </a>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </a>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Painel de Controles">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Usuário -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <a href="./dashboard.html" class="drawer-item">
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
+        <span>GOFLASH</span>
+      </a>
+
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Módulos</div>
+      
+      <a href="#" class="drawer-item">
+        <span class="material-icons">insert_chart</span>
+        <span>Gerencial</span>
+      </a>
+      <a href="./operacao.html" class="drawer-item active">
+        <span class="material-icons">local_shipping</span>
+        <span>Operação</span>
+      </a>
+      <a href="#" class="drawer-item">
+        <span class="material-icons">credit_card</span>
+        <span>Financeiro</span>
+      </a>
+
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Configurações</div>
+      
+      <a href="#" class="drawer-item">
+        <span class="material-icons">tune</span>
+        <span>Painel de Controles</span>
+      </a>
+      <a href="#" class="drawer-item">
+        <span class="material-icons">more_horiz</span>
+        <span>Sobre</span>
+      </a>
+
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Encerrar</div>
+      
+      <a href="#" class="drawer-item action-logout">
+        <span class="material-icons">exit_to_app</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       BANNER HERO SUPERIOR (ABASTECIMENTO)
+       ======================================================================== -->
+  <section class="module-hero-banner">
+    <h1 class="module-hero-headline">ABASTECIMENTO</h1>
+  </section>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL (GESTÃO DE PLANOS DE ABASTECIMENTO)
+       ======================================================================== -->
+  <main class="abastecimento-page-container">
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav" aria-label="Trilha de Navegação">
+      <a href="./dashboard.html">Home</a>
+      <span class="separator">/</span>
+      <a href="./operacao.html">Operação</a>
+      <span class="separator">/</span>
+      <span>Planos de Abastecimento</span>
+    </nav>
+
+    <!-- 1. Cards de Indicadores Rápidos (KPI Summary) -->
+    <section class="kpi-summary-grid" aria-label="Resumo de Indicadores">
+      
+      <article class="kpi-card">
+        <div class="kpi-icon-box kpi-purple">
+          <span class="material-icons">assignment</span>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kpiTotalPlanos">0</span>
+          <span class="kpi-label">Planos Cadastrados</span>
+        </div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-icon-box kpi-green">
+          <span class="material-icons">check_circle</span>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kpiPlanosAtivos">0</span>
+          <span class="kpi-label">Planos Ativos</span>
+        </div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-icon-box kpi-blue">
+          <span class="material-icons">storefront</span>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kpiLojasCobertas">0</span>
+          <span class="kpi-label">Lojas Cobertas</span>
+        </div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-icon-box kpi-orange">
+          <span class="material-icons">inventory_2</span>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-value" id="kpiSkusMonitorados">0</span>
+          <span class="kpi-label">SKUs Monitorados</span>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- 2. Painel Principal de Gestão e Tabela de Planos -->
+    <section class="main-management-card" aria-label="Listagem de Planos">
+      
+      <!-- Barra de Filtros e Ação Primária -->
+      <div class="actions-filter-bar">
+        <div class="filter-controls-group">
+          
+          <select id="filialFilterSelect" class="filter-select" aria-label="Filtrar por Filial">
+            <option value="">Todas as Filiais / Lojas</option>
+          </select>
+
+          <select id="statusFilterSelect" class="filter-select" aria-label="Filtrar por Status">
+            <option value="">Todos os Status</option>
+            <option value="ativo">Apenas Ativos</option>
+            <option value="inativo">Apenas Inativos</option>
+          </select>
+
+        </div>
+
+        <button class="btn-add-plan" id="btnOpenNewModal">
+          <span class="material-icons">add_circle</span>
+          Novo Plano de Abastecimento
+        </button>
+      </div>
+
+      <!-- Tabela Desktop -->
+      <div class="table-responsive-wrapper">
+        <table class="abastecimento-table" aria-label="Tabela de Planos de Abastecimento">
+          <thead>
+            <tr>
+              <th style="width: 32%;">Nome do Plano</th>
+              <th style="width: 28%;">Filial / Loja Autônoma</th>
+              <th style="width: 12%;">Mix de Itens</th>
+              <th style="width: 10%;">Status</th>
+              <th style="width: 10%;">Criação</th>
+              <th style="width: 8%; text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="plansTableBody">
+            <!-- Renderizado dinamicamente via abastecimento-controller.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cards Mobile First (< 768px) -->
+      <div class="mobile-plans-grid" id="mobilePlansGrid">
+        <!-- Renderizado dinamicamente via abastecimento-controller.js -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL: CRIAÇÃO E EDIÇÃO DE PLANO DE ABASTECIMENTO
+       ======================================================================== -->
+  <div class="modal-overlay" id="planModal" role="dialog" aria-modal="true">
+    <div class="modal-container">
+      
+      <!-- Cabeçalho do Modal -->
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="material-icons modal-title-icon">assignment</span>
+          <h2 class="modal-title" id="modalTitle">Novo Plano de Abastecimento</h2>
+        </div>
+        <button class="modal-close-btn" id="btnCloseModal" aria-label="Fechar Modal">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <!-- Corpo do Modal com Abas / Seções -->
+      <div class="modal-body">
+        
+        <input type="hidden" id="inputPlanId">
+
+        <!-- Seção 1: Dados Gerais do Plano -->
+        <div class="modal-form-section">
+          <div class="modal-form-section-title">
+            <span class="material-icons">info</span>
+            1. Informações Gerais do Plano
+          </div>
+
+          <div class="modal-grid-2col">
+            <div class="form-field-wrapper">
+              <label class="form-field-label" for="inputPlanName">Nome do Plano *</label>
+              <input type="text" id="inputPlanName" class="form-field-input" placeholder="Ex: Mix Essencial - Loja Parque das Flores" required>
+            </div>
+
+            <div class="form-field-wrapper">
+              <label class="form-field-label" for="selectPlanFilial">Filial / Loja Autônoma de Destino *</label>
+              <select id="selectPlanFilial" class="form-field-select" required>
+                <option value="">Selecione a Filial...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Recurso Inteligente: Clonagem / Importação de Plano Existente -->
+          <div class="clone-plan-alert-box" style="margin-top: 1rem;">
+            <span class="material-icons">content_copy</span>
+            <div style="flex-grow: 1;">
+              <div style="font-size: 0.8rem; font-weight: 600; color: #4a148c; margin-bottom: 3px;">
+                Copiar sortimento de um plano existente?
+              </div>
+              <select id="selectCopyFromPlan" class="clone-plan-select">
+                <option value="">-- Não copiar (Criar plano em branco) --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-grid-2col" style="margin-top: 1rem;">
+            <div class="form-field-wrapper">
+              <label class="form-field-label" for="inputPlanDesc">Descrição / Observações Operacionais</label>
+              <input type="text" id="inputPlanDesc" class="form-field-input" placeholder="Notas sobre gôndolas, refrigeradores ou restrições...">
+            </div>
+
+            <div class="form-field-wrapper">
+              <label class="form-field-label" for="selectPlanStatus">Status do Plano</label>
+              <select id="selectPlanStatus" class="form-field-select">
+                <option value="ativo">Ativo (Em Operação)</option>
+                <option value="inativo">Inativo (Desativado)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 2: Inclusão Inteligente de Produtos (Lote e Individual) -->
+        <div class="modal-form-section">
+          <div class="modal-form-section-title">
+            <span class="material-icons">playlist_add</span>
+            2. Adicionar Produtos ao Mix
+          </div>
+
+          <!-- Painel de Inclusão em Lote por Categoria -->
+          <div class="lot-insertion-card">
+            <div class="lot-header-info">
+              <span class="lot-title">
+                <span class="material-icons" style="font-size: 18px;">auto_fix_high</span>
+                Inserção Rápida em Lote por Categoria
+              </span>
+              <span class="lot-subtitle">Define os padrões de estoque e insere todos os produtos do grupo de uma só vez</span>
+            </div>
+
+            <div class="lot-inputs-row">
+              <div class="form-field-wrapper">
+                <label class="form-field-label">Categoria de Produtos</label>
+                <select id="selectLotCategory" class="form-field-select">
+                  <option value="">Selecione uma Categoria...</option>
+                </select>
+              </div>
+
+              <div class="form-field-wrapper">
+                <label class="form-field-label" title="Quantidade ideal para ter na prateleira sem riscos de ruptura">Estoque Ideal Padrão</label>
+                <input type="number" id="inputLotIdeal" class="form-field-input" value="12" min="1">
+              </div>
+
+              <div class="form-field-wrapper">
+                <label class="form-field-label" title="Quantidade mínima crítica que disparará alertas de reposição">Mínimo Crítico Padrão</label>
+                <input type="number" id="inputLotMin" class="form-field-input" value="3" min="0">
+              </div>
+
+              <button type="button" class="btn-add-lot" id="btnAddLotCategory">
+                <span class="material-icons">add</span>
+                Adicionar Categoria Completa
+              </button>
+            </div>
+          </div>
+
+          <!-- Inclusão Individual com Autocomplete -->
+          <div style="margin-top: 1rem;">
+            <label class="form-field-label" style="margin-bottom: 4px; display: block;">Ou pesquise e adicione um produto individualmente:</label>
+            <div class="single-add-row">
+              <div class="filter-search-box" style="max-width: 100%;">
+                <span class="material-icons">search</span>
+                <input type="text" id="singleProductSearch" class="filter-search-input" placeholder="Digite o nome, marca ou código de barras do produto...">
+              </div>
+              
+              <!-- Dropdown de Autocomplete -->
+              <div class="autocomplete-results" id="singleAutocompleteResults"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Seção 3: Grade de Itens Adicionados no Plano -->
+        <div class="modal-form-section">
+          <div class="items-list-header">
+            <div class="modal-form-section-title" style="margin-bottom: 0;">
+              <span class="material-icons">inventory</span>
+              3. Produtos no Plano de Abastecimento
+            </div>
+            <span class="items-count-tag" id="modalItemsCountTag">0 SKUs no Mix</span>
+          </div>
+
+          <div class="plan-items-table-container" style="margin-top: 0.75rem;">
+            <table class="plan-items-table">
+              <thead>
+                <tr>
+                  <th style="width: 45%;">Produto / Detalhes</th>
+                  <th style="width: 20%;">Categoria</th>
+                  <th style="width: 15%; text-align: center;">Estoque Ideal</th>
+                  <th style="width: 15%; text-align: center;">Mínimo Crítico</th>
+                  <th style="width: 5%; text-align: right;">Remover</th>
+                </tr>
+              </thead>
+              <tbody id="modalItemsTableBody">
+                <!-- Preenchido dinamicamente via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCancelModal">Cancelar</button>
+        <button type="button" class="btn-primary" id="btnSavePlan" style="width: auto; min-height: 42px; padding: 0 24px;">
+          <span class="material-icons">save</span>
+          Salvar Plano de Abastecimento
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/data/abastecimento-mock.js"></script>
+  <script src="../assets/js/abastecimento-controller.js"></script>
+</body>
+</html>
