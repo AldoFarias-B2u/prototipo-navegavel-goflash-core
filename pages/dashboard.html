@@ -102,32 +102,41 @@
   </header>
 
   <!-- ========================================================================
-       SIDEBAR / DRAWER LATERAL (IMG 3)
+       SIDEBAR / DRAWER LATERAL (IMG 3 / REFERÊNCIA ORIGINAL)
        ======================================================================== -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
-    <!-- Cabeçalho Roxo do Drawer -->
+    <!-- Cabeçalho Roxo do Drawer com Logo Vertical Empilhado -->
     <div class="drawer-header">
       <div class="drawer-header-top">
         <span class="material-icons drawer-avatar-icon">account_circle</span>
-        <img src="../assets/images/logo-h.png" alt="Goflash" class="drawer-header-logo">
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
       </div>
-      <div class="drawer-user-name" id="drawerUserName">B2U</div>
-      <div class="drawer-version-tag">1.9.4.0</div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name" id="drawerUserName">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
     </div>
 
-    <!-- Lista de Links -->
+    <!-- Lista de Links com Divisórias Horizontais -->
     <div class="drawer-body">
+      
+      <!-- Item Principal GOFLASH com Símbolo de 3 Pontas -->
       <a href="#" class="drawer-item">
-        <span class="material-icons">change_history</span>
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
         <span>GOFLASH</span>
       </a>
 
+      <hr class="drawer-divider">
+
+      <!-- Bloco Módulos -->
       <div class="drawer-section-title">Módulos</div>
       
       <a href="#modulesSection" class="drawer-item">
-        <span class="material-icons">leaderboard</span>
+        <span class="material-icons">insert_chart</span>
         <span>Gerencial</span>
       </a>
       <a href="#modulesSection" class="drawer-item">
@@ -139,6 +148,9 @@
         <span>Financeiro</span>
       </a>
 
+      <hr class="drawer-divider">
+
+      <!-- Bloco Configurações -->
       <div class="drawer-section-title">Configurações</div>
       
       <a href="#" class="drawer-item">
@@ -150,10 +162,13 @@
         <span>Sobre</span>
       </a>
 
+      <hr class="drawer-divider">
+
+      <!-- Bloco Encerrar -->
       <div class="drawer-section-title">Encerrar</div>
       
       <a href="#" class="drawer-item action-logout">
-        <span class="material-icons">logout</span>
+        <span class="material-icons">exit_to_app</span>
         <span>Sair</span>
       </a>
     </div>
