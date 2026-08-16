@@ -4,6 +4,18 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.2.1] - 2026-08-16
+### 🎨 Modificado & Melhorado
+- **Header Dinâmico no Scroll** ([`assets/css/module-view.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/module-view.css), [`assets/js/dashboard.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/dashboard.js)):
+  - Transição de cor suave (`0.25s`) do header de `#23143d` (escuro) para `#6530b5` (roxo claro atraente) ao rolar páginas com Hero Banner (Home e Módulo de Operação).
+  - Barra de pesquisa integrada que adapta dinamicamente sua cor para tom translúcido suave (`rgba(255, 255, 255, 0.18)`).
+- **Padronização de Header Roxo Claro para Telas Internas**:
+  - Aplicação da classe `.topbar-primary` em [`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html) para inicialização direta no roxo claro atraente com sombra e busca estilizada.
+- **Roteamento e Histórico Inteligente** ([`assets/js/navigation.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/navigation.js)):
+  - Motor declarativo `NavigationManager` para navegação contextual com pilha de histórico persistente e contratos `data-nav="back"`.
+
+---
+
 ## [1.2.0] - 2026-08-16
 ### ✨ Adicionado
 - **Fluxo Completo de Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html)):
