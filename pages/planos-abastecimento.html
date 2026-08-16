@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Plano de Abastecimento</title>
+  
+  <!-- CSS Global, Componentes, Dashboard, Module-View e Abastecimento -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+  <link rel="stylesheet" href="../assets/css/abastecimento.css">
+</head>
+<body class="module-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR (IDÊNTICO À REFERÊNCIA)
+       ======================================================================== -->
+  <header class="module-topbar" id="mainTopbar">
+    <div class="module-topbar-left">
+      <a href="./operacao.html" class="topbar-btn" id="topbarBackBtn" title="Voltar para Operação" aria-label="Voltar">
+        <span class="material-icons">arrow_back</span>
+      </a>
+      <span class="module-page-title">Plano de Abastecimento</span>
+    </div>
+
+    <!-- Barra de Pesquisa Centralizada do Header -->
+    <div class="module-search-wrapper">
+      <div class="module-search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          id="pageSearchInput" 
+          class="module-search-input" 
+          placeholder="pesquisar plano de abastecimento" 
+          autocomplete="off"
+        >
+        <span class="material-icons" style="color: rgba(255,255,255,0.7); font-size: 20px;">arrow_drop_down</span>
+      </div>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" title="Filtrar" aria-label="Filtrar">
+        <span class="material-icons">filter_list</span>
+      </button>
+
+      <button class="topbar-btn" title="Atualizar Lista" aria-label="Atualizar" onclick="location.reload()">
+        <span class="material-icons">refresh</span>
+      </button>
+
+      <button class="topbar-btn" title="Mais Opções" aria-label="Mais Opções">
+        <span class="material-icons">more_vert</span>
+      </button>
+
+      <!-- Botão Grid de Módulos (9 pontos) -->
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <!-- Botão Avatar do Usuário -->
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 Pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </a>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </a>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Painel de Controles">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Usuário -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <a href="./dashboard.html" class="drawer-item">
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
+        <span>GOFLASH</span>
+      </a>
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Módulos</div>
+      <a href="#" class="drawer-item"><span class="material-icons">insert_chart</span><span>Gerencial</span></a>
+      <a href="./operacao.html" class="drawer-item active"><span class="material-icons">local_shipping</span><span>Operação</span></a>
+      <a href="#" class="drawer-item"><span class="material-icons">credit_card</span><span>Financeiro</span></a>
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Configurações</div>
+      <a href="#" class="drawer-item"><span class="material-icons">tune</span><span>Painel de Controles</span></a>
+      <a href="#" class="drawer-item"><span class="material-icons">more_horiz</span><span>Sobre</span></a>
+      <hr class="drawer-divider">
+      <div class="drawer-section-title">Encerrar</div>
+      <a href="#" class="drawer-item action-logout"><span class="material-icons">exit_to_app</span><span>Sair</span></a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL
+       ======================================================================== -->
+  <main class="abastecimento-main-wrapper">
+    
+    <!-- ----------------------------------------------------------------------
+         TELA 1: LISTAGEM DE PLANOS DE ABASTECIMENTO (IMG 1)
+         ---------------------------------------------------------------------- -->
+    <div id="planListView">
+      <!-- Breadcrumb Idêntico à Img 1 -->
+      <div class="abastecimento-breadcrumb">
+        <span class="breadcrumb-arrow">&rsaquo;</span>
+        <span class="breadcrumb-link">Plano de Abastecimento</span>
+        <span class="breadcrumb-count" id="breadcrumbCount">&rsaquo; 4 item(s)</span>
+      </div>
+
+      <!-- Tabela Oficial de Planos -->
+      <div class="plan-list-card">
+        <table class="plans-official-table" aria-label="Lista de Planos de Abastecimento">
+          <thead>
+            <tr>
+              <th style="width: 3%;">#</th>
+              <th style="width: 37%;">Nome</th>
+              <th style="width: 35%;">Filial</th>
+              <th style="width: 12%;">Qtde Itens</th>
+              <th style="width: 13%;">Data criação</th>
+            </tr>
+          </thead>
+          <tbody id="plansTableBody">
+            <!-- Preenchido via abastecimento-controller.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ----------------------------------------------------------------------
+         TELA 3: DETALHES DO PLANO E LISTAGEM DE PRODUTOS (IMG 3 + MODO EDIÇÃO)
+         ---------------------------------------------------------------------- -->
+    <div class="plan-detail-view-container" id="planDetailView">
+      
+      <!-- Hero Card Roxo com Informações do Plano -->
+      <div class="plan-hero-detail-card">
+        <!-- Ícone de Documento no Box Branco -->
+        <div class="plan-hero-doc-box">
+          <span class="material-icons">description</span>
+        </div>
+
+        <!-- Coluna Esquerda: Nome e Descrição -->
+        <div class="plan-hero-col">
+          <div class="plan-hero-field">
+            <span class="plan-hero-field-label">Plano de abastecimento</span>
+            <div class="plan-hero-field-val">
+              <span class="material-icons">short_text</span>
+              <span id="detailPlanName">Plano MiniMercado 03</span>
+            </div>
+          </div>
+
+          <div class="plan-hero-field">
+            <span class="plan-hero-field-label">Breve descrição</span>
+            <div class="plan-hero-field-val">
+              <span class="material-icons">short_text</span>
+              <span id="detailPlanDesc" style="font-size: 0.9rem; font-weight: 400; opacity: 0.9;">Nenhuma descrição informada</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Código e Filial -->
+        <div class="plan-hero-col">
+          <div class="plan-hero-field">
+            <span class="plan-hero-field-label">Código</span>
+            <div class="plan-hero-field-val">
+              <span class="material-icons">dialpad</span>
+              <span id="detailPlanCode">000003</span>
+            </div>
+          </div>
+
+          <div class="plan-hero-field">
+            <span class="plan-hero-field-label">Filial</span>
+            <div class="plan-hero-field-val">
+              <span class="material-icons">store</span>
+              <span id="detailPlanFilial">Mini Mercado 03 Simples Nacional</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna de Status Ativo -->
+        <div class="plan-hero-status-col">
+          <span class="plan-hero-ativo-label">Ativo</span>
+          <div class="plan-hero-checkbox-box" id="detailPlanAtivo">
+            <span class="material-icons">check</span>
+          </div>
+        </div>
+
+        <!-- FAB Roxo de Edição (Modo Visualização) -->
+        <button class="fab-edit-hero" id="fabEditHero" title="Entrar no Modo de Edição" aria-label="Editar">
+          <span class="material-icons">edit</span>
+        </button>
+
+        <!-- Ações do MODO DE EDIÇÃO ATIVO -->
+        <div class="edit-mode-actions-group" id="editModeActionsGroup">
+          <button type="button" class="btn-edit-action btn-edit-add-products" id="btnOpenAddProducts" title="Adicionar novos produtos ao plano">
+            <span class="material-icons">add_circle_outline</span>
+            + Adicionar Produtos
+          </button>
+          <button type="button" class="btn-edit-action btn-edit-cancel" id="btnCancelEditMode" title="Descartar alterações">
+            Cancelar
+          </button>
+          <button type="button" class="btn-edit-action btn-edit-save" id="btnSaveEditMode" title="Salvar todas as alterações">
+            <span class="material-icons">check</span>
+            Salvar Alterações
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Informativo do Modo de Edição -->
+      <div class="edit-mode-banner-alert" id="editModeBannerAlert">
+        <div class="edit-mode-banner-text">
+          <span class="material-icons">mode_edit</span>
+          <span><strong>Modo de Edição Ativo:</strong> Ajuste as quantidades individualmente com os botões +/&minus; ou selecione múltiplos itens para edição em lote.</span>
+        </div>
+      </div>
+
+      <!-- Seção de Produtos -->
+      <section class="products-section-container">
+        <div class="products-section-header">
+          <h2 class="products-section-title">Produtos</h2>
+          <div class="products-header-actions">
+            <button type="button" class="btn-header-view-toggle" id="btnToggleProductsView" title="Alternar entre Lista e Cards de Produtos">
+              <span class="material-icons" id="toggleViewIcon">grid_view</span>
+              <span id="toggleViewLabel">Ver em Cards</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Tabela de Produtos com Fotos e Badges -->
+        <div class="products-table-card" id="productsTableCard">
+          <table class="products-official-table" aria-label="Grade de Produtos do Plano">
+            <thead>
+              <tr>
+                <th style="width: 22%;">Código</th>
+                <th style="width: 44%;">Produto</th>
+                <th style="width: 14%;">Grupo</th>
+                <th style="width: 10%; text-align: center;">Estoque Ideal</th>
+                <th style="width: 10%; text-align: center;">Minimo Crítico</th>
+              </tr>
+            </thead>
+            <tbody id="detailProductsTableBody">
+              <!-- Renderizado via abastecimento-controller.js -->
+            </tbody>
+          </table>
+
+          <!-- Paginação Oficial -->
+          <div class="products-table-footer">
+            <span class="pagination-btn">&lsaquo; ANTERIOR</span>
+            <span>Página 1 / 1</span>
+            <span class="pagination-btn">PRÓXIMA &rsaquo;</span>
+          </div>
+        </div>
+
+        <!-- 2. Grid Atraente de Cards de Produtos -->
+        <div class="products-cards-grid" id="productsCardsGrid" aria-label="Grade Visual de Produtos">
+          <!-- Renderizado via abastecimento-controller.js -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       BARRA FLUTUANTE DE AÇÕES EM LOTE (STICKY BATCH BAR)
+       ======================================================================== -->
+  <aside class="sticky-batch-bar" id="stickyBatchBar" role="region" aria-label="Ações em Lote">
+    <span class="batch-count-badge" id="batchCountBadge">0 selecionados</span>
+    <button type="button" class="btn-batch-action btn-batch-edit" id="btnOpenBatchEdit">
+      <span class="material-icons">edit_note</span>
+      Editar Estoque em Lote
+    </button>
+    <button type="button" class="btn-batch-action btn-batch-delete" id="btnDeleteBatch">
+      <span class="material-icons">delete</span>
+      Remover Selecionados
+    </button>
+    <button type="button" class="btn-batch-uncheck" id="btnUncheckBatch" title="Desmarcar Todos">
+      <span class="material-icons">close</span>
+    </button>
+  </aside>
+
+  <!-- ========================================================================
+       MODAL DE EDIÇÃO DE ESTOQUE EM LOTE
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="batchEditModal" role="dialog" aria-modal="true">
+    <div class="batch-edit-modal-box">
+      <div class="official-modal-header">
+        <span class="official-modal-title">EDITAR ESTOQUE EM LOTE</span>
+        <span class="material-icons official-modal-close" id="btnCloseBatchEdit">close</span>
+      </div>
+
+      <div class="official-modal-body">
+        <p style="font-size: 0.85rem; color: #555; line-height: 1.4;">
+          Informe os novos valores que serão aplicados para <strong>todos os produtos selecionados</strong>:
+        </p>
+
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="batchIdealInput">Novo Estoque Ideal</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">inventory_2</span>
+            <input type="number" id="batchIdealInput" class="modal-underline-input" value="12" min="1">
+          </div>
+        </div>
+
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="batchMinInput">Novo Mínimo Crítico</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">warning_amber</span>
+            <input type="number" id="batchMinInput" class="modal-underline-input" value="3" min="0">
+          </div>
+        </div>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelBatchEdit">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyBatchEdit">APLICAR EM LOTE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL MULTICRITÉRIO DE INSERÇÃO DE PRODUTOS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="addProductsModal" role="dialog" aria-modal="true">
+    <div class="add-products-modal-box">
+      <!-- Cabeçalho Roxo -->
+      <div class="official-modal-header">
+        <span class="official-modal-title">ADICIONAR PRODUTOS AO PLANO</span>
+        <span class="material-icons official-modal-close" id="btnCloseAddModal">close</span>
+      </div>
+
+      <div class="official-modal-body">
+        <!-- Parâmetros Padrão de Estoque -->
+        <div class="modal-defaults-box">
+          <div class="modal-defaults-title-group">
+            <span class="modal-defaults-title">Parâmetros Padrão de Inserção</span>
+            <span class="modal-defaults-subtitle">Valores que serão atribuídos automaticamente aos produtos selecionados</span>
+          </div>
+
+          <div class="modal-defaults-inputs">
+            <div class="default-input-item">
+              <label for="addModalDefaultIdeal">Estoque Ideal:</label>
+              <input type="number" id="addModalDefaultIdeal" class="default-input-val" value="12" min="1">
+            </div>
+            <div class="default-input-item">
+              <label for="addModalDefaultMin">Mínimo Crítico:</label>
+              <input type="number" id="addModalDefaultMin" class="default-input-val" value="3" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros Multicritério (Nome/Código, Grupo, Marca e Fornecedor) -->
+        <div class="multicriteria-filters-grid">
+          <div class="filter-search-box" style="height: 40px; min-width: 100%;">
+            <span class="material-icons">search</span>
+            <input type="text" id="addModalSearch" class="filter-search-input" placeholder="Pesquisar por nome ou código EAN...">
+          </div>
+
+          <select id="addModalGroup" class="filter-field-select" aria-label="Filtrar Grupo">
+            <option value="">Todos os Grupos</option>
+          </select>
+
+          <select id="addModalBrand" class="filter-field-select" aria-label="Filtrar Marca">
+            <option value="">Todas as Marcas</option>
+          </select>
+
+          <select id="addModalSupplier" class="filter-field-select" aria-label="Filtrar Fornecedor">
+            <option value="">Todos os Fornecedores</option>
+          </select>
+        </div>
+
+        <!-- Barra de Ações Rápidas de Seleção -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: #424242;" id="addModalCountSelected">0 produto(s) selecionado(s)</span>
+          <button type="button" class="btn-secondary" style="height: 32px; font-size: 0.78rem; padding: 0 10px;" id="btnSelectAllFiltered">
+            Selecionar Todos os Filtrados
+          </button>
+        </div>
+
+        <!-- Grade de Produtos -->
+        <div class="modal-products-list-container">
+          <table class="modal-products-table">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">Sel.</th>
+                <th>Produto / Foto</th>
+                <th>Grupo</th>
+                <th>Marca</th>
+                <th>Fornecedor</th>
+              </tr>
+            </thead>
+            <tbody id="addModalProductsBody">
+              <!-- Renderizado dinamicamente via abastecimento-controller.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelAddModal">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmAddProducts">
+          INSERIR NO PLANO
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       BOTÃO FLUTUANTE FAB VERMELHO (CANTO INFERIOR DIREITO - LISTA)
+       ======================================================================== -->
+  <button class="fab-red-add" id="fabRedAdd" title="Criar Novo Plano de Abastecimento" aria-label="Novo Plano">
+    <span class="material-icons">add</span>
+  </button>
+
+  <!-- ========================================================================
+       TELA 2: MODAL "NOVO PLANO" (IDÊNTICO À IMG 2)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="newPlanModal" role="dialog" aria-modal="true">
+    <div class="official-modal-box">
+      
+      <!-- Cabeçalho Roxo do Modal -->
+      <div class="official-modal-header">
+        <span class="official-modal-title">NOVO PLANO</span>
+        <span class="material-icons official-modal-close" id="btnCloseNewModal">close</span>
+      </div>
+
+      <!-- Corpo do Formulário -->
+      <div class="official-modal-body">
+        
+        <!-- Campo Nome -->
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="inputModalName">Nome</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">short_text</span>
+            <input type="text" id="inputModalName" class="modal-underline-input" placeholder="Nome" autocomplete="off" required>
+          </div>
+        </div>
+
+        <!-- Campo Descrição -->
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="inputModalDesc">Descrição</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">subject</span>
+            <input type="text" id="inputModalDesc" class="modal-underline-input" placeholder="Breve descrição da tela" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Campo Filial -->
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="selectModalFilial">Filial</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">store</span>
+            <select id="selectModalFilial" class="modal-underline-select" required>
+              <option value="">Filial</option>
+            </select>
+            <span class="modal-underline-hint-right">Código</span>
+          </div>
+        </div>
+
+        <!-- Box Especial de Cópia de Itens -->
+        <div class="copy-plan-card-box">
+          <span class="copy-plan-card-title">Copiar itens de um Plano de Abastecimento *</span>
+          <p class="copy-plan-card-note">
+            Selecione um plano existente para <strong>copiar automaticamente todos os itens</strong> para o novo plano que você está criando agora. Você poderá revisar e ajustar as quantidades depois.
+          </p>
+
+          <div class="modal-underline-group" style="margin-top: 6px;">
+            <label class="modal-underline-label" for="selectModalCopyPlan">Plano de Abastecimento (origem)</label>
+            <div class="modal-underline-wrapper">
+              <span class="material-icons modal-underline-icon">description</span>
+              <select id="selectModalCopyPlan" class="modal-underline-select">
+                <option value="">Digite para pesquisar um plano...</option>
+              </select>
+              <span class="modal-underline-hint-right">&minus;</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnDiscardNewModal">DESCARTAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnFinalizeNewModal">FINALIZAR</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/data/abastecimento-mock.js"></script>
+  <script src="../assets/js/abastecimento-controller.js"></script>
+</body>
+</html>
