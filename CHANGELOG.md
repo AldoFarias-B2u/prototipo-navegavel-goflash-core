@@ -4,6 +4,32 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.2.0] - 2026-08-16
+### ✨ Adicionado
+- **Fluxo Completo de Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html)):
+  - **Tela de Listagem Oficial** (Idêntica à Imagem 1 de referência):
+    - Coluna indicadora vertical roxa com numeração de linhas (`#6530b5`).
+    - Colunas de nome com ícone de documento, filial, quantidade de itens e data de criação.
+    - Botão flutuante FAB vermelho (`#d32f2f`) no canto inferior direito para novos planos.
+    - Linhas da tabela com clique interativo para abrir os detalhes do plano.
+  - **Modal "NOVO PLANO"** (Idêntico à Imagem 2 de referência):
+    - Cabeçalho roxo sólido, inputs com underline e container de cópia/clonagem de itens de outros planos.
+    - Botões "DESCARTAR" e "FINALIZAR" verde (`#4caf50`).
+  - **Tela de Detalhes do Plano e Grade de Produtos** (Idêntica à Imagem 3 de referência):
+    - Hero Card Roxo com dados cadastrais do plano, thumbnail, filial e status Ativo.
+    - Tabela de produtos com fotos reais de alta definição, código EAN em link azul e badges pill de Estoque Ideal (verde) e Mínimo Crítico (laranja).
+    - Alternância inteligente entre **Modo Tabela** e **Modo Cards Atraentes** com fotos ampliadas e elevação suave no hover.
+  - **Modo de Edição Avançado (Inline & Lote)**:
+    - Steppers numéricos interativos `+` e `−` com área de toque de 44px (mobile-first).
+    - Barra Flutuante de Ações em Lote (Sticky Batch Bar) para edição simultânea de estoque e exclusão em massa.
+  - **Modal Multicritério de Inserção de Produtos**:
+    - Busca e filtragem por Texto/EAN, Categoria, Marca e Fornecedor.
+    - Parametrização antecipada de Estoque Ideal e Mínimo Padrão para inserção em lote.
+  - **Pasta de Imagens de Produtos** ([`assets/images/products/`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/images/products/)):
+    - Fotos reais dos produtos (Monster Energy, Sucos, Coca-Cola, Guaraná, Ruffles, Doritos, Bis).
+
+---
+
 ## [1.1.0] - 2026-08-16
 ### ✨ Adicionado
 - **Módulo de Operação** ([`pages/operacao.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/operacao.html)):
