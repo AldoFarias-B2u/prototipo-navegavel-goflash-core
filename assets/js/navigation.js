@@ -7,6 +7,7 @@
 const NavigationManager = (function () {
   const STORAGE_KEY = 'goflash_nav_history_stack';
   const viewChangeListeners = [];
+  let subViewBackHandler = null;
 
   /**
    * Obtém a pilha de histórico armazenada no sessionStorage
@@ -33,43 +34,62 @@ const NavigationManager = (function () {
   }
 
   /**
-   * Registra a página atual na pilha se for uma nova navegação
+   * Normaliza a URL da página (pathname limpo) para a pilha de navegação entre páginas
+   */
+  function getCleanPageUrl() {
+    return window.location.pathname;
+  }
+
+  /**
+   * Registra a página atual na pilha
    */
   function trackCurrentPage() {
-    const currentUrl = window.location.pathname + window.location.search;
+    const cleanUrl = getCleanPageUrl();
     const currentTitle = document.title || 'Goflash CORE';
     const stack = getStack();
 
-    // Evita duplicar a mesma URL no topo da pilha
-    if (stack.length === 0 || stack[stack.length - 1].url !== currentUrl) {
+    // Se a última página da pilha for diferente da atual, adiciona
+    if (stack.length === 0 || stack[stack.length - 1].url !== cleanUrl) {
       stack.push({
-        url: currentUrl,
+        url: cleanUrl,
         title: currentTitle,
         timestamp: Date.now()
       });
-      // Limita a pilha a 30 entradas para performance
       if (stack.length > 30) stack.shift();
       saveStack(stack);
     }
   }
 
   /**
-   * Executa a navegação para voltar à tela imediatamente anterior
+   * Permite que controladores de página com sub-visões internas (ex: Master-Detail)
+   * registrem um manipulador de retorno interno.
+   * Se a função retornar `true`, significa que a sub-visão interna foi tratada
+   * e o NavigationManager não deve desempilhar a página inteira.
+   * Se retornar `false`, o NavigationManager desempilha para a página anterior.
+   */
+  function registerSubViewHandler(handler) {
+    subViewBackHandler = handler;
+  }
+
+  /**
+   * Executa o retorno unificado (Hierárquico: Sub-visão -> Página Anterior -> Fallback)
    * @param {string} fallbackUrl - URL de fallback caso não haja histórico
    */
   function back(fallbackUrl = './dashboard.html') {
-    // 1. Se estivermos numa sub-visão interna (ex: URL com query params como ?id=...),
-    // utilizamos o histórico nativo do navegador
-    if (window.history.state && window.history.state.subView) {
-      window.history.back();
-      return;
+    // 1. Se a tela atual possui um manipulador de sub-visão ativo (ex: Detalhes -> Lista)
+    if (typeof subViewBackHandler === 'function') {
+      const handledInternally = subViewBackHandler();
+      if (handledInternally) {
+        return;
+      }
     }
 
+    // 2. Navegação entre Páginas: desempilha da pilha de sessão
     const stack = getStack();
-    const currentUrl = window.location.pathname + window.location.search;
+    const cleanUrl = getCleanPageUrl();
 
-    // Remove a página atual do topo da pilha se ela for a última
-    if (stack.length > 0 && stack[stack.length - 1].url === currentUrl) {
+    // Remove ocorrências da página atual do topo da pilha
+    while (stack.length > 0 && stack[stack.length - 1].url === cleanUrl) {
       stack.pop();
     }
 
@@ -81,7 +101,7 @@ const NavigationManager = (function () {
       return;
     }
 
-    // 2. Se a pilha estiver vazia, utiliza o fallback fornecido ou configurado no DOM
+    // 3. Fallback seguro caso não haja histórico na sessão
     saveStack(stack);
     if (fallbackUrl) {
       window.location.href = fallbackUrl;
@@ -92,15 +112,11 @@ const NavigationManager = (function () {
 
   /**
    * Registra uma nova sub-visão interna na página sem recarregar (pushState)
-   * @param {Object} state - Objeto de estado da sub-visão (ex: { view: 'detail', id: '003' })
-   * @param {string} title - Título da sub-visão
-   * @param {string} url - Query string ou URL relativa (ex: '?id=003')
    */
   function pushSubView(state, title, url) {
     const fullState = { ...state, subView: true, title: title || document.title };
     window.history.pushState(fullState, title || document.title, url);
     if (title) document.title = `Goflash CORE - ${title}`;
-    trackCurrentPage();
     notifyViewChange(fullState);
   }
 
@@ -129,7 +145,6 @@ const NavigationManager = (function () {
 
   /**
    * Registra um callback para reagir a mudanças de sub-visão (popstate ou pushSubView)
-   * @param {Function} callback 
    */
   function onViewChange(callback) {
     if (typeof callback === 'function') {
@@ -172,6 +187,7 @@ const NavigationManager = (function () {
     pushSubView,
     replaceSubView,
     onViewChange,
+    registerSubViewHandler,
     getStack
   };
 })();

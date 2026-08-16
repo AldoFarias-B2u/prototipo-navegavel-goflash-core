@@ -98,6 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
       window.NavigationManager.onViewChange((state) => {
         handleRouteState(state);
       });
+
+      window.NavigationManager.registerSubViewHandler(() => {
+        // Se estivermos visualizando os detalhes de um plano, retorna para a lista
+        if (currentActivePlanId !== null) {
+          showListView(true);
+          return true; // Tratado internamente: permanece na tela de planos
+        }
+        // Se já estiver na listagem, retorna false para o NavigationManager desempilhar para Operação
+        return false;
+      });
     }
 
     // Processa a rota inicial no carregamento da página
@@ -140,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Exibe a Tela de Listagem (Imagem 1)
    */
-  function showListView(pushToHistory = true) {
+  function showListView(updateHistory = true) {
     currentActivePlanId = null;
     isEditMode = false;
     selectedItemIndices.clear();
@@ -150,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fabRedAdd) fabRedAdd.style.display = 'flex';
     if (stickyBatchBar) stickyBatchBar.classList.remove('show');
 
-    if (pushToHistory && window.NavigationManager) {
-      window.NavigationManager.pushSubView({ view: 'list' }, 'Planos de Abastecimento', 'planos-abastecimento.html');
+    if (updateHistory && window.NavigationManager) {
+      window.NavigationManager.replaceSubView({ view: 'list' }, 'Plano de Abastecimento', 'planos-abastecimento.html');
     }
 
     renderPlansTable();
