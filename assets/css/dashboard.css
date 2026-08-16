@@ -439,35 +439,23 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 520px;
-  width: 90vw;
+  max-width: 480px;
+  width: 85vw;
   user-select: none;
   animation: fadeIn 0.8s ease-out;
 }
 
-.hero-watermark-symbol {
-  width: 160px;
-  height: 160px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.75rem;
+.hero-watermark-image {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+  transition: transform 0.3s ease;
 }
 
-.hero-watermark-text {
-  font-size: clamp(3.2rem, 11vw, 6.5rem);
-  font-weight: 700;
-  color: #65547d;
-  letter-spacing: -2px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-}
-
-.hero-watermark-text span {
-  font-weight: 400;
-  color: #55446c;
+.hero-watermark-image:hover {
+  transform: scale(1.02);
 }
 
 /* Faixa Roxa Inferior do Hero */
