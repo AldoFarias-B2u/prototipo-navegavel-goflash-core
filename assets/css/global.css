@@ -36,6 +36,14 @@
   --border-light: #e0e0e0;
   --border-focus: #6530b5;
 
+  /* Cores do Header / Topbar */
+  --topbar-bg-dark: #23143d;
+  --topbar-bg-primary: #6530b5;
+  --topbar-search-bg-dark: #543f70;
+  --topbar-search-bg-focus-dark: #614a82;
+  --topbar-search-bg-light: rgba(255, 255, 255, 0.18);
+  --topbar-search-bg-focus-light: rgba(255, 255, 255, 0.28);
+
   /* Cores de Estado / Feedback */
   --color-success: #2e7d32;
   --color-success-bg: #edf7ed;
