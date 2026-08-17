@@ -87,16 +87,37 @@
   background-color: #f7f5fa;
 }
 
-/* Indicador Vertical Roxo com o Número da Linha */
-.col-num-indicator {
-  width: 32px;
+/* Indicador Vertical Roxo com o Número da Linha (Tabelas de Listagem) */
+.plans-official-table th.col-num-indicator,
+th.col-num-indicator {
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  padding: 14px 0 !important;
+  text-align: center;
+  background-color: transparent !important;
+  color: #757575 !important;
+  font-weight: 500;
+  font-size: 0.8rem;
+  user-select: none;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.plans-official-table td.col-num-indicator,
+td.col-num-indicator {
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
   padding: 0 !important;
   text-align: center;
-  background-color: #6530b5;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.85rem;
+  background-color: #6530b5 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.2px;
   user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  vertical-align: middle;
 }
 
 /* Célula do Nome do Plano */
