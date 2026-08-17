@@ -101,12 +101,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Botão Flutuante (FAB) Novo Pedido
+  // 4. Modais de Novo Pedido e Nova Consulta
+  const modalChoice = document.getElementById('modalChoicePedido');
+  const btnCloseChoice = document.getElementById('btnCloseChoiceModal');
+  const btnDiscardChoice = document.getElementById('btnDiscardChoice');
+  const btnChooseConsulta = document.getElementById('btnChooseConsulta');
+  const btnChooseBlank = document.getElementById('btnChooseBlank');
+
+  const modalNovaConsulta = document.getElementById('modalNovaConsulta');
+  const btnCloseNovaConsulta = document.getElementById('btnCloseNovaConsultaModal');
+  const btnDiscardNovaConsulta = document.getElementById('btnDiscardNovaConsulta');
+  const btnAvancarConsulta = document.getElementById('btnAvancarConsulta');
+
+  function openChoiceModal() {
+    if (modalChoice) modalChoice.classList.add('active');
+  }
+
+  function closeChoiceModal() {
+    if (modalChoice) modalChoice.classList.remove('active');
+  }
+
+  function openNovaConsultaModal() {
+    closeChoiceModal();
+    if (modalNovaConsulta) modalNovaConsulta.classList.add('active');
+  }
+
+  function closeNovaConsultaModal() {
+    if (modalNovaConsulta) modalNovaConsulta.classList.remove('active');
+  }
+
   if (fabNewPedido) {
-    fabNewPedido.addEventListener('click', () => {
+    fabNewPedido.addEventListener('click', openChoiceModal);
+  }
+
+  if (btnCloseChoice) btnCloseChoice.addEventListener('click', closeChoiceModal);
+  if (btnDiscardChoice) btnDiscardChoice.addEventListener('click', closeChoiceModal);
+  if (btnChooseConsulta) btnChooseConsulta.addEventListener('click', openNovaConsultaModal);
+
+  if (btnChooseBlank) {
+    btnChooseBlank.addEventListener('click', () => {
+      closeChoiceModal();
       if (typeof Toast !== 'undefined') {
-        Toast.info('Novo Pedido de Abastecimento... (Protótipo Navegável)');
+        Toast.info('Criando Pedido em Branco...');
       }
+      setTimeout(() => {
+        window.location.href = './consulta-abastecimento.html?origem=Estoque+central&destino=Mini+Mercado+03+Simples+Nacional&plano=Plano+MiniMercado+03&filtro=completo';
+      }, 400);
+    });
+  }
+
+  if (btnCloseNovaConsulta) btnCloseNovaConsulta.addEventListener('click', closeNovaConsultaModal);
+  if (btnDiscardNovaConsulta) btnDiscardNovaConsulta.addEventListener('click', closeNovaConsultaModal);
+
+  // Seleção de Radio Cards no Modal de Consulta
+  const radioCards = document.querySelectorAll('#modalNovaConsulta .modal-radio-card');
+  radioCards.forEach(card => {
+    card.addEventListener('click', () => {
+      radioCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const input = card.querySelector('input[type="radio"]');
+      if (input) input.checked = true;
+    });
+  });
+
+  // Avançar para a Tela de Consulta
+  if (btnAvancarConsulta) {
+    btnAvancarConsulta.addEventListener('click', () => {
+      const selectOrigem = document.getElementById('selectModalOrigem');
+      const selectDestino = document.getElementById('selectModalDestino');
+      const selectPlano = document.getElementById('selectModalPlano');
+      const selectedRadio = document.querySelector('input[name="filtroPlanoConsulta"]:checked');
+
+      const origemText = selectOrigem ? selectOrigem.options[selectOrigem.selectedIndex].text : 'Estoque central';
+      const destinoText = selectDestino ? selectDestino.options[selectDestino.selectedIndex].text : 'Mini Mercado 03 Simples Nacional';
+      const planoText = selectPlano ? selectPlano.options[selectPlano.selectedIndex].text : 'Plano MiniMercado 03';
+      const filtroVal = selectedRadio ? selectedRadio.value : 'completo';
+
+      const url = `./consulta-abastecimento.html?origem=${encodeURIComponent(origemText)}&destino=${encodeURIComponent(destinoText)}&plano=${encodeURIComponent(planoText)}&filtro=${encodeURIComponent(filtroVal)}`;
+      
+      closeNovaConsultaModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Carregando produtos do plano...');
+      }
+
+      setTimeout(() => {
+        window.location.href = url;
+      }, 350);
     });
   }
 

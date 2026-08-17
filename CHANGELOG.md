@@ -4,6 +4,21 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.4.0] - 2026-08-16
+### ✨ Adicionado
+- **Fluxo de Novo Pedido de Abastecimento**:
+  - Modal de escolha inicial entre **"Fazer Consulta para Abastecer (Recomendado)"** e **"Pedido em Branco"**.
+  - Modal oficial de parâmetros de consulta ("NOVA CONSULTA DE ABASTECIMENTO") com seleção de Filial de Origem (CD), Filial Destino, Plano de Abastecimento e filtros de estoque (*Plano completo*, *Saldo < Ideal*, *Saldo <= Crítico*).
+- **Tela Avançada de Consulta para Abastecimento** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html)):
+  - **Banner de Contexto**: Filial ativa, CD de origem e plano com botão rápido "Alterar Parâmetros".
+  - **Barra de Ferramentas Rica**: Bipe de código de barras (`qr_code_scanner`), busca instantânea, botão "Adicionar Produtos", botão "Ocultar Desmarcados" e alternância Tabela / Cards.
+  - **Chips de Filtragem Rápida**: `Todos`, `Saldo < Ideal`, `Críticos`, `Selecionados`, `Estoque Zerado`.
+  - **Steppers Táteis `+` e `−`**: Controle numérico de 44px com edição inline sincronizada no Desktop e Celular.
+  - **Modal Multicritério**: Inclusão de produtos extras do catálogo corporativo com fotos reais em alta resolução.
+  - **Sticky Action Footer**: Barra fixa com contagem de itens, volume total e botão verde "GERAR PEDIDO DE ABASTECIMENTO" com persistência dinâmica no mock.
+
+---
+
 ## [1.3.0] - 2026-08-16
 ### ✨ Adicionado
 - **Tela Oficial de Pedidos de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html)):

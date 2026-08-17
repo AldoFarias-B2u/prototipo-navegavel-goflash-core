@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6530b5">
+  <title>Goflash CORE - Consulta para Abastecimento</title>
+  
+  <!-- CSS Global, Componentes, Dashboard, Module-View, Abastecimento e Consulta -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+  <link rel="stylesheet" href="../assets/css/abastecimento.css">
+  <link rel="stylesheet" href="../assets/css/consulta-abastecimento.css">
+</head>
+<body class="module-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR (ROXO CLARO PADRONIZADO)
+       ======================================================================== -->
+  <header class="module-topbar topbar-primary" id="mainTopbar">
+    <div class="module-topbar-left">
+      <button class="topbar-btn btn-nav-back" id="topbarBackBtn" data-nav="back" data-fallback-url="./pedidos-abastecimento.html" title="Voltar para Pedidos" aria-label="Voltar">
+        <span class="material-icons">arrow_back</span>
+      </button>
+      <span class="module-page-title">Consulta para Abastecimento</span>
+    </div>
+
+    <!-- Barra de Pesquisa Centralizada do Header -->
+    <div class="module-search-wrapper">
+      <div class="module-search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          id="productSearchInput" 
+          class="module-search-input" 
+          placeholder="pesquisar produto por código ou nome..." 
+          autocomplete="off"
+        >
+      </div>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" title="Atualizar Consulta" aria-label="Atualizar" onclick="location.reload()">
+        <span class="material-icons">refresh</span>
+      </button>
+
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 Pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </a>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">view_module</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">account_balance</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Perfil do Usuário -->
+      <div class="popover-container user-popover" id="userPopover" role="dialog" aria-label="Perfil do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <strong id="popoverUserName">B2U</strong>
+            <span>Administrador</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <a href="#" class="popover-action-link">
+            <span class="material-icons">settings</span>
+            <span>Configurações</span>
+          </a>
+          <a href="#" class="popover-action-link action-logout">
+            <span class="material-icons">exit_to_app</span>
+            <span>Sair</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL: TELA AVANÇADA DE CONSULTA DE ABASTECIMENTO
+       ======================================================================== -->
+  <main class="consulta-main-container">
+
+    <!-- 1. Banner de Contexto Superior (Filial e Parâmetros Ativos) -->
+    <div class="consulta-context-card">
+      <div class="consulta-context-info">
+        <div class="context-title-group">
+          <span class="material-icons context-icon">storefront</span>
+          <span class="context-dest-name" id="contextDestName">Mini Mercado 03 Simples Nacional</span>
+        </div>
+        <div class="context-badges-row">
+          <span class="context-pill-badge">
+            <span class="material-icons">warehouse</span>
+            Origem: <strong id="contextCdName" style="color: #fff; margin-left: 2px;">Estoque central</strong>
+          </span>
+          <span class="context-pill-badge">
+            <span class="material-icons">description</span>
+            Plano: <strong id="contextPlanName" style="color: #fff; margin-left: 2px;">Plano MiniMercado 03</strong>
+          </span>
+          <span class="context-pill-badge">
+            <span class="material-icons">filter_alt</span>
+            Filtro: <strong id="contextFilterDesc" style="color: #fff; margin-left: 2px;">Plano Completo</strong>
+          </span>
+        </div>
+      </div>
+
+      <button type="button" class="btn-edit-context-params" id="btnEditContextParams" title="Alterar parâmetros da consulta">
+        <span class="material-icons" style="font-size: 18px;">tune</span>
+        Alterar Parâmetros
+      </button>
+    </div>
+
+    <!-- 2. Barra de Ferramentas Rica & Filtros Rápidos -->
+    <div class="consulta-toolbar-card">
+      <div class="toolbar-search-actions-row">
+        
+        <div class="toolbar-inputs-wrapper">
+          <!-- Campo Bipe de Código de Barras -->
+          <div class="barcode-scan-box" title="Pressione Enter após bipar o produto">
+            <span class="material-icons">qr_code_scanner</span>
+            <input 
+              type="text" 
+              id="barcodeScanInput" 
+              class="barcode-input" 
+              placeholder="Bipar ou digitar código EAN (Enter)..." 
+              autocomplete="off"
+            >
+          </div>
+        </div>
+
+        <!-- Botões de Ação da Toolbar -->
+        <div class="toolbar-buttons-wrapper">
+          <button type="button" class="btn-toggle-unselected" id="btnToggleUnselected" title="Ocultar produtos com quantidade zerada">
+            <span class="material-icons">visibility_off</span>
+            Ocultar Desmarcados
+          </button>
+
+          <button type="button" class="btn-add-extra-products" id="btnAddExtraProducts" title="Adicionar produtos fora do plano">
+            <span class="material-icons" style="font-size: 18px;">add_circle</span>
+            Adicionar Produtos
+          </button>
+
+          <!-- Alternador Tabela / Cards -->
+          <div class="view-mode-toggle-group">
+            <button type="button" class="btn-view-mode active" id="btnViewTable" title="Visualização em Tabela">
+              <span class="material-icons">table_rows</span>
+            </button>
+            <button type="button" class="btn-view-mode" id="btnViewCards" title="Visualização em Cards">
+              <span class="material-icons">grid_view</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Linha de Chips de Filtro Rápido -->
+      <div class="toolbar-chips-row">
+        <button type="button" class="filter-chip active" data-chip="all">
+          Todos os Produtos
+          <span class="filter-chip-count" id="chipCountAll">7</span>
+        </button>
+
+        <button type="button" class="filter-chip" data-chip="ideal">
+          Saldo Menor que Ideal
+          <span class="filter-chip-count" id="chipCountIdeal">6</span>
+        </button>
+
+        <button type="button" class="filter-chip" data-chip="critico">
+          Em Nível Crítico
+          <span class="filter-chip-count" id="chipCountCritico">4</span>
+        </button>
+
+        <button type="button" class="filter-chip" data-chip="selected">
+          Selecionados
+          <span class="filter-chip-count" id="chipCountSelected">7</span>
+        </button>
+
+        <button type="button" class="filter-chip" data-chip="zero">
+          Estoque Zerado
+          <span class="filter-chip-count" id="chipCountZero">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Tabela de Produtos (Desktop / Tablet) -->
+    <div class="consulta-products-table-card" id="consultaTableCard">
+      <div class="consulta-table-wrapper">
+        <table class="consulta-products-table">
+          <thead>
+            <tr>
+              <th class="table-checkbox-cell" style="width: 44px;">
+                <span class="material-icons" style="font-size: 16px; color: #9e9e9e;">check_box</span>
+              </th>
+              <th class="table-thumb-cell" style="width: 52px;">Foto</th>
+              <th class="product-info-cell">Produto / Código EAN</th>
+              <th style="width: 105px; text-align: center;">Estoque Ideal</th>
+              <th style="width: 105px; text-align: center;">Mínimo Crítico</th>
+              <th style="width: 105px; text-align: center;">Estoque Loja</th>
+              <th style="width: 105px; text-align: center;">Estoque CD</th>
+              <th style="width: 100px; text-align: center;">Sugestão</th>
+              <th style="width: 150px; text-align: center;">A Repor</th>
+              <th style="width: 60px; text-align: center;">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="consultaTableBody">
+            <!-- Renderizado dinamicamente via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 4. Grid de Cards de Produtos (Mobile / Alternativa) -->
+    <div class="consulta-products-grid" id="consultaCardsGrid">
+      <!-- Renderizado dinamicamente via JS -->
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       STICKY FOOTER: BARRA DE RESUMO E GERAÇÃO DE PEDIDO
+       ======================================================================== -->
+  <footer class="consulta-sticky-footer">
+    <div class="footer-summary-box">
+      <div class="summary-metric-item">
+        <span class="summary-metric-label">Itens Marcados</span>
+        <span class="summary-metric-value highlight-purple" id="summaryItemsCount">6 item(s)</span>
+      </div>
+
+      <div class="summary-metric-item">
+        <span class="summary-metric-label">Total a Repor</span>
+        <span class="summary-metric-value" id="summaryUnitsCount">26 un</span>
+      </div>
+    </div>
+
+    <div class="footer-buttons-group">
+      <button type="button" class="btn-footer-cancel" id="btnCancelQuery">Descartar</button>
+      <button type="button" class="btn-footer-draft" id="btnDraftQuery">Salvar Rascunho</button>
+      <button type="button" class="btn-footer-generate-order" id="btnGenerateOrder">
+        <span class="material-icons">check_circle</span>
+        GERAR PEDIDO DE ABASTECIMENTO
+      </button>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL 1: ALTERAR PARÂMETROS / FILTROS DA CONSULTA
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalParamsConsulta" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 580px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">PARÂMETROS DA CONSULTA DE ABASTECIMENTO</h2>
+        <button type="button" class="official-modal-close" id="btnCloseParamsModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body">
+        
+        <div class="modal-notice-box">
+          <span class="material-icons notice-icon">info</span>
+          <div class="notice-content">
+            <strong class="notice-title">Filtros Operacionais de Reposição</strong>
+            <p class="notice-text">
+              Defina as filiais e o critério de seleção para recalcular dinamicamente os produtos e as sugestões de reposição.
+            </p>
+          </div>
+        </div>
+
+        <!-- Select Filial Estoque Origem -->
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="selectOrigemModal">Selecione a Filial do Estoque Origem</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">warehouse</span>
+            <select id="selectOrigemModal" class="modal-underline-select">
+              <option value="000005" selected>Estoque central</option>
+              <option value="000001">CD Principal Zona Sul</option>
+            </select>
+            <span class="modal-underline-hint-right">000005</span>
+          </div>
+        </div>
+
+        <!-- Select Filial para Repor -->
+        <div class="modal-underline-group" style="margin-top: 8px;">
+          <label class="modal-underline-label" for="selectDestinoModal">Selecione a Filial para Repor</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">storefront</span>
+            <select id="selectDestinoModal" class="modal-underline-select">
+              <option value="000003" selected>Mini Mercado 03 Simples Nacional</option>
+              <option value="000001">Mini Mercado 01</option>
+              <option value="000002">Mini Mercado 02 Condomínio Jardins</option>
+              <option value="000004">Mini Mercado 04 Empresarial Prime</option>
+            </select>
+            <span class="modal-underline-hint-right">000003</span>
+          </div>
+        </div>
+
+        <!-- Select Plano de Abastecimento -->
+        <div class="modal-underline-group" style="margin-top: 8px;">
+          <label class="modal-underline-label" for="selectPlanoModal">Plano de Abastecimento</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">description</span>
+            <select id="selectPlanoModal" class="modal-underline-select">
+              <option value="000003" selected>Plano MiniMercado 03</option>
+              <option value="000005">Plano Snacks & Mercearia</option>
+            </select>
+            <span class="modal-underline-hint-right">000003</span>
+          </div>
+        </div>
+
+        <!-- Radio Cards: Filtro do Plano -->
+        <div style="margin-top: 14px;">
+          <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Critério de Seleção de Produtos</label>
+          <div class="modal-radio-cards-group">
+            
+            <label class="modal-radio-card active">
+              <input type="radio" name="filterScope" value="completo" class="modal-radio-input" checked>
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Plano completo</span>
+                <span class="modal-radio-desc">Exibe todos os produtos cadastrados no plano selecionado.</span>
+              </div>
+            </label>
+
+            <label class="modal-radio-card">
+              <input type="radio" name="filterScope" value="saldo_ideal" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o estoque ideal</span>
+                <span class="modal-radio-desc">Filtra automaticamente os itens que necessitam de reposição.</span>
+              </div>
+            </label>
+
+            <label class="modal-radio-card">
+              <input type="radio" name="filterScope" value="saldo_critico" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o crítico</span>
+                <span class="modal-radio-desc">Prioridade máxima: itens com risco iminente de ruptura de gôndola.</span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnDiscardParams">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyParams">APLICAR FILTROS</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: ADICIONAR PRODUTOS EXTRAS (MULTICRITÉRIO COM FOTOS)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalAddExtraProducts" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 680px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">ADICIONAR PRODUTOS À CONSULTA</h2>
+        <button type="button" class="official-modal-close" id="btnCloseAddExtraModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.25rem;">
+        <p style="font-size: 0.85rem; color: #5f6368; margin-bottom: 12px;">
+          Selecione produtos adicionais do catálogo corporativo para incluir neste pedido de abastecimento:
+        </p>
+
+        <div id="extraProductsList" style="max-height: 320px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnDiscardAddExtra">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra">INCLUIR PRODUTOS</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/data/pedidos-abastecimento-mock.js"></script>
+  <script src="../assets/js/consulta-abastecimento-controller.js"></script>
+</body>
+</html>

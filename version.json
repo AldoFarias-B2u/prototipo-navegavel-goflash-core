@@ -33,7 +33,13 @@
       "id": "pedidos-abastecimento",
       "name": "Pedidos de Abastecimento",
       "status": "concluido",
-      "version": "1.3.0"
+      "version": "1.4.0"
+    },
+    {
+      "id": "consulta-abastecimento",
+      "name": "Consulta Dinâmica de Abastecimento",
+      "status": "concluido",
+      "version": "1.4.0"
     },
     {
       "id": "gerencial",

@@ -6,12 +6,13 @@
   <meta name="theme-color" content="#6530b5">
   <title>Goflash CORE - Pedido de Abastecimento</title>
   
-  <!-- CSS Global, Componentes, Dashboard, Module-View e Abastecimento -->
+  <!-- CSS Global, Componentes, Dashboard, Module-View, Abastecimento e Consulta -->
   <link rel="stylesheet" href="../assets/css/global.css">
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/dashboard.css">
   <link rel="stylesheet" href="../assets/css/module-view.css">
   <link rel="stylesheet" href="../assets/css/abastecimento.css">
+  <link rel="stylesheet" href="../assets/css/consulta-abastecimento.css">
 </head>
 <body class="module-page-body">
 
@@ -158,6 +159,163 @@
     </button>
 
   </main>
+
+  <!-- ========================================================================
+       MODAL A: ESCOLHA INICIAL DE NOVO PEDIDO (CONSULTA VS EM BRANCO)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalChoicePedido" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 620px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">CRIAR PEDIDO DE ABASTECIMENTO</h2>
+        <button type="button" class="official-modal-close" id="btnCloseChoiceModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem 1.75rem;">
+        <p style="font-size: 0.9rem; color: #555555; margin-bottom: 1rem;">
+          Escolha como deseja iniciar este pedido de reposição:
+        </p>
+
+        <div class="initial-choice-grid">
+          
+          <!-- Opção 1: Fazer Consulta (Recomendado) -->
+          <div class="initial-choice-card" id="btnChooseConsulta" title="Fazer Consulta Dinâmica para Abastecer">
+            <div class="initial-choice-icon">
+              <span class="material-icons">manage_search</span>
+            </div>
+            <strong class="initial-choice-title">Fazer Consulta para Abastecer</strong>
+            <p class="initial-choice-desc">
+              Sugere automaticamente produtos e quantidades baseado no estoque atual e no plano da loja.
+            </p>
+          </div>
+
+          <!-- Opção 2: Pedido em Branco -->
+          <div class="initial-choice-card" id="btnChooseBlank" title="Criar Pedido em Branco">
+            <div class="initial-choice-icon" style="background-color: #f1f3f6; color: #555555;">
+              <span class="material-icons">post_add</span>
+            </div>
+            <strong class="initial-choice-title">Pedido em Branco</strong>
+            <p class="initial-choice-desc">
+              Inicia um pedido sem itens para você bipar e adicionar produtos manualmente.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnDiscardChoice">CANCELAR</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL B: NOVA CONSULTA DE ABASTECIMENTO (IDÊNTICO À IMAGEM 1)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalNovaConsulta" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 580px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">NOVA CONSULTA DE ABASTECIMENTO</h2>
+        <button type="button" class="official-modal-close" id="btnCloseNovaConsultaModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body">
+        
+        <!-- Caixa de Aviso Informativo Oficial -->
+        <div class="modal-notice-box">
+          <span class="material-icons notice-icon">info</span>
+          <div class="notice-content">
+            <strong class="notice-title">Consulta de Abastecimento</strong>
+            <p class="notice-text">
+              Nesta tela, é possível consultar um <strong>Plano de Abastecimento</strong> por meio dos filtros abaixo, além de iniciar um novo <strong>Pedido de Abastecimento</strong>, em branco ou a partir do plano selecionado.
+            </p>
+          </div>
+        </div>
+
+        <!-- Select Filial do Estoque Origem (Opcional) -->
+        <div class="modal-underline-group">
+          <label class="modal-underline-label" for="selectModalOrigem">Selecione a Filial do Estoque Origem (Opcional)</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">warehouse</span>
+            <select id="selectModalOrigem" class="modal-underline-select">
+              <option value="000005" selected>Estoque central</option>
+              <option value="000001">CD Principal Zona Sul</option>
+            </select>
+            <span class="modal-underline-hint-right">000005</span>
+          </div>
+        </div>
+
+        <!-- Select Filial para Repor -->
+        <div class="modal-underline-group" style="margin-top: 8px;">
+          <label class="modal-underline-label" for="selectModalDestino">Selecione a Filial para Repor</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">storefront</span>
+            <select id="selectModalDestino" class="modal-underline-select">
+              <option value="000003" selected>Mini Mercado 03 Simples Nacional</option>
+              <option value="000001">Mini Mercado 01</option>
+              <option value="000002">Mini Mercado 02 Condomínio Jardins</option>
+              <option value="000004">Mini Mercado 04 Empresarial Prime</option>
+            </select>
+            <span class="modal-underline-hint-right">000003</span>
+          </div>
+        </div>
+
+        <!-- Select Plano de Abastecimento -->
+        <div class="modal-underline-group" style="margin-top: 8px;">
+          <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento</label>
+          <div class="modal-underline-wrapper">
+            <span class="material-icons modal-underline-icon">description</span>
+            <select id="selectModalPlano" class="modal-underline-select">
+              <option value="000003" selected>Plano MiniMercado 03</option>
+              <option value="000005">Plano Snacks & Mercearia</option>
+            </select>
+            <span class="modal-underline-hint-right">000003</span>
+          </div>
+        </div>
+
+        <!-- Filtro do Plano de Abastecimento (Radio Cards) -->
+        <div style="margin-top: 14px;">
+          <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Filtro do Plano de Abastecimento</label>
+          <div class="modal-radio-cards-group">
+            
+            <label class="modal-radio-card active">
+              <input type="radio" name="filtroPlanoConsulta" value="completo" class="modal-radio-input" checked>
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Plano completo</span>
+                <span class="modal-radio-desc">Exibe todos os produtos do plano.</span>
+              </div>
+            </label>
+
+            <label class="modal-radio-card">
+              <input type="radio" name="filtroPlanoConsulta" value="saldo_ideal" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o estoque ideal</span>
+                <span class="modal-radio-desc">Filtra produtos com necessidade de reposição.</span>
+              </div>
+            </label>
+
+            <label class="modal-radio-card">
+              <input type="radio" name="filtroPlanoConsulta" value="saldo_critico" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o crítico</span>
+                <span class="modal-radio-desc">Filtra produtos em nível crítico de ruptura.</span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnDiscardNovaConsulta">DESCARTAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnAvancarConsulta" style="background-color: #4caf50;">CONSULTAR</button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="../assets/js/version.js"></script>

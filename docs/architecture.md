@@ -25,19 +25,32 @@ Protótipo Navegavel Core/
 │   │   ├── components.css    # Componentes reutilizáveis (inputs, botões, checkbox, toast)
 │   │   ├── login.css         # Estilização e layout da tela de login
 │   │   ├── dashboard.css     # Estilos da Home (Hero, Topbar dinâmico, Cards e Drawer)
-│   │   └── module-view.css   # Template CSS unificado para todas as páginas de módulos
+│   │   ├── module-view.css   # Template CSS unificado para todas as páginas de módulos
+│   │   ├── abastecimento.css # Estilos de planos e pedidos de abastecimento
+│   │   └── consulta-abastecimento.css # Layout da tela de consulta, steppers táteis e sticky footer
 │   ├── js/
 │   │   ├── auth.js           # Gerenciador de autenticação, sessão e navegação protegida
 │   │   ├── toast.js          # Sistema leve de notificações com auto-dismiss
-│   │   ├── dashboard.js      # Gerenciador de eventos do dashboard, drawer e popovers
+│   │   ├── dashboard.js      # Gerenciador de eventos do dashboard, drawer, scroll e popovers
+│   │   ├── navigation.js     # Motor declarativo de navegação contextual e histórico
 │   │   ├── module-search.js  # Motor de busca dinâmica com filtragem instantânea no DOM
-│   │   └── version.js        # Script de sincronização dinâmica da versão no DOM
-│   └── images/               # Logos oficiais em PNG e SVGs
+│   │   ├── abastecimento-controller.js # Controlador de planos de abastecimento
+│   │   ├── pedidos-abastecimento-controller.js # Controlador da listagem de pedidos
+│   │   ├── consulta-abastecimento-controller.js # Controlador da tela avançada de consulta
+│   │   ├── version.js        # Script de sincronização dinâmica da versão no DOM
+│   │   └── data/
+│   │       ├── abastecimento-mock.js # Mock de dados de planos de abastecimento
+│   │       └── pedidos-abastecimento-mock.js # Mock de pedidos e catálogo de produtos com fotos
+│   └── images/               # Logos oficiais e fotos de produtos em alta definição
 ├── docs/
-│   └── architecture.md       # Este documento de arquitetura técnica
+│   ├── architecture.md       # Este documento de arquitetura técnica
+│   └── design-system.md      # Especificação viva do Design System
 ├── pages/
 │   ├── dashboard.html        # Página principal (Home Page)
-│   └── operacao.html         # Página do Módulo de Operação
+│   ├── operacao.html         # Página do Módulo de Operação
+│   ├── planos-abastecimento.html # Tela de Planos de Abastecimento
+│   ├── pedidos-abastecimento.html # Tela Oficial de Pedidos de Abastecimento
+│   └── consulta-abastecimento.html # Tela Avançada de Consulta para Abastecimento
 ├── index.html                # Ponto de entrada (Tela de Login)
 ├── version.json              # Fonte de verdade de versão e status dos módulos
 ├── CHANGELOG.md              # Registro histórico de alterações (SemVer)
