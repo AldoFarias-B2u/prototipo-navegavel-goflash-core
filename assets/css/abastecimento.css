@@ -1305,3 +1305,55 @@
     border-radius: 0;
   }
 }
+
+/* ==========================================================================
+   BADGES DE STATUS: PEDIDOS DE ABASTECIMENTO (IDÊNTICO À REFERÊNCIA)
+   ========================================================================== */
+.badge-status-pedido {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  min-width: 64px;
+  text-align: center;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.badge-status-cancelado {
+  background-color: #d32f2f;
+  color: #ffffff;
+}
+
+.badge-status-recebido {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.badge-status-aberto {
+  background-color: #9e9e9e;
+  color: #ffffff;
+}
+
+.pedidos-code-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #333333;
+}
+
+.pedidos-code-icon {
+  color: #757575;
+  font-size: 20px;
+}
+
+.pedidos-num-text {
+  font-weight: 500;
+  color: #212529;
+}
+

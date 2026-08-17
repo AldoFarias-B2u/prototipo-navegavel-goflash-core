@@ -4,6 +4,21 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.3.0] - 2026-08-16
+### ✨ Adicionado
+- **Tela Oficial de Pedidos de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html)):
+  - Réplica em alta fidelidade (*pixel-perfect*) da imagem de referência de Pedidos de Abastecimento.
+  - Coluna indicadora roxa numerada (`#6530b5`), ícone de documento/prancheta e códigos do pedido (`000032`, `000031`, etc.).
+  - Colunas completas de *Filial*, *Plano Base*, *Qtde Itens*, *Data de criação* e *Status*.
+  - Badges coloridos de status: **Cancelado** (vermelho `#d32f2f`), **Recebido** (verde `#4caf50`) e **Aberto** (cinza `#9e9e9e`).
+  - Topbar roxo claro padronizado (`.topbar-primary`) com pesquisa em tempo real e atalhos rápidos.
+  - Botão de ação flutuante FAB vermelho (`#d32f2f`) fixado no canto inferior direito.
+  - Mock com 32 registros realistas ([`assets/js/data/pedidos-abastecimento-mock.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/data/pedidos-abastecimento-mock.js)) e controlador reativo ([`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js)).
+- **Integração de Navegação**:
+  - Link direto a partir do card "Operação loja autônoma" em [`pages/operacao.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/operacao.html).
+
+---
+
 ## [1.2.1] - 2026-08-16
 ### 🎨 Modificado & Melhorado
 - **Header Dinâmico no Scroll** ([`assets/css/module-view.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/module-view.css), [`assets/js/dashboard.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/dashboard.js)):
