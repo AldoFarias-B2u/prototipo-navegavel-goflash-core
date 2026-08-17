@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const detailPlanCode = document.getElementById('detailPlanCode');
   const detailPlanFilial = document.getElementById('detailPlanFilial');
   const detailPlanAtivo = document.getElementById('detailPlanAtivo');
+  const detailProductsTableHead = document.getElementById('detailProductsTableHead');
   const detailProductsTableBody = document.getElementById('detailProductsTableBody');
   const productsTableCard = document.getElementById('productsTableCard');
   const productsCardsGrid = document.getElementById('productsCardsGrid');
@@ -363,12 +364,41 @@ document.addEventListener('DOMContentLoaded', () => {
    * Renderiza a Tabela e os Cards de Produtos
    */
   function renderDetailProducts(itens) {
+    // 0. Renderiza Cabeçalho Dinâmico
+    if (detailProductsTableHead) {
+      if (isEditMode) {
+        detailProductsTableHead.innerHTML = `
+          <tr>
+            <th style="width: 44px; text-align: center;">
+              <input type="checkbox" id="selectAllPlanItems" class="table-custom-checkbox" title="Marcar / Desmarcar Todos" onchange="window.AbastecimentoController.toggleSelectAllItems(this.checked)">
+            </th>
+            <th style="width: 18%;">Código</th>
+            <th style="width: 36%;">Produto</th>
+            <th style="width: 12%;">Grupo</th>
+            <th style="width: 130px; text-align: center;">Estoque Ideal</th>
+            <th style="width: 130px; text-align: center;">Minimo Crítico</th>
+            <th style="width: 50px; text-align: center;">Ações</th>
+          </tr>
+        `;
+      } else {
+        detailProductsTableHead.innerHTML = `
+          <tr>
+            <th style="width: 22%;">Código</th>
+            <th style="width: 44%;">Produto</th>
+            <th style="width: 14%;">Grupo</th>
+            <th style="width: 10%; text-align: center;">Estoque Ideal</th>
+            <th style="width: 10%; text-align: center;">Minimo Crítico</th>
+          </tr>
+        `;
+      }
+    }
+
     // 1. Tabela
     if (detailProductsTableBody) {
       if (itens.length === 0) {
         detailProductsTableBody.innerHTML = `
           <tr>
-            <td colspan="6" style="text-align: center; padding: 3rem; color: #757575;">
+            <td colspan="${isEditMode ? 7 : 5}" style="text-align: center; padding: 3rem; color: #757575;">
               <span class="material-icons" style="font-size: 40px; color: #b0bec5; display: block; margin-bottom: 6px;">inventory_2</span>
               Nenhum produto no plano. Clique em "+ Adicionar Produtos" no topo para incluir itens.
             </td>
@@ -383,8 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
           return `
             <tr>
               ${isEditMode ? `
-                <td style="width: 40px; text-align: center;">
-                  <input type="checkbox" class="item-select-checkbox" ${isChecked ? 'checked' : ''} onchange="window.AbastecimentoController.toggleItemSelection(${idx})">
+                <td style="width: 44px; text-align: center;">
+                  <input type="checkbox" class="item-select-checkbox table-custom-checkbox" ${isChecked ? 'checked' : ''} onchange="window.AbastecimentoController.toggleItemSelection(${idx})">
                 </td>
               ` : ''}
               <td>
@@ -424,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `}
               </td>
               ${isEditMode ? `
-                <td style="width: 40px; text-align: center;">
+                <td style="width: 50px; text-align: center;">
                   <button type="button" class="btn-remove-item-row" title="Remover item" onclick="window.AbastecimentoController.removeSingleItem(${idx})">
                     <span class="material-icons">delete_outline</span>
                   </button>
@@ -517,8 +547,25 @@ document.addEventListener('DOMContentLoaded', () => {
    * Atualiza a Barra Flutuante de Ações em Lote (Sticky Batch Bar)
    */
   function updateBatchBar() {
-    if (!stickyBatchBar) return;
     const count = selectedItemIndices.size;
+    const total = tempPlanItems.length;
+
+    // Sincroniza checkbox mestre do cabeçalho
+    const selectAllChk = document.getElementById('selectAllPlanItems');
+    if (selectAllChk) {
+      if (total === 0 || count === 0) {
+        selectAllChk.checked = false;
+        selectAllChk.indeterminate = false;
+      } else if (count === total) {
+        selectAllChk.checked = true;
+        selectAllChk.indeterminate = false;
+      } else {
+        selectAllChk.checked = false;
+        selectAllChk.indeterminate = true;
+      }
+    }
+
+    if (!stickyBatchBar) return;
 
     if (count > 0 && isEditMode) {
       batchCountBadge.textContent = `${count} selecionado${count > 1 ? 's' : ''}`;
@@ -905,6 +952,17 @@ document.addEventListener('DOMContentLoaded', () => {
     openNewPlanModal,
     toggleProductsView,
     enterEditMode,
+    toggleSelectAllItems(isChecked) {
+      selectedItemIndices.clear();
+      if (isChecked) {
+        tempPlanItems.forEach((_, idx) => selectedItemIndices.add(idx));
+      }
+      updateBatchBar();
+      renderDetailProducts(tempPlanItems);
+      if (typeof Toast !== 'undefined') {
+        Toast.info(isChecked ? 'Todos os produtos foram selecionados.' : 'Todos os produtos foram desmarcados.');
+      }
+    },
     toggleItemSelection(index) {
       if (selectedItemIndices.has(index)) {
         selectedItemIndices.delete(index);

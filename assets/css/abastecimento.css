@@ -669,10 +669,12 @@ td.col-num-indicator {
 }
 
 .btn-remove-item-row {
+  background: transparent;
+  border: none;
   width: 32px;
   height: 32px;
   border-radius: 4px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #9e9e9e;
