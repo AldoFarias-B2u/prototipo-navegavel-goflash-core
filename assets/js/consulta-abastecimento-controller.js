@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnGenerateOrder = document.getElementById('btnGenerateOrder');
   const btnCancelQuery = document.getElementById('btnCancelQuery');
   const btnDraftQuery = document.getElementById('btnDraftQuery');
+  const selectAllCheckbox = document.getElementById('selectAllCheckbox');
 
   // Modais
   const modalParams = document.getElementById('modalParamsConsulta');
@@ -127,6 +128,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elCountCritico) elCountCritico.textContent = countCritico;
     if (elCountSelected) elCountSelected.textContent = countSelected;
     if (elCountZero) elCountZero.textContent = countZero;
+
+    // Sincroniza o estado do checkbox do topo (Marcar/Desmarcar Todos)
+    if (selectAllCheckbox) {
+      const visible = getFilteredProducts();
+      if (visible.length === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+      } else {
+        const selectedVisible = visible.filter(p => p.selecionado).length;
+        if (selectedVisible === visible.length) {
+          selectAllCheckbox.checked = true;
+          selectAllCheckbox.indeterminate = false;
+        } else if (selectedVisible > 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = true;
+        } else {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+        }
+      }
+    }
   }
 
   // 7. Renderização da Tabela e dos Cards
@@ -446,6 +468,27 @@ document.addEventListener('DOMContentLoaded', () => {
       btnToggleUnselected.innerHTML = hideUnselected
         ? '<span class="material-icons">visibility</span> Mostrar Todos'
         : '<span class="material-icons">visibility_off</span> Ocultar Desmarcados';
+      renderAll();
+    });
+  }
+
+  // 11.1 Checkbox do Topo da Tabela: Marcar / Desmarcar Todos
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', () => {
+      const isChecked = selectAllCheckbox.checked;
+      const visible = getFilteredProducts();
+      
+      visible.forEach(prod => {
+        prod.selecionado = isChecked;
+        if (isChecked && prod.aRepor === 0 && prod.sugestao > 0) {
+          prod.aRepor = prod.sugestao;
+        }
+      });
+
+      if (typeof Toast !== 'undefined') {
+        Toast.info(isChecked ? 'Todos os produtos visíveis foram marcados.' : 'Todos os produtos visíveis foram desmarcados.');
+      }
+
       renderAll();
     });
   }

@@ -77,7 +77,7 @@ window.ConsultaProdutosBase = [
     foto: '../assets/images/products/monster-strawberry.jpg',
     estoqueIdeal: 10,
     minimoCritico: 2,
-    estoqueLoja: 5,
+    estoqueLoja: 1,
     estoqueCd: 15,
     sugestao: 5,
     aRepor: 5,
@@ -92,7 +92,7 @@ window.ConsultaProdutosBase = [
     foto: '../assets/images/products/monster-watermelon.jpg',
     estoqueIdeal: 10,
     minimoCritico: 2,
-    estoqueLoja: 5,
+    estoqueLoja: 1,
     estoqueCd: 20,
     sugestao: 5,
     aRepor: 5,
@@ -122,7 +122,7 @@ window.ConsultaProdutosBase = [
     foto: '../assets/images/products/coca-zero-600ml.jpg',
     estoqueIdeal: 10,
     minimoCritico: 2,
-    estoqueLoja: 10,
+    estoqueLoja: 1,
     estoqueCd: 40,
     sugestao: 0,
     aRepor: 0,
@@ -486,7 +486,7 @@ function getStoredPedidos() {
 
 window.PedidosAbastecimentoData = getStoredPedidos();
 
-window.salvarNovoPedidoNoStorage = function(novoPedido) {
+window.salvarNovoPedidoNoStorage = function (novoPedido) {
   const lista = window.PedidosAbastecimentoData || [];
   lista.unshift(novoPedido);
   window.PedidosAbastecimentoData = lista;
