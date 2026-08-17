@@ -4,6 +4,20 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.6.0] - 2026-08-17
+### ✨ Adicionado & Aprimorado
+- **Seleção e Visualização de Pedidos de Abastecimento com Permissões por Status** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`assets/js/pedido-manual-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-manual-controller.js), [`assets/css/pedido-manual.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/pedido-manual.css)):
+  - **Navegação a Partir da Listagem**: Clique em qualquer linha da tabela de pedidos abre a visão de detalhes (`pedido-manual.html?id=...&codigo=...`).
+  - **Controle de Permissões por Status**:
+    - **`Aberto` (Modo de Edição)**: Totalmente liberado para inclusão/remoção de produtos, alteração de quantidades via steppers `[-] [Qtd] [+]`, edição de lotes e opções de confirmação.
+    - **`Pendente de Abastecimento` (Modo Somente Leitura)**: Banner informativo laranja (*🚚 Pedido em Trânsito*), ferramentas de edição e lixeira ocultadas, quantidades fixas, modal de lotes em consulta e botão `VOLTAR PARA PEDIDOS`.
+    - **`Recebido` (Modo Somente Leitura)**: Banner informativo verde (*📦 Pedido Recebido*), edições bloqueadas com abastecimento e movimentação de estoque concluídos na filial.
+    - **`Cancelado` (Modo Somente Leitura)**: Banner informativo vermelho (*🚫 Pedido Cancelado*).
+  - **Unificação do Status de Conclusão**: A opção de finalizar imediatamente no modal de conclusão grava oficialmente o pedido com o status **`Recebido`** (Verde).
+  - **Hidratação Dinâmica de Itens**: Pedidos históricos do mock carregam produtos realistas com fotos, descrições, estoques e validades simuladas.
+
+---
+
 ## [1.5.0] - 2026-08-17
 ### ✨ Adicionado
 - **Fluxo Completo de Pedido de Abastecimento Manual (Em Branco)** ([`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`assets/css/pedido-manual.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/pedido-manual.css), [`assets/js/pedido-manual-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-manual-controller.js)):

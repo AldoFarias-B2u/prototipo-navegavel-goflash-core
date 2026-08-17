@@ -33,7 +33,7 @@
       "id": "pedidos-abastecimento",
       "name": "Pedidos de Abastecimento",
       "status": "concluido",
-      "version": "1.4.0"
+      "version": "1.6.0"
     },
     {
       "id": "consulta-abastecimento",
@@ -43,9 +43,9 @@
     },
     {
       "id": "pedido-manual",
-      "name": "Pedido de Abastecimento Manual (Em Branco)",
+      "name": "Pedido de Abastecimento Manual & Visualização",
       "status": "concluido",
-      "version": "1.4.1"
+      "version": "1.6.0"
     },
     {
       "id": "gerencial",

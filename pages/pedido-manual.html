@@ -147,12 +147,15 @@
               </div>
             </div>
 
-            <!-- Código do Pedido (Gerado) -->
+            <!-- Código do Pedido (Gerado) e Status -->
             <div class="pedido-hero-field-item">
-              <label class="pedido-hero-label">Código do Pedido</label>
-              <div class="pedido-hero-code-badge" id="heroOrderCode">
-                <span class="material-icons" style="font-size: 18px;">dialpad</span>
-                <span id="txtHeroCode">000038</span>
+              <label class="pedido-hero-label">Código &bull; Status</label>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="pedido-hero-code-badge" id="heroOrderCode">
+                  <span class="material-icons" style="font-size: 18px;">dialpad</span>
+                  <span id="txtHeroCode">000038</span>
+                </div>
+                <span class="badge-status-pedido badge-status-aberto" id="heroStatusBadge">Aberto</span>
               </div>
             </div>
           </div>
@@ -172,6 +175,15 @@
       </div>
     </div>
 
+    <!-- Banner Informativo para Modo Somente Leitura -->
+    <div id="readonlyBannerAlert" class="readonly-banner-alert" style="display: none;">
+      <span class="material-icons readonly-banner-icon" id="readonlyBannerIcon">info</span>
+      <div class="readonly-banner-content">
+        <div class="readonly-banner-title" id="readonlyBannerTitle">Visualização de Pedido</div>
+        <div class="readonly-banner-desc" id="readonlyBannerDesc">Este pedido está em modo de somente leitura.</div>
+      </div>
+    </div>
+
     <!-- 2. Painel Aba: PRODUTOS -->
     <div class="pedido-tab-pane active" id="paneProdutos">
       <div class="pedido-content-card">
@@ -180,7 +192,7 @@
         <div class="pedido-section-topbar">
           <h2 class="pedido-section-title">
             <span>Itens do Pedido</span>
-            <span class="badge-status-pedido badge-status-aberto" style="font-size: 0.75rem;">Modo de Edição</span>
+            <span class="badge-status-pedido badge-status-aberto" id="sectionModeBadge" style="font-size: 0.75rem;">Modo de Edição</span>
           </h2>
 
           <div class="pedido-section-actions">
@@ -318,6 +330,10 @@
       <button type="button" class="btn-footer-confirm" id="btnFooterConfirm">
         <span class="material-icons">check_circle</span>
         CONFIRMAR PEDIDO
+      </button>
+      <button type="button" class="btn-footer-back" id="btnFooterBackToOrders" style="display: none;">
+        <span class="material-icons">arrow_back</span>
+        VOLTAR PARA PEDIDOS
       </button>
     </div>
   </footer>
@@ -473,13 +489,13 @@
             </div>
           </div>
 
-          <!-- Opção 2: Finalizado (Movimenta Estoque Imediatamente) -->
-          <div class="finish-option-card" data-status="Finalizado">
+          <!-- Opção 2: Finalizado Imediatamente (Recebido) -->
+          <div class="finish-option-card" data-status="Recebido">
             <div class="finish-option-icon" style="background-color: #e8f5e9; color: #2e7d32;">
               <span class="material-icons">task_alt</span>
             </div>
             <div class="finish-option-info">
-              <div class="finish-option-title">Finalizar Imediatamente (Finalizado)</div>
+              <div class="finish-option-title">Finalizar Imediatamente (Recebido)</div>
               <p class="finish-option-desc">
                 Conclui o processo e executa a movimentação definitiva de entrada de estoque na loja.
               </p>

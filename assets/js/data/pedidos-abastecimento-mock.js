@@ -545,3 +545,90 @@ window.salvarNovoPedidoNoStorage = function (novoPedido) {
   }
   return lista;
 };
+
+window.atualizarPedidoNoStorage = function (pedidoAtualizado) {
+  const lista = window.PedidosAbastecimentoData || [];
+  const index = lista.findIndex(p => String(p.id) === String(pedidoAtualizado.id) || p.codigo === pedidoAtualizado.codigo);
+  if (index !== -1) {
+    lista[index] = { ...lista[index], ...pedidoAtualizado };
+  } else {
+    lista.unshift(pedidoAtualizado);
+  }
+  window.PedidosAbastecimentoData = lista;
+  try {
+    localStorage.setItem('goflash_pedidos_list', JSON.stringify(lista));
+  } catch (e) {
+    console.error('Erro ao atualizar storage:', e);
+  }
+  return lista;
+};
+
+window.getPedidoByIdOrCode = function (id, codigo) {
+  const lista = window.PedidosAbastecimentoData || [];
+  let pedido = lista.find(p => (id && String(p.id) === String(id)) || (codigo && p.codigo === codigo));
+  if (!pedido) return null;
+
+  // Se o pedido já possui itens reais cadastrados, retorna-o diretamente
+  if (pedido.itens && pedido.itens.length > 0) {
+    return pedido;
+  }
+
+  // Hidratação dinâmica de itens para pedidos históricos do mock
+  const catalogo = window.CatalogoCompletoProdutos || [];
+  const totalQtde = Number(pedido.qtdeItens) || 6;
+  const hydratedItens = [];
+
+  if (totalQtde > 0 && catalogo.length > 0) {
+    let remaining = totalQtde;
+    let prodIdx = 0;
+
+    while (remaining > 0 && prodIdx < catalogo.length) {
+      const prod = catalogo[prodIdx % catalogo.length];
+      const chunk = Math.min(remaining, Math.max(1, Math.floor(totalQtde / 3) || 1));
+      
+      const itemLotes = (pedido.status !== 'Aberto' && pedido.status !== 'Cancelado') ? [
+        {
+          id: Date.now() + prodIdx,
+          lote: `LT-${String(100 + prodIdx)}`,
+          quantidade: chunk,
+          fabricacao: '10/07/2026',
+          validade: '15/12/2026'
+        }
+      ] : [];
+
+      hydratedItens.push({
+        id: prod.id || (1000 + prodIdx),
+        ean: prod.ean,
+        nome: prod.nome,
+        marca: prod.marca || 'Marca',
+        categoria: prod.categoria || 'Bebidas',
+        foto: prod.foto || prod.imagem || '../assets/images/products/suco-uva.jpg',
+        preco: Number(prod.preco) || 6.50,
+        estoqueLoja: prod.estoqueLoja || 4,
+        estoqueCd: prod.estoqueCd || 30,
+        estoqueIdeal: prod.estoqueIdeal || 10,
+        minimoCritico: prod.minimoCritico || 2,
+        quantidade: chunk,
+        lotes: itemLotes
+      });
+
+      remaining -= chunk;
+      prodIdx++;
+      if (prodIdx >= 6) {
+        // Se ainda restar unidades, soma no último item
+        if (remaining > 0 && hydratedItens.length > 0) {
+          hydratedItens[hydratedItens.length - 1].quantidade += remaining;
+          if (hydratedItens[hydratedItens.length - 1].lotes.length > 0) {
+            hydratedItens[hydratedItens.length - 1].lotes[0].quantidade += remaining;
+          }
+          remaining = 0;
+        }
+        break;
+      }
+    }
+  }
+
+  pedido.itens = hydratedItens;
+  pedido.valorTotal = hydratedItens.reduce((acc, i) => acc + (i.quantidade * i.preco), 0);
+  return pedido;
+};

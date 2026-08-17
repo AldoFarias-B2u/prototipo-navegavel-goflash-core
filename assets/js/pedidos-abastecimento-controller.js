@@ -64,14 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tbody.innerHTML = rowsHtml;
 
-    // Vincular clique nas linhas
+    // Vincular clique nas linhas para abrir os detalhes do pedido
     const rows = tbody.querySelectorAll('.pedido-row');
     rows.forEach(row => {
       row.addEventListener('click', () => {
         const id = row.getAttribute('data-id');
         const selected = rawData.find(p => p.id == id);
-        if (selected && typeof Toast !== 'undefined') {
-          Toast.info(`Pedido ${selected.codigo} selecionado (${selected.filial}) - Status: ${selected.status}.`);
+        if (selected) {
+          if (typeof Toast !== 'undefined') {
+            Toast.info(`Abrindo Pedido ${selected.codigo} (${selected.status})...`);
+          }
+          setTimeout(() => {
+            window.location.href = `./pedido-manual.html?id=${encodeURIComponent(id)}&codigo=${encodeURIComponent(selected.codigo)}`;
+          }, 200);
         }
       });
     });
