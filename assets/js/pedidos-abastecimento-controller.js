@@ -114,29 +114,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAvancarConsulta = document.getElementById('btnAvancarConsulta');
 
   function openChoiceModal() {
-    if (modalChoice) modalChoice.classList.add('active');
+    if (modalChoice) modalChoice.classList.add('show', 'active');
   }
 
   function closeChoiceModal() {
-    if (modalChoice) modalChoice.classList.remove('active');
+    if (modalChoice) modalChoice.classList.remove('show', 'active');
   }
 
   function openNovaConsultaModal() {
     closeChoiceModal();
-    if (modalNovaConsulta) modalNovaConsulta.classList.add('active');
+    if (modalNovaConsulta) modalNovaConsulta.classList.add('show', 'active');
   }
 
   function closeNovaConsultaModal() {
-    if (modalNovaConsulta) modalNovaConsulta.classList.remove('active');
+    if (modalNovaConsulta) modalNovaConsulta.classList.remove('show', 'active');
   }
 
   if (fabNewPedido) {
-    fabNewPedido.addEventListener('click', openChoiceModal);
+    fabNewPedido.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openChoiceModal();
+    });
   }
 
   if (btnCloseChoice) btnCloseChoice.addEventListener('click', closeChoiceModal);
   if (btnDiscardChoice) btnDiscardChoice.addEventListener('click', closeChoiceModal);
   if (btnChooseConsulta) btnChooseConsulta.addEventListener('click', openNovaConsultaModal);
+
+  // Fechar ao clicar fora da caixa do modal (no backdrop)
+  if (modalChoice) {
+    modalChoice.addEventListener('click', (e) => {
+      if (e.target === modalChoice) closeChoiceModal();
+    });
+  }
+
+  if (modalNovaConsulta) {
+    modalNovaConsulta.addEventListener('click', (e) => {
+      if (e.target === modalNovaConsulta) closeNovaConsultaModal();
+    });
+  }
 
   if (btnChooseBlank) {
     btnChooseBlank.addEventListener('click', () => {

@@ -176,7 +176,8 @@
   padding: 1.5rem;
 }
 
-.official-modal-overlay.show {
+.official-modal-overlay.show,
+.official-modal-overlay.active {
   display: flex;
 }
 

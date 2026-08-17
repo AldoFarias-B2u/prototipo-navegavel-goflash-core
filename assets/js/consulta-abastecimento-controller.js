@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 13. Modal de Parâmetros da Consulta (Editar Filtros)
   function openParamsModal() {
     if (modalParams) {
-      modalParams.classList.add('active');
+      modalParams.classList.add('show', 'active');
       
       // Selecionar radio atual
       const radios = modalParams.querySelectorAll('input[name="filterScope"]');
@@ -476,12 +476,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeParamsModal() {
-    if (modalParams) modalParams.classList.remove('active');
+    if (modalParams) modalParams.classList.remove('show', 'active');
   }
 
   if (btnEditParams) btnEditParams.addEventListener('click', openParamsModal);
   if (btnCloseParams) btnCloseParams.addEventListener('click', closeParamsModal);
   if (btnDiscardParams) btnDiscardParams.addEventListener('click', closeParamsModal);
+
+  if (modalParams) {
+    modalParams.addEventListener('click', (e) => {
+      if (e.target === modalParams) closeParamsModal();
+    });
+  }
 
   // Seleção de radio card no modal de parâmetros
   const radioCards = document.querySelectorAll('.modal-radio-card');
@@ -557,17 +563,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function openAddExtraModal() {
     if (modalAddExtra) {
       renderExtraProductsModal();
-      modalAddExtra.classList.add('active');
+      modalAddExtra.classList.add('show', 'active');
     }
   }
 
   function closeAddExtraModal() {
-    if (modalAddExtra) modalAddExtra.classList.remove('active');
+    if (modalAddExtra) modalAddExtra.classList.remove('show', 'active');
   }
 
   if (btnOpenAddExtra) btnOpenAddExtra.addEventListener('click', openAddExtraModal);
   if (btnCloseAddExtra) btnCloseAddExtra.addEventListener('click', closeAddExtraModal);
   if (btnDiscardAddExtra) btnDiscardAddExtra.addEventListener('click', closeAddExtraModal);
+
+  if (modalAddExtra) {
+    modalAddExtra.addEventListener('click', (e) => {
+      if (e.target === modalAddExtra) closeAddExtraModal();
+    });
+  }
 
   if (btnConfirmAddExtra) {
     btnConfirmAddExtra.addEventListener('click', () => {
