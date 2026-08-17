@@ -4,6 +4,14 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.4.1] - 2026-08-16
+### 🎨 Modificado & Melhorado
+- **Seleção em Lote na Consulta de Abastecimento** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - Adicionado checkbox mestre no cabeçalho da tabela para marcar e desmarcar todos os produtos visíveis com um único clique.
+  - Sincronização de estado bidirecional com suporte a estado indeterminado (`-`) quando houver seleção parcial de itens.
+
+---
+
 ## [1.4.0] - 2026-08-16
 ### ✨ Adicionado
 - **Fluxo de Novo Pedido de Abastecimento**:
