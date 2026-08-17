@@ -1,0 +1,1263 @@
+/* ==========================================================================
+   GOFLASH CORE - PEDIDO DE ABASTECIMENTO MANUAL (EM BRANCO)
+   Estilos dedicados com otimizações de UI/UX, Mobile-First e Ergonomia
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Container Principal e Layout da Página
+   -------------------------------------------------------------------------- */
+.pedido-manual-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 6.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .pedido-manual-container {
+    padding: 0.75rem 0.75rem 6.5rem 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Hero Card Roxo de Contexto (Destino, Origem, Código e Abas)
+   -------------------------------------------------------------------------- */
+.pedido-hero-card {
+  background: linear-gradient(135deg, #23143d 0%, #381f5c 100%);
+  border-radius: 6px;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(35, 20, 61, 0.22);
+  margin-bottom: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pedido-hero-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 840px) {
+  .pedido-hero-header-row {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+.pedido-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.pedido-hero-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.pedido-hero-fields-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 0.8fr;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+@media (max-width: 840px) {
+  .pedido-hero-fields-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.pedido-hero-field-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pedido-hero-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.pedido-hero-value-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  color: #ffffff;
+  transition: border-color var(--transition-fast);
+}
+
+.pedido-hero-value-box:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.pedido-hero-value-box .material-icons {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pedido-hero-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(101, 48, 181, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffeb3b;
+  letter-spacing: 0.5px;
+}
+
+/* Abas Inferiores do Hero (Produtos / Detalhes) */
+.pedido-hero-tabs-row {
+  display: flex;
+  padding: 0 1.5rem;
+  gap: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.pedido-tab-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 12px 6px;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pedido-tab-btn:hover {
+  color: #ffffff;
+}
+
+.pedido-tab-btn.active {
+  color: #ffffff;
+}
+
+.pedido-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #ffeb3b;
+  border-radius: 2px 2px 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Seção "Produtos" & Barra de Ações Rápidas (Omnibar / Bipe)
+   -------------------------------------------------------------------------- */
+.pedido-content-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  border-top: 4px solid var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .pedido-content-card {
+    padding: 1rem 0.85rem;
+  }
+}
+
+.pedido-section-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pedido-section-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #212529;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pedido-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botão Roxo de Adicionar Produtos */
+.btn-open-catalog {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-open-catalog:hover {
+  background-color: #532497;
+  transform: translateY(-1px);
+}
+
+/* Barra de Adição e Bipe Inteligente */
+.pedido-omnibar-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-bottom: 1.25rem;
+  position: relative;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pedido-omnibar-box:focus-within {
+  border-color: var(--primary-color);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.pedido-omnibar-icon {
+  color: var(--primary-color);
+  font-size: 22px;
+}
+
+.pedido-omnibar-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #333333;
+  outline: none;
+  padding: 6px 0;
+}
+
+.pedido-omnibar-input::placeholder {
+  color: #8e959e;
+}
+
+.pedido-omnibar-hint {
+  font-size: 0.75rem;
+  color: #757575;
+  background-color: #eeeeee;
+  padding: 3px 8px;
+  border-radius: 4px;
+  user-select: none;
+  font-family: monospace;
+}
+
+@media (max-width: 600px) {
+  .pedido-omnibar-hint {
+    display: none;
+  }
+}
+
+/* Autocomplete Dropdown da Omnibar */
+.omnibar-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+.omnibar-autocomplete-dropdown.show {
+  display: block;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.focused {
+  background-color: #f7f5fa;
+}
+
+.autocomplete-item-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.autocomplete-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.autocomplete-item-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autocomplete-item-sub {
+  font-size: 0.75rem;
+  color: #757575;
+  margin-top: 2px;
+}
+
+.autocomplete-item-price {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. Tabela Operacional de Itens do Pedido (Desktop)
+   -------------------------------------------------------------------------- */
+.pedido-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+}
+
+.pedido-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.pedido-items-table th {
+  background-color: #f8f9fa;
+  color: #5f6368;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 10px 12px;
+  border-bottom: 2px solid #e0e0e0;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.pedido-items-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+  color: #333333;
+  vertical-align: middle;
+}
+
+.pedido-items-table tbody tr:hover {
+  background-color: #faf9fd;
+}
+
+.item-thumb-cell {
+  width: 44px;
+  text-align: center;
+}
+
+.item-thumb-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  display: block;
+}
+
+.item-code-link {
+  color: #1976d2;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.item-code-link:hover {
+  text-decoration: underline;
+}
+
+.item-title-text {
+  font-weight: 500;
+  color: #212529;
+  display: block;
+}
+
+.item-brand-tag {
+  font-size: 0.75rem;
+  color: #757575;
+}
+
+/* Indicadores Sutis de Estoque */
+.stock-pill-subtle {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #f1f3f6;
+  color: #555555;
+  text-align: center;
+}
+
+.stock-pill-subtle.has-stock {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.stock-pill-subtle.low-stock {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+/* Stepper de Quantidade [-] [Qtd] [+] */
+.quantity-stepper-box {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cfd4dc;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.stepper-btn {
+  background: #f4f5f7;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 700;
+  font-size: 16px;
+  transition: background-color var(--transition-fast);
+}
+
+.stepper-btn:hover {
+  background-color: #e2e5ea;
+  color: var(--primary-color);
+}
+
+.stepper-btn:active {
+  background-color: #d0d4dc;
+}
+
+.stepper-input {
+  width: 48px;
+  height: 32px;
+  border: none;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #212529;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.stepper-input::-webkit-outer-spin-button,
+.stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Chip Inteligente de Validade */
+.validity-status-btn {
+  background-color: #f1f3f6;
+  border: 1px solid #d0d5dd;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #495057;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.validity-status-btn:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.validity-status-btn.validity-ok {
+  background-color: #e8f5e9;
+  border-color: #a5d6a7;
+  color: #2e7d32;
+}
+
+.validity-status-btn.validity-pending {
+  background-color: #fff3e0;
+  border-color: #ffcc80;
+  color: #e65100;
+}
+
+.validity-status-btn .material-icons {
+  font-size: 16px;
+}
+
+/* Botão de Excluir Item */
+.btn-delete-item {
+  background: transparent;
+  border: none;
+  color: #9e9e9e;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete-item:hover {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+/* --------------------------------------------------------------------------
+   5. Grid de Cards Operacionais (Mobile / Alternativa)
+   -------------------------------------------------------------------------- */
+.pedido-cards-grid {
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .pedido-table-wrapper {
+    display: none;
+  }
+  .pedido-cards-grid {
+    display: grid;
+  }
+}
+
+.pedido-item-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.item-card-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.item-card-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.item-card-meta {
+  font-size: 0.75rem;
+  color: #757575;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px dashed #eeeeee;
+  padding-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   6. Empty State da Lista de Produtos
+   -------------------------------------------------------------------------- */
+.pedido-empty-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background-color: #fafafa;
+  border: 2px dashed #e0e0e0;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.empty-state-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #ede7f6;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+}
+
+.empty-state-icon-box .material-icons {
+  font-size: 32px;
+}
+
+.empty-state-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333333;
+  margin: 0 0 6px 0;
+}
+
+.empty-state-desc {
+  font-size: 0.85rem;
+  color: #757575;
+  max-width: 420px;
+  margin: 0 auto 1.25rem auto;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   7. Sticky Footer com Resumo Financeiro e Ações
+   -------------------------------------------------------------------------- */
+.pedido-sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.12);
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 900;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .pedido-sticky-footer {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+}
+
+.footer-metrics-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .footer-metrics-group {
+    justify-content: space-between;
+    gap: 8px;
+  }
+}
+
+.metric-pill {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-pill-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #757575;
+  font-weight: 500;
+}
+
+.metric-pill-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.metric-pill-val.highlight-purple {
+  color: var(--primary-color);
+}
+
+.metric-pill-val.highlight-green {
+  color: #2e7d32;
+}
+
+.footer-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .footer-actions-group {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .footer-actions-group button {
+    flex: 1;
+  }
+}
+
+.btn-footer-discard {
+  background: transparent;
+  border: 1px solid #cfd4dc;
+  border-radius: 4px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555555;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-footer-discard:hover {
+  background-color: #f1f3f6;
+  color: #212529;
+}
+
+.btn-footer-draft {
+  background-color: #f1f3f6;
+  border: 1px solid #cfd4dc;
+  border-radius: 4px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-footer-draft:hover {
+  background-color: #e6e0f8;
+}
+
+.btn-footer-confirm {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(101, 48, 181, 0.3);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-footer-confirm:hover {
+  background-color: #532497;
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   8. Modal: GERENCIAR LOTES / VALIDADES (Shelf-Life)
+   -------------------------------------------------------------------------- */
+.lotes-modal-box {
+  background-color: #ffffff;
+  border-radius: 6px;
+  width: 95%;
+  max-width: 720px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.lotes-product-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background-color: #f7f5fa;
+  border-bottom: 1px solid #e8e8e8;
+  flex-wrap: wrap;
+}
+
+.lotes-product-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.lotes-product-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.lotes-product-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.lotes-product-code {
+  font-size: 0.8rem;
+  color: #666;
+  font-family: monospace;
+}
+
+/* Barra de Progresso de Alocação de Lotes */
+.allocation-progress-card {
+  padding: 12px 18px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.allocation-metrics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.allocation-label {
+  font-size: 0.8rem;
+  color: #757575;
+  font-weight: 500;
+}
+
+.allocation-counter-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.allocation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.allocation-badge.complete {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.allocation-badge.pending {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.allocation-badge.exceeded {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.allocation-bar-track {
+  height: 8px;
+  background-color: #eeeeee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.allocation-bar-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.allocation-bar-fill.complete {
+  background-color: #2e7d32;
+}
+
+.allocation-bar-fill.exceeded {
+  background-color: #c62828;
+}
+
+/* Tabela de Lotes no Modal */
+.lotes-table-container {
+  padding: 14px 18px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.lotes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lotes-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #666666;
+  font-weight: 600;
+  padding: 8px 6px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.lotes-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.lote-input {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.lote-input:focus {
+  border-color: var(--primary-color);
+}
+
+.btn-add-lote-row {
+  background: transparent;
+  border: 1px dashed var(--primary-color);
+  border-radius: 4px;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  transition: background-color var(--transition-fast);
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-add-lote-row:hover {
+  background-color: #f7f5fa;
+}
+
+/* --------------------------------------------------------------------------
+   9. Modal de Conclusão / Opções de Finalização de Pedido
+   -------------------------------------------------------------------------- */
+.finish-options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.finish-option-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: all var(--transition-fast);
+  background-color: #ffffff;
+}
+
+.finish-option-card:hover {
+  border-color: var(--primary-color);
+  background-color: #fbf9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.1);
+}
+
+.finish-option-card.selected {
+  border-color: var(--primary-color);
+  background-color: #f6f2fc;
+}
+
+.finish-option-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.finish-option-info {
+  flex: 1;
+}
+
+.finish-option-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 2px;
+}
+
+.finish-option-desc {
+  font-size: 0.8rem;
+  color: #5f6368;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   10. Aba DETALHES (Observações e Transporte)
+   -------------------------------------------------------------------------- */
+.pedido-details-pane {
+  display: none;
+}
+
+.pedido-details-pane.active {
+  display: block;
+}
+
+.details-grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .details-grid-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.textarea-custom {
+  width: 100%;
+  border: 1px solid #cfd4dc;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 90px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.textarea-custom:focus {
+  border-color: var(--primary-color);
+}
+
+/* --------------------------------------------------------------------------
+   11. Modal do Catálogo de Produtos para Inserção Rápida
+   -------------------------------------------------------------------------- */
+.catalog-category-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.catalog-cat-chip {
+  background-color: #f1f3f6;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555555;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.catalog-cat-chip:hover {
+  background-color: #e4e7eb;
+}
+
+.catalog-cat-chip.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.catalog-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.catalog-item-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  background-color: #ffffff;
+  transition: all var(--transition-fast);
+}
+
+.catalog-item-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.1);
+  transform: translateY(-2px);
+}
+
+.catalog-item-img {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.catalog-item-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.25;
+  height: 36px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.catalog-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.catalog-item-price {
+  font-weight: 700;
+  color: #2e7d32;
+  font-size: 0.95rem;
+}
+
+.btn-catalog-add {
+  background-color: #ede7f6;
+  border: 1px solid #d1c4e9;
+  border-radius: 4px;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+}
+
+.btn-catalog-add:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.btn-catalog-add.added {
+  background-color: #e8f5e9;
+  border-color: #a5d6a7;
+  color: #2e7d32;
+}

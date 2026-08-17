@@ -1340,6 +1340,17 @@
   color: #ffffff;
 }
 
+.badge-status-pendente-abastecimento,
+.badge-status-pendente {
+  background-color: #ed6c02;
+  color: #ffffff;
+}
+
+.badge-status-finalizado {
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
 .pedidos-code-cell {
   display: flex;
   align-items: center;

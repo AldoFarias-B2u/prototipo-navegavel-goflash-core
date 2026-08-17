@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBadgeClass = 'badge-status-cancelado';
       } else if (statusLower.includes('recebido')) {
         statusBadgeClass = 'badge-status-recebido';
+      } else if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
+        statusBadgeClass = 'badge-status-pendente-abastecimento';
+      } else if (statusLower.includes('finalizado') || statusLower.includes('concluído') || statusLower.includes('concluido')) {
+        statusBadgeClass = 'badge-status-finalizado';
       }
 
       return `
@@ -48,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </td>
           <td>${item.filial || '-'}</td>
-          <td>${item.planoBase || ''}</td>
+          <td>${item.planoBase || (item.tipo === 'manual' ? '<span style="color:#888; font-style:italic;">Manual (Em branco)</span>' : '')}</td>
           <td>${item.qtdeItens}</td>
           <td>${item.dataCriacao}</td>
           <td>
@@ -67,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = row.getAttribute('data-id');
         const selected = rawData.find(p => p.id == id);
         if (selected && typeof Toast !== 'undefined') {
-          Toast.info(`Pedido ${selected.codigo} selecionado (${selected.filial}).`);
+          Toast.info(`Pedido ${selected.codigo} selecionado (${selected.filial}) - Status: ${selected.status}.`);
         }
       });
     });
@@ -101,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Modais de Novo Pedido e Nova Consulta
+  // 4. Modais de Novo Pedido, Nova Consulta e Pedido em Branco
   const modalChoice = document.getElementById('modalChoicePedido');
   const btnCloseChoice = document.getElementById('btnCloseChoiceModal');
   const btnDiscardChoice = document.getElementById('btnDiscardChoice');
@@ -112,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCloseNovaConsulta = document.getElementById('btnCloseNovaConsultaModal');
   const btnDiscardNovaConsulta = document.getElementById('btnDiscardNovaConsulta');
   const btnAvancarConsulta = document.getElementById('btnAvancarConsulta');
+
+  const modalNovoPedidoBranco = document.getElementById('modalNovoPedidoBranco');
+  const btnClosePedidoBranco = document.getElementById('btnClosePedidoBrancoModal');
+  const btnDiscardPedidoBranco = document.getElementById('btnDiscardPedidoBranco');
+  const btnAvancarPedidoBranco = document.getElementById('btnAvancarPedidoBranco');
 
   function openChoiceModal() {
     if (modalChoice) modalChoice.classList.add('show', 'active');
@@ -130,6 +139,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalNovaConsulta) modalNovaConsulta.classList.remove('show', 'active');
   }
 
+  function openPedidoBrancoModal() {
+    closeChoiceModal();
+    if (modalNovoPedidoBranco) modalNovoPedidoBranco.classList.add('show', 'active');
+  }
+
+  function closePedidoBrancoModal() {
+    if (modalNovoPedidoBranco) modalNovoPedidoBranco.classList.remove('show', 'active');
+  }
+
   if (fabNewPedido) {
     fabNewPedido.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -140,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseChoice) btnCloseChoice.addEventListener('click', closeChoiceModal);
   if (btnDiscardChoice) btnDiscardChoice.addEventListener('click', closeChoiceModal);
   if (btnChooseConsulta) btnChooseConsulta.addEventListener('click', openNovaConsultaModal);
+  if (btnChooseBlank) btnChooseBlank.addEventListener('click', openPedidoBrancoModal);
 
   // Fechar ao clicar fora da caixa do modal (no backdrop)
   if (modalChoice) {
@@ -154,15 +173,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnChooseBlank) {
-    btnChooseBlank.addEventListener('click', () => {
-      closeChoiceModal();
+  if (modalNovoPedidoBranco) {
+    modalNovoPedidoBranco.addEventListener('click', (e) => {
+      if (e.target === modalNovoPedidoBranco) closePedidoBrancoModal();
+    });
+  }
+
+  if (btnClosePedidoBranco) btnClosePedidoBranco.addEventListener('click', closePedidoBrancoModal);
+  if (btnDiscardPedidoBranco) btnDiscardPedidoBranco.addEventListener('click', closePedidoBrancoModal);
+
+  if (btnAvancarPedidoBranco) {
+    btnAvancarPedidoBranco.addEventListener('click', () => {
+      const selectDestino = document.getElementById('selectBlankDestino');
+      const selectOrigem = document.getElementById('selectBlankOrigem');
+
+      const destinoText = selectDestino ? selectDestino.value : 'Mini Mercado 03 Simples Nacional';
+      const origemText = selectOrigem ? selectOrigem.value : '';
+
+      closePedidoBrancoModal();
       if (typeof Toast !== 'undefined') {
-        Toast.info('Criando Pedido em Branco...');
+        Toast.info('Iniciando Pedido em Branco...');
       }
+
+      let url = `./pedido-manual.html?destino=${encodeURIComponent(destinoText)}`;
+      if (origemText) {
+        url += `&origem=${encodeURIComponent(origemText)}`;
+      }
+
       setTimeout(() => {
-        window.location.href = './consulta-abastecimento.html?origem=Estoque+central&destino=Mini+Mercado+03+Simples+Nacional&plano=Plano+MiniMercado+03&filtro=completo';
-      }, 400);
+        window.location.href = url;
+      }, 300);
     });
   }
 

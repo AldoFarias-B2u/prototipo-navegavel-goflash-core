@@ -21,7 +21,7 @@ window.PlanosDisponiveisData = [
   { id: '000005', codigo: '000005', nome: 'Plano Snacks & Mercearia', filialId: '000003' }
 ];
 
-// 3. Produtos Padrão da Consulta de Abastecimento (Correspondência Exata à Imagem 2)
+// 3. Produtos Padrão da Consulta de Abastecimento
 window.ConsultaProdutosBase = [
   {
     id: 1,
@@ -36,6 +36,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 24,
     sugestao: 4,
     aRepor: 4,
+    preco: 8.90,
     selecionado: true
   },
   {
@@ -51,6 +52,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 18,
     sugestao: 4,
     aRepor: 4,
+    preco: 4.50,
     selecionado: true
   },
   {
@@ -66,6 +68,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 30,
     sugestao: 4,
     aRepor: 4,
+    preco: 6.90,
     selecionado: true
   },
   {
@@ -81,6 +84,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 15,
     sugestao: 5,
     aRepor: 5,
+    preco: 8.90,
     selecionado: true
   },
   {
@@ -96,6 +100,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 20,
     sugestao: 5,
     aRepor: 5,
+    preco: 8.90,
     selecionado: true
   },
   {
@@ -111,6 +116,7 @@ window.ConsultaProdutosBase = [
     estoqueCd: 25,
     sugestao: 5,
     aRepor: 5,
+    preco: 7.20,
     selecionado: true
   },
   {
@@ -126,12 +132,45 @@ window.ConsultaProdutosBase = [
     estoqueCd: 40,
     sugestao: 0,
     aRepor: 0,
+    preco: 5.50,
     selecionado: true
   }
 ];
 
-// 4. Catálogo Extra para Inserção Multicritério
+// 4. Catálogo Extra para Inserção Multicritério e Manual
 window.CatalogoExtraProdutos = [
+  {
+    id: 8,
+    ean: '7891149103102',
+    nome: 'Cerveja Skol Pilsen Lata 269ml',
+    categoria: 'Cervejas e Alcoólicos',
+    marca: 'Ambev / Skol',
+    foto: '../assets/images/products/guarana-zero.jpg',
+    estoqueIdeal: 12,
+    minimoCritico: 4,
+    estoqueLoja: 0,
+    estoqueCd: 48,
+    sugestao: 12,
+    aRepor: 12,
+    preco: 3.89,
+    selecionado: true
+  },
+  {
+    id: 9,
+    ean: '7891991002684',
+    nome: 'Refrigerante Zero Açúcar Guaraná Lata 350ml',
+    categoria: 'Refrigerantes',
+    marca: 'Ambev / Antarctica',
+    foto: '../assets/images/products/guarana-zero.jpg',
+    estoqueIdeal: 10,
+    minimoCritico: 2,
+    estoqueLoja: 5,
+    estoqueCd: 36,
+    sugestao: 5,
+    aRepor: 5,
+    preco: 4.20,
+    selecionado: true
+  },
   {
     id: 101,
     ean: '7891000100103',
@@ -145,6 +184,7 @@ window.CatalogoExtraProdutos = [
     estoqueCd: 45,
     sugestao: 10,
     aRepor: 10,
+    preco: 9.90,
     selecionado: true
   },
   {
@@ -160,6 +200,7 @@ window.CatalogoExtraProdutos = [
     estoqueCd: 32,
     sugestao: 7,
     aRepor: 7,
+    preco: 7.50,
     selecionado: true
   },
   {
@@ -175,8 +216,15 @@ window.CatalogoExtraProdutos = [
     estoqueCd: 50,
     sugestao: 14,
     aRepor: 14,
+    preco: 5.90,
     selecionado: true
   }
+];
+
+// Catálogo Mestre Consolidado
+window.CatalogoCompletoProdutos = [
+  ...window.ConsultaProdutosBase,
+  ...window.CatalogoExtraProdutos
 ];
 
 // 5. Lista Base de Pedidos

@@ -42,6 +42,12 @@
       "version": "1.4.0"
     },
     {
+      "id": "pedido-manual",
+      "name": "Pedido de Abastecimento Manual (Em Branco)",
+      "status": "concluido",
+      "version": "1.4.1"
+    },
+    {
       "id": "gerencial",
       "name": "Módulo Gerencial",
       "status": "planejado",

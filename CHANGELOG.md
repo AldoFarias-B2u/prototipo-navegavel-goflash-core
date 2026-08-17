@@ -4,6 +4,25 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.5.0] - 2026-08-17
+### ✨ Adicionado
+- **Fluxo Completo de Pedido de Abastecimento Manual (Em Branco)** ([`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`assets/css/pedido-manual.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/pedido-manual.css), [`assets/js/pedido-manual-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-manual-controller.js)):
+  - **Modal de Parametrização Inicial** no FAB de criação de pedidos para seleção da *Filial Destino* e *Filial Origem* opcional (para transferências entre estoques).
+  - **Hero Card Moderno**: Visualização integrada de filial destino, filial origem, código sequencial automático (`000038`) e abas *PRODUTOS* e *DETALHES*.
+  - **Omnibar Inteligente com Bipe EAN**: Campo unificado para bipe com leitor de código de barras ou busca por texto com dropdown de autocomplete em tempo real.
+  - **Catálogo Modal com Filtros por Categoria**: Inclusão rápida de produtos categorizados (*Bebidas*, *Snacks*, *Doces*, *Cervejas*).
+  - **Controle de Quantidade com Stepper Tátil**: Botões `[-]` e `[+]` de 44px para operação ágil no mobile e edição inline direta no Desktop.
+  - **Controle e Gestão de Lotes / Validades (Shelf-Life)**:
+    - Modal *"GERENCIAR LOTES E VALIDADES"* com barra de progresso animada de alocação de itens (`X / Y un`) e badge de status (*Completo*, *Pendente*, *Excedido*).
+    - Suporte a múltiplos lotes com código, quantidade, data de fabricação e data de validade.
+    - **Validação Estrita de Validade**: Bloqueio de finalização do pedido caso a soma das quantidades dos lotes cadastrados divirja da quantidade informada no item do pedido (`∑ Lotes == Qtde Pedido`).
+  - **Máquina de Estados de Status do ERP**:
+    - Suporte aos status: `Aberto` (rascunho editável), `Pendente de Abastecimento` (em trânsito / bloqueado), `Recebido` (entregue na loja) e `Finalizado` (abastecimento concluído com movimentação de estoque).
+    - Modal de conclusão ao clicar em *CONFIRMAR* oferecendo opções de colocar em trânsito, finalizar imediatamente ou salvar como rascunho.
+  - **Sticky Action Footer**: Barra fixa com resumo de SKUs, total de unidades, valor estimado (`R$`) e ações de finalização.
+
+---
+
 ## [1.4.2] - 2026-08-17
 ### 🎨 Modificado & Melhorado
 - **Refinamento de Responsividade Mobile na Consulta de Abastecimento** ([`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html)):
