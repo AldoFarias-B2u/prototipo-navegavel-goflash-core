@@ -465,9 +465,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btnToggleUnselected.addEventListener('click', () => {
       hideUnselected = !hideUnselected;
       btnToggleUnselected.classList.toggle('active', hideUnselected);
-      btnToggleUnselected.innerHTML = hideUnselected
-        ? '<span class="material-icons">visibility</span> Mostrar Todos'
-        : '<span class="material-icons">visibility_off</span> Ocultar Desmarcados';
+      const icon = hideUnselected ? 'visibility' : 'visibility_off';
+      const label = hideUnselected ? 'Mostrar Todos' : 'Ocultar Desmarcados';
+      btnToggleUnselected.innerHTML = `<span class="material-icons">${icon}</span> <span class="btn-text-unselected">${label}</span>`;
       renderAll();
     });
   }
