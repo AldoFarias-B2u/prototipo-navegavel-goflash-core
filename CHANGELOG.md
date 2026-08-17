@@ -4,6 +4,15 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.4.2] - 2026-08-17
+### 🎨 Modificado & Melhorado
+- **Refinamento de Responsividade Mobile na Consulta de Abastecimento** ([`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html)):
+  - Corrigido o alinhamento da barra de ferramentas e alternador de visualização `[ ≡ | ☷ ]` em telas estreitas (≤ 420px, 396px, 360px), evitando quebras e cortes laterais.
+  - Otimização do espaçamento dos botões de ação e chips de filtro em smartphones.
+  - Suporte a área segura (*safe-area-inset-bottom*) no Sticky Action Footer.
+
+---
+
 ## [1.4.1] - 2026-08-16
 ### 🎨 Modificado & Melhorado
 - **Seleção em Lote na Consulta de Abastecimento** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
