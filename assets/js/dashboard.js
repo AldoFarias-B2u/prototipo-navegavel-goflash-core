@@ -14,7 +14,55 @@ document.addEventListener('DOMContentLoaded', () => {
   if (drawerUserName) drawerUserName.textContent = currentUsername;
   if (popoverUserName) popoverUserName.textContent = currentUsername;
 
-  // 2. Elementos de Interação
+  // 2. Padronização Inteligente do Menu de Atalhos (Popover de 9 Pontos)
+  window.renderStandardAppsPopover = function() {
+    const popover = document.getElementById('appsPopover');
+    if (!popover) return;
+
+    const isInsidePages = window.location.pathname.includes('/pages/') || window.location.pathname.endsWith('.html');
+    const operacaoUrl = isInsidePages ? './operacao.html' : './pages/operacao.html';
+    const dashboardUrl = isInsidePages ? './dashboard.html' : './pages/dashboard.html';
+
+    popover.innerHTML = `
+      <div class="popover-arrow"></div>
+      
+      <!-- Linha Superior -->
+      <div class="apps-row apps-row-top">
+        <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+          <span class="material-icons app-shortcut-icon">insert_chart</span>
+          <span class="app-shortcut-label">GERENCIAL</span>
+        </a>
+
+        <a href="${operacaoUrl}" class="app-shortcut-item" title="Módulo Operação">
+          <span class="material-icons app-shortcut-icon">local_shipping</span>
+          <span class="app-shortcut-label">OPERAÇÃO</span>
+        </a>
+
+        <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+          <span class="material-icons app-shortcut-icon">credit_card</span>
+          <span class="app-shortcut-label">FINANCEIRO</span>
+        </a>
+      </div>
+
+      <!-- Linha Inferior -->
+      <div class="apps-row apps-row-bottom">
+        <a href="${dashboardUrl}" class="app-shortcut-item" title="Home">
+          <span class="material-icons app-shortcut-icon">dashboard</span>
+          <span class="app-shortcut-label">HOME</span>
+        </a>
+
+        <a href="#" class="app-shortcut-item" title="Painel de Controles">
+          <span class="material-icons app-shortcut-icon">tune</span>
+          <span class="app-shortcut-label">PAINEL DE CO...</span>
+        </a>
+      </div>
+    `;
+  };
+
+  // Executa padronização se houver popover na página
+  window.renderStandardAppsPopover();
+
+  // 3. Elementos de Interação
   const topbar = document.getElementById('mainTopbar');
   const menuToggle = document.getElementById('menuToggle');
   const drawer = document.getElementById('goflashDrawer');
@@ -29,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrollFab = document.getElementById('scrollFab');
   const modulesSection = document.getElementById('modulesSection');
 
-  // 3. Controle dos Popovers (Apps & Usuário)
+  // 4. Controle dos Popovers (Apps & Usuário)
   function closeAllPopovers() {
     if (appsPopover) appsPopover.classList.remove('show');
     if (userPopover) userPopover.classList.remove('show');

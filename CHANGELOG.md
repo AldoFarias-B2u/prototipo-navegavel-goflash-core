@@ -4,6 +4,14 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.6.1] - 2026-08-17
+### 🎨 Corrigido & Padronizado
+- **Padronização Inteligente do Menu de Atalhos Principais (Popover de 9 Pontos)** ([`assets/js/dashboard.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/dashboard.js), [`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html)):
+  - **Grid Canônica Unificada de 5 Módulos**: Inclusão de `GERENCIAL`, `OPERAÇÃO`, `FINANCEIRO` (linha superior) e `HOME`, `PAINEL DE CO...` (linha inferior) em todas as telas do sistema.
+  - **Sincronizador Central `renderStandardAppsPopover()`**: Injeção e sincronização automática em tempo de execução via `dashboard.js`, garantindo manutenção em ponto único de verdade (DRY).
+
+---
+
 ## [1.6.0] - 2026-08-17
 ### ✨ Adicionado & Aprimorado
 - **Seleção e Visualização de Pedidos de Abastecimento com Permissões por Status** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`assets/js/pedido-manual-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-manual-controller.js), [`assets/css/pedido-manual.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/pedido-manual.css)):
