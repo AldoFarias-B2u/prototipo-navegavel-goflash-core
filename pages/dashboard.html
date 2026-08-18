@@ -6,10 +6,11 @@
   <meta name="theme-color" content="#23143d">
   <title>Goflash CORE - Painel de Módulos</title>
   
-  <!-- CSS Global, Componentes e Dashboard -->
+  <!-- CSS Global, Componentes, Dashboard e Chat IA -->
   <link rel="stylesheet" href="../assets/css/global.css">
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/ai-chat.css">
 </head>
 <body class="dashboard-page-body">
 
@@ -25,6 +26,12 @@
     </div>
 
     <div class="topbar-right">
+      <!-- Botão de Acesso Rápido GoFlash IA -->
+      <button class="topbar-ai-btn" id="topbarAiBtn" title="Assistente Virtual GoFlash IA" aria-label="GoFlash IA">
+        <span class="material-icons topbar-ai-spark-icon">auto_awesome</span>
+        <span class="topbar-ai-label">GoFlash IA</span>
+      </button>
+
       <!-- Botão Grid de Módulos (9 pontos) -->
       <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
         <span class="material-icons">apps</span>
@@ -69,6 +76,12 @@
           <div class="app-shortcut-item" title="Painel de Controles">
             <span class="material-icons app-shortcut-icon">tune</span>
             <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </div>
+
+          <div class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Falar com a GoFlash IA">
+            <span class="ai-new-badge">NOVO</span>
+            <span class="material-icons app-shortcut-icon">auto_awesome</span>
+            <span class="app-shortcut-label">GOFLASH IA</span>
           </div>
         </div>
 
@@ -130,6 +143,14 @@
         <span>GOFLASH</span>
       </a>
 
+      <!-- Bloco Assistente IA -->
+      <div class="drawer-section-title">Inteligência Artificial</div>
+      <a href="javascript:void(0)" class="drawer-item drawer-item-ai" id="drawerAiItem" title="Abrir Assistente Virtual GoFlash IA">
+        <span class="material-icons">auto_awesome</span>
+        <span>Assistente IA</span>
+        <span class="drawer-ai-tag">NOVO</span>
+      </a>
+
       <hr class="drawer-divider">
 
       <!-- Bloco Módulos -->
@@ -179,10 +200,38 @@
        ======================================================================== -->
   <section class="hero-section" id="heroSection">
     
-    <!-- Centro: Grande Marca D'água Goflash Oficial (logo-homepage.png) -->
+    <!-- Centro: Grande Marca D'água Goflash Oficial e Barra Interativa da IA -->
     <div class="hero-center-content">
       <div class="hero-watermark-wrapper">
         <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="hero-watermark-image">
+      </div>
+
+      <!-- Barra Interativa de Consulta com IA no Hero -->
+      <div class="hero-ai-prompt-container">
+        <div class="hero-ai-prompt-bar" id="heroAiPromptBar" title="Falar com a Inteligência Artificial GoFlash">
+          <span class="material-icons hero-ai-spark-icon">auto_awesome</span>
+          <span class="hero-ai-placeholder">Pergunte à IA do GoMarket ou peça uma sugestão de reposição...</span>
+          <button type="button" class="hero-ai-action-btn">
+            <span>Perguntar</span>
+            <span class="material-icons" style="font-size: 16px;">arrow_forward</span>
+          </button>
+        </div>
+
+        <!-- Chips de Atalhos Rápidos -->
+        <div class="hero-ai-quick-chips">
+          <button type="button" class="hero-ai-chip" data-prompt="Como fazer um pedido de abastecimento para uma loja autônoma?">
+            <span class="material-icons" style="font-size: 14px; color: #ffd600;">local_shipping</span>
+            <span>Como abastecer loja?</span>
+          </button>
+          <button type="button" class="hero-ai-chip" data-prompt="Quais produtos estão com estoque crítico no Mini Mercado 03?">
+            <span class="material-icons" style="font-size: 14px; color: #ff5252;">warning</span>
+            <span>Produtos com estoque crítico</span>
+          </button>
+          <button type="button" class="hero-ai-chip" data-prompt="Qual a diferença entre estoque ideal e estoque crítico?">
+            <span class="material-icons" style="font-size: 14px; color: #69f0ae;">help_outline</span>
+            <span>Estoque ideal vs crítico</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -322,11 +371,92 @@
 
   </section>
 
+  <!-- ========================================================================
+       BOTÃO FLUTUANTE OMNICHANNEL (FAB GOFLASH IA)
+       ======================================================================== -->
+  <button type="button" class="ai-floating-fab" id="aiFloatingFab" title="Falar com a GoFlash IA" aria-label="Assistente Inteligente">
+    <span class="material-icons">auto_awesome</span>
+    <span class="ai-fab-badge-pulse" title="Online"></span>
+  </button>
+
+  <!-- ========================================================================
+       WIDGET DE CHAT COM IA (GOFLASH AI)
+       ======================================================================== -->
+  <div class="ai-chat-backdrop" id="aiChatBackdrop"></div>
+
+  <div class="ai-chat-widget" id="aiChatWidget" role="dialog" aria-label="Assistente Virtual GoFlash IA">
+    <!-- Cabeçalho Roxo com Status Online e Botões de Controle -->
+    <div class="ai-chat-header">
+      <div class="ai-chat-header-info">
+        <div class="ai-avatar-badge">
+          <span class="material-icons">auto_awesome</span>
+          <span class="ai-online-status-dot"></span>
+        </div>
+        <div class="ai-chat-titles">
+          <span class="ai-chat-title-main">
+            GoFlash AI
+            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.2); padding: 1px 6px; border-radius: 10px; font-weight: 500;">B2U</span>
+          </span>
+          <span class="ai-chat-title-sub">Assistente Virtual Inteligente</span>
+        </div>
+      </div>
+      <div class="ai-chat-header-actions">
+        <button type="button" class="ai-chat-header-btn" id="btnMinimizeAiChat" title="Minimizar">
+          <span class="material-icons">remove</span>
+        </button>
+        <button type="button" class="ai-chat-header-btn" id="btnCloseAiChat" title="Fechar Chat">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Feed / Área de Mensagens -->
+    <div class="ai-chat-body" id="aiChatBody">
+      <!-- Mensagem Inicial de Boas-vindas -->
+      <div class="ai-msg-row bot">
+        <div class="ai-msg-avatar">
+          <span class="material-icons">auto_awesome</span>
+        </div>
+        <div class="ai-msg-bubble">
+          <p>Olá, <strong>B2U</strong>! Sou o <strong>GoFlash AI</strong>, seu copiloto inteligente para gestão de lojas autônomas e operações.</p>
+          <p>Como posso ajudar você hoje? Você pode digitar sua pergunta abaixo ou clicar em uma das sugestões rápidas:</p>
+          
+          <!-- Chips de Sugestões Iniciais -->
+          <div class="ai-chat-suggestions-wrap" id="aiChatSuggestions">
+            <!-- Renderizado dinamicamente via ai-chat-controller.js -->
+          </div>
+          <div class="ai-msg-time">Agora &bull; GoFlash AI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rodapé de Input -->
+    <div class="ai-chat-footer">
+      <form class="ai-chat-input-form" id="aiChatForm">
+        <input 
+          type="text" 
+          id="aiChatInput" 
+          class="ai-chat-input" 
+          placeholder="Pergunte sobre produtos, estoque, pedidos..." 
+          autocomplete="off"
+        >
+        <button type="submit" class="ai-chat-send-btn" title="Enviar Mensagem">
+          <span class="material-icons">send</span>
+        </button>
+      </form>
+      <div class="ai-footer-footnote">
+        GoFlash AI &bull; IA experimental integrada ao ecossistema GoMarket B2U
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="../assets/js/version.js"></script>
   <script src="../assets/js/toast.js"></script>
   <script src="../assets/js/auth.js"></script>
   <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/ai-chat-knowledge.js"></script>
+  <script src="../assets/js/ai-chat-controller.js"></script>
   <script src="../assets/js/dashboard.js"></script>
 </body>
 </html>

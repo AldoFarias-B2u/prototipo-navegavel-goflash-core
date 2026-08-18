@@ -27,7 +27,8 @@ Protótipo Navegavel Core/
 │   │   ├── dashboard.css     # Estilos da Home (Hero, Topbar dinâmico, Cards e Drawer)
 │   │   ├── module-view.css   # Template CSS unificado para todas as páginas de módulos
 │   │   ├── abastecimento.css # Estilos de planos e pedidos de abastecimento
-│   │   └── consulta-abastecimento.css # Layout da tela de consulta, steppers táteis e sticky footer
+│   │   ├── consulta-abastecimento.css # Layout da tela de consulta, steppers táteis e sticky footer
+│   │   └── ai-chat.css       # Design System do Chat com IA (GoFlash AI) e FAB
 │   ├── js/
 │   │   ├── auth.js           # Gerenciador de autenticação, sessão e navegação protegida
 │   │   ├── toast.js          # Sistema leve de notificações com auto-dismiss
@@ -37,6 +38,8 @@ Protótipo Navegavel Core/
 │   │   ├── abastecimento-controller.js # Controlador de planos de abastecimento
 │   │   ├── pedidos-abastecimento-controller.js # Controlador da listagem de pedidos
 │   │   ├── consulta-abastecimento-controller.js # Controlador da tela avançada de consulta
+│   │   ├── ai-chat-knowledge.js # Base de conhecimento e respostas simuladas da IA
+│   │   ├── ai-chat-controller.js # Controlador do chat com IA, histórico e interações
 │   │   ├── version.js        # Script de sincronização dinâmica da versão no DOM
 │   │   └── data/
 │   │       ├── abastecimento-mock.js # Mock de dados de planos de abastecimento
