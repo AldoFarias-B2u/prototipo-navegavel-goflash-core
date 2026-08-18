@@ -39,7 +39,8 @@ Protótipo Navegavel Core/
 │   │   ├── pedidos-abastecimento-controller.js # Controlador da listagem de pedidos
 │   │   ├── consulta-abastecimento-controller.js # Controlador da tela avançada de consulta
 │   │   ├── ai-chat-knowledge.js # Base de conhecimento e respostas simuladas da IA
-│   │   ├── ai-chat-controller.js # Controlador do chat com IA, histórico e interações
+│   │   ├── ai-chat-controller.js # Controlador do widget flutuante de IA
+│   │   ├── ai-chat-fullscreen-controller.js # Controlador da página exclusiva de Chat IA
 │   │   ├── version.js        # Script de sincronização dinâmica da versão no DOM
 │   │   └── data/
 │   │       ├── abastecimento-mock.js # Mock de dados de planos de abastecimento
@@ -50,6 +51,7 @@ Protótipo Navegavel Core/
 │   └── design-system.md      # Especificação viva do Design System
 ├── pages/
 │   ├── dashboard.html        # Página principal (Home Page)
+│   ├── chat-ia.html          # Página Exclusiva do Assistente GoFlash IA (Full-Screen)
 │   ├── operacao.html         # Página do Módulo de Operação
 │   ├── planos-abastecimento.html # Tela de Planos de Abastecimento
 │   ├── pedidos-abastecimento.html # Tela Oficial de Pedidos de Abastecimento

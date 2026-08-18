@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isInsidePages = window.location.pathname.includes('/pages/') || window.location.pathname.endsWith('.html');
     const operacaoUrl = isInsidePages ? './operacao.html' : './pages/operacao.html';
     const dashboardUrl = isInsidePages ? './dashboard.html' : './pages/dashboard.html';
+    const chatIaUrl = isInsidePages ? './chat-ia.html' : './pages/chat-ia.html';
 
     popover.innerHTML = `
       <div class="popover-arrow"></div>
@@ -56,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="app-shortcut-label">PAINEL DE CO...</span>
         </a>
 
-        <div class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Falar com a GoFlash IA" style="cursor: pointer;">
+        <a href="${chatIaUrl}" class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Assistente GoFlash IA">
           <span class="ai-new-badge">NOVO</span>
           <span class="material-icons app-shortcut-icon">auto_awesome</span>
           <span class="app-shortcut-label">GOFLASH IA</span>
-        </div>
+        </a>
       </div>
     `;
   };

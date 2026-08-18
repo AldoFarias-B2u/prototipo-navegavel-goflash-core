@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Assistente GoFlash IA</title>
+  
+  <!-- CSS Global, Componentes, Dashboard e Chat IA -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/ai-chat.css">
+</head>
+<body class="ai-fullscreen-body">
+
+  <!-- ========================================================================
+       TOPBAR SUPERIOR (FIXO & DINÂMICO)
+       ======================================================================== -->
+  <header class="ai-fullscreen-topbar" id="mainTopbar">
+    <div class="ai-topbar-brand">
+      <button class="topbar-btn" id="menuToggle" title="Menu Principal" aria-label="Abrir Menu">
+        <span class="material-icons">menu</span>
+      </button>
+
+      <button class="topbar-btn btn-nav-back" data-nav="back" data-fallback-url="./dashboard.html" title="Voltar ao Painel" aria-label="Voltar">
+        <span class="material-icons">arrow_back</span>
+      </button>
+
+      <div class="ai-topbar-title">
+        <span class="material-icons" style="color: #ffd600; font-size: 20px;">auto_awesome</span>
+        <span>GOFLASH AI</span>
+        <span class="ai-copilot-tag">&bull; COPILOTO INTELIGENTE</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Botão Grid de Módulos (9 pontos) -->
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <!-- Botão Avatar do Usuário -->
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <div class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </div>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+          <div class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </div>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+          <div class="app-shortcut-item" title="Painel de Controles">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </div>
+          <a href="./chat-ia.html" class="app-shortcut-item app-shortcut-item-ai" title="Assistente GoFlash IA">
+            <span class="ai-new-badge">NOVO</span>
+            <span class="material-icons app-shortcut-icon">auto_awesome</span>
+            <span class="app-shortcut-label">GOFLASH IA</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Usuário -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name" id="popoverUserName">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL DO SISTEMA
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name" id="drawerUserName">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <a href="./dashboard.html" class="drawer-item">
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
+        <span>GOFLASH</span>
+      </a>
+
+      <div class="drawer-section-title">Inteligência Artificial</div>
+      <a href="./chat-ia.html" class="drawer-item drawer-item-ai active" title="Assistente GoFlash IA">
+        <span class="material-icons">auto_awesome</span>
+        <span>Assistente IA</span>
+        <span class="drawer-ai-tag">NOVO</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <div class="drawer-section-title">Módulos</div>
+      <a href="./dashboard.html#modulesSection" class="drawer-item">
+        <span class="material-icons">insert_chart</span>
+        <span>Gerencial</span>
+      </a>
+      <a href="./operacao.html" class="drawer-item">
+        <span class="material-icons">local_shipping</span>
+        <span>Operação</span>
+      </a>
+      <a href="./dashboard.html#modulesSection" class="drawer-item">
+        <span class="material-icons">credit_card</span>
+        <span>Financeiro</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <div class="drawer-section-title">Encerrar</div>
+      <a href="#" class="drawer-item action-logout">
+        <span class="material-icons">exit_to_app</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       LAYOUT PRINCIPAL EM 2 COLUNAS (TELA CHEIA)
+       ======================================================================== -->
+  <div class="ai-fullscreen-layout">
+    
+    <!-- 1. Coluna Lateral (Tópicos Rápidos & Histórico) -->
+    <aside class="ai-chat-sidebar">
+      <div class="ai-sidebar-top-action">
+        <button type="button" class="btn-ai-new-chat" id="btnNewChat" title="Iniciar Nova Sessão">
+          <span class="material-icons">add_comment</span>
+          <span>Nova Conversa</span>
+        </button>
+      </div>
+
+      <div class="ai-sidebar-content">
+        <!-- Seção Tópicos Rápidos -->
+        <div class="ai-sidebar-section">
+          <div class="ai-sidebar-section-title">
+            <span class="material-icons">explore</span>
+            <span>Tópicos Rápidos</span>
+          </div>
+          <div class="ai-sidebar-topics-list">
+            <button type="button" class="ai-sidebar-topic-item" data-query="Como fazer um pedido de abastecimento para uma loja autônoma?">
+              <span class="material-icons">local_shipping</span>
+              <span>Pedidos de Abastecimento</span>
+            </button>
+            <button type="button" class="ai-sidebar-topic-item" data-query="Quais produtos estão com estoque crítico no Mini Mercado 03?">
+              <span class="material-icons">warning</span>
+              <span>Estoque Crítico & Ruptura</span>
+            </button>
+            <button type="button" class="ai-sidebar-topic-item" data-query="Qual a diferença entre estoque ideal e estoque crítico?">
+              <span class="material-icons">tune</span>
+              <span>Planos e Grades de Lojas</span>
+            </button>
+            <button type="button" class="ai-sidebar-topic-item" data-query="O que posso fazer no Módulo de Operação?">
+              <span class="material-icons">view_quilt</span>
+              <span>Módulo de Operação</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Seção Histórico da Sessão -->
+        <div class="ai-sidebar-section">
+          <div class="ai-sidebar-section-title">
+            <span class="material-icons">history</span>
+            <span>Perguntas Recentes</span>
+          </div>
+          <div class="ai-sidebar-topics-list" id="aiHistoryList">
+            <div style="font-size: 0.78rem; color: #9e9e9e; padding: 4px 10px;">Nenhuma pergunta recente ainda.</div>
+          </div>
+        </div>
+
+        <!-- Card de Rodapé da Sidebar -->
+        <div class="ai-sidebar-footer-card">
+          <span class="material-icons">smart_toy</span>
+          <p><strong>GoFlash AI v1.0</strong><br>Assistente integrado com dados em tempo real do ecossistema GoMarket ERP.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 2. Área Conversacional Central -->
+    <main class="ai-chat-main-area">
+      
+      <!-- Feed de Mensagens Centralizado -->
+      <div class="ai-fullscreen-chat-feed" id="aiFullscreenChatFeed">
+        
+        <!-- Welcome Hero Inicial -->
+        <div class="ai-fullscreen-welcome-hero" id="aiFullscreenWelcomeHero">
+          <div class="ai-welcome-spark-circle">
+            <span class="material-icons">auto_awesome</span>
+          </div>
+          <h1 class="ai-welcome-title">Olá, B2U! Como posso acelerar sua gestão hoje?</h1>
+          <p class="ai-welcome-subtitle">
+            Sou o copiloto inteligente do <strong>GoMarket CORE</strong>. Escolha um dos atalhos abaixo ou faça qualquer pergunta sobre produtos, reposições e estoques.
+          </p>
+
+          <!-- Grid de Sugestões Rápidas -->
+          <div class="ai-suggestion-cards-grid">
+            <div class="ai-suggestion-card" data-query="Como fazer um pedido de abastecimento para uma loja autônoma?">
+              <div class="ai-card-icon-title">
+                <span class="material-icons" style="color: #6530b5;">local_shipping</span>
+                <span>Como fazer um Pedido de Abastecimento?</span>
+              </div>
+              <p class="ai-card-desc">Passo a passo com tela de consulta inteligente e bipe de código de barras.</p>
+            </div>
+
+            <div class="ai-suggestion-card" data-query="Quais produtos estão com estoque crítico no Mini Mercado 03?">
+              <div class="ai-card-icon-title">
+                <span class="material-icons" style="color: #d32f2f;">warning</span>
+                <span>Quais produtos estão com estoque crítico?</span>
+              </div>
+              <p class="ai-card-desc">Identifique itens com risco de ruptura imediata na gôndola.</p>
+            </div>
+
+            <div class="ai-suggestion-card" data-query="Qual a diferença entre estoque ideal e estoque crítico?">
+              <div class="ai-card-icon-title">
+                <span class="material-icons" style="color: #00897b;">help_outline</span>
+                <span>Estoque Ideal vs Mínimo Crítico</span>
+              </div>
+              <p class="ai-card-desc">Entenda como o ERP calcula as sugestões automáticas de reposição.</p>
+            </div>
+
+            <div class="ai-suggestion-card" data-query="Abrir tela de pedidos de abastecimento">
+              <div class="ai-card-icon-title">
+                <span class="material-icons" style="color: #1976d2;">arrow_forward</span>
+                <span>Ir para Pedidos de Abastecimento</span>
+              </div>
+              <p class="ai-card-desc">Acesso direto à listagem oficial de pedidos e relatórios de envio.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Entrada Fixa na Base -->
+      <div class="ai-fullscreen-input-wrapper">
+        <form class="ai-fullscreen-input-box" id="aiFullscreenForm">
+          <span class="material-icons" style="color: #6530b5; font-size: 24px;">auto_awesome</span>
+          <input 
+            type="text" 
+            id="aiFullscreenInput" 
+            class="ai-fullscreen-input" 
+            placeholder="Pergunte sobre produtos, estoque, pedidos, lojas ou navegação..." 
+            autocomplete="off"
+            aria-label="Pergunta para GoFlash IA"
+          >
+          <button type="submit" class="btn-ai-fullscreen-send" title="Enviar Mensagem">
+            <span class="material-icons">send</span>
+          </button>
+        </form>
+        <div class="ai-fullscreen-disclaimer">
+          GoFlash AI Copilot &bull; Inteligência Artificial integrada ao ecossistema GoMarket B2U Sistemas
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/ai-chat-knowledge.js"></script>
+  <script src="../assets/js/ai-chat-fullscreen-controller.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>
