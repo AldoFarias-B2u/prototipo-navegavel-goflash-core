@@ -302,3 +302,167 @@
 .animate-shake {
   animation: cardShake 0.45s ease-in-out;
 }
+
+/* --------------------------------------------------------------------------
+   TOGGLE SWITCH (CHAVE LIGA/DESLIGA MODERNA)
+   -------------------------------------------------------------------------- */
+.toggle-switch-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.toggle-switch-slider {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background-color: #cfd8dc;
+  border-radius: 20px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.toggle-switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-switch-input:checked + .toggle-switch-slider {
+  background-color: #6530b5;
+}
+
+.toggle-switch-input:checked + .toggle-switch-slider::before {
+  transform: translateX(22px);
+}
+
+.toggle-switch-input:focus-visible + .toggle-switch-slider {
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.25);
+}
+
+.toggle-switch-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.toggle-switch-status {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.toggle-switch-status.status-on {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.toggle-switch-status.status-off {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+/* --------------------------------------------------------------------------
+   CARDS DE GRUPO DE PARAMETRIZAÇÕES
+   -------------------------------------------------------------------------- */
+.settings-group-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-card, 0 1px 4px rgba(0, 0, 0, 0.08));
+  border: 1px solid #e8eaf0;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.settings-group-header {
+  padding: 16px 20px;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e8eaf0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settings-group-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #212121;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.settings-group-title .material-icons {
+  font-size: 20px;
+  color: #6530b5;
+}
+
+.settings-group-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background-color: #ede7f6;
+  color: #6530b5;
+}
+
+.settings-group-body {
+  padding: 8px 20px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f2f7;
+  gap: 16px;
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-row-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.settings-row-desc {
+  font-size: 0.8rem;
+  color: #6c757d;
+  line-height: 1.4;
+}
+

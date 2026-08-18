@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#23143d">
+  <title>Goflash CORE - Parametrizações do Protótipo</title>
+  
+  <!-- CSS Global, Componentes, Dashboard e Module-View -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+</head>
+<body class="module-page-body" style="background-color: #f1f3f6;">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR
+       ======================================================================== -->
+  <header class="module-topbar" id="mainTopbar">
+    <div class="module-topbar-left">
+      <button class="topbar-btn" id="menuToggle" title="Menu Principal" aria-label="Abrir Menu">
+        <span class="material-icons">menu</span>
+      </button>
+      <button class="topbar-btn btn-nav-back" data-nav="back" data-fallback-url="./dashboard.html" title="Voltar ao Painel" aria-label="Voltar">
+        <span class="material-icons">arrow_back</span>
+      </button>
+      <span class="module-page-title">Parametrizações do Protótipo</span>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <div class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </div>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+          <div class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </div>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+          <a href="./parametrizacoes.html" class="app-shortcut-item active" title="Parametrizações">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PARAMETRIZ...</span>
+          </a>
+          <a href="./chat-ia.html" class="app-shortcut-item app-shortcut-item-ai" title="Assistente GoFlash IA">
+            <span class="ai-new-badge">NOVO</span>
+            <span class="material-icons app-shortcut-icon">auto_awesome</span>
+            <span class="app-shortcut-label">GOFLASH IA</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Usuário -->
+      <div class="popover-container" id="userPopover" role="dialog" aria-label="Menu do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <span class="user-popover-name" id="popoverUserName">B2U</span>
+            <span class="user-popover-role">Administradores do Sistema</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <button class="user-popover-config-btn" title="Configurações">
+            <span class="material-icons">tune</span>
+          </button>
+          <button class="user-popover-logout-btn action-logout" title="Sair do Sistema">
+            SAIR
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SIDEBAR / DRAWER LATERAL
+       ======================================================================== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <aside class="goflash-drawer" id="goflashDrawer" aria-label="Navegação Lateral">
+    <div class="drawer-header">
+      <div class="drawer-header-top">
+        <span class="material-icons drawer-avatar-icon">account_circle</span>
+        <img src="../assets/images/logo-homepage.png" alt="Goflash Logo" class="drawer-header-logo">
+      </div>
+      <div class="drawer-user-info-bottom">
+        <div class="drawer-user-name" id="drawerUserName">B2U</div>
+        <div class="drawer-version-tag">1.9.4.0</div>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <a href="./dashboard.html" class="drawer-item">
+        <svg class="goflash-symbol-icon" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M 50 10 C 54 28 66 40 85 45 C 68 50 56 62 51 80 C 46 62 34 50 15 45 C 32 40 44 28 50 10 Z" />
+        </svg>
+        <span>GOFLASH</span>
+      </a>
+
+      <!-- Bloco Assistente IA -->
+      <div class="drawer-section-title">Inteligência Artificial</div>
+      <a href="./chat-ia.html" class="drawer-item drawer-item-ai" title="Assistente GoFlash IA">
+        <span class="material-icons">auto_awesome</span>
+        <span>Assistente IA</span>
+        <span class="drawer-ai-tag">NOVO</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <!-- Bloco Módulos -->
+      <div class="drawer-section-title">Módulos</div>
+      <a href="./dashboard.html#modulesSection" class="drawer-item">
+        <span class="material-icons">insert_chart</span>
+        <span>Gerencial</span>
+      </a>
+      <a href="./operacao.html" class="drawer-item">
+        <span class="material-icons">local_shipping</span>
+        <span>Operação</span>
+      </a>
+      <a href="./dashboard.html#modulesSection" class="drawer-item">
+        <span class="material-icons">credit_card</span>
+        <span>Financeiro</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <!-- Bloco Configurações -->
+      <div class="drawer-section-title">Configurações</div>
+      <a href="./parametrizacoes.html" class="drawer-item active" title="Parametrizações do Protótipo e Feature Flags">
+        <span class="material-icons">toggle_on</span>
+        <span>Parametrizações</span>
+      </a>
+      <a href="#" class="drawer-item" title="Painel de Controles">
+        <span class="material-icons">tune</span>
+        <span>Painel de Controles</span>
+      </a>
+      <a href="#" class="drawer-item" title="Sobre o Sistema">
+        <span class="material-icons">more_horiz</span>
+        <span>Sobre</span>
+      </a>
+
+      <hr class="drawer-divider">
+
+      <!-- Bloco Encerrar -->
+      <div class="drawer-section-title">Encerrar</div>
+      <a href="#" class="drawer-item action-logout">
+        <span class="material-icons">exit_to_app</span>
+        <span>Sair</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL (PAINEL DE PARAMETRIZAÇÕES)
+       ======================================================================== -->
+  <main style="max-width: 1040px; margin: 0 auto; padding: 24px 20px 48px 20px;">
+    
+    <!-- Cabeçalho Informativo -->
+    <div style="margin-bottom: 24px; display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="material-icons" style="color: #6530b5; font-size: 28px;">toggle_on</span>
+        <h1 style="font-size: 1.5rem; font-weight: 700; color: #212121; margin: 0;">Parametrizações do Protótipo</h1>
+      </div>
+      <p style="font-size: 0.88rem; color: #5f6368; margin: 0; line-height: 1.5;">
+        Controle em tempo real a ativação e demonstração de funcionalidades, módulos em desenvolvimento e recursos visuais do <strong>Goflash CORE</strong>.
+      </p>
+    </div>
+
+    <!-- Barra de Ações & Status -->
+    <div style="background-color: #ffffff; border: 1px solid #e0e4ec; border-radius: 8px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 0.85rem; font-weight: 600; color: #333333;">Status do Ambiente:</span>
+        <span id="activeFlagsCounter" style="background-color: #ede7f6; color: #6530b5; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 12px;">
+          Carregando...
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="btnResetFlags" style="background: transparent; border: 1px solid #dce0e8; color: #5f6368; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all var(--transition-fast);">
+          <span class="material-icons" style="font-size: 16px;">restart_alt</span>
+          Restaurar Padrões da Versão
+        </button>
+      </div>
+    </div>
+
+    <!-- GRUPO 1: INTELIGÊNCIA ARTIFICIAL (GOFLASH AI) -->
+    <section class="settings-group-card">
+      <div class="settings-group-header">
+        <h2 class="settings-group-title">
+          <span class="material-icons" style="color: #6530b5;">auto_awesome</span>
+          Inteligência Artificial (GoFlash AI)
+        </h2>
+        <span class="settings-group-badge">Assistente Virtual</span>
+      </div>
+      <div class="settings-group-body">
+        
+        <!-- Flag 1: Chat Fullscreen -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Página de Chat em Tela Cheia</span>
+            <span class="settings-row-desc">Habilita a tela dedicada do assistente inteligente com feed amplo e histórico (pages/chat-ia.html).</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="ai_chat_fullscreen">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_ai_chat_fullscreen">ON</span>
+          </label>
+        </div>
+
+        <!-- Flag 2: FAB Flutuante -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Botão Flutuante (FAB IA) nas Telas</span>
+            <span class="settings-row-desc">Exibe o botão circular de acesso rápido no canto inferior direito das telas Home e Operação.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="ai_chat_fab">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_ai_chat_fab">ON</span>
+          </label>
+        </div>
+
+        <!-- Flag 3: Botão Topbar -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Atalho Rápido na Topbar Superior</span>
+            <span class="settings-row-desc">Exibe o botão "GoFlash IA" ao lado dos atalhos no cabeçalho superior.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="ai_chat_topbar">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_ai_chat_topbar">ON</span>
+          </label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- GRUPO 2: OPERAÇÃO & ABASTECIMENTO -->
+    <section class="settings-group-card">
+      <div class="settings-group-header">
+        <h2 class="settings-group-title">
+          <span class="material-icons" style="color: #6530b5;">local_shipping</span>
+          Operação & Abastecimento (Lojas Autônomas)
+        </h2>
+        <span class="settings-group-badge">Core Operacional</span>
+      </div>
+      <div class="settings-group-body">
+        
+        <!-- Flag 4: Pedidos de Abastecimento -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Gestão de Pedidos de Abastecimento</span>
+            <span class="settings-row-desc">Listagem oficial de pedidos, filtros por filial, cards de status e visualização de itens.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="operacao_pedidos">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_operacao_pedidos">ON</span>
+          </label>
+        </div>
+
+        <!-- Flag 5: Consulta Avançada com Bipe -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Consulta Avançada com Bipe e Steppers</span>
+            <span class="settings-row-desc">Tela de cálculo inteligente de reposição com filtros rápidos, bipe de código de barras e rodapé sticky.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="operacao_consulta_bipe">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_operacao_consulta_bipe">ON</span>
+          </label>
+        </div>
+
+        <!-- Flag 6: Planos e Edição em Lote -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Planos de Abastecimento & Modo de Edição</span>
+            <span class="settings-row-desc">Grade de produtos por filial, steppers de estoque ideal/mínimo e barra de ações em lote.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="operacao_planos_edicao">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_operacao_planos_edicao">ON</span>
+          </label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- GRUPO 3: MÓDULOS ESTRATÉGICOS (ROADMAP) -->
+    <section class="settings-group-card">
+      <div class="settings-group-header">
+        <h2 class="settings-group-title">
+          <span class="material-icons" style="color: #6530b5;">timeline</span>
+          Módulos do Roadmap (Estratégicos)
+        </h2>
+        <span class="settings-group-badge" style="background-color: #fff3e0; color: #e65100;">Em Desenvolvimento</span>
+      </div>
+      <div class="settings-group-body">
+        
+        <!-- Flag 7: Módulo Gerencial -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Módulo Gerencial (Dashboards & Reports)</span>
+            <span class="settings-row-desc">Indicadores executivos, painéis de vendas, tickets médios e análises de desempenho.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="gerencial_module">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_gerencial_module">OFF</span>
+          </label>
+        </div>
+
+        <!-- Flag 8: Módulo Financeiro -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Módulo Financeiro (DRE & Fiscal)</span>
+            <span class="settings-row-desc">Gestão de contas, conciliação bancária, fluxo de caixa e emissão de notas fiscais.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="financeiro_module">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_financeiro_module">OFF</span>
+          </label>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- GRUPO 4: USABILIDADE & FEEDBACK -->
+    <section class="settings-group-card">
+      <div class="settings-group-header">
+        <h2 class="settings-group-title">
+          <span class="material-icons" style="color: #6530b5;">touch_app</span>
+          Comportamento & Usabilidade
+        </h2>
+        <span class="settings-group-badge">Ergonomia</span>
+      </div>
+      <div class="settings-group-body">
+        
+        <!-- Flag 9: Efeitos Sonoros -->
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <span class="settings-row-title">Feedback Sonoro (Bipe de Leitura)</span>
+            <span class="settings-row-desc">Sons de confirmação ao bipar produtos na consulta e ao finalizar pedidos.</span>
+          </div>
+          <label class="toggle-switch-container">
+            <input type="checkbox" class="toggle-switch-input" data-flag="sound_effects">
+            <span class="toggle-switch-slider"></span>
+            <span class="toggle-switch-status" id="status_sound_effects">ON</span>
+          </label>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/feature-flags.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Guarda de autenticação
+      if (typeof Auth !== 'undefined') Auth.requireAuth();
+
+      const switchInputs = document.querySelectorAll('.toggle-switch-input');
+      const counterBadge = document.getElementById('activeFlagsCounter');
+      const btnReset = document.getElementById('btnResetFlags');
+
+      /**
+       * Atualiza a interface com base no estado atual das flags
+       */
+      function refreshUI() {
+        const flags = FeatureFlags.getAll();
+        let activeCount = 0;
+        let totalCount = 0;
+
+        switchInputs.forEach(input => {
+          const key = input.getAttribute('data-flag');
+          const isChecked = !!flags[key];
+          input.checked = isChecked;
+
+          // Atualiza status label
+          const statusSpan = document.getElementById(`status_${key}`);
+          if (statusSpan) {
+            statusSpan.textContent = isChecked ? 'ATIVO' : 'INATIVO';
+            statusSpan.className = `toggle-switch-status ${isChecked ? 'status-on' : 'status-off'}`;
+          }
+
+          if (isChecked) activeCount++;
+          totalCount++;
+        });
+
+        if (counterBadge) {
+          counterBadge.textContent = `${activeCount} de ${totalCount} recursos ativos`;
+        }
+      }
+
+      // 2. Registro de eventos nos switches
+      switchInputs.forEach(input => {
+        input.addEventListener('change', (e) => {
+          const key = input.getAttribute('data-flag');
+          const value = input.checked;
+          FeatureFlags.set(key, value);
+          refreshUI();
+
+          if (typeof Toast !== 'undefined') {
+            Toast.success(`Parametrização atualizada: "${key}" ${value ? 'ativada' : 'desativada'}.`);
+          }
+        });
+      });
+
+      // 3. Botão Restaurar Padrões
+      if (btnReset) {
+        btnReset.addEventListener('click', () => {
+          FeatureFlags.resetDefaults();
+          refreshUI();
+          if (typeof Toast !== 'undefined') {
+            Toast.info('Todas as parametrizações foram restauradas para o padrão da versão.');
+          }
+        });
+      }
+
+      refreshUI();
+    });
+  </script>
+</body>
+</html>

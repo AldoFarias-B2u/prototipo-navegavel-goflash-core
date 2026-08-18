@@ -41,6 +41,7 @@ Protótipo Navegavel Core/
 │   │   ├── ai-chat-knowledge.js # Base de conhecimento e respostas simuladas da IA
 │   │   ├── ai-chat-controller.js # Controlador do widget flutuante de IA
 │   │   ├── ai-chat-fullscreen-controller.js # Controlador da página exclusiva de Chat IA
+│   │   ├── feature-flags.js  # Gerenciador de Feature Flags e ativação de módulos
 │   │   ├── version.js        # Script de sincronização dinâmica da versão no DOM
 │   │   └── data/
 │   │       ├── abastecimento-mock.js # Mock de dados de planos de abastecimento
@@ -55,7 +56,8 @@ Protótipo Navegavel Core/
 │   ├── operacao.html         # Página do Módulo de Operação
 │   ├── planos-abastecimento.html # Tela de Planos de Abastecimento
 │   ├── pedidos-abastecimento.html # Tela Oficial de Pedidos de Abastecimento
-│   └── consulta-abastecimento.html # Tela Avançada de Consulta para Abastecimento
+│   ├── consulta-abastecimento.html # Tela Avançada de Consulta para Abastecimento
+│   └── parametrizacoes.html  # Painel de Parametrizações e Feature Flags do Protótipo
 ├── index.html                # Ponto de entrada (Tela de Login)
 ├── version.json              # Fonte de verdade de versão e status dos módulos
 ├── CHANGELOG.md              # Registro histórico de alterações (SemVer)
