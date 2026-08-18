@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const operacaoUrl = isInsidePages ? './operacao.html' : './pages/operacao.html';
     const dashboardUrl = isInsidePages ? './dashboard.html' : './pages/dashboard.html';
     const chatIaUrl = isInsidePages ? './chat-ia.html' : './pages/chat-ia.html';
+    const parametrizacoesUrl = isInsidePages ? './parametrizacoes.html' : './pages/parametrizacoes.html';
+
+    const isAiActive = (typeof FeatureFlags === 'undefined') || (FeatureFlags.get('ai_chat_fullscreen') && FeatureFlags.get('ai_chat_topbar'));
 
     popover.innerHTML = `
       <div class="popover-arrow"></div>
@@ -52,16 +55,23 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="app-shortcut-label">HOME</span>
         </a>
 
-        <a href="#" class="app-shortcut-item" title="Painel de Controles">
+        <a href="${parametrizacoesUrl}" class="app-shortcut-item" title="Parametrizações">
           <span class="material-icons app-shortcut-icon">tune</span>
-          <span class="app-shortcut-label">PAINEL DE CO...</span>
+          <span class="app-shortcut-label">PARAMETRIZ...</span>
         </a>
 
+        ${isAiActive ? `
         <a href="${chatIaUrl}" class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Assistente GoFlash IA">
           <span class="ai-new-badge">NOVO</span>
           <span class="material-icons app-shortcut-icon">auto_awesome</span>
           <span class="app-shortcut-label">GOFLASH IA</span>
         </a>
+        ` : `
+        <a href="#" class="app-shortcut-item" title="Sobre o Sistema">
+          <span class="material-icons app-shortcut-icon">more_horiz</span>
+          <span class="app-shortcut-label">SOBRE</span>
+        </a>
+        `}
       </div>
     `;
   };

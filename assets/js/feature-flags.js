@@ -11,7 +11,7 @@ const FeatureFlags = (function () {
     // 1. Inteligência Artificial
     ai_chat_fullscreen: true,       // Página de Chat com IA em Tela Cheia (chat-ia.html)
     ai_chat_fab: true,              // Botão Flutuante (FAB IA) nas Telas
-    ai_chat_topbar: true,           // Botão de Atalho GoFlash IA no Topbar
+    ai_chat_topbar: true,           // Botão de Atalho GoFlash IA no Topbar / Popover
 
     // 2. Operação & Abastecimento
     operacao_pedidos: true,         // Listagem e Detalhes de Pedidos de Abastecimento
@@ -90,38 +90,87 @@ const FeatureFlags = (function () {
   }
 
   /**
-   * Aplica as flags diretamente no DOM (elementos com data-feature-flag="key")
+   * Aplica as flags diretamente no DOM de forma abrangente e dinâmica
    */
   function applyToDOM() {
     const flags = getAll();
     
-    // 1. Elementos com atributo declarativo data-feature-flag
+    // 1. Elementos declarativos genéricos com data-feature-flag
     const elements = document.querySelectorAll('[data-feature-flag]');
     elements.forEach(el => {
       const flagName = el.getAttribute('data-feature-flag');
       const isEnabled = flags[flagName] !== undefined ? flags[flagName] : true;
-      if (isEnabled) {
-        el.style.display = '';
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = isEnabled ? '' : 'none';
     });
 
-    // 2. Comportamento do FAB de IA
+    // 2. FLAG: ai_chat_fullscreen (Controla o item do Chat IA no Drawer Lateral)
+    const isFullscreenAiActive = !!flags.ai_chat_fullscreen;
+    const drawerAiSections = document.querySelectorAll('.drawer-section-ai, .drawer-section-title:has(+ .drawer-item-ai)');
+    const drawerAiItems = document.querySelectorAll('.drawer-item-ai');
+    const drawerAiDividers = document.querySelectorAll('.drawer-divider-ai');
+
+    drawerAiSections.forEach(el => {
+      el.style.display = isFullscreenAiActive ? '' : 'none';
+    });
+    drawerAiItems.forEach(el => {
+      el.style.display = isFullscreenAiActive ? '' : 'none';
+    });
+    drawerAiDividers.forEach(el => {
+      el.style.display = isFullscreenAiActive ? '' : 'none';
+    });
+
+    // 3. FLAG: ai_chat_fab (Controla o Botão Flutuante e Widget na Home e Operação)
+    const isFabActive = !!flags.ai_chat_fab;
     const aiFabs = document.querySelectorAll('.ai-floating-fab, #aiFloatingFab');
+    const aiWidgets = document.querySelectorAll('.ai-chat-widget, #aiChatWidget');
+    const aiBackdrops = document.querySelectorAll('.ai-chat-backdrop, #aiChatBackdrop');
+
     aiFabs.forEach(fab => {
-      fab.style.display = flags.ai_chat_fab ? 'flex' : 'none';
+      fab.style.display = isFabActive ? 'flex' : 'none';
+    });
+    if (!isFabActive) {
+      aiWidgets.forEach(w => {
+        w.classList.remove('show');
+        w.style.display = 'none';
+      });
+      aiBackdrops.forEach(b => {
+        b.classList.remove('show');
+        b.style.display = 'none';
+      });
+    } else {
+      aiWidgets.forEach(w => {
+        w.style.display = '';
+      });
+      aiBackdrops.forEach(b => {
+        b.style.display = '';
+      });
+    }
+
+    // 4. FLAG: ai_chat_topbar (Controla o atalho da IA no Popover de 9 Pontos e Topbar)
+    const isTopbarAiActive = !!flags.ai_chat_topbar && isFullscreenAiActive;
+    const aiTopbarBtns = document.querySelectorAll('.topbar-ai-btn, #topbarAiBtn');
+    const aiAppsShortcuts = document.querySelectorAll('.app-shortcut-item-ai, #appsPopoverAiShortcut');
+
+    aiTopbarBtns.forEach(btn => {
+      btn.style.display = isTopbarAiActive ? 'inline-flex' : 'none';
+    });
+    aiAppsShortcuts.forEach(card => {
+      card.style.display = isTopbarAiActive ? '' : 'none';
     });
 
-    // 3. Comportamento do botão de IA no Topbar
-    const aiTopbarBtns = document.querySelectorAll('.topbar-ai-btn, #topbarAiBtn');
-    aiTopbarBtns.forEach(btn => {
-      btn.style.display = flags.ai_chat_topbar ? 'inline-flex' : 'none';
-    });
+    // 5. Re-renderiza o popover padrão se disponível
+    if (typeof window.renderStandardAppsPopover === 'function') {
+      window.renderStandardAppsPopover();
+    }
   }
 
   // Auto-aplica no carregamento do DOM
   document.addEventListener('DOMContentLoaded', () => {
+    applyToDOM();
+  });
+
+  // Re-aplica quando as flags mudarem na sessão
+  window.addEventListener('featureflags:changed', () => {
     applyToDOM();
   });
 

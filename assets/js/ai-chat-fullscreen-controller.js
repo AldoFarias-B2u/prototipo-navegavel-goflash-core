@@ -4,9 +4,20 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Verificação de Autenticação
+  // 1. Verificação de Autenticação e Feature Flag
   const session = typeof Auth !== 'undefined' ? Auth.requireAuth() : null;
   const currentUsername = session ? (session.user || 'B2U') : 'B2U';
+
+  // Verifica se a flag ai_chat_fullscreen está ativa
+  if (typeof FeatureFlags !== 'undefined' && !FeatureFlags.get('ai_chat_fullscreen')) {
+    if (typeof Toast !== 'undefined') {
+      Toast.warning('O recurso de Chat IA em Tela Cheia está desativado nas Parametrizações.');
+    }
+    setTimeout(() => {
+      window.location.href = './dashboard.html';
+    }, 400);
+    return;
+  }
 
   // 2. Elementos do DOM
   const chatFeed = document.getElementById('aiFullscreenChatFeed');
