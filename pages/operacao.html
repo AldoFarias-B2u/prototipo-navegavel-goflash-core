@@ -6,11 +6,12 @@
   <meta name="theme-color" content="#23143d">
   <title>Goflash CORE - Operação</title>
   
-  <!-- CSS Global, Componentes, Dashboard e Module-View -->
+  <!-- CSS Global, Componentes, Dashboard, Module-View e Chat IA -->
   <link rel="stylesheet" href="../assets/css/global.css">
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/dashboard.css">
   <link rel="stylesheet" href="../assets/css/module-view.css">
+  <link rel="stylesheet" href="../assets/css/ai-chat.css">
 </head>
 <body class="module-page-body">
 
@@ -495,11 +496,92 @@
 
   </main>
 
+  <!-- ========================================================================
+       BOTÃO FLUTUANTE OMNICHANNEL (FAB GOFLASH IA)
+       ======================================================================== -->
+  <button type="button" class="ai-floating-fab" id="aiFloatingFab" title="Falar com a GoFlash IA" aria-label="Assistente Inteligente">
+    <span class="material-icons">auto_awesome</span>
+    <span class="ai-fab-badge-pulse" title="Online"></span>
+  </button>
+
+  <!-- ========================================================================
+       WIDGET DE CHAT COM IA (GOFLASH AI)
+       ======================================================================== -->
+  <div class="ai-chat-backdrop" id="aiChatBackdrop"></div>
+
+  <div class="ai-chat-widget" id="aiChatWidget" role="dialog" aria-label="Assistente Virtual GoFlash IA">
+    <!-- Cabeçalho Roxo com Status Online e Botões de Controle -->
+    <div class="ai-chat-header">
+      <div class="ai-chat-header-info">
+        <div class="ai-avatar-badge">
+          <span class="material-icons">auto_awesome</span>
+          <span class="ai-online-status-dot"></span>
+        </div>
+        <div class="ai-chat-titles">
+          <span class="ai-chat-title-main">
+            GoFlash AI
+            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.2); padding: 1px 6px; border-radius: 10px; font-weight: 500;">B2U</span>
+          </span>
+          <span class="ai-chat-title-sub">Assistente Virtual Inteligente</span>
+        </div>
+      </div>
+      <div class="ai-chat-header-actions">
+        <button type="button" class="ai-chat-header-btn" id="btnMinimizeAiChat" title="Minimizar">
+          <span class="material-icons">remove</span>
+        </button>
+        <button type="button" class="ai-chat-header-btn" id="btnCloseAiChat" title="Fechar Chat">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Feed / Área de Mensagens -->
+    <div class="ai-chat-body" id="aiChatBody">
+      <!-- Mensagem Inicial de Boas-vindas -->
+      <div class="ai-msg-row bot">
+        <div class="ai-msg-avatar">
+          <span class="material-icons">auto_awesome</span>
+        </div>
+        <div class="ai-msg-bubble">
+          <p>Olá, <strong>B2U</strong>! Sou o <strong>GoFlash AI</strong>, seu copiloto inteligente para o <strong>Módulo de Operação</strong>.</p>
+          <p>Como posso ajudar você? Você pode digitar sua pergunta abaixo ou clicar em uma das sugestões rápidas:</p>
+          
+          <!-- Chips de Sugestões Iniciais -->
+          <div class="ai-chat-suggestions-wrap" id="aiChatSuggestions">
+            <!-- Renderizado dinamicamente via ai-chat-controller.js -->
+          </div>
+          <div class="ai-msg-time">Agora &bull; GoFlash AI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rodapé de Input -->
+    <div class="ai-chat-footer">
+      <form class="ai-chat-input-form" id="aiChatForm">
+        <input 
+          type="text" 
+          id="aiChatInput" 
+          class="ai-chat-input" 
+          placeholder="Pergunte sobre operações, pedidos, estoque..." 
+          autocomplete="off"
+        >
+        <button type="submit" class="ai-chat-send-btn" title="Enviar Mensagem">
+          <span class="material-icons">send</span>
+        </button>
+      </form>
+      <div class="ai-footer-footnote">
+        GoFlash AI &bull; IA experimental integrada ao ecossistema GoMarket B2U
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="../assets/js/version.js"></script>
   <script src="../assets/js/toast.js"></script>
   <script src="../assets/js/auth.js"></script>
   <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/ai-chat-knowledge.js"></script>
+  <script src="../assets/js/ai-chat-controller.js"></script>
   <script src="../assets/js/dashboard.js"></script>
   <script src="../assets/js/module-search.js"></script>
 </body>
