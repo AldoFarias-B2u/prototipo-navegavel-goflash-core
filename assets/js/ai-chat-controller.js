@@ -17,16 +17,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Pontos de Gatilho / Acesso
   const topbarAiBtn = document.getElementById('topbarAiBtn');
-  const heroAiPromptBar = document.getElementById('heroAiPromptBar');
+  const heroAiPromptForm = document.getElementById('heroAiPromptForm');
+  const heroAiInput = document.getElementById('heroAiInput');
   const heroAiChips = document.querySelectorAll('.hero-ai-chip');
-  const appsPopoverAi = document.getElementById('appsPopoverAiShortcut');
   const drawerAiItem = document.getElementById('drawerAiItem');
   const floatingFab = document.getElementById('aiFloatingFab');
 
   // Estado do Chat
   let isOpen = false;
   let isTyping = false;
-  const userName = (typeof Auth !== 'undefined' && Auth.getCurrentUser()) ? Auth.getCurrentUser().name : 'B2U';
+
+  // Obtenção Segura do Usuário Logado
+  let userName = 'B2U';
+  try {
+    if (typeof Auth !== 'undefined' && typeof Auth.getSession === 'function') {
+      const session = Auth.getSession();
+      if (session && session.user) {
+        userName = session.user;
+      }
+    }
+  } catch (err) {
+    console.warn('GoFlash AI: Não foi possível obter a sessão do usuário.', err);
+  }
 
   /**
    * 2. Abertura e Fechamento do Chat
@@ -38,11 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (chatBackdrop) chatBackdrop.classList.add('show');
     chatWidget.classList.add('show');
 
-    // Se passou um prompt inicial (ex: clicou num chip do Hero), processa
-    if (initialPrompt) {
+    // Se passou um prompt inicial (ex: digitou no Hero ou clicou num chip), processa
+    if (initialPrompt && typeof initialPrompt === 'string' && initialPrompt.trim()) {
       setTimeout(() => {
-        handleUserSend(initialPrompt);
-      }, 300);
+        handleUserSend(initialPrompt.trim());
+      }, 350);
     } else {
       setTimeout(() => {
         if (chatInput) chatInput.focus();
@@ -182,16 +194,20 @@ document.addEventListener('DOMContentLoaded', () => {
     appendUserMessage(cleanText);
     if (chatInput) chatInput.value = '';
 
-    // 2. Mostra digitação
+    // 2. Mostra indicador de digitação
     showTypingIndicator();
 
     // 3. Obtém resposta da base de conhecimento
-    const answer = window.GoFlashAIKnowledge
+    const answer = (window.GoFlashAIKnowledge && typeof window.GoFlashAIKnowledge.findAnswer === 'function')
       ? window.GoFlashAIKnowledge.findAnswer(cleanText)
-      : { reply: '<p>Olá! Como posso ajudar você hoje no GoMarket?</p>' };
+      : { 
+          title: 'Assistente GoFlash AI',
+          reply: `<p>Recebi sua pergunta: <em>"${escapeHtml(cleanText)}"</em>. Como posso ajudar você no GoMarket?</p>`,
+          actions: []
+        };
 
     // 4. Responde após delay natural simulado
-    const delay = Math.min(1100, Math.max(550, cleanText.length * 20));
+    const delay = Math.min(1000, Math.max(500, cleanText.length * 18));
     setTimeout(() => {
       appendBotMessage(answer);
     }, delay);
@@ -217,7 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Vincula clique nas sugestões
     const chipBtns = chatSuggestionsContainer.querySelectorAll('.ai-suggestion-chip-btn');
     chipBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const q = btn.getAttribute('data-query');
         if (q) handleUserSend(q);
       });
@@ -228,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * 6. Registro de Eventos e Gatilhos
    */
   function bindTriggers() {
-    // 6.1 Topbar
+    // 6.1 Topbar Botão IA
     if (topbarAiBtn) {
       topbarAiBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -236,15 +253,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 6.2 Hero Prompt Bar
-    if (heroAiPromptBar) {
-      heroAiPromptBar.addEventListener('click', (e) => {
+    // 6.2 Hero Prompt Form (Formulário real com Digitação e Botão Perguntar)
+    if (heroAiPromptForm) {
+      heroAiPromptForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        openChat();
+        const promptText = heroAiInput ? heroAiInput.value.trim() : '';
+        if (heroAiInput) heroAiInput.value = '';
+        openChat(promptText || null);
       });
     }
 
-    // 6.3 Hero Chips
+    // 6.3 Hero Chips Rápidos
     heroAiChips.forEach(chip => {
       chip.addEventListener('click', (e) => {
         e.preventDefault();
@@ -254,26 +273,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // 6.4 Popover 9 Pontos
-    if (appsPopoverAi) {
-      appsPopoverAi.addEventListener('click', (e) => {
+    // 6.4 Popover de 9 Pontos (Via Delegação de Eventos para cobrir renderizações dinâmicas)
+    document.addEventListener('click', (e) => {
+      const shortcutAi = e.target.closest('#appsPopoverAiShortcut') || e.target.closest('.app-shortcut-item-ai');
+      if (shortcutAi) {
         e.preventDefault();
-        // Fecha o popover e abre o chat
+        e.stopPropagation();
         const appsPopover = document.getElementById('appsPopover');
+        const appsBtn = document.getElementById('appsBtn');
         if (appsPopover) appsPopover.classList.remove('show');
+        if (appsBtn) appsBtn.classList.remove('active');
         openChat();
-      });
-    }
+      }
+    });
 
     // 6.5 Drawer Lateral
     if (drawerAiItem) {
       drawerAiItem.addEventListener('click', (e) => {
         e.preventDefault();
-        // Fecha drawer e abre chat
         const drawer = document.getElementById('goflashDrawer');
         const overlay = document.getElementById('sidebarOverlay');
-        if (drawer) drawer.classList.remove('show');
-        if (overlay) overlay.classList.remove('show');
+        if (drawer) drawer.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
         openChat();
       });
     }
@@ -290,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 6.7 Fechamento do Chat
+    // 6.7 Fechamento do Chat (Botões e Backdrop)
     if (btnCloseChat) btnCloseChat.addEventListener('click', closeChat);
     if (btnMinimizeChat) btnMinimizeChat.addEventListener('click', closeChat);
     if (chatBackdrop) {
@@ -299,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 6.8 Submissão do Formulário
+    // 6.8 Submissão do Formulário dentro do Chat
     if (chatForm) {
       chatForm.addEventListener('submit', (e) => {
         e.preventDefault();

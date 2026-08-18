@@ -55,6 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="material-icons app-shortcut-icon">tune</span>
           <span class="app-shortcut-label">PAINEL DE CO...</span>
         </a>
+
+        <div class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Falar com a GoFlash IA" style="cursor: pointer;">
+          <span class="ai-new-badge">NOVO</span>
+          <span class="material-icons app-shortcut-icon">auto_awesome</span>
+          <span class="app-shortcut-label">GOFLASH IA</span>
+        </div>
       </div>
     `;
   };
