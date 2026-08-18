@@ -4,6 +4,27 @@ Todas as alterações notáveis, novas telas e refinamentos de design deste proj
 
 ---
 
+## [1.7.0] - 2026-08-18
+### ✨ Adicionado
+- **Assistente Virtual GoFlash IA (Full-Screen & Omnichannel)** ([`pages/chat-ia.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/chat-ia.html), [`assets/css/ai-chat.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/ai-chat.css), [`assets/js/ai-chat-knowledge.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-knowledge.js), [`assets/js/ai-chat-fullscreen-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-fullscreen-controller.js), [`assets/js/ai-chat-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-controller.js)):
+  - **Tela Exclusiva de Chat em Tela Cheia**: Interface conversacional dedicada com painel lateral de tópicos e histórico, cards de sugestões em grid inicial, digitação simulada e botões de ação executáveis do ERP.
+  - **Botão Flutuante (FAB IA) & Widget Assistivo**: Botão flutuante roxo com indicador de status online e modal conversacional compacto na Home e Operação.
+- **Painel de Parametrizações do Protótipo & Feature Flags** ([`pages/parametrizacoes.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/parametrizacoes.html), [`assets/js/feature-flags.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/feature-flags.js), [`assets/css/components.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/components.css)):
+  - Central de controle com *Toggle Switches* táteis para ativar/desativar módulos e recursos em tempo real durante demonstrações.
+  - Persistência em `localStorage` e reatividade no DOM via eventos customizados.
+  - Atalho oficial na seção *Configurações* do Drawer lateral em todo o sistema.
+
+### 🎨 Melhorado & Refinado
+- **Harmonização Visual da Home Page** ([`pages/dashboard.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/dashboard.html), [`assets/css/dashboard.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/dashboard.css)):
+  - Remoção de caixas e chips de busca com alto contraste no centro do Hero, restaurando a marca d'água oficial em destaque limpo.
+  - **Reposicionamento Condicional do Botão de Rolagem (#scrollFab)**: Centralizado horizontalmente quando o FAB de IA está ativo (garantindo simetria perfeita em 3 pontos) e retornado à direita quando o FAB de IA é desativado.
+
+### 🐛 Corrigido
+- **Alinhamento do Cabeçalho e Colunas em Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/js/abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/abastecimento-controller.js)):
+  - Corrigido o número e alinhamento de colunas no `<thead>` dinâmico (5 colunas em modo leitura e 7 colunas em modo edição com checkbox mestre de seleção em lote).
+
+---
+
 ## [1.6.1] - 2026-08-17
 ### 🎨 Corrigido & Padronizado
 - **Padronização Inteligente do Menu de Atalhos Principais (Popover de 9 Pontos)** ([`assets/js/dashboard.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/dashboard.js), [`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/pedido-manual.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-manual.html), [`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html)):

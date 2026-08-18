@@ -1,8 +1,8 @@
 {
   "name": "goflash-core-prototype",
   "displayName": "Goflash CORE - Protótipo Navegável",
-  "version": "1.9.4.0",
-  "releaseDate": "2026-08-16",
+  "version": "1.9.5.0",
+  "releaseDate": "2026-08-18",
   "author": "B2U Sistemas",
   "modules": [
     {
@@ -15,19 +15,31 @@
       "id": "dashboard",
       "name": "Painel Principal (Home)",
       "status": "concluido",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "id": "operacao",
       "name": "Módulo de Operação",
       "status": "concluido",
-      "version": "1.2.1"
+      "version": "1.3.0"
+    },
+    {
+      "id": "chat-ia",
+      "name": "Assistente Virtual GoFlash IA",
+      "status": "concluido",
+      "version": "1.0.0"
+    },
+    {
+      "id": "parametrizacoes",
+      "name": "Parametrizações & Feature Flags",
+      "status": "concluido",
+      "version": "1.0.0"
     },
     {
       "id": "planos-abastecimento",
       "name": "Planos de Abastecimento",
       "status": "concluido",
-      "version": "1.2.1"
+      "version": "1.2.2"
     },
     {
       "id": "pedidos-abastecimento",
