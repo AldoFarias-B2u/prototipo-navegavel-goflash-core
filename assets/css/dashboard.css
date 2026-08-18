@@ -505,7 +505,7 @@ html {
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
 }
 
-/* Botão Flutuante Amarelo (FAB) Centralizado na Divisa */
+/* Botão Flutuante Amarelo (FAB) na Divisa Inferior do Hero */
 .hero-scroll-fab {
   position: absolute;
   top: -30px;
@@ -522,10 +522,9 @@ html {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, left 0.3s ease, right 0.3s ease;
   z-index: 50;
   outline: none;
-  animation: pulseFab 2.5s infinite;
 }
 
 .hero-scroll-fab:hover {
@@ -535,6 +534,21 @@ html {
 
 .hero-scroll-fab:active {
   transform: scale(0.95);
+}
+
+/* Quando centralizado dinamicamente (quando o FAB de IA estiver ativo) */
+.hero-scroll-fab.centered {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hero-scroll-fab.centered:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.hero-scroll-fab.centered:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
 .hero-scroll-fab .material-icons {

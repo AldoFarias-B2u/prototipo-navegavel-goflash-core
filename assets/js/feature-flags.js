@@ -146,6 +146,16 @@ const FeatureFlags = (function () {
       });
     }
 
+    // 3.1 Reposicionamento Condicional do Botão Amarelo de Rolagem (#scrollFab)
+    const scrollFab = document.getElementById('scrollFab');
+    if (scrollFab) {
+      if (isFabActive) {
+        scrollFab.classList.add('centered');
+      } else {
+        scrollFab.classList.remove('centered');
+      }
+    }
+
     // 4. FLAG: ai_chat_topbar (Controla o atalho da IA no Popover de 9 Pontos e Topbar)
     const isTopbarAiActive = !!flags.ai_chat_topbar && isFullscreenAiActive;
     const aiTopbarBtns = document.querySelectorAll('.topbar-ai-btn, #topbarAiBtn');
