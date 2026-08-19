@@ -16,8 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     filtro: urlParams.get('filtro') || 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
   };
 
-  // 2. Estado de Produtos da Consulta
-  let queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || []));
+  // 1.1 Verificação de Presença de Plano de Abastecimento
+  function checkHasPlan() {
+    return !!(currentParams.plano && 
+      !currentParams.plano.toLowerCase().includes('sem plano') && 
+      !currentParams.plano.toLowerCase().includes('todos os produtos') &&
+      !currentParams.plano.toLowerCase().includes('nenhum'));
+  }
+
+  let hasPlan = checkHasPlan();
+
+  // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
+  let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])) : [];
   let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero'
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
@@ -59,21 +69,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnConfirmAddExtra = document.getElementById('btnConfirmAddExtra');
   const extraProductsList = document.getElementById('extraProductsList');
 
-  // 4. Atualizar Contexto no Topo
+  // 4. Atualizar Contexto no Topo & Visibilidade de Colunas/Chips
   function updateContextUI() {
+    hasPlan = checkHasPlan();
+
     if (destNameDisplay) destNameDisplay.textContent = currentParams.destino || 'Mini Mercado 03 Simples Nacional';
     if (cdNameDisplay) cdNameDisplay.textContent = currentParams.origem || 'Não especificada (Entrada direta)';
-    if (planNameDisplay) planNameDisplay.textContent = currentParams.plano || 'Sem plano base (Todos os produtos)';
+    if (planNameDisplay) planNameDisplay.textContent = hasPlan ? currentParams.plano : 'Sem Plano (Inserção Avulsa)';
     
     let descFiltro = 'Plano Completo';
-    if (!currentParams.plano || currentParams.plano.includes('Sem plano') || currentParams.plano.includes('Todos os produtos')) {
-      descFiltro = 'Todos os Produtos';
+    if (!hasPlan) {
+      descFiltro = 'Inserção Manual / Bipagem';
     } else if (currentParams.filtro === 'saldo_ideal') {
       descFiltro = 'Saldo < Ideal';
     } else if (currentParams.filtro === 'saldo_critico') {
       descFiltro = 'Saldo <= Crítico';
     }
     if (filterDescDisplay) filterDescDisplay.textContent = descFiltro;
+
+    // Atualiza visibilidade das colunas de plano no thead
+    const planCols = document.querySelectorAll('.col-plan-param');
+    planCols.forEach(col => {
+      col.classList.toggle('hidden-col', !hasPlan);
+    });
+
+    // Atualiza visibilidade dos chips que dependem de plano
+    const chipIdeal = document.getElementById('chipFilterIdeal');
+    const chipCritico = document.getElementById('chipFilterCritico');
+    if (chipIdeal) chipIdeal.style.display = hasPlan ? 'inline-flex' : 'none';
+    if (chipCritico) chipCritico.style.display = hasPlan ? 'inline-flex' : 'none';
+
+    if (!hasPlan && (currentFilterChip === 'ideal' || currentFilterChip === 'critico')) {
+      currentFilterChip = 'all';
+      const filterChips = document.querySelectorAll('.filter-chip');
+      filterChips.forEach(c => c.classList.toggle('active', c.getAttribute('data-chip') === 'all'));
+    }
   }
 
   // 5. Filtragem e Obtenção de Produtos Visíveis
@@ -93,10 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hideUnselected && !item.selecionado) return false;
 
       // Filtro de Chips
-      if (currentFilterChip === 'ideal') {
+      if (hasPlan && currentFilterChip === 'ideal') {
         return item.estoqueLoja < item.estoqueIdeal;
       }
-      if (currentFilterChip === 'critico') {
+      if (hasPlan && currentFilterChip === 'critico') {
         return item.estoqueLoja <= item.minimoCritico;
       }
       if (currentFilterChip === 'selected') {
@@ -120,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Atualiza contadores dos chips
     const countAll = queryProducts.length;
-    const countIdeal = queryProducts.filter(p => p.estoqueLoja < p.estoqueIdeal).length;
-    const countCritico = queryProducts.filter(p => p.estoqueLoja <= p.minimoCritico).length;
+    const countIdeal = hasPlan ? queryProducts.filter(p => p.estoqueLoja < p.estoqueIdeal).length : 0;
+    const countCritico = hasPlan ? queryProducts.filter(p => p.estoqueLoja <= p.minimoCritico).length : 0;
     const countSelected = queryProducts.filter(p => p.selecionado).length;
     const countZero = queryProducts.filter(p => p.estoqueLoja === 0).length;
 
@@ -161,14 +191,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. Renderização da Tabela e dos Cards
   function renderAll() {
+    updateContextUI();
     const filtered = getFilteredProducts();
+    const colCount = hasPlan ? 10 : 7;
 
     // Render Tabela
     if (tableBody) {
-      if (filtered.length === 0) {
+      if (queryProducts.length === 0) {
+        tableBody.innerHTML = `
+          <tr class="empty-state-row">
+            <td colspan="${colCount}" style="padding: 0; border: none;">
+              <div class="consulta-empty-state">
+                <div class="empty-state-icon-box">
+                  <span class="material-icons">${hasPlan ? 'inventory_2' : 'qr_code_scanner'}</span>
+                </div>
+                <h3 class="empty-state-title">${hasPlan ? 'Nenhum produto cadastrado no plano' : 'Nenhum produto adicionado à consulta'}</h3>
+                <p class="empty-state-desc">
+                  ${hasPlan 
+                    ? 'Não foram encontrados produtos para os parâmetros deste plano.' 
+                    : 'Utilize o leitor de código de barras no campo superior ou clique no botão abaixo para adicionar produtos do catálogo.'}
+                </p>
+                <div class="empty-state-actions">
+                  <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
+                    <span class="material-icons">add_circle</span>
+                    Adicionar Produtos do Catálogo
+                  </button>
+                  <span class="empty-state-scan-badge">
+                    <span class="material-icons" style="font-size: 16px;">keyboard</span>
+                    Atalho de bipe ativo: digite o EAN e pressione Enter
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      } else if (filtered.length === 0) {
         tableBody.innerHTML = `
           <tr>
-            <td colspan="9" style="text-align: center; padding: 2.5rem; color: #757575;">
+            <td colspan="${colCount}" style="text-align: center; padding: 2.5rem; color: #757575;">
               <span class="material-icons" style="font-size: 36px; display: block; margin-bottom: 8px; color: #bdbdbd;">search_off</span>
               Nenhum produto encontrado com os filtros atuais.
             </td>
@@ -176,80 +236,183 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       } else {
         tableBody.innerHTML = filtered.map(item => {
-          const isCritico = item.estoqueLoja <= item.minimoCritico;
+          const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
           const unselectedClass = !item.selecionado ? 'unselected-row' : '';
 
-          return `
-            <tr class="${unselectedClass}" data-id="${item.id}">
-              <td class="table-checkbox-cell">
-                <input 
-                  type="checkbox" 
-                  class="table-custom-checkbox product-select-checkbox" 
-                  data-id="${item.id}"
-                  ${item.selecionado ? 'checked' : ''}
-                  aria-label="Selecionar ${item.nome}"
-                >
-              </td>
-              <td class="table-thumb-cell">
-                <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
-              </td>
-              <td class="product-info-cell">
-                <a href="javascript:void(0)" class="product-ean-link">${item.ean}</a>
-                <div class="product-desc-title">${item.nome}</div>
-              </td>
-              <td style="text-align: center;">
-                <span class="stock-pill stock-pill-ideal">${item.estoqueIdeal}</span>
-              </td>
-              <td style="text-align: center;">
-                <span class="stock-pill stock-pill-critico">${item.minimoCritico}</span>
-              </td>
-              <td style="text-align: center;">
-                <span class="stock-pill stock-pill-loja ${isCritico ? 'is-critico' : ''}">${item.estoqueLoja}</span>
-              </td>
-              <td style="text-align: center;">
-                <span class="stock-pill stock-pill-cd">${item.estoqueCd}</span>
-              </td>
-              <td style="text-align: center;">
-                <span class="stock-pill stock-pill-sugestao">${item.sugestao}</span>
-              </td>
-              <td style="text-align: center; min-width: 140px;">
-                <div class="repor-stepper-wrapper">
-                  <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+          if (hasPlan) {
+            return `
+              <tr class="${unselectedClass}" data-id="${item.id}">
+                <td class="table-checkbox-cell">
                   <input 
-                    type="number" 
-                    class="repor-stepper-input input-a-repor" 
-                    data-id="${item.id}" 
-                    value="${item.aRepor}" 
-                    min="0"
-                    max="999"
+                    type="checkbox" 
+                    class="table-custom-checkbox product-select-checkbox" 
+                    data-id="${item.id}"
+                    ${item.selecionado ? 'checked' : ''}
+                    aria-label="Selecionar ${item.nome}"
                   >
-                  <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
-                </div>
-              </td>
-              <td style="text-align: center; width: 50px;">
-                <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
-                  <span class="material-icons">delete</span>
-                </button>
-              </td>
-            </tr>
-          `;
+                </td>
+                <td class="table-thumb-cell">
+                  <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
+                </td>
+                <td class="product-info-cell">
+                  <a href="javascript:void(0)" class="product-ean-link">${item.ean}</a>
+                  <div class="product-desc-title">${item.nome}</div>
+                </td>
+                <td class="col-plan-param" style="text-align: center;">
+                  <span class="stock-pill stock-pill-ideal">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
+                </td>
+                <td class="col-plan-param" style="text-align: center;">
+                  <span class="stock-pill stock-pill-critico">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+                </td>
+                <td style="text-align: center;">
+                  <span class="stock-pill stock-pill-loja ${isCritico ? 'is-critico' : ''}">${item.estoqueLoja}</span>
+                </td>
+                <td style="text-align: center;">
+                  <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+                </td>
+                <td class="col-plan-param" style="text-align: center;">
+                  <span class="stock-pill stock-pill-sugestao">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
+                </td>
+                <td style="text-align: center; min-width: 140px;">
+                  <div class="repor-stepper-wrapper">
+                    <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+                    <input 
+                      type="number" 
+                      class="repor-stepper-input input-a-repor" 
+                      data-id="${item.id}" 
+                      value="${item.aRepor}" 
+                      min="0"
+                      max="999"
+                    >
+                    <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                  </div>
+                </td>
+                <td style="text-align: center; width: 50px;">
+                  <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </td>
+              </tr>
+            `;
+          } else {
+            // MODO SEM PLANO (Apenas colunas relevantes e essenciais)
+            return `
+              <tr class="${unselectedClass}" data-id="${item.id}">
+                <td class="table-checkbox-cell">
+                  <input 
+                    type="checkbox" 
+                    class="table-custom-checkbox product-select-checkbox" 
+                    data-id="${item.id}"
+                    ${item.selecionado ? 'checked' : ''}
+                    aria-label="Selecionar ${item.nome}"
+                  >
+                </td>
+                <td class="table-thumb-cell">
+                  <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
+                </td>
+                <td class="product-info-cell">
+                  <a href="javascript:void(0)" class="product-ean-link">${item.ean}</a>
+                  <div class="product-desc-title">${item.nome}</div>
+                </td>
+                <td style="text-align: center;">
+                  <span class="stock-pill stock-pill-loja">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
+                </td>
+                <td style="text-align: center;">
+                  <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+                </td>
+                <td style="text-align: center; min-width: 140px;">
+                  <div class="repor-stepper-wrapper">
+                    <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+                    <input 
+                      type="number" 
+                      class="repor-stepper-input input-a-repor" 
+                      data-id="${item.id}" 
+                      value="${item.aRepor}" 
+                      min="0"
+                      max="999"
+                    >
+                    <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                  </div>
+                </td>
+                <td style="text-align: center; width: 50px;">
+                  <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }
         }).join('');
       }
     }
 
     // Render Cards (Mobile / Grid)
     if (cardsGrid) {
-      if (filtered.length === 0) {
+      if (queryProducts.length === 0) {
+        cardsGrid.innerHTML = `
+          <div style="grid-column: 1 / -1;">
+            <div class="consulta-empty-state">
+              <div class="empty-state-icon-box">
+                <span class="material-icons">${hasPlan ? 'inventory_2' : 'qr_code_scanner'}</span>
+              </div>
+              <h3 class="empty-state-title">${hasPlan ? 'Nenhum produto no plano' : 'Nenhum produto adicionado'}</h3>
+              <p class="empty-state-desc">
+                ${hasPlan 
+                  ? 'Não foram encontrados produtos para este plano.' 
+                  : 'Bipe o código de barras no campo superior ou adicione produtos do catálogo.'}
+              </p>
+              <div class="empty-state-actions">
+                <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
+                  <span class="material-icons">add_circle</span>
+                  Adicionar Produtos
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (filtered.length === 0) {
         cardsGrid.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; background: #fff; border-radius: 8px;">
             <span class="material-icons" style="font-size: 36px; display: block; margin-bottom: 8px; color: #bdbdbd;">search_off</span>
-            Nenhum produto encontrado.
+            Nenhum produto encontrado com os filtros atuais.
           </div>
         `;
       } else {
         cardsGrid.innerHTML = filtered.map(item => {
-          const isCritico = item.estoqueLoja <= item.minimoCritico;
+          const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
           const unselectedClass = !item.selecionado ? 'unselected-card' : '';
+
+          const stockGridHtml = hasPlan ? `
+            <div class="card-stock-grid">
+              <div class="card-stock-item">
+                <span class="card-stock-label">Ideal</span>
+                <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
+              </div>
+              <div class="card-stock-item">
+                <span class="card-stock-label">Crítico</span>
+                <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+              </div>
+              <div class="card-stock-item">
+                <span class="card-stock-label">Loja</span>
+                <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : '#f57f17'};">${item.estoqueLoja}</span>
+              </div>
+              <div class="card-stock-item">
+                <span class="card-stock-label">Sugestão</span>
+                <span class="card-stock-val" style="color: #6530b5;">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
+              </div>
+            </div>
+          ` : `
+            <div class="card-stock-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="card-stock-item">
+                <span class="card-stock-label">Estoque Loja</span>
+                <span class="card-stock-val" style="color: #1976d2;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
+              </div>
+              <div class="card-stock-item">
+                <span class="card-stock-label">Estoque CD</span>
+                <span class="card-stock-val" style="color: #388e3c;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+              </div>
+            </div>
+          `;
 
           return `
             <div class="product-mobile-card ${unselectedClass}" data-id="${item.id}">
@@ -270,24 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
 
-              <div class="card-stock-grid">
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Ideal</span>
-                  <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal}</span>
-                </div>
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Crítico</span>
-                  <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico}</span>
-                </div>
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Loja</span>
-                  <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : '#f57f17'};">${item.estoqueLoja}</span>
-                </div>
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Sugestão</span>
-                  <span class="card-stock-val" style="color: #6530b5;">${item.sugestao}</span>
-                </div>
-              </div>
+              ${stockGridHtml}
 
               <div class="card-action-row">
                 <div class="card-repor-group">
@@ -320,19 +466,24 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
   }
 
-  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção)
+  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção, Gatilhos)
   function bindInteractiveEvents() {
+    // Gatilho do botão Adicionar dentro do Empty State
+    const triggerAddBtns = document.querySelectorAll('.btn-trigger-add-modal');
+    triggerAddBtns.forEach(btn => {
+      btn.addEventListener('click', openAddExtraModal);
+    });
+
     // Checkboxes de Seleção
     const checkboxes = document.querySelectorAll('.product-select-checkbox');
     checkboxes.forEach(chk => {
-      chk.addEventListener('change', (e) => {
+      chk.addEventListener('change', () => {
         const id = chk.getAttribute('data-id');
         const prod = queryProducts.find(p => p.id == id);
         if (prod) {
           prod.selecionado = chk.checked;
-          // Se marcou e estava com 0, preenche com a sugestão
-          if (prod.selecionado && prod.aRepor === 0 && prod.sugestao > 0) {
-            prod.aRepor = prod.sugestao;
+          if (prod.selecionado && prod.aRepor === 0) {
+            prod.aRepor = (hasPlan && prod.sugestao > 0) ? prod.sugestao : 1;
           }
           renderAll();
         }
@@ -384,7 +535,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Botões de Remover Produto
+    // Botões de Remover Produto da Consulta
     const removeBtns = document.querySelectorAll('.btn-remove-item');
     removeBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -434,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const code = barcodeInput.value.trim();
         if (!code) return;
 
-        // Procura nos produtos atuais
+        // 1. Procura nos produtos atuais
         let found = queryProducts.find(p => p.ean === code);
         if (found) {
           found.aRepor += 1;
@@ -445,10 +596,13 @@ document.addEventListener('DOMContentLoaded', () => {
           barcodeInput.value = '';
           renderAll();
         } else {
-          // Procura no catálogo extra
-          const extra = (window.CatalogoExtraProdutos || []).find(p => p.ean === code);
-          if (extra) {
-            const newProd = JSON.parse(JSON.stringify(extra));
+          // 2. Procura em todos os catálogos cadastrados
+          const extraCatalog = window.CatalogoExtraProdutos || [];
+          const baseCatalog = window.ConsultaProdutosBase || [];
+          const matched = extraCatalog.find(p => p.ean === code) || baseCatalog.find(p => p.ean === code);
+
+          if (matched) {
+            const newProd = JSON.parse(JSON.stringify(matched));
             newProd.id = Date.now();
             newProd.aRepor = 1;
             newProd.selecionado = true;
@@ -460,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAll();
           } else {
             if (typeof Toast !== 'undefined') {
-              Toast.warning(`Código ${code} não encontrado no plano.`);
+              Toast.warning(`Código EAN "${code}" não cadastrado no catálogo.`);
             }
           }
         }
@@ -627,10 +781,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const optPlano = selectPlanoModal ? selectPlanoModal.options[selectPlanoModal.selectedIndex] : null;
       const selectedRadio = document.querySelector('input[name="filterScope"]:checked');
 
+      const prevHasPlan = hasPlan;
+
       currentParams.origem = (optOrigem && optOrigem.value) ? optOrigem.text : 'Não especificada (Entrada direta)';
       currentParams.destino = (optDestino && optDestino.value) ? optDestino.text : 'Mini Mercado 03 Simples Nacional';
       currentParams.plano = (optPlano && optPlano.value) ? optPlano.text : 'Sem plano base (Todos os produtos)';
       currentParams.filtro = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
+
+      hasPlan = checkHasPlan();
+
+      if (!prevHasPlan && hasPlan && queryProducts.length === 0) {
+        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || []));
+      }
 
       updateContextUI();
       closeParamsModal();
@@ -640,9 +802,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Re-aplica filtro inicial nos produtos
-      if (currentParams.filtro === 'saldo_ideal') {
+      if (hasPlan && currentParams.filtro === 'saldo_ideal') {
         currentFilterChip = 'ideal';
-      } else if (currentParams.filtro === 'saldo_critico') {
+      } else if (hasPlan && currentParams.filtro === 'saldo_critico') {
         currentFilterChip = 'critico';
       } else {
         currentFilterChip = 'all';

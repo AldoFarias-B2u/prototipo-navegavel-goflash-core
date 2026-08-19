@@ -187,27 +187,27 @@
 
       <!-- Linha de Chips de Filtro Rápido -->
       <div class="toolbar-chips-row">
-        <button type="button" class="filter-chip active" data-chip="all">
+        <button type="button" class="filter-chip active" data-chip="all" id="chipFilterAll">
           Todos os Produtos
           <span class="filter-chip-count" id="chipCountAll">7</span>
         </button>
 
-        <button type="button" class="filter-chip" data-chip="ideal">
+        <button type="button" class="filter-chip col-plan-param" data-chip="ideal" id="chipFilterIdeal">
           Saldo Menor que Ideal
           <span class="filter-chip-count" id="chipCountIdeal">6</span>
         </button>
 
-        <button type="button" class="filter-chip" data-chip="critico">
+        <button type="button" class="filter-chip col-plan-param" data-chip="critico" id="chipFilterCritico">
           Em Nível Crítico
           <span class="filter-chip-count" id="chipCountCritico">4</span>
         </button>
 
-        <button type="button" class="filter-chip" data-chip="selected">
+        <button type="button" class="filter-chip" data-chip="selected" id="chipFilterSelected">
           Selecionados
           <span class="filter-chip-count" id="chipCountSelected">7</span>
         </button>
 
-        <button type="button" class="filter-chip" data-chip="zero">
+        <button type="button" class="filter-chip" data-chip="zero" id="chipFilterZero">
           Estoque Zerado
           <span class="filter-chip-count" id="chipCountZero">0</span>
         </button>
@@ -217,7 +217,7 @@
     <!-- 3. Tabela de Produtos (Desktop / Tablet) -->
     <div class="consulta-products-table-card" id="consultaTableCard">
       <div class="consulta-table-wrapper">
-        <table class="consulta-products-table">
+        <table class="consulta-products-table" id="consultaProductsTable">
           <thead>
             <tr>
               <th class="table-checkbox-cell" style="width: 44px; text-align: center;">
@@ -232,11 +232,11 @@
               </th>
               <th class="table-thumb-cell" style="width: 52px;">Foto</th>
               <th class="product-info-cell">Produto / Código EAN</th>
-              <th style="width: 105px; text-align: center;">Estoque Ideal</th>
-              <th style="width: 105px; text-align: center;">Mínimo Crítico</th>
+              <th class="col-plan-param" style="width: 105px; text-align: center;">Estoque Ideal</th>
+              <th class="col-plan-param" style="width: 105px; text-align: center;">Mínimo Crítico</th>
               <th style="width: 105px; text-align: center;">Estoque Loja</th>
-              <th style="width: 105px; text-align: center;">Estoque CD</th>
-              <th style="width: 100px; text-align: center;">Sugestão</th>
+              <th id="thEstoqueOrigem" style="width: 105px; text-align: center;">Estoque CD</th>
+              <th class="col-plan-param" style="width: 100px; text-align: center;">Sugestão</th>
               <th style="width: 150px; text-align: center;">A Repor</th>
               <th style="width: 60px; text-align: center;">Ação</th>
             </tr>
