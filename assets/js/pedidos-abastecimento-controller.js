@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       closeNovaConsultaModal();
       if (typeof Toast !== 'undefined') {
-        Toast.info(planoText ? 'Carregando produtos do plano...' : 'Carregando consulta geral de produtos...');
+        Toast.info(planoText ? 'Carregando produtos do plano...' : 'Iniciando consulta para inserção de produtos...');
       }
 
       setTimeout(() => {
