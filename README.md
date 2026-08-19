@@ -13,12 +13,9 @@ Por ser um projeto puramente estático (sem dependência de compilação ou fram
 
 ---
 
-## 🔑 Credenciais de Acesso Simulado
- 
-| Campo | Valor |
-|---|---|
-| **Usuário** | `B2U` *(ou minúsculo `b2u`)* |
-| **Senha** | `protótipo` *(ou `prototipo`)* |
+## 🔐 Acesso ao Protótipo
+
+As credenciais de autenticação são fornecidas diretamente pela equipe da **B2U Sistemas**.
 
 ---
 
