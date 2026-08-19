@@ -6,7 +6,7 @@
 const Auth = (function () {
   // Credenciais Válidas do Protótipo
   const VALID_USER = 'B2U';
-  const VALID_PASS = 'b2u@sistemas';
+  const VALID_PASS = 'protótipo';
 
   const STORAGE_KEY = 'goflash_core_session';
 
@@ -32,8 +32,11 @@ const Auth = (function () {
     const trimmedUser = (username || '').trim();
     const trimmedPass = (password || '').trim();
 
-    // Validação de credenciais
-    if (trimmedUser.toUpperCase() === VALID_USER && trimmedPass === VALID_PASS) {
+    // Validação de credenciais (aceita 'protótipo' ou 'prototipo' sem acento)
+    const isUserValid = trimmedUser.toUpperCase() === VALID_USER;
+    const isPassValid = trimmedPass.toLowerCase() === 'protótipo' || trimmedPass.toLowerCase() === 'prototipo';
+
+    if (isUserValid && isPassValid) {
       const sessionData = {
         user: 'B2U',
         name: 'Administrador B2U',
@@ -55,7 +58,7 @@ const Auth = (function () {
 
     return { 
       success: false, 
-      error: 'Usuário ou senha incorretos. Utilize o usuário "B2U" e a senha "b2u@sistemas".' 
+      error: 'Usuário ou senha incorretos. Verifique suas credenciais e tente novamente.' 
     };
   }
 

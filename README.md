@@ -14,11 +14,11 @@ Por ser um projeto puramente estático (sem dependência de compilação ou fram
 ---
 
 ## 🔑 Credenciais de Acesso Simulado
-
+ 
 | Campo | Valor |
 |---|---|
 | **Usuário** | `B2U` *(ou minúsculo `b2u`)* |
-| **Senha** | `b2u@sistemas` |
+| **Senha** | `protótipo` *(ou `prototipo`)* |
 
 ---
 
