@@ -214,6 +214,51 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseNovaConsulta) btnCloseNovaConsulta.addEventListener('click', closeNovaConsultaModal);
   if (btnDiscardNovaConsulta) btnDiscardNovaConsulta.addEventListener('click', closeNovaConsultaModal);
 
+  // 4.1 Controle Reativo dos Selects e Filtros Condicionais no Modal de Consulta
+  const selectModalOrigem = document.getElementById('selectModalOrigem');
+  const selectModalDestino = document.getElementById('selectModalDestino');
+  const selectModalPlano = document.getElementById('selectModalPlano');
+  const hintModalOrigem = document.getElementById('hintModalOrigem');
+  const hintModalDestino = document.getElementById('hintModalDestino');
+  const hintModalPlano = document.getElementById('hintModalPlano');
+  const containerFiltrosPlano = document.getElementById('containerFiltrosPlano');
+  const hintNoPlanoSelected = document.getElementById('hintNoPlanoSelected');
+
+  function updateSelectHintsAndPlanVisibility() {
+    if (selectModalOrigem && hintModalOrigem) {
+      const opt = selectModalOrigem.options[selectModalOrigem.selectedIndex];
+      hintModalOrigem.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
+    }
+    if (selectModalDestino && hintModalDestino) {
+      const opt = selectModalDestino.options[selectModalDestino.selectedIndex];
+      hintModalDestino.textContent = opt ? (opt.getAttribute('data-code') || opt.value) : '';
+    }
+    if (selectModalPlano && hintModalPlano) {
+      const opt = selectModalPlano.options[selectModalPlano.selectedIndex];
+      const hasPlan = !!(opt && opt.value);
+      hintModalPlano.textContent = opt ? (opt.getAttribute('data-code') || (hasPlan ? opt.value : 'Opcional')) : 'Opcional';
+
+      if (containerFiltrosPlano) {
+        if (hasPlan) {
+          containerFiltrosPlano.classList.remove('hidden');
+        } else {
+          containerFiltrosPlano.classList.add('hidden');
+        }
+      }
+
+      if (hintNoPlanoSelected) {
+        hintNoPlanoSelected.style.display = hasPlan ? 'none' : 'flex';
+      }
+    }
+  }
+
+  if (selectModalOrigem) selectModalOrigem.addEventListener('change', updateSelectHintsAndPlanVisibility);
+  if (selectModalDestino) selectModalDestino.addEventListener('change', updateSelectHintsAndPlanVisibility);
+  if (selectModalPlano) selectModalPlano.addEventListener('change', updateSelectHintsAndPlanVisibility);
+
+  // Inicializa o estado visual dos filtros
+  updateSelectHintsAndPlanVisibility();
+
   // Seleção de Radio Cards no Modal de Consulta
   const radioCards = document.querySelectorAll('#modalNovaConsulta .modal-radio-card');
   radioCards.forEach(card => {
@@ -228,21 +273,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Avançar para a Tela de Consulta
   if (btnAvancarConsulta) {
     btnAvancarConsulta.addEventListener('click', () => {
-      const selectOrigem = document.getElementById('selectModalOrigem');
-      const selectDestino = document.getElementById('selectModalDestino');
-      const selectPlano = document.getElementById('selectModalPlano');
+      const optOrigem = selectModalOrigem ? selectModalOrigem.options[selectModalOrigem.selectedIndex] : null;
+      const optDestino = selectModalDestino ? selectModalDestino.options[selectModalDestino.selectedIndex] : null;
+      const optPlano = selectModalPlano ? selectModalPlano.options[selectModalPlano.selectedIndex] : null;
       const selectedRadio = document.querySelector('input[name="filtroPlanoConsulta"]:checked');
 
-      const origemText = selectOrigem ? selectOrigem.options[selectOrigem.selectedIndex].text : 'Estoque central';
-      const destinoText = selectDestino ? selectDestino.options[selectDestino.selectedIndex].text : 'Mini Mercado 03 Simples Nacional';
-      const planoText = selectPlano ? selectPlano.options[selectPlano.selectedIndex].text : 'Plano MiniMercado 03';
-      const filtroVal = selectedRadio ? selectedRadio.value : 'completo';
+      const origemText = (optOrigem && optOrigem.value) ? optOrigem.text : '';
+      const destinoText = (optDestino && optDestino.value) ? optDestino.text : 'Mini Mercado 03 Simples Nacional';
+      const planoText = (optPlano && optPlano.value) ? optPlano.text : '';
+      const filtroVal = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
 
-      const url = `./consulta-abastecimento.html?origem=${encodeURIComponent(origemText)}&destino=${encodeURIComponent(destinoText)}&plano=${encodeURIComponent(planoText)}&filtro=${encodeURIComponent(filtroVal)}`;
-      
+      let url = `./consulta-abastecimento.html?destino=${encodeURIComponent(destinoText)}`;
+      if (origemText) {
+        url += `&origem=${encodeURIComponent(origemText)}`;
+      }
+      if (planoText) {
+        url += `&plano=${encodeURIComponent(planoText)}&filtro=${encodeURIComponent(filtroVal)}`;
+      }
+
       closeNovaConsultaModal();
       if (typeof Toast !== 'undefined') {
-        Toast.info('Carregando produtos do plano...');
+        Toast.info(planoText ? 'Carregando produtos do plano...' : 'Carregando consulta geral de produtos...');
       }
 
       setTimeout(() => {

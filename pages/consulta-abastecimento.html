@@ -304,16 +304,17 @@
           </div>
         </div>
 
-        <!-- Select Filial Estoque Origem -->
+        <!-- Select Filial Estoque Origem (Opcional) -->
         <div class="modal-underline-group">
-          <label class="modal-underline-label" for="selectOrigemModal">Selecione a Filial do Estoque Origem</label>
+          <label class="modal-underline-label" for="selectOrigemModal">Selecione a Filial do Estoque Origem (Opcional)</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">warehouse</span>
             <select id="selectOrigemModal" class="modal-underline-select">
-              <option value="000005" selected>Estoque central</option>
-              <option value="000001">CD Principal Zona Sul</option>
+              <option value="" data-code="Opcional">-- Nenhuma (Sem filial de origem) --</option>
+              <option value="000005" data-code="000005" selected>Estoque central</option>
+              <option value="000001" data-code="000001">CD Principal Zona Sul</option>
             </select>
-            <span class="modal-underline-hint-right">000005</span>
+            <span class="modal-underline-hint-right" id="hintOrigemModal">000005</span>
           </div>
         </div>
 
@@ -323,30 +324,37 @@
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">storefront</span>
             <select id="selectDestinoModal" class="modal-underline-select">
-              <option value="000003" selected>Mini Mercado 03 Simples Nacional</option>
-              <option value="000001">Mini Mercado 01</option>
-              <option value="000002">Mini Mercado 02 Condomínio Jardins</option>
-              <option value="000004">Mini Mercado 04 Empresarial Prime</option>
+              <option value="000003" data-code="000003" selected>Mini Mercado 03 Simples Nacional</option>
+              <option value="000001" data-code="000001">Mini Mercado 01</option>
+              <option value="000002" data-code="000002">Mini Mercado 02 Condomínio Jardins</option>
+              <option value="000004" data-code="000004">Mini Mercado 04 Empresarial Prime</option>
             </select>
-            <span class="modal-underline-hint-right">000003</span>
+            <span class="modal-underline-hint-right" id="hintDestinoModal">000003</span>
           </div>
         </div>
 
-        <!-- Select Plano de Abastecimento -->
+        <!-- Select Plano de Abastecimento (Opcional) -->
         <div class="modal-underline-group" style="margin-top: 8px;">
-          <label class="modal-underline-label" for="selectPlanoModal">Plano de Abastecimento</label>
+          <label class="modal-underline-label" for="selectPlanoModal">Plano de Abastecimento (Opcional)</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">description</span>
             <select id="selectPlanoModal" class="modal-underline-select">
-              <option value="000003" selected>Plano MiniMercado 03</option>
-              <option value="000005">Plano Snacks & Mercearia</option>
+              <option value="" data-code="Opcional">-- Nenhum plano (Consulta geral / Sem plano) --</option>
+              <option value="000003" data-code="000003" selected>Plano MiniMercado 03</option>
+              <option value="000005" data-code="000005">Plano Snacks & Mercearia</option>
             </select>
-            <span class="modal-underline-hint-right">000003</span>
+            <span class="modal-underline-hint-right" id="hintPlanoModal">000003</span>
           </div>
         </div>
 
-        <!-- Radio Cards: Filtro do Plano -->
-        <div style="margin-top: 14px;">
+        <!-- Dica quando nenhum plano estiver selecionado -->
+        <div id="hintNoPlanoModal" class="no-plan-hint-box" style="display: none;">
+          <span class="material-icons">info_outline</span>
+          <span>Sem plano de abastecimento: a consulta exibirá todos os produtos cadastrados da loja selecionada.</span>
+        </div>
+
+        <!-- Radio Cards: Filtro do Plano (Condicional) -->
+        <div id="containerFiltrosPlanoModal" class="plan-filter-container" style="margin-top: 14px;">
           <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Critério de Seleção de Produtos</label>
           <div class="modal-radio-cards-group">
             
@@ -370,7 +378,7 @@
               <input type="radio" name="filterScope" value="saldo_critico" class="modal-radio-input">
               <div class="modal-radio-text-box">
                 <span class="modal-radio-title">Apenas produtos com saldo menor que o crítico</span>
-                <span class="modal-radio-desc">Prioridade máxima: itens com risco iminente de ruptura de gôndola.</span>
+                <span class="modal-radio-desc">Filtra produtos em nível crítico de ruptura.</span>
               </div>
             </label>
 

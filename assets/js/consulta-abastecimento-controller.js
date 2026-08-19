@@ -6,10 +6,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Leitura de Parâmetros de URL ou Padrões Oficiais
   const urlParams = new URLSearchParams(window.location.search);
+  const paramOrigem = urlParams.get('origem');
+  const paramPlano = urlParams.get('plano');
+
   let currentParams = {
-    origem: urlParams.get('origem') || 'Estoque central',
+    origem: (paramOrigem && paramOrigem.trim()) ? paramOrigem : 'Não especificada (Entrada direta)',
     destino: urlParams.get('destino') || 'Mini Mercado 03 Simples Nacional',
-    plano: urlParams.get('plano') || 'Plano MiniMercado 03',
+    plano: (paramPlano && paramPlano.trim()) ? paramPlano : 'Sem plano base (Todos os produtos)',
     filtro: urlParams.get('filtro') || 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
   };
 
@@ -58,13 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Atualizar Contexto no Topo
   function updateContextUI() {
-    if (destNameDisplay) destNameDisplay.textContent = currentParams.destino;
-    if (cdNameDisplay) cdNameDisplay.textContent = currentParams.origem;
-    if (planNameDisplay) planNameDisplay.textContent = currentParams.plano;
+    if (destNameDisplay) destNameDisplay.textContent = currentParams.destino || 'Mini Mercado 03 Simples Nacional';
+    if (cdNameDisplay) cdNameDisplay.textContent = currentParams.origem || 'Não especificada (Entrada direta)';
+    if (planNameDisplay) planNameDisplay.textContent = currentParams.plano || 'Sem plano base (Todos os produtos)';
     
     let descFiltro = 'Plano Completo';
-    if (currentParams.filtro === 'saldo_ideal') descFiltro = 'Saldo < Ideal';
-    if (currentParams.filtro === 'saldo_critico') descFiltro = 'Saldo <= Crítico';
+    if (!currentParams.plano || currentParams.plano.includes('Sem plano') || currentParams.plano.includes('Todos os produtos')) {
+      descFiltro = 'Todos os Produtos';
+    } else if (currentParams.filtro === 'saldo_ideal') {
+      descFiltro = 'Saldo < Ideal';
+    } else if (currentParams.filtro === 'saldo_critico') {
+      descFiltro = 'Saldo <= Crítico';
+    }
     if (filterDescDisplay) filterDescDisplay.textContent = descFiltro;
   }
 
@@ -505,10 +513,79 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 13. Modal de Parâmetros da Consulta (Editar Filtros)
+  const selectOrigemModal = document.getElementById('selectOrigemModal');
+  const selectDestinoModal = document.getElementById('selectDestinoModal');
+  const selectPlanoModal = document.getElementById('selectPlanoModal');
+  const hintOrigemModal = document.getElementById('hintOrigemModal');
+  const hintDestinoModal = document.getElementById('hintDestinoModal');
+  const hintPlanoModal = document.getElementById('hintPlanoModal');
+  const containerFiltrosPlanoModal = document.getElementById('containerFiltrosPlanoModal');
+  const hintNoPlanoModal = document.getElementById('hintNoPlanoModal');
+
+  function updateModalParamsSelectHints() {
+    if (selectOrigemModal && hintOrigemModal) {
+      const opt = selectOrigemModal.options[selectOrigemModal.selectedIndex];
+      hintOrigemModal.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
+    }
+    if (selectDestinoModal && hintDestinoModal) {
+      const opt = selectDestinoModal.options[selectDestinoModal.selectedIndex];
+      hintDestinoModal.textContent = opt ? (opt.getAttribute('data-code') || opt.value) : '';
+    }
+    if (selectPlanoModal && hintPlanoModal) {
+      const opt = selectPlanoModal.options[selectPlanoModal.selectedIndex];
+      const hasPlan = !!(opt && opt.value);
+      hintPlanoModal.textContent = opt ? (opt.getAttribute('data-code') || (hasPlan ? opt.value : 'Opcional')) : 'Opcional';
+
+      if (containerFiltrosPlanoModal) {
+        if (hasPlan) {
+          containerFiltrosPlanoModal.classList.remove('hidden');
+        } else {
+          containerFiltrosPlanoModal.classList.add('hidden');
+        }
+      }
+
+      if (hintNoPlanoModal) {
+        hintNoPlanoModal.style.display = hasPlan ? 'none' : 'flex';
+      }
+    }
+  }
+
+  if (selectOrigemModal) selectOrigemModal.addEventListener('change', updateModalParamsSelectHints);
+  if (selectDestinoModal) selectDestinoModal.addEventListener('change', updateModalParamsSelectHints);
+  if (selectPlanoModal) selectPlanoModal.addEventListener('change', updateModalParamsSelectHints);
+
   function openParamsModal() {
     if (modalParams) {
       modalParams.classList.add('show', 'active');
       
+      // Sincroniza selects com currentParams
+      if (selectOrigemModal) {
+        for (let i = 0; i < selectOrigemModal.options.length; i++) {
+          if (selectOrigemModal.options[i].text === currentParams.origem) {
+            selectOrigemModal.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      if (selectDestinoModal) {
+        for (let i = 0; i < selectDestinoModal.options.length; i++) {
+          if (selectDestinoModal.options[i].text === currentParams.destino) {
+            selectDestinoModal.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      if (selectPlanoModal) {
+        for (let i = 0; i < selectPlanoModal.options.length; i++) {
+          if (selectPlanoModal.options[i].text === currentParams.plano) {
+            selectPlanoModal.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      updateModalParamsSelectHints();
+
       // Selecionar radio atual
       const radios = modalParams.querySelectorAll('input[name="filterScope"]');
       radios.forEach(r => {
@@ -545,15 +622,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnApplyParams) {
     btnApplyParams.addEventListener('click', () => {
-      const selectOrigem = document.getElementById('selectOrigemModal');
-      const selectDestino = document.getElementById('selectDestinoModal');
-      const selectPlano = document.getElementById('selectPlanoModal');
+      const optOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex] : null;
+      const optDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex] : null;
+      const optPlano = selectPlanoModal ? selectPlanoModal.options[selectPlanoModal.selectedIndex] : null;
       const selectedRadio = document.querySelector('input[name="filterScope"]:checked');
 
-      if (selectOrigem && selectOrigem.value) currentParams.origem = selectOrigem.options[selectOrigem.selectedIndex].text;
-      if (selectDestino && selectDestino.value) currentParams.destino = selectDestino.options[selectDestino.selectedIndex].text;
-      if (selectPlano && selectPlano.value) currentParams.plano = selectPlano.options[selectPlano.selectedIndex].text;
-      if (selectedRadio) currentParams.filtro = selectedRadio.value;
+      currentParams.origem = (optOrigem && optOrigem.value) ? optOrigem.text : 'Não especificada (Entrada direta)';
+      currentParams.destino = (optDestino && optDestino.value) ? optDestino.text : 'Mini Mercado 03 Simples Nacional';
+      currentParams.plano = (optPlano && optPlano.value) ? optPlano.text : 'Sem plano base (Todos os produtos)';
+      currentParams.filtro = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
 
       updateContextUI();
       closeParamsModal();

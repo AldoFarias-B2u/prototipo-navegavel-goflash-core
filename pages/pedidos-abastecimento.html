@@ -248,10 +248,11 @@
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">warehouse</span>
             <select id="selectModalOrigem" class="modal-underline-select">
-              <option value="000005" selected>Estoque central</option>
-              <option value="000001">CD Principal Zona Sul</option>
+              <option value="" data-code="Opcional">-- Nenhuma (Sem filial de origem) --</option>
+              <option value="000005" data-code="000005" selected>Estoque central</option>
+              <option value="000001" data-code="000001">CD Principal Zona Sul</option>
             </select>
-            <span class="modal-underline-hint-right">000005</span>
+            <span class="modal-underline-hint-right" id="hintModalOrigem">000005</span>
           </div>
         </div>
 
@@ -261,30 +262,37 @@
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">storefront</span>
             <select id="selectModalDestino" class="modal-underline-select">
-              <option value="000003" selected>Mini Mercado 03 Simples Nacional</option>
-              <option value="000001">Mini Mercado 01</option>
-              <option value="000002">Mini Mercado 02 Condomínio Jardins</option>
-              <option value="000004">Mini Mercado 04 Empresarial Prime</option>
+              <option value="000003" data-code="000003" selected>Mini Mercado 03 Simples Nacional</option>
+              <option value="000001" data-code="000001">Mini Mercado 01</option>
+              <option value="000002" data-code="000002">Mini Mercado 02 Condomínio Jardins</option>
+              <option value="000004" data-code="000004">Mini Mercado 04 Empresarial Prime</option>
             </select>
-            <span class="modal-underline-hint-right">000003</span>
+            <span class="modal-underline-hint-right" id="hintModalDestino">000003</span>
           </div>
         </div>
 
-        <!-- Select Plano de Abastecimento -->
+        <!-- Select Plano de Abastecimento (Opcional) -->
         <div class="modal-underline-group" style="margin-top: 8px;">
-          <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento</label>
+          <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento (Opcional)</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">description</span>
             <select id="selectModalPlano" class="modal-underline-select">
-              <option value="000003" selected>Plano MiniMercado 03</option>
-              <option value="000005">Plano Snacks & Mercearia</option>
+              <option value="" data-code="Opcional">-- Nenhum plano (Consulta geral / Sem plano) --</option>
+              <option value="000003" data-code="000003" selected>Plano MiniMercado 03</option>
+              <option value="000005" data-code="000005">Plano Snacks & Mercearia</option>
             </select>
-            <span class="modal-underline-hint-right">000003</span>
+            <span class="modal-underline-hint-right" id="hintModalPlano">000003</span>
           </div>
         </div>
 
-        <!-- Filtro do Plano de Abastecimento (Radio Cards) -->
-        <div style="margin-top: 14px;">
+        <!-- Dica quando nenhum plano estiver selecionado -->
+        <div id="hintNoPlanoSelected" class="no-plan-hint-box" style="display: none;">
+          <span class="material-icons">info_outline</span>
+          <span>Sem plano de abastecimento: a consulta trará todos os produtos cadastrados para a filial de destino selecionada.</span>
+        </div>
+
+        <!-- Filtro do Plano de Abastecimento (Radio Cards - Condicional) -->
+        <div id="containerFiltrosPlano" class="plan-filter-container" style="margin-top: 14px;">
           <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Filtro do Plano de Abastecimento</label>
           <div class="modal-radio-cards-group">
             
