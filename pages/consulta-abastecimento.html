@@ -442,27 +442,7 @@
           Defina os critérios abaixo para localizar e carregar os produtos do catálogo na sua consulta de reposição:
         </p>
 
-        <!-- 1. Campo de Pesquisa Geral (Código EAN, Nome ou Marca) -->
-        <div class="modal-field-group">
-          <label class="modal-field-label" for="catalogSearchInput">
-            <span class="material-icons field-label-icon">search</span>
-            Código EAN, Nome do Produto ou Marca:
-          </label>
-          <div class="modal-input-wrapper">
-            <input 
-              type="text" 
-              id="catalogSearchInput" 
-              class="modal-filter-input" 
-              placeholder="Digite o código, nome ou marca..." 
-              autocomplete="off"
-            >
-            <button type="button" class="btn-input-clear" id="btnClearCatalogSearch" title="Limpar busca" style="display: none;">
-              <span class="material-icons">close</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 2. Combobox Pesquisável de Grupo (Categoria) -->
+        <!-- 1. Combobox Pesquisável de Grupo (Categoria) -->
         <div class="modal-field-group">
           <label class="modal-field-label" for="inputComboboxGrupo">
             <span class="material-icons field-label-icon">category</span>
@@ -490,7 +470,7 @@
           </div>
         </div>
 
-        <!-- 3. Combobox Pesquisável de Fornecedor / Fabricante -->
+        <!-- 2. Combobox Pesquisável de Fornecedor / Fabricante -->
         <div class="modal-field-group">
           <label class="modal-field-label" for="inputComboboxFornecedor">
             <span class="material-icons field-label-icon">store</span>
@@ -515,6 +495,26 @@
             <div class="combobox-dropdown" id="dropdownFornecedor">
               <!-- Renderizado dinamicamente via JS -->
             </div>
+          </div>
+        </div>
+
+        <!-- 3. Campo de Pesquisa Geral (Código EAN, Nome ou Marca) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="catalogSearchInput">
+            <span class="material-icons field-label-icon">search</span>
+            Código EAN, Nome do Produto ou Marca:
+          </label>
+          <div class="modal-input-wrapper">
+            <input 
+              type="text" 
+              id="catalogSearchInput" 
+              class="modal-filter-input" 
+              placeholder="Digite o código, nome ou marca..." 
+              autocomplete="off"
+            >
+            <button type="button" class="btn-input-clear" id="btnClearCatalogSearch" title="Limpar busca" style="display: none;">
+              <span class="material-icons">close</span>
+            </button>
           </div>
         </div>
 
