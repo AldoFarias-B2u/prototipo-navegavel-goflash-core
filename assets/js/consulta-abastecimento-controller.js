@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
   let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false })) : [];
+  let currentSort = { column: null, direction: 'none' }; // 'none', 'asc', 'desc'
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
 
@@ -285,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
     const hasOrigin = hasOriginBranch();
     
-    return queryProducts.filter(item => {
+    let filtered = queryProducts.filter(item => {
       // Filtro de Texto (Nome / EAN / Marca)
       const matchText = !query || 
         item.nome.toLowerCase().includes(query) || 
@@ -313,6 +314,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return true;
     });
+
+    // Aplicação da Ordenação Dinâmica nas Colunas
+    if (currentSort.column && currentSort.direction !== 'none') {
+      const col = currentSort.column;
+      const dir = currentSort.direction === 'asc' ? 1 : -1;
+
+      filtered = [...filtered].sort((a, b) => {
+        let valA = a[col] !== undefined ? Number(a[col]) : 0;
+        let valB = b[col] !== undefined ? Number(b[col]) : 0;
+        if (isNaN(valA)) valA = 0;
+        if (isNaN(valB)) valB = 0;
+        return (valA - valB) * dir;
+      });
+    }
+
+    return filtered;
   }
 
   // 6. Atualização dos Contadores e Resumo Sticky
@@ -397,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Renderização da Tabela e dos Cards
   function renderAll() {
     updateContextUI();
+    updateSortHeadersUI();
     const hasOrigin = hasOriginBranch();
     const filtered = getFilteredProducts();
     
@@ -1049,6 +1067,55 @@ document.addEventListener('DOMContentLoaded', () => {
     chip.addEventListener('click', () => {
       const chipKey = chip.getAttribute('data-chip') || 'all';
       setChipActive(chipKey);
+    });
+  });
+
+  // 12.1 Ordenação Interativa de Colunas na Tabela
+  function updateSortHeadersUI() {
+    const sortHeaders = document.querySelectorAll('.th-sortable');
+    sortHeaders.forEach(th => {
+      const colKey = th.getAttribute('data-sort');
+      const icon = th.querySelector('.th-sort-icon');
+      
+      th.classList.remove('sort-asc', 'sort-desc');
+
+      if (colKey === currentSort.column && currentSort.direction !== 'none') {
+        if (currentSort.direction === 'asc') {
+          th.classList.add('sort-asc');
+          if (icon) icon.textContent = 'arrow_upward';
+          th.title = `Ordenado: Menor para Maior (Clique para inverter)`;
+        } else if (currentSort.direction === 'desc') {
+          th.classList.add('sort-desc');
+          if (icon) icon.textContent = 'arrow_downward';
+          th.title = `Ordenado: Maior para Menor (Clique para ordem original)`;
+        }
+      } else {
+        if (icon) icon.textContent = 'unfold_more';
+        th.title = `Clique para ordenar`;
+      }
+    });
+  }
+
+  const sortHeaders = document.querySelectorAll('.th-sortable');
+  sortHeaders.forEach(th => {
+    th.addEventListener('click', () => {
+      const colKey = th.getAttribute('data-sort');
+      if (!colKey) return;
+
+      if (currentSort.column === colKey) {
+        if (currentSort.direction === 'none') {
+          currentSort.direction = 'asc';
+        } else if (currentSort.direction === 'asc') {
+          currentSort.direction = 'desc';
+        } else {
+          currentSort = { column: null, direction: 'none' };
+        }
+      } else {
+        currentSort = { column: colKey, direction: 'asc' };
+      }
+
+      updateSortHeadersUI();
+      renderAll();
     });
   });
 

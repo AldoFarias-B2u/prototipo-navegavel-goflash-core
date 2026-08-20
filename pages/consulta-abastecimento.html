@@ -244,9 +244,24 @@
               <th class="product-info-cell">Produto / Código EAN</th>
               <th class="col-plan-param" style="width: 105px; text-align: center;">Estoque Ideal</th>
               <th class="col-plan-param" style="width: 105px; text-align: center;">Mínimo Crítico</th>
-              <th style="width: 105px; text-align: center;">Estoque Loja</th>
-              <th id="thEstoqueOrigem" class="col-cd-origem" style="width: 105px; text-align: center;">Estoque CD</th>
-              <th class="col-plan-param" style="width: 100px; text-align: center;">Sugestão</th>
+              <th class="th-sortable" data-sort="estoqueLoja" style="width: 110px; text-align: center;" title="Clique para ordenar por Estoque Loja">
+                <div class="th-sort-wrapper">
+                  <span>Estoque Loja</span>
+                  <span class="material-icons th-sort-icon">unfold_more</span>
+                </div>
+              </th>
+              <th id="thEstoqueOrigem" class="col-cd-origem th-sortable" data-sort="estoqueCd" style="width: 110px; text-align: center;" title="Clique para ordenar por Estoque CD">
+                <div class="th-sort-wrapper">
+                  <span>Estoque CD</span>
+                  <span class="material-icons th-sort-icon">unfold_more</span>
+                </div>
+              </th>
+              <th class="col-plan-param th-sortable" data-sort="sugestao" style="width: 105px; text-align: center;" title="Clique para ordenar por Sugestão">
+                <div class="th-sort-wrapper">
+                  <span>Sugestão</span>
+                  <span class="material-icons th-sort-icon">unfold_more</span>
+                </div>
+              </th>
               <th style="width: 150px; text-align: center;">A Repor</th>
               <th style="width: 60px; text-align: center;">
                 <button type="button" class="btn-th-clear-all" id="btnThClearAll" title="Excluir todos os produtos da lista" aria-label="Excluir todos os produtos">

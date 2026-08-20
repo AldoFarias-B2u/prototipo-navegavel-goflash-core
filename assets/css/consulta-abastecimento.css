@@ -625,6 +625,48 @@
   user-select: none;
 }
 
+/* Cabeçalhos Ordenáveis Interativos */
+.th-sortable {
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.th-sortable:hover {
+  background-color: #f3f0fa !important;
+  color: var(--primary-color, #6530b5) !important;
+}
+
+.th-sort-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.th-sort-icon {
+  font-size: 16px;
+  color: #bdbdbd;
+  transition: transform 0.2s ease, color var(--transition-fast);
+  line-height: 1;
+}
+
+.th-sortable:hover .th-sort-icon {
+  color: var(--primary-color, #6530b5);
+}
+
+.th-sortable.sort-asc,
+.th-sortable.sort-desc {
+  color: var(--primary-color, #6530b5) !important;
+  font-weight: 700;
+  background-color: #f6f2fc !important;
+}
+
+.th-sortable.sort-asc .th-sort-icon,
+.th-sortable.sort-desc .th-sort-icon {
+  color: var(--primary-color, #6530b5) !important;
+}
+
 .consulta-products-table td {
   padding: 12px 12px;
   border-bottom: 1px solid #f0f0f0;
