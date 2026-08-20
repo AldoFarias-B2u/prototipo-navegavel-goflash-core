@@ -1042,15 +1042,24 @@ document.addEventListener('DOMContentLoaded', () => {
     init() {
       if (!this.container || !this.input || !this.dropdown) return;
 
-      // Digitação no input
+      // Digitação no input: filtra opções e notifica seleção em tempo real
       this.input.addEventListener('input', () => {
-        this.clearBtn.style.display = this.input.value.trim() ? 'block' : 'none';
+        const val = this.input.value.trim();
+        this.selectedValue = val;
+        this.selectedLabel = val;
+        if (this.clearBtn) this.clearBtn.style.display = val ? 'flex' : 'none';
+        this.renderDropdown(val);
+        this.open();
+        this.onSelect(this.selectedValue, this.selectedLabel);
+      });
+
+      // Foco ou clique no input abre o dropdown com as opções
+      this.input.addEventListener('focus', () => {
         this.renderDropdown(this.input.value.trim());
         this.open();
       });
 
-      // Foco no input abre dropdown
-      this.input.addEventListener('focus', () => {
+      this.input.addEventListener('click', () => {
         this.renderDropdown(this.input.value.trim());
         this.open();
       });
@@ -1089,28 +1098,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     open() {
+      if (!this.dropdown) return;
+      this.dropdown.style.display = 'block';
       this.dropdown.classList.add('show');
+      if (this.container) this.container.classList.add('open');
       if (this.toggleBtn) this.toggleBtn.classList.add('open');
     }
 
     close() {
+      if (!this.dropdown) return;
+      this.dropdown.style.display = 'none';
       this.dropdown.classList.remove('show');
+      if (this.container) this.container.classList.remove('open');
       if (this.toggleBtn) this.toggleBtn.classList.remove('open');
     }
 
     isOpen() {
-      return this.dropdown.classList.contains('show');
+      if (!this.dropdown) return false;
+      return this.dropdown.style.display === 'block' || this.dropdown.classList.contains('show');
     }
 
     setValue(value, label) {
-      this.selectedValue = value;
-      this.selectedLabel = label;
-      this.input.value = label;
-      this.clearBtn.style.display = label ? 'block' : 'none';
+      this.selectedValue = value || '';
+      this.selectedLabel = label !== undefined ? label : (value || '');
+      this.input.value = this.selectedLabel;
+      if (this.clearBtn) {
+        this.clearBtn.style.display = this.selectedLabel ? 'flex' : 'none';
+      }
     }
 
     getValue() {
-      return this.selectedValue;
+      return this.selectedValue || this.input.value.trim();
     }
 
     renderDropdown(searchTerm = '') {
@@ -1118,7 +1136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const term = searchTerm.toLowerCase();
 
       const filtered = options.filter(opt => 
-        !term || opt.label.toLowerCase().includes(term)
+        !term || opt.label.toLowerCase().includes(term) || (opt.value && opt.value.toLowerCase().includes(term))
       );
 
       if (filtered.length === 0) {
@@ -1129,11 +1147,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       this.dropdown.innerHTML = filtered.map(opt => {
-        const isSelected = opt.value === this.selectedValue;
+        const isSelected = (opt.value && opt.value.toLowerCase() === this.selectedValue.toLowerCase()) ||
+          (!opt.value && !this.selectedValue);
         const countBadge = opt.count !== undefined ? `<span class="combobox-count">${opt.count}</span>` : '';
         
         let labelHtml = opt.label;
-        if (term && opt.label) {
+        if (term && opt.label && opt.value) {
           const idx = opt.label.toLowerCase().indexOf(term);
           if (idx > -1) {
             labelHtml = opt.label.substring(0, idx) +
@@ -1235,8 +1254,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function getCatalogMatches() {
     const master = getMasterCatalog();
     const query = (catalogSearchInput ? catalogSearchInput.value : '').trim().toLowerCase();
-    const selGrupo = comboboxGrupo.getValue().toLowerCase();
-    const selFornecedor = comboboxFornecedor.getValue().toLowerCase();
+    const selGrupo = (comboboxGrupo.getValue() || '').toLowerCase();
+    const selFornecedor = (comboboxFornecedor.getValue() || '').toLowerCase();
     const onlyCd = (chkOnlyAvailableCd && chkOnlyAvailableCd.checked && hasOriginBranch());
 
     return master.filter(p => {
@@ -1249,15 +1268,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 2. Grupo (Categoria)
-      if (selGrupo) {
+      if (selGrupo && !selGrupo.includes('todos os grupos')) {
         const itemGrupo = (p.grupo || p.categoria || '').toLowerCase();
-        if (itemGrupo !== selGrupo) return false;
+        if (!itemGrupo.includes(selGrupo) && !selGrupo.includes(itemGrupo)) return false;
       }
 
       // 3. Fornecedor / Fabricante
-      if (selFornecedor) {
+      if (selFornecedor && !selFornecedor.includes('todos os fornecedores')) {
         const itemForn = (p.fornecedor || '').toLowerCase();
-        if (itemForn !== selFornecedor) return false;
+        if (!itemForn.includes(selFornecedor) && !selFornecedor.includes(itemForn)) return false;
       }
 
       // 4. Saldo no CD de Origem (Condicional)
