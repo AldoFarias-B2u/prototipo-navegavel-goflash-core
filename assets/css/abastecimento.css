@@ -359,6 +359,19 @@ td.col-num-indicator {
   padding-bottom: 3px;
 }
 
+.modal-underline-group.has-error .modal-underline-wrapper {
+  border-bottom: 2px solid #d32f2f !important;
+  padding-bottom: 3px;
+}
+
+.modal-underline-group.has-error .modal-underline-icon {
+  color: #d32f2f !important;
+}
+
+.modal-underline-group.has-error .modal-underline-label {
+  color: #d32f2f !important;
+}
+
 .modal-underline-icon {
   color: #616161;
   font-size: 20px;

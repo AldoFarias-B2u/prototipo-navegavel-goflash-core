@@ -1121,12 +1121,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnApplyParams) {
     btnApplyParams.addEventListener('click', () => {
-      const novaOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex].text : currentParams.origem;
-      const novoDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex].text : currentParams.destino;
+      const optDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex] : null;
+      if (!optDestino || !optDestino.value) {
+        if (selectDestinoModal) {
+          selectDestinoModal.focus();
+          const grp = selectDestinoModal.closest('.modal-underline-group');
+          if (grp) {
+            grp.classList.add('has-error');
+            setTimeout(() => grp.classList.remove('has-error'), 3000);
+          }
+        }
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Por favor, selecione a Filial para Repor.');
+        }
+        return;
+      }
+
+      const optOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex] : null;
+      const novaOrigem = (optOrigem && optOrigem.value) ? optOrigem.text : '';
+      const novoDestino = optDestino.text;
       const optPlano = selectPlanoModal ? selectPlanoModal.options[selectPlanoModal.selectedIndex] : null;
       const novoPlano = (optPlano && optPlano.value) ? optPlano.text : '';
       
-      const radioSelected = modalParams.querySelector('input[name="filtroEstoque"]:checked');
+      const radioSelected = modalParams.querySelector('input[name="filterScope"]:checked') || modalParams.querySelector('input[name="filtroEstoque"]:checked');
       const novoFiltro = radioSelected ? radioSelected.value : 'completo';
 
       currentParams = {

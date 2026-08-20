@@ -231,7 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (selectModalDestino && hintModalDestino) {
       const opt = selectModalDestino.options[selectModalDestino.selectedIndex];
-      hintModalDestino.textContent = opt ? (opt.getAttribute('data-code') || opt.value) : '';
+      hintModalDestino.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : '--')) : '--';
+      if (opt && opt.value) {
+        const grp = selectModalDestino.closest('.modal-underline-group');
+        if (grp) grp.classList.remove('has-error');
+      }
     }
     if (selectModalPlano && hintModalPlano) {
       const opt = selectModalPlano.options[selectModalPlano.selectedIndex];
@@ -278,8 +282,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const optPlano = selectModalPlano ? selectModalPlano.options[selectModalPlano.selectedIndex] : null;
       const selectedRadio = document.querySelector('input[name="filtroPlanoConsulta"]:checked');
 
+      // Validação obrigatória da Filial para Repor
+      if (!optDestino || !optDestino.value) {
+        if (selectModalDestino) {
+          selectModalDestino.focus();
+          const group = selectModalDestino.closest('.modal-underline-group');
+          if (group) {
+            group.classList.add('has-error');
+            setTimeout(() => group.classList.remove('has-error'), 3000);
+          }
+        }
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Por favor, selecione a Filial para Repor para continuar.');
+        }
+        return;
+      }
+
       const origemText = (optOrigem && optOrigem.value) ? optOrigem.text : '';
-      const destinoText = (optDestino && optDestino.value) ? optDestino.text : 'Mini Mercado 03 Simples Nacional';
+      const destinoText = optDestino.text;
       const planoText = (optPlano && optPlano.value) ? optPlano.text : '';
       const filtroVal = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
 

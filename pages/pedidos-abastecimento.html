@@ -248,26 +248,27 @@
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">warehouse</span>
             <select id="selectModalOrigem" class="modal-underline-select">
-              <option value="" data-code="Opcional">-- Nenhuma (Sem filial de origem) --</option>
-              <option value="000005" data-code="000005" selected>Estoque central</option>
+              <option value="" data-code="Opcional" selected>-- Nenhuma (Sem filial de origem) --</option>
+              <option value="000005" data-code="000005">Estoque central</option>
               <option value="000001" data-code="000001">CD Principal Zona Sul</option>
             </select>
-            <span class="modal-underline-hint-right" id="hintModalOrigem">000005</span>
+            <span class="modal-underline-hint-right" id="hintModalOrigem">Opcional</span>
           </div>
         </div>
 
         <!-- Select Filial para Repor -->
         <div class="modal-underline-group" style="margin-top: 8px;">
-          <label class="modal-underline-label" for="selectModalDestino">Selecione a Filial para Repor</label>
+          <label class="modal-underline-label" for="selectModalDestino">Selecione a Filial para Repor *</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">storefront</span>
             <select id="selectModalDestino" class="modal-underline-select">
-              <option value="000003" data-code="000003" selected>Mini Mercado 03 Simples Nacional</option>
+              <option value="" data-code="" selected>-- Selecione a filial para repor --</option>
+              <option value="000003" data-code="000003">Mini Mercado 03 Simples Nacional</option>
               <option value="000001" data-code="000001">Mini Mercado 01</option>
               <option value="000002" data-code="000002">Mini Mercado 02 Condomínio Jardins</option>
               <option value="000004" data-code="000004">Mini Mercado 04 Empresarial Prime</option>
             </select>
-            <span class="modal-underline-hint-right" id="hintModalDestino">000003</span>
+            <span class="modal-underline-hint-right" id="hintModalDestino">--</span>
           </div>
         </div>
 
@@ -277,11 +278,11 @@
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">description</span>
             <select id="selectModalPlano" class="modal-underline-select">
-              <option value="" data-code="Opcional">-- Nenhum plano (Consulta geral / Sem plano) --</option>
-              <option value="000003" data-code="000003" selected>Plano MiniMercado 03</option>
+              <option value="" data-code="Opcional" selected>-- Nenhum plano (Consulta geral / Sem plano) --</option>
+              <option value="000003" data-code="000003">Plano MiniMercado 03</option>
               <option value="000005" data-code="000005">Plano Snacks & Mercearia</option>
             </select>
-            <span class="modal-underline-hint-right" id="hintModalPlano">000003</span>
+            <span class="modal-underline-hint-right" id="hintModalPlano">Opcional</span>
           </div>
         </div>
 
