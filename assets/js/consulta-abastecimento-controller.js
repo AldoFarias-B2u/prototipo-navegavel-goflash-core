@@ -1007,46 +1007,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 12. Chips de Filtro Rápido da Barra de Ferramentas
-  const chipParamLowStockWrapper = document.getElementById('chipParamLowStockWrapper');
-  const chipFilterLowStock = document.getElementById('chipFilterLowStock');
-  const toolbarStockThresholdInput = document.getElementById('toolbarStockThresholdInput');
-
   function setChipActive(chipName) {
     currentFilterChip = chipName;
-    const regularChips = document.querySelectorAll('.filter-chip:not(.chip-param-btn)');
-    regularChips.forEach(c => {
+    const chips = document.querySelectorAll('.filter-chip');
+    chips.forEach(c => {
       c.classList.toggle('active', c.getAttribute('data-chip') === chipName);
     });
-    if (chipParamLowStockWrapper) {
-      chipParamLowStockWrapper.classList.toggle('active', chipName === 'low_stock');
-    }
     renderAll();
   }
 
-  const regularFilterChips = document.querySelectorAll('.filter-chip:not(.chip-param-btn)');
-  regularFilterChips.forEach(chip => {
+  const filterChips = document.querySelectorAll('.filter-chip');
+  filterChips.forEach(chip => {
     chip.addEventListener('click', () => {
       const chipKey = chip.getAttribute('data-chip') || 'all';
       setChipActive(chipKey);
     });
   });
-
-  if (chipFilterLowStock) {
-    chipFilterLowStock.addEventListener('click', () => {
-      setChipActive('low_stock');
-    });
-  }
-
-  if (toolbarStockThresholdInput) {
-    toolbarStockThresholdInput.addEventListener('input', (e) => {
-      lowStockThreshold = Math.max(0, parseInt(e.target.value) || 0);
-      setChipActive('low_stock');
-    });
-    toolbarStockThresholdInput.addEventListener('click', (e) => {
-      e.stopPropagation();
-      setChipActive('low_stock');
-    });
-  }
 
   // 13. Modal de Parâmetros da Consulta (Editar Filtros)
   const selectOrigemModal = document.getElementById('selectOrigemModal');
