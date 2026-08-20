@@ -450,10 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="product-info-cell">
                   <div class="product-desc-title">${item.nome}</div>
-                  <div class="product-info-sub-row">
-                    <span class="product-ean-text"><a href="javascript:void(0)" class="product-ean-link">EAN ${item.ean}</a></span>
-                    <span class="product-meta-separator">•</span>
-                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  <div class="product-meta-row">
+                    <span class="product-ean-label">EAN: <span class="product-ean-val">${item.ean}</span></span>
+                    <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
                   </div>
                 </td>
                 <td class="col-plan-param" style="text-align: center;">
@@ -510,10 +509,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="product-info-cell">
                   <div class="product-desc-title">${item.nome}</div>
-                  <div class="product-info-sub-row">
-                    <span class="product-ean-text"><a href="javascript:void(0)" class="product-ean-link">EAN ${item.ean}</a></span>
-                    <span class="product-meta-separator">•</span>
-                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  <div class="product-meta-row">
+                    <span class="product-ean-label">EAN: <span class="product-ean-val">${item.ean}</span></span>
+                    <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
                   </div>
                 </td>
                 <td style="text-align: center;">
@@ -633,10 +631,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="card-info-box">
                   <h4 class="card-product-title">${item.nome}</h4>
-                  <div class="card-info-sub-row">
-                    <span class="card-ean-tag">EAN ${item.ean}</span>
-                    <span class="product-meta-separator">•</span>
-                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  <div class="card-meta-row">
+                    <span class="card-ean-tag">EAN: <strong>${item.ean}</strong></span>
+                    <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
                   </div>
                 </div>
               </div>
