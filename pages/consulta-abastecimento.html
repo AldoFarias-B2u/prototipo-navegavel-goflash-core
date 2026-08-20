@@ -162,26 +162,34 @@
 
         <!-- Botões de Ação da Toolbar -->
         <div class="toolbar-buttons-wrapper">
-          <button type="button" class="btn-toggle-unselected" id="btnToggleUnselected" title="Ocultar produtos com quantidade zerada">
-            <span class="material-icons">visibility_off</span>
-            <span class="btn-text-unselected">Ocultar Desmarcados</span>
-          </button>
-
-          <button type="button" class="btn-batch-edit-qty" id="btnBatchEditQty" title="Definir quantidade a repor para produtos selecionados" disabled>
-            <span class="material-icons" style="font-size: 18px;">edit_note</span>
-            <span class="btn-text-batch">Definir Qtde em Lote</span>
-            <span class="batch-badge" id="btnBatchBadge" style="display: none;">0</span>
-          </button>
-
-          <button type="button" class="btn-clear-all-products" id="btnClearAllProducts" title="Excluir todos os produtos da lista">
-            <span class="material-icons" style="font-size: 18px;">delete_sweep</span>
-            <span class="btn-text-clear-all">Excluir Todos</span>
-          </button>
-
           <button type="button" class="btn-add-extra-products" id="btnAddExtraProducts" title="Adicionar produtos fora do plano">
-            <span class="material-icons" style="font-size: 18px;">add_circle</span>
+            <span class="material-icons">add_circle</span>
             <span class="btn-text-add">Adicionar Produtos</span>
           </button>
+
+          <!-- Dropdown de Mais Ações -->
+          <div class="more-actions-container" id="moreActionsContainer">
+            <button type="button" class="btn-more-actions" id="btnMoreActions" title="Mais opções da consulta" aria-haspopup="true" aria-expanded="false">
+              <span class="material-icons">more_vert</span>
+              <span class="btn-more-text">Mais Ações</span>
+            </button>
+            <div class="more-actions-dropdown" id="moreActionsDropdown">
+              <button type="button" class="dropdown-item" id="btnToggleUnselected">
+                <span class="material-icons" id="iconToggleUnselected">visibility_off</span>
+                <span class="btn-text-unselected" id="textToggleUnselected">Ocultar Desmarcados</span>
+              </button>
+              <button type="button" class="dropdown-item" id="btnBatchEditQty" disabled>
+                <span class="material-icons">edit_note</span>
+                <span class="btn-text-batch">Definir Qtde em Lote</span>
+                <span class="batch-badge" id="btnBatchBadge" style="display: none;">0</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button type="button" class="dropdown-item item-danger" id="btnClearAllProducts">
+                <span class="material-icons">delete_sweep</span>
+                <span class="btn-text-clear-all">Excluir Todos</span>
+              </button>
+            </div>
+          </div>
 
           <!-- Alternador Tabela / Cards -->
           <div class="view-mode-toggle-group">

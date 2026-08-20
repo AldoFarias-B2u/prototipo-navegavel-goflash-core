@@ -203,6 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('productSearchInput');
   const barcodeInput = document.getElementById('barcodeScanInput');
   const btnToggleUnselected = document.getElementById('btnToggleUnselected');
+  const btnMoreActions = document.getElementById('btnMoreActions');
+  const moreActionsDropdown = document.getElementById('moreActionsDropdown');
+  const moreActionsContainer = document.getElementById('moreActionsContainer');
   const btnViewTable = document.getElementById('btnViewTable');
   const btnViewCards = document.getElementById('btnViewCards');
   
@@ -853,9 +856,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. Botão Ocultar / Mostrar Desmarcados
+  // 11. Dropdown Mais Ações da Toolbar
+  function toggleMoreActionsDropdown(show) {
+    if (!moreActionsDropdown || !btnMoreActions) return;
+    const isCurrentlyShown = moreActionsDropdown.classList.contains('show');
+    const willShow = (show !== undefined) ? show : !isCurrentlyShown;
+    
+    moreActionsDropdown.classList.toggle('show', willShow);
+    btnMoreActions.classList.toggle('active', willShow);
+    btnMoreActions.setAttribute('aria-expanded', willShow ? 'true' : 'false');
+  }
+
+  if (btnMoreActions) {
+    btnMoreActions.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMoreActionsDropdown();
+    });
+  }
+
+  // Fechar dropdown ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (moreActionsContainer && !moreActionsContainer.contains(e.target)) {
+      toggleMoreActionsDropdown(false);
+    }
+  });
+
+  // Fechar dropdown ao pressionar ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && moreActionsDropdown && moreActionsDropdown.classList.contains('show')) {
+      toggleMoreActionsDropdown(false);
+    }
+  });
+
+  // 11.1 Botão Ocultar / Mostrar Desmarcados
   if (btnToggleUnselected) {
     btnToggleUnselected.addEventListener('click', () => {
+      toggleMoreActionsDropdown(false);
       hideUnselected = !hideUnselected;
       btnToggleUnselected.classList.toggle('active', hideUnselected);
       const icon = hideUnselected ? 'visibility' : 'visibility_off';
@@ -865,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11. Selecionar Todos / Desmarcar Todos da Tela Principal
+  // 11.2 Selecionar Todos / Desmarcar Todos da Tela Principal
   if (selectAllCheckbox) {
     selectAllCheckbox.addEventListener('change', () => {
       const isChecked = selectAllCheckbox.checked;
@@ -886,8 +922,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11.1 Exclusão Total de Produtos da Consulta (Tabela e Cards)
+  // 11.3 Exclusão Total de Produtos da Consulta (Tabela e Cards)
   function openConfirmClearAllModal() {
+    toggleMoreActionsDropdown(false);
     if (queryProducts.length === 0) {
       if (typeof Toast !== 'undefined') Toast.info('A lista de produtos já está vazia.');
       return;
@@ -931,6 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 11.5 Modal de Edição de Quantidade a Repor em Lote
   function openBatchEditModal() {
+    toggleMoreActionsDropdown(false);
     const selectedCount = queryProducts.filter(p => p.selecionado).length;
     if (selectedCount === 0) {
       if (typeof Toast !== 'undefined') {
