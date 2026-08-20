@@ -18,15 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1.1 Verificação de Presença de Plano de Abastecimento
   function checkHasPlan() {
-    return !!(currentParams.plano && 
-      !currentParams.plano.toLowerCase().includes('sem plano') && 
-      !currentParams.plano.toLowerCase().includes('todos os produtos') &&
-      !currentParams.plano.toLowerCase().includes('nenhum'));
+    return !(!currentParams.plano || 
+      currentParams.plano.toLowerCase().includes('sem plano') || 
+      currentParams.plano.toLowerCase().includes('todos os produtos') ||
+      currentParams.plano.toLowerCase().includes('nenhum'));
+  }
+
+  // 1.2 Verificação de Filial de Origem Especificada
+  function hasOriginBranch() {
+    return !(!currentParams.origem || 
+      currentParams.origem.toLowerCase().includes('não especificada') || 
+      currentParams.origem.toLowerCase().includes('nenhuma') ||
+      currentParams.origem.toLowerCase().includes('entrada direta'));
   }
 
   let hasPlan = checkHasPlan();
 
-  // 1.2 Parâmetros Dinâmicos de Catálogo e Estoque
+  // 1.3 Parâmetros Dinâmicos de Catálogo e Estoque
   let lowStockThreshold = 3;
   let catalogSearchText = '';
   let catalogSelectedGrupo = '';
@@ -116,10 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filtered.forEach(item => {
       const existing = queryProducts.find(p => p.ean === item.ean);
-      const reporQty = item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja);
+      const reporQty = hasPlan ? (item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja)) : 0;
       if (existing) {
         existing.selecionado = true;
-        if (existing.aRepor === 0) existing.aRepor = reporQty;
+        if (hasPlan && existing.aRepor === 0) existing.aRepor = reporQty;
       } else {
         const copy = JSON.parse(JSON.stringify(item));
         copy.id = Date.now() + Math.floor(Math.random() * 100000);
@@ -137,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
   let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])) : [];
-  let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero'
+  let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero', 'cd_available', 'low_stock'
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
 
@@ -189,6 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Atualizar Contexto no Topo & Visibilidade de Colunas/Chips
   function updateContextUI() {
     hasPlan = checkHasPlan();
+    const hasOrigin = hasOriginBranch();
 
     if (destNameDisplay) destNameDisplay.textContent = currentParams.destino || 'Mini Mercado 03 Simples Nacional';
     if (cdNameDisplay) cdNameDisplay.textContent = currentParams.origem || 'Não especificada (Entrada direta)';
@@ -210,25 +219,37 @@ document.addEventListener('DOMContentLoaded', () => {
       col.classList.toggle('hidden-col', !hasPlan);
     });
 
+    // Atualiza visibilidade das colunas e chips de Estoque CD
+    const cdCols = document.querySelectorAll('.col-cd-origem');
+    cdCols.forEach(col => {
+      col.classList.toggle('hidden-col', !hasOrigin);
+    });
+
     // Atualiza visibilidade dos chips que dependem de plano
     const chipIdeal = document.getElementById('chipFilterIdeal');
     const chipCritico = document.getElementById('chipFilterCritico');
     if (chipIdeal) chipIdeal.style.display = hasPlan ? 'inline-flex' : 'none';
     if (chipCritico) chipCritico.style.display = hasPlan ? 'inline-flex' : 'none';
 
+    // Atualiza visibilidade do chip de Estoque CD
+    const chipCdAvailable = document.getElementById('chipFilterCdAvailable');
+    if (chipCdAvailable) chipCdAvailable.style.display = hasOrigin ? 'inline-flex' : 'none';
+
     if (!hasPlan && (currentFilterChip === 'ideal' || currentFilterChip === 'critico')) {
       currentFilterChip = 'all';
-      const filterChips = document.querySelectorAll('.filter-chip');
-      filterChips.forEach(c => c.classList.toggle('active', c.getAttribute('data-chip') === 'all'));
+    }
+    if (!hasOrigin && currentFilterChip === 'cd_available') {
+      currentFilterChip = 'all';
     }
   }
 
   // 5. Filtragem e Obtenção de Produtos Visíveis
   function getFilteredProducts() {
     const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+    const hasOrigin = hasOriginBranch();
     
     return queryProducts.filter(item => {
-      // Filtro de Texto (Nome / EAN)
+      // Filtro de Texto (Nome / EAN / Marca)
       const matchText = !query || 
         item.nome.toLowerCase().includes(query) || 
         item.ean.includes(query) || 
@@ -252,6 +273,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentFilterChip === 'zero') {
         return item.estoqueLoja === 0;
       }
+      if (currentFilterChip === 'cd_available') {
+        return hasOrigin && (item.estoqueCd || 0) > 0;
+      }
+      if (currentFilterChip === 'low_stock') {
+        return item.estoqueLoja <= lowStockThreshold;
+      }
 
       return true;
     });
@@ -259,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. Atualização dos Contadores e Resumo Sticky
   function updateSummary() {
+    const hasOrigin = hasOriginBranch();
     const selectedItems = queryProducts.filter(p => p.selecionado && p.aRepor > 0);
     const totalUnits = selectedItems.reduce((acc, curr) => acc + (parseInt(curr.aRepor) || 0), 0);
 
@@ -271,18 +299,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const countCritico = hasPlan ? queryProducts.filter(p => p.estoqueLoja <= p.minimoCritico).length : 0;
     const countSelected = queryProducts.filter(p => p.selecionado).length;
     const countZero = queryProducts.filter(p => p.estoqueLoja === 0).length;
+    const countCdAvailable = hasOrigin ? queryProducts.filter(p => (p.estoqueCd || 0) > 0).length : 0;
+    const countLowStock = queryProducts.filter(p => p.estoqueLoja <= lowStockThreshold).length;
 
     const elCountAll = document.getElementById('chipCountAll');
     const elCountIdeal = document.getElementById('chipCountIdeal');
     const elCountCritico = document.getElementById('chipCountCritico');
     const elCountSelected = document.getElementById('chipCountSelected');
     const elCountZero = document.getElementById('chipCountZero');
+    const elCountCdAvailable = document.getElementById('chipCountCdAvailable');
+    const elCountLowStock = document.getElementById('chipCountLowStock');
 
     if (elCountAll) elCountAll.textContent = countAll;
     if (elCountIdeal) elCountIdeal.textContent = countIdeal;
     if (elCountCritico) elCountCritico.textContent = countCritico;
     if (elCountSelected) elCountSelected.textContent = countSelected;
     if (elCountZero) elCountZero.textContent = countZero;
+    if (elCountCdAvailable) elCountCdAvailable.textContent = countCdAvailable;
+    if (elCountLowStock) elCountLowStock.textContent = countLowStock;
 
     // Sincroniza o estado do checkbox do topo (Marcar/Desmarcar Todos)
     if (selectAllCheckbox) {
@@ -317,8 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Renderização da Tabela e dos Cards
   function renderAll() {
     updateContextUI();
+    const hasOrigin = hasOriginBranch();
     const filtered = getFilteredProducts();
-    const colCount = hasPlan ? 10 : 7;
+    
+    let colCount = 10;
+    if (hasPlan && hasOrigin) colCount = 10;
+    else if (hasPlan && !hasOrigin) colCount = 9;
+    else if (!hasPlan && hasOrigin) colCount = 7;
+    else if (!hasPlan && !hasOrigin) colCount = 6;
 
     // Render Tabela
     if (tableBody) {
@@ -343,6 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tableBody.innerHTML = filtered.map(item => {
           const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
           const unselectedClass = !item.selecionado ? 'unselected-row' : '';
+          const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
+          const pendingClass = isPendingQty ? 'repor-pending' : '';
 
           if (hasPlan) {
             return `
@@ -372,22 +414,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td style="text-align: center;">
                   <span class="stock-pill stock-pill-loja ${isCritico ? 'is-critico' : ''}">${item.estoqueLoja}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="col-cd-origem ${!hasOrigin ? 'hidden-col' : ''}" style="text-align: center;">
                   <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
                 </td>
                 <td class="col-plan-param" style="text-align: center;">
                   <span class="stock-pill stock-pill-sugestao">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
                 </td>
                 <td style="text-align: center; min-width: 140px;">
-                  <div class="repor-stepper-wrapper">
+                  <div class="repor-stepper-wrapper ${pendingClass}">
                     <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
                     <input 
                       type="number" 
                       class="repor-stepper-input input-a-repor" 
                       data-id="${item.id}" 
-                      value="${item.aRepor}" 
+                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
                       min="0"
                       max="999"
+                      placeholder="0"
                     >
                     <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
                   </div>
@@ -421,19 +464,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td style="text-align: center;">
                   <span class="stock-pill stock-pill-loja ${item.estoqueLoja === 0 ? 'is-critico' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
                 </td>
-                <td style="text-align: center;">
+                <td class="col-cd-origem ${!hasOrigin ? 'hidden-col' : ''}" style="text-align: center;">
                   <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
                 </td>
                 <td style="text-align: center; min-width: 140px;">
-                  <div class="repor-stepper-wrapper">
+                  <div class="repor-stepper-wrapper ${pendingClass}">
                     <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
                     <input 
                       type="number" 
                       class="repor-stepper-input input-a-repor" 
                       data-id="${item.id}" 
-                      value="${item.aRepor}" 
+                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
                       min="0"
                       max="999"
+                      placeholder="0"
                     >
                     <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
                   </div>
@@ -469,38 +513,53 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsGrid.innerHTML = filtered.map(item => {
           const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
           const unselectedClass = !item.selecionado ? 'unselected-card' : '';
+          const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
+          const pendingClass = isPendingQty ? 'repor-pending' : '';
 
-          const stockGridHtml = hasPlan ? `
-            <div class="card-stock-grid">
-              <div class="card-stock-item">
-                <span class="card-stock-label">Ideal</span>
-                <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
+          let stockGridHtml = '';
+          if (hasPlan) {
+            stockGridHtml = `
+              <div class="card-stock-grid">
+                <div class="card-stock-item">
+                  <span class="card-stock-label">Ideal</span>
+                  <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
+                </div>
+                <div class="card-stock-item">
+                  <span class="card-stock-label">Crítico</span>
+                  <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+                </div>
+                <div class="card-stock-item">
+                  <span class="card-stock-label">Loja</span>
+                  <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : '#f57f17'};">${item.estoqueLoja}</span>
+                </div>
+                ${hasOrigin ? `
+                  <div class="card-stock-item">
+                    <span class="card-stock-label">CD</span>
+                    <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+                  </div>
+                ` : ''}
+                <div class="card-stock-item">
+                  <span class="card-stock-label">Sugestão</span>
+                  <span class="card-stock-val" style="color: #6530b5;">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
+                </div>
               </div>
-              <div class="card-stock-item">
-                <span class="card-stock-label">Crítico</span>
-                <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+            `;
+          } else {
+            stockGridHtml = `
+              <div class="card-stock-grid" style="${hasOrigin ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr;'}">
+                <div class="card-stock-item">
+                  <span class="card-stock-label">Estoque Loja</span>
+                  <span class="card-stock-val" style="color: ${item.estoqueLoja === 0 ? '#c62828' : '#1976d2'}; font-weight: 700;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
+                </div>
+                ${hasOrigin ? `
+                  <div class="card-stock-item">
+                    <span class="card-stock-label">Estoque CD</span>
+                    <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+                  </div>
+                ` : ''}
               </div>
-              <div class="card-stock-item">
-                <span class="card-stock-label">Loja</span>
-                <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : '#f57f17'};">${item.estoqueLoja}</span>
-              </div>
-              <div class="card-stock-item">
-                <span class="card-stock-label">Sugestão</span>
-                <span class="card-stock-val" style="color: #6530b5;">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
-              </div>
-            </div>
-          ` : `
-            <div class="card-stock-grid" style="grid-template-columns: 1fr 1fr;">
-              <div class="card-stock-item">
-                <span class="card-stock-label">Estoque Loja</span>
-                <span class="card-stock-val" style="color: ${item.estoqueLoja === 0 ? '#c62828' : '#1976d2'}; font-weight: 700;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
-              </div>
-              <div class="card-stock-item">
-                <span class="card-stock-label">Estoque CD</span>
-                <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
-              </div>
-            </div>
-          `;
+            `;
+          }
 
           return `
             <div class="product-mobile-card ${unselectedClass}" data-id="${item.id}">
@@ -511,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   data-id="${item.id}"
                   ${item.selecionado ? 'checked' : ''}
                   style="margin-top: 4px;"
+                  aria-label="Selecionar ${item.nome}"
                 >
                 <div class="card-photo-box">
                   <img src="${item.foto}" alt="${item.nome}" onerror="this.src='../assets/images/logo-homepage.png'">
@@ -526,15 +586,16 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="card-action-row">
                 <div class="card-repor-group">
                   <span class="card-repor-label">A Repor:</span>
-                  <div class="repor-stepper-wrapper">
+                  <div class="repor-stepper-wrapper ${pendingClass}">
                     <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}">−</button>
                     <input 
                       type="number" 
                       class="repor-stepper-input input-a-repor" 
                       data-id="${item.id}" 
-                      value="${item.aRepor}" 
+                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
                       min="0"
                       max="999"
+                      placeholder="0"
                     >
                     <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}">+</button>
                   </div>
@@ -570,8 +631,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const prod = queryProducts.find(p => p.id == id);
         if (prod) {
           prod.selecionado = chk.checked;
-          if (prod.selecionado && prod.aRepor === 0) {
-            prod.aRepor = (hasPlan && prod.sugestao > 0) ? prod.sugestao : 1;
+          if (prod.selecionado && prod.aRepor === 0 && hasPlan) {
+            prod.aRepor = prod.sugestao > 0 ? prod.sugestao : 1;
           }
           renderAll();
         }
@@ -611,6 +672,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inputs Diretos de "A Repor"
     const reporInputs = document.querySelectorAll('.input-a-repor');
     reporInputs.forEach(inp => {
+      inp.addEventListener('input', () => {
+        const row = inp.closest('tr');
+        if (row) row.classList.remove('row-repor-error');
+        const card = inp.closest('.product-mobile-card');
+        if (card) card.classList.remove('card-repor-error');
+        inp.classList.remove('input-repor-error');
+      });
+
       inp.addEventListener('change', () => {
         const id = inp.getAttribute('data-id');
         const prod = queryProducts.find(p => p.id == id);
@@ -786,15 +855,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 12. Chips de Filtro Rápido da Barra de Ferramentas
-  const filterChips = document.querySelectorAll('.filter-chip');
-  filterChips.forEach(chip => {
+  const chipParamLowStockWrapper = document.getElementById('chipParamLowStockWrapper');
+  const chipFilterLowStock = document.getElementById('chipFilterLowStock');
+  const toolbarStockThresholdInput = document.getElementById('toolbarStockThresholdInput');
+
+  function setChipActive(chipName) {
+    currentFilterChip = chipName;
+    const regularChips = document.querySelectorAll('.filter-chip:not(.chip-param-btn)');
+    regularChips.forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-chip') === chipName);
+    });
+    if (chipParamLowStockWrapper) {
+      chipParamLowStockWrapper.classList.toggle('active', chipName === 'low_stock');
+    }
+    renderAll();
+  }
+
+  const regularFilterChips = document.querySelectorAll('.filter-chip:not(.chip-param-btn)');
+  regularFilterChips.forEach(chip => {
     chip.addEventListener('click', () => {
-      filterChips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      currentFilterChip = chip.getAttribute('data-chip') || 'all';
-      renderAll();
+      const chipKey = chip.getAttribute('data-chip') || 'all';
+      setChipActive(chipKey);
     });
   });
+
+  if (chipFilterLowStock) {
+    chipFilterLowStock.addEventListener('click', () => {
+      setChipActive('low_stock');
+    });
+  }
+
+  if (toolbarStockThresholdInput) {
+    toolbarStockThresholdInput.addEventListener('input', (e) => {
+      lowStockThreshold = Math.max(0, parseInt(e.target.value) || 0);
+      setChipActive('low_stock');
+    });
+    toolbarStockThresholdInput.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setChipActive('low_stock');
+    });
+  }
 
   // 13. Modal de Parâmetros da Consulta (Editar Filtros)
   const selectOrigemModal = document.getElementById('selectOrigemModal');
@@ -859,21 +959,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       if (selectPlanoModal) {
+        let foundPlano = false;
         for (let i = 0; i < selectPlanoModal.options.length; i++) {
           if (selectPlanoModal.options[i].text === currentParams.plano) {
             selectPlanoModal.selectedIndex = i;
+            foundPlano = true;
             break;
           }
         }
+        if (!foundPlano) selectPlanoModal.selectedIndex = 0;
       }
 
-      updateModalParamsSelectHints();
+      const radioFiltro = modalParams.querySelector(`input[name="filtroEstoque"][value="${currentParams.filtro}"]`);
+      if (radioFiltro) radioFiltro.checked = true;
 
-      const radios = modalParams.querySelectorAll('input[name="filterScope"]');
-      radios.forEach(r => {
-        r.checked = (r.value === currentParams.filtro);
-        r.closest('.modal-radio-card')?.classList.toggle('active', r.checked);
-      });
+      updateModalParamsSelectHints();
     }
   }
 
@@ -891,209 +991,175 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const radioCards = document.querySelectorAll('.modal-radio-card');
-  radioCards.forEach(card => {
-    card.addEventListener('click', () => {
-      radioCards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      const input = card.querySelector('input[type="radio"]');
-      if (input) input.checked = true;
-    });
-  });
-
   if (btnApplyParams) {
     btnApplyParams.addEventListener('click', () => {
-      const optOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex] : null;
-      const optDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex] : null;
+      const novaOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex].text : currentParams.origem;
+      const novoDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex].text : currentParams.destino;
       const optPlano = selectPlanoModal ? selectPlanoModal.options[selectPlanoModal.selectedIndex] : null;
-      const selectedRadio = document.querySelector('input[name="filterScope"]:checked');
+      const novoPlano = (optPlano && optPlano.value) ? optPlano.text : '';
+      
+      const radioSelected = modalParams.querySelector('input[name="filtroEstoque"]:checked');
+      const novoFiltro = radioSelected ? radioSelected.value : 'completo';
 
-      const prevHasPlan = hasPlan;
-
-      currentParams.origem = (optOrigem && optOrigem.value) ? optOrigem.text : 'Não especificada (Entrada direta)';
-      currentParams.destino = (optDestino && optDestino.value) ? optDestino.text : 'Mini Mercado 03 Simples Nacional';
-      currentParams.plano = (optPlano && optPlano.value) ? optPlano.text : 'Sem plano base (Todos os produtos)';
-      currentParams.filtro = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
+      currentParams = {
+        origem: novaOrigem,
+        destino: novoDestino,
+        plano: novoPlano,
+        filtro: novoFiltro
+      };
 
       hasPlan = checkHasPlan();
 
-      if (!prevHasPlan && hasPlan && queryProducts.length === 0) {
+      if (hasPlan && queryProducts.length === 0) {
         queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || []));
       }
 
-      updateContextUI();
       closeParamsModal();
-
       if (typeof Toast !== 'undefined') {
-        Toast.success('Filtros atualizados com sucesso!');
+        Toast.success('Parâmetros da consulta atualizados com sucesso!');
       }
-
-      if (hasPlan && currentParams.filtro === 'saldo_ideal') {
-        currentFilterChip = 'ideal';
-      } else if (hasPlan && currentParams.filtro === 'saldo_critico') {
-        currentFilterChip = 'critico';
-      } else {
-        currentFilterChip = 'all';
-      }
-
-      filterChips.forEach(c => {
-        c.classList.toggle('active', c.getAttribute('data-chip') === currentFilterChip);
-      });
-
       renderAll();
     });
   }
 
-  // ==========================================================================
-  // 14. CATÁLOGO INTELIGENTE DE REPOSIÇÃO (COMBOBOXES PESQUISÁVEIS & FILTRO DE CD)
-  // ==========================================================================
-  
-  // 14.1 Helper: Verifica se a Consulta Possui Filial de Origem Definida
-  function hasOriginBranch() {
-    return !!(currentParams.origem && 
-      !currentParams.origem.toLowerCase().includes('não especificada') && 
-      !currentParams.origem.toLowerCase().includes('nenhuma') &&
-      !currentParams.origem.toLowerCase().includes('entrada direta'));
-  }
-
-  // 14.2 Classe Utilitária: Combobox Pesquisável com Autocomplete
+  // 14. MODAL INTELIGENTE DE CATÁLOGO (Comboboxes e Filtro CD)
+  // 14.1 Componente Searchable Combobox Vanilla
   class SearchableCombobox {
-    constructor({ containerId, inputId, clearBtnId, toggleBtnId, dropdownId, getOptions, onSelect }) {
-      this.container = document.getElementById(containerId);
-      this.input = document.getElementById(inputId);
-      this.clearBtn = document.getElementById(clearBtnId);
-      this.toggleBtn = document.getElementById(toggleBtnId);
-      this.dropdown = document.getElementById(dropdownId);
-      this.getOptions = getOptions;
-      this.onSelect = onSelect;
+    constructor(config) {
+      this.container = document.getElementById(config.containerId);
+      this.input = document.getElementById(config.inputId);
+      this.clearBtn = document.getElementById(config.clearBtnId);
+      this.toggleBtn = document.getElementById(config.toggleBtnId);
+      this.dropdown = document.getElementById(config.dropdownId);
+      this.getOptions = config.getOptions; // Função que retorna array de { value, label, count }
+      this.onSelect = config.onSelect || (() => {});
       this.selectedValue = '';
-      this.isOpen = false;
+      this.selectedLabel = '';
 
       this.init();
     }
 
     init() {
-      if (!this.input || !this.dropdown) return;
+      if (!this.container || !this.input || !this.dropdown) return;
 
-      this.input.addEventListener('input', (e) => {
-        this.selectedValue = e.target.value.trim();
-        this.updateClearBtn();
+      // Digitação no input
+      this.input.addEventListener('input', () => {
+        this.clearBtn.style.display = this.input.value.trim() ? 'block' : 'none';
+        this.renderDropdown(this.input.value.trim());
         this.open();
-        this.renderOptions(this.selectedValue);
-        if (this.onSelect) this.onSelect(this.selectedValue);
       });
 
+      // Foco no input abre dropdown
       this.input.addEventListener('focus', () => {
+        this.renderDropdown(this.input.value.trim());
         this.open();
-        this.renderOptions(this.input.value.trim());
       });
 
+      // Botão de alternar dropdown (seta)
       if (this.toggleBtn) {
         this.toggleBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (this.isOpen) {
+          if (this.isOpen()) {
             this.close();
           } else {
-            this.input.focus();
+            this.renderDropdown('');
             this.open();
-            this.renderOptions('');
+            this.input.focus();
           }
         });
       }
 
+      // Botão de limpar
       if (this.clearBtn) {
         this.clearBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.setValue('', '');
+          this.close();
+          this.onSelect('', '');
+          this.input.focus();
         });
       }
 
+      // Fechar ao clicar fora
       document.addEventListener('click', (e) => {
-        if (this.container && !this.container.contains(e.target)) {
+        if (!this.container.contains(e.target)) {
           this.close();
-        }
-      });
-
-      this.input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          this.close();
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          const firstOpt = this.dropdown.querySelector('.combobox-option');
-          if (firstOpt) firstOpt.click();
         }
       });
     }
 
     open() {
-      this.isOpen = true;
-      if (this.container) this.container.classList.add('open');
-      if (this.dropdown) this.dropdown.style.display = 'block';
+      this.dropdown.classList.add('show');
+      if (this.toggleBtn) this.toggleBtn.classList.add('open');
     }
 
     close() {
-      this.isOpen = false;
-      if (this.container) this.container.classList.remove('open');
-      if (this.dropdown) this.dropdown.style.display = 'none';
+      this.dropdown.classList.remove('show');
+      if (this.toggleBtn) this.toggleBtn.classList.remove('open');
     }
 
-    updateClearBtn() {
-      if (this.clearBtn) {
-        this.clearBtn.style.display = (this.input.value.length > 0) ? 'flex' : 'none';
-      }
+    isOpen() {
+      return this.dropdown.classList.contains('show');
     }
 
     setValue(value, label) {
-      this.selectedValue = value || '';
-      this.input.value = label || value || '';
-      this.updateClearBtn();
-      this.close();
-      if (this.onSelect) this.onSelect(this.selectedValue);
+      this.selectedValue = value;
+      this.selectedLabel = label;
+      this.input.value = label;
+      this.clearBtn.style.display = label ? 'block' : 'none';
     }
 
-    renderOptions(query = '') {
+    getValue() {
+      return this.selectedValue;
+    }
+
+    renderDropdown(searchTerm = '') {
       const options = this.getOptions();
-      const cleanQuery = query.toLowerCase();
-      
-      let filtered = options;
-      if (cleanQuery) {
-        filtered = options.filter(opt => opt.label.toLowerCase().includes(cleanQuery));
-      }
+      const term = searchTerm.toLowerCase();
+
+      const filtered = options.filter(opt => 
+        !term || opt.label.toLowerCase().includes(term)
+      );
 
       if (filtered.length === 0) {
-        this.dropdown.innerHTML = `<div class="combobox-empty-msg">Nenhum resultado encontrado</div>`;
+        this.dropdown.innerHTML = `
+          <div class="combobox-empty">Nenhum resultado encontrado</div>
+        `;
         return;
       }
 
       this.dropdown.innerHTML = filtered.map(opt => {
-        const isSelected = (this.selectedValue && this.selectedValue.toLowerCase() === opt.value.toLowerCase()) || 
-                           (!this.selectedValue && !opt.value && this.input.value === '');
+        const isSelected = opt.value === this.selectedValue;
+        const countBadge = opt.count !== undefined ? `<span class="combobox-count">${opt.count}</span>` : '';
         
-        let displayText = opt.label;
-        if (cleanQuery && opt.value) {
-          const idx = opt.label.toLowerCase().indexOf(cleanQuery);
+        let labelHtml = opt.label;
+        if (term && opt.label) {
+          const idx = opt.label.toLowerCase().indexOf(term);
           if (idx > -1) {
-            const before = opt.label.substring(0, idx);
-            const match = opt.label.substring(idx, idx + cleanQuery.length);
-            const after = opt.label.substring(idx + cleanQuery.length);
-            displayText = `${before}<strong>${match}</strong>${after}`;
+            labelHtml = opt.label.substring(0, idx) +
+              `<strong>${opt.label.substring(idx, idx + term.length)}</strong>` +
+              opt.label.substring(idx + term.length);
           }
         }
 
         return `
           <div class="combobox-option ${isSelected ? 'selected' : ''}" data-value="${opt.value}" data-label="${opt.label}">
-            <span class="combobox-option-text">${displayText}</span>
-            ${opt.count !== undefined ? `<span class="combobox-option-count">${opt.count}</span>` : ''}
+            <span class="combobox-label">${labelHtml}</span>
+            ${countBadge}
           </div>
         `;
       }).join('');
 
-      this.dropdown.querySelectorAll('.combobox-option').forEach(optEl => {
-        optEl.addEventListener('click', (e) => {
+      // Eventos de clique nas opções
+      const optionEls = this.dropdown.querySelectorAll('.combobox-option');
+      optionEls.forEach(el => {
+        el.addEventListener('click', (e) => {
           e.stopPropagation();
-          const val = optEl.getAttribute('data-value');
-          const lbl = optEl.getAttribute('data-label');
+          const val = el.getAttribute('data-value');
+          const lbl = el.getAttribute('data-label');
           this.setValue(val, lbl);
+          this.close();
+          this.onSelect(val, lbl);
         });
       });
     }
@@ -1168,43 +1234,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // 14.4 Cálculo dos Produtos Correspondentes
   function getCatalogMatches() {
     const master = getMasterCatalog();
-    const search = (catalogSearchInput ? catalogSearchInput.value : '').trim().toLowerCase();
-    const grupo = (comboboxGrupo.selectedValue || '').toLowerCase();
-    const fornecedor = (comboboxFornecedor.selectedValue || '').toLowerCase();
-    const hasCd = hasOriginBranch();
-    const onlyCd = chkOnlyAvailableCd ? chkOnlyAvailableCd.checked : false;
+    const query = (catalogSearchInput ? catalogSearchInput.value : '').trim().toLowerCase();
+    const selGrupo = comboboxGrupo.getValue().toLowerCase();
+    const selFornecedor = comboboxFornecedor.getValue().toLowerCase();
+    const onlyCd = (chkOnlyAvailableCd && chkOnlyAvailableCd.checked && hasOriginBranch());
 
     return master.filter(p => {
-      // 1. Busca por Código EAN, Nome ou Marca
-      if (search) {
-        const match = p.nome.toLowerCase().includes(search) ||
-          p.ean.includes(search) ||
-          (p.marca && p.marca.toLowerCase().includes(search));
-        if (!match) return false;
+      // 1. Busca Geral (EAN, Nome, Marca)
+      if (query) {
+        const matchText = p.nome.toLowerCase().includes(query) || 
+          p.ean.includes(query) || 
+          (p.marca && p.marca.toLowerCase().includes(query));
+        if (!matchText) return false;
       }
 
       // 2. Grupo (Categoria)
-      if (grupo) {
-        const pGrupo = (p.grupo || p.categoria || '').toLowerCase();
-        if (pGrupo !== grupo) return false;
+      if (selGrupo) {
+        const itemGrupo = (p.grupo || p.categoria || '').toLowerCase();
+        if (itemGrupo !== selGrupo) return false;
       }
 
       // 3. Fornecedor / Fabricante
-      if (fornecedor) {
-        const pForn = (p.fornecedor || '').toLowerCase();
-        if (!pForn.includes(fornecedor)) return false;
+      if (selFornecedor) {
+        const itemForn = (p.fornecedor || '').toLowerCase();
+        if (itemForn !== selFornecedor) return false;
       }
 
-      // 4. Saldo Disponível no Estoque de Origem (CD)
-      if (hasCd && onlyCd) {
-        if ((p.estoqueCd || 0) <= 0) return false;
+      // 4. Saldo no CD de Origem (Condicional)
+      if (onlyCd) {
+        if (!p.estoqueCd || p.estoqueCd <= 0) return false;
       }
 
       return true;
     });
   }
 
-  // Atualiza Contador do Rodapé do Modal
   function updateCatalogMatchesSummary() {
     const matches = getCatalogMatches();
     if (catalogMatchesCount) {
@@ -1212,11 +1276,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Eventos do Campo de Pesquisa Geral
   if (catalogSearchInput) {
-    catalogSearchInput.addEventListener('input', (e) => {
+    catalogSearchInput.addEventListener('input', () => {
       if (btnClearCatalogSearch) {
-        btnClearCatalogSearch.style.display = e.target.value.length > 0 ? 'flex' : 'none';
+        btnClearCatalogSearch.style.display = catalogSearchInput.value.trim() ? 'block' : 'none';
       }
       updateCatalogMatchesSummary();
     });
@@ -1293,11 +1356,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       matches.forEach(item => {
         const existing = queryProducts.find(p => p.ean === item.ean);
-        const reporQty = item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja);
+        const reporQty = hasPlan ? (item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja)) : 0;
 
         if (existing) {
           existing.selecionado = true;
-          if (existing.aRepor === 0) existing.aRepor = reporQty;
+          if (hasPlan && existing.aRepor === 0) existing.aRepor = reporQty;
           countUpdated++;
         } else {
           const copy = JSON.parse(JSON.stringify(item));
@@ -1320,17 +1383,55 @@ document.addEventListener('DOMContentLoaded', () => {
   // 15. Ações do Sticky Footer (Gerar Pedido, Cancelar, Rascunho)
   if (btnGenerateOrder) {
     btnGenerateOrder.addEventListener('click', () => {
-      const itemsToOrder = queryProducts.filter(p => p.selecionado && p.aRepor > 0);
+      const selectedItems = queryProducts.filter(p => p.selecionado);
       
-      if (itemsToOrder.length === 0) {
+      if (selectedItems.length === 0) {
         if (typeof Toast !== 'undefined') {
-          Toast.warning('Selecione ao menos 1 produto com quantidade a repor maior que zero.');
+          Toast.warning('Selecione ao menos 1 produto para gerar o pedido.');
         }
         return;
       }
 
-      const totalUnidades = itemsToOrder.reduce((acc, curr) => acc + curr.aRepor, 0);
-      const totalItens = itemsToOrder.length;
+      // Validação: Não permitir produtos selecionados com quantidade a repor <= 0 ou vazia
+      const pendingItems = selectedItems.filter(p => !p.aRepor || p.aRepor <= 0);
+
+      if (pendingItems.length > 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.error(`Atenção: Existem ${pendingItems.length} produto(s) selecionado(s) sem quantidade a repor definida. Preencha a quantidade antes de gerar o pedido.`);
+        }
+
+        // Destaca as linhas/cards e inputs com erro
+        pendingItems.forEach(item => {
+          const row = document.querySelector(`tr[data-id="${item.id}"]`);
+          if (row) {
+            row.classList.add('row-repor-error');
+            const input = row.querySelector('.input-a-repor');
+            if (input) input.classList.add('input-repor-error');
+          }
+          const card = document.querySelector(`.product-mobile-card[data-id="${item.id}"]`);
+          if (card) {
+            card.classList.add('card-repor-error');
+            const input = card.querySelector('.input-a-repor');
+            if (input) input.classList.add('input-repor-error');
+          }
+        });
+
+        // Rola até o primeiro item com erro e aplica foco
+        const firstPending = pendingItems[0];
+        const firstRow = document.querySelector(`tr[data-id="${firstPending.id}"]`) || document.querySelector(`.product-mobile-card[data-id="${firstPending.id}"]`);
+        if (firstRow) {
+          firstRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const firstInput = firstRow.querySelector('.input-a-repor');
+          if (firstInput) {
+            setTimeout(() => firstInput.focus(), 350);
+          }
+        }
+
+        return;
+      }
+
+      const totalUnidades = selectedItems.reduce((acc, curr) => acc + curr.aRepor, 0);
+      const totalItens = selectedItems.length;
 
       // Gera novo código baseado no tamanho da lista
       const currentList = window.PedidosAbastecimentoData || [];

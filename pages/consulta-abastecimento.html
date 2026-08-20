@@ -197,6 +197,24 @@
           <span class="filter-chip-count" id="chipCountAll">7</span>
         </button>
 
+        <button type="button" class="filter-chip col-cd-origem" data-chip="cd_available" id="chipFilterCdAvailable">
+          <span class="material-icons chip-icon" style="color: #2e7d32; font-size: 14px;">check_circle</span>
+          Disponível na Origem
+          <span class="filter-chip-count" id="chipCountCdAvailable">0</span>
+        </button>
+
+        <div class="filter-chip-param-wrapper" id="chipParamLowStockWrapper">
+          <button type="button" class="filter-chip chip-param-btn" data-chip="low_stock" id="chipFilterLowStock">
+            <span class="material-icons chip-icon" style="color: #f57f17; font-size: 14px;">warning_amber</span>
+            <span id="chipLowStockLabel">Estoque abaixo de ≤</span>
+          </button>
+          <div class="chip-param-input-box" title="Ajuste o limite de estoque">
+            <input type="number" id="toolbarStockThresholdInput" class="chip-param-number" value="3" min="0" max="99" aria-label="Quantidade máxima de estoque">
+            <span>un</span>
+          </div>
+          <span class="filter-chip-count" id="chipCountLowStock">0</span>
+        </div>
+
         <button type="button" class="filter-chip col-plan-param" data-chip="ideal" id="chipFilterIdeal">
           Saldo Menor que Ideal
           <span class="filter-chip-count" id="chipCountIdeal">6</span>
@@ -240,7 +258,7 @@
               <th class="col-plan-param" style="width: 105px; text-align: center;">Estoque Ideal</th>
               <th class="col-plan-param" style="width: 105px; text-align: center;">Mínimo Crítico</th>
               <th style="width: 105px; text-align: center;">Estoque Loja</th>
-              <th id="thEstoqueOrigem" style="width: 105px; text-align: center;">Estoque CD</th>
+              <th id="thEstoqueOrigem" class="col-cd-origem" style="width: 105px; text-align: center;">Estoque CD</th>
               <th class="col-plan-param" style="width: 100px; text-align: center;">Sugestão</th>
               <th style="width: 150px; text-align: center;">A Repor</th>
               <th style="width: 60px; text-align: center;">
