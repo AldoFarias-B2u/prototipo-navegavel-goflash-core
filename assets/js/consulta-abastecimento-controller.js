@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Não foram encontrados produtos para os parâmetros configurados neste plano.
           </p>
           <div class="empty-state-actions">
-            <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
+            <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 44px; font-size: 0.92rem;">
               <span class="material-icons">add_circle</span>
               Adicionar Produtos do Catálogo
             </button>
@@ -73,56 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="consulta-empty-state">
         <div class="empty-state-icon-box">
-          <span class="material-icons">tune</span>
+          <span class="material-icons">inventory_2</span>
         </div>
-        <h3 class="empty-state-title">Consulta de Reposição sem Plano</h3>
+        <h3 class="empty-state-title">Consulta de Reposição</h3>
         <p class="empty-state-desc">
-          Escolha uma ação rápida abaixo para carregar os produtos prioritários ou utilize o catálogo avançado e o leitor de bipe:
+          Nenhum produto adicionado à lista. Escaneie o código de barras no campo superior ou clique no botão abaixo para selecionar produtos pelo catálogo.
         </p>
-
-        <div class="empty-state-quick-cards-grid">
-          <!-- Card 1: Ruptura / Zerados -->
-          <div class="empty-quick-card">
-            <span class="material-icons empty-quick-card-icon" style="color: #c62828;">report_problem</span>
-            <div class="empty-quick-card-title">Itens Zerados na Loja</div>
-            <div class="empty-quick-card-desc">Carrega diretamente todos os produtos com estoque 0 na loja para reposição urgente.</div>
-            <button type="button" class="empty-quick-card-btn btn-card-rupture btn-quick-add-zero">
-              <span class="material-icons" style="font-size: 16px;">flash_on</span>
-              Carregar Zerados
-            </button>
-          </div>
-
-          <!-- Card 2: Estoque Baixo Parametrizável -->
-          <div class="empty-quick-card">
-            <span class="material-icons empty-quick-card-icon" style="color: #f57f17;">warning_amber</span>
-            <div class="empty-quick-card-title">Estoque Baixo</div>
-            <div class="empty-stock-param-row">
-              <span>Estoque abaixo de ≤</span>
-              <input type="number" class="param-input-small input-empty-low-threshold" value="${lowStockThreshold}" min="1" max="99">
-              <span>un</span>
-            </div>
-            <button type="button" class="empty-quick-card-btn btn-card-low-stock btn-quick-add-low">
-              <span class="material-icons" style="font-size: 16px;">filter_alt</span>
-              Carregar (≤ <span class="lbl-empty-low-val">${lowStockThreshold}</span> un)
-            </button>
-          </div>
-
-          <!-- Card 3: Catálogo Avançado com Filtros -->
-          <div class="empty-quick-card">
-            <span class="material-icons empty-quick-card-icon" style="color: #6530b5;">manage_search</span>
-            <div class="empty-quick-card-title">Catálogo Completo</div>
-            <div class="empty-quick-card-desc">Pesquise por Grupo, Fornecedor, Marca ou EAN com filtros avançados e seleção em lote.</div>
-            <button type="button" class="empty-quick-card-btn btn-card-catalog btn-trigger-add-modal">
-              <span class="material-icons" style="font-size: 16px;">add_circle</span>
-              Abrir Catálogo
-            </button>
-          </div>
+        <div class="empty-state-actions">
+          <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 44px; font-size: 0.92rem;">
+            <span class="material-icons">add_circle</span>
+            Adicionar Produtos do Catálogo
+          </button>
+          <span class="empty-state-scan-badge">
+            <span class="material-icons" style="font-size: 16px;">qr_code_scanner</span>
+            Leitor ativo: escaneie o código de barras ou digite o EAN e pressione Enter
+          </span>
         </div>
-
-        <span class="empty-state-scan-badge">
-          <span class="material-icons" style="font-size: 16px;">keyboard</span>
-          Atalho de bipe ativo: digite o EAN no topo e pressione Enter
-        </span>
       </div>
     `;
   }
@@ -222,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let descFiltro = 'Plano Completo';
     if (!hasPlan) {
-      descFiltro = 'Inserção Manual / Bipagem';
+      descFiltro = 'Inserção Manual / Escaneamento';
     } else if (currentParams.filtro === 'saldo_ideal') {
       descFiltro = 'Saldo < Ideal';
     } else if (currentParams.filtro === 'saldo_critico') {
@@ -572,40 +538,12 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
   }
 
-  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção, Gatilhos Empty State)
+  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção, Gatilhos)
   function bindInteractiveEvents() {
     // Gatilho de Abrir Catálogo Completo
     const triggerAddBtns = document.querySelectorAll('.btn-trigger-add-modal');
     triggerAddBtns.forEach(btn => {
       btn.addEventListener('click', openAddExtraModal);
-    });
-
-    // Ação Rápida Empty State: Zerados
-    const btnQuickZero = document.querySelectorAll('.btn-quick-add-zero');
-    btnQuickZero.forEach(btn => {
-      btn.addEventListener('click', () => addProductsByFilter({ zeroOnly: true }));
-    });
-
-    // Ação Rápida Empty State: Estoque Baixo
-    const btnQuickLow = document.querySelectorAll('.btn-quick-add-low');
-    btnQuickLow.forEach(btn => {
-      btn.addEventListener('click', () => addProductsByFilter({ lowStockOnly: true, threshold: lowStockThreshold }));
-    });
-
-    // Input de Parâmetro de Estoque Baixo no Empty State
-    const inputsEmptyLow = document.querySelectorAll('.input-empty-low-threshold');
-    inputsEmptyLow.forEach(inp => {
-      inp.addEventListener('input', (e) => {
-        const val = Math.max(1, parseInt(e.target.value) || 1);
-        lowStockThreshold = val;
-        
-        // Sincroniza labels e outros inputs
-        document.querySelectorAll('.lbl-empty-low-val').forEach(lbl => lbl.textContent = val);
-        const catalogParamInput = document.getElementById('catalogStockLowParamInput');
-        if (catalogParamInput) catalogParamInput.value = val;
-        const chipLabel = document.getElementById('chipStockLowLabel');
-        if (chipLabel) chipLabel.textContent = `Estoque abaixo de ≤ ${val} un`;
-      });
     });
 
     // Checkboxes de Seleção
@@ -707,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnViewTable) btnViewTable.addEventListener('click', () => setViewMode('table'));
   if (btnViewCards) btnViewCards.addEventListener('click', () => setViewMode('cards'));
 
-  // 10. Busca por Texto e Bipe de Código de Barras
+  // 10. Busca por Texto e Escaneamento de Código de Barras
   if (searchInput) {
     searchInput.addEventListener('input', () => renderAll());
   }
@@ -741,7 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newProd.selecionado = true;
             queryProducts.unshift(newProd);
             if (typeof Toast !== 'undefined') {
-              Toast.success(`Produto adicionado via bipe: ${newProd.nome.substring(0, 28)}...`);
+              Toast.success(`Produto adicionado via leitor: ${newProd.nome.substring(0, 28)}...`);
             }
             barcodeInput.value = '';
             renderAll();
