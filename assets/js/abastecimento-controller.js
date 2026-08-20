@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * ATIVA O MODO DE EDIÇÃO
    */
-  function enterEditMode() {
+  function enterEditMode(silent = false) {
     isEditMode = true;
     selectedItemIndices.clear();
     const plano = planos.find(p => p.id === currentActivePlanId);
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editModeBannerAlert) editModeBannerAlert.classList.add('show');
 
     renderDetailProducts(tempPlanItems);
-    if (typeof Toast !== 'undefined') {
+    if (!silent && typeof Toast !== 'undefined') {
       Toast.info('Modo de Edição ativado. Altere as quantidades ou selecione itens em lote.');
     }
   }
@@ -855,10 +855,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeNewPlanModal();
     if (typeof Toast !== 'undefined') {
-      Toast.success(`Plano ${codigoFormatado} - ${nome} criado com sucesso!`);
+      Toast.success(`Plano ${codigoFormatado} - ${nome} criado! Ajuste os produtos e salve o plano.`);
     }
 
     showDetailView(newPlan.id);
+    enterEditMode(true);
   }
 
   /**
