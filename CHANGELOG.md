@@ -2,6 +2,18 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.8.0] - 2026-08-20
+### ✨ Adicionado & Otimizado
+- **Otimização e Despoluição Visual do Cabeçalho da Consulta de Abastecimento** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - **Foco Operacional Primário**: Scanner EAN e botão `+ ADICIONAR PRODUTOS` com protagonismo absoluto na barra de ferramentas.
+  - **Menu Flutuante "Mais Ações" (`[ ⋮ Mais Ações ]`)**: Dropdown elegante agrupando opções secundárias (*Ocultar/Mostrar Desmarcados*, *Definir Qtde em Lote* com badge de itens selecionados e *Excluir Todos os Produtos* com confirmação de segurança).
+  - **Ordenação Dinâmica de Colunas (Tri-State)**: Ordenação interativa por clique nas colunas *Estoque Loja*, *Estoque CD* e *Sugestão* com ciclo Crescente ($\uparrow$), Decrescente ($\downarrow$) e Ordem Original ($\updownarrow$), sincronizada com a busca e os cards mobile.
+  - **Bloco do Produto em "Formato Ficha"**: Nome do produto em destaque no topo (`#1f2937`), EAN em tipografia sutil (`#757575`) e badges de status (*Estoque Zerado*, *Nível Crítico*, *Abaixo do Ideal*, *Estoque OK*) em alto contraste, sem ícones internos e sem quebras indesejadas de linha.
+- **Harmonização da Toolbar em Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - Toolbar unificada com botão *Editar Plano* na seção de produtos e simplificação de botões de cabeçalho.
+- **Validação de Parâmetros Iniciais**:
+  - Selects de parametrização vazios por padrão e obrigatoriedade da *Filial para repor* para avançar.
+
 ---
 
 ## [1.7.0] - 2026-08-18
