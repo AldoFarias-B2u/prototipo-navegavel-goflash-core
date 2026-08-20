@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleViewIcon = document.getElementById('toggleViewIcon');
   const toggleViewLabel = document.getElementById('toggleViewLabel');
   const productsCountBadge = document.getElementById('productsCountBadge');
-  const fabEditHero = document.getElementById('fabEditHero');
+  const btnEnterEditMode = document.getElementById('btnEnterEditMode');
 
   // Elementos do MODO DE EDIÇÃO
   const editModeActionsGroup = document.getElementById('editModeActionsGroup');
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Estado da Interface de Edição
-    if (fabEditHero) fabEditHero.style.display = 'flex';
+    if (btnEnterEditMode) btnEnterEditMode.style.display = 'inline-flex';
     if (editModeActionsGroup) editModeActionsGroup.classList.remove('show');
     if (editModeBannerAlert) editModeBannerAlert.classList.remove('show');
     if (stickyBatchBar) stickyBatchBar.classList.remove('show');
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const plano = planos.find(p => p.id === currentActivePlanId);
     tempPlanItems = JSON.parse(JSON.stringify(plano ? plano.itens || [] : []));
 
-    if (fabEditHero) fabEditHero.style.display = 'none';
+    if (btnEnterEditMode) btnEnterEditMode.style.display = 'none';
     if (editModeActionsGroup) editModeActionsGroup.classList.add('show');
     if (editModeBannerAlert) editModeBannerAlert.classList.add('show');
 
@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const plano = planos.find(p => p.id === currentActivePlanId);
     tempPlanItems = JSON.parse(JSON.stringify(plano ? plano.itens || [] : []));
 
-    if (fabEditHero) fabEditHero.style.display = 'flex';
+    if (btnEnterEditMode) btnEnterEditMode.style.display = 'inline-flex';
     if (editModeActionsGroup) editModeActionsGroup.classList.remove('show');
     if (editModeBannerAlert) editModeBannerAlert.classList.remove('show');
     if (stickyBatchBar) stickyBatchBar.classList.remove('show');
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     isEditMode = false;
     selectedItemIndices.clear();
 
-    if (fabEditHero) fabEditHero.style.display = 'flex';
+    if (btnEnterEditMode) btnEnterEditMode.style.display = 'inline-flex';
     if (editModeActionsGroup) editModeActionsGroup.classList.remove('show');
     if (editModeBannerAlert) editModeBannerAlert.classList.remove('show');
     if (stickyBatchBar) stickyBatchBar.classList.remove('show');
@@ -903,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnToggleProductsView) btnToggleProductsView.addEventListener('click', toggleProductsView);
 
     // Modo de Edição
-    if (fabEditHero) fabEditHero.addEventListener('click', enterEditMode);
+    if (btnEnterEditMode) btnEnterEditMode.addEventListener('click', () => enterEditMode());
     if (btnSaveEditMode) btnSaveEditMode.addEventListener('click', saveEditMode);
     if (btnCancelEditMode) btnCancelEditMode.addEventListener('click', cancelEditMode);
     if (btnOpenAddProducts) btnOpenAddProducts.addEventListener('click', openAddProductsModal);

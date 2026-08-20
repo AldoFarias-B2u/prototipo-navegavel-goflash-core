@@ -575,33 +575,39 @@ td.col-num-indicator {
   font-size: 16px;
 }
 
-/* Botão FAB de Edição no canto inferior direito do Hero Card */
-.fab-edit-hero {
-  position: absolute;
-  bottom: -22px;
-  right: 24px;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background-color: #7e57c2;
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  display: flex;
+/* Botão de Gatilho de Edição do Plano (Toolbar de Produtos) */
+.btn-edit-plan-trigger {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-  z-index: 15;
+  background-color: #6530b5;
+  color: #ffffff;
+  border: 1px solid #6530b5;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
+  transition: all var(--transition-fast);
+  user-select: none;
+  white-space: nowrap;
 }
 
-.fab-edit-hero:hover {
-  transform: scale(1.08);
-  background-color: #673ab7;
+.btn-edit-plan-trigger:hover {
+  background-color: #532499;
+  border-color: #532499;
+  box-shadow: 0 4px 10px rgba(101, 48, 181, 0.35);
+  transform: translateY(-1px);
 }
 
-.fab-edit-hero .material-icons {
-  font-size: 22px;
+.btn-edit-plan-trigger:active {
+  transform: translateY(0);
+}
+
+.btn-edit-plan-trigger .material-icons {
+  font-size: 18px;
 }
 
 /* --------------------------------------------------------------------------
