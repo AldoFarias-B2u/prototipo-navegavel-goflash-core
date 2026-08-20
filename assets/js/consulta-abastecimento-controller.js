@@ -886,336 +886,319 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // 14. CATÁLOGO INTELIGENTE DE REPOSIÇÃO (MULTICRITÉRIO COM FILTROS AVANÇADOS)
+  // 14. CATÁLOGO INTELIGENTE DE REPOSIÇÃO (COMBOBOXES PESQUISÁVEIS & FILTRO DE CD)
   // ==========================================================================
-  const catalogSearchInput = document.getElementById('catalogSearchInput');
-  const catalogGrupoSelect = document.getElementById('catalogGrupoSelect');
-  const catalogFornecedorSelect = document.getElementById('catalogFornecedorSelect');
-  const catalogStockChips = document.querySelectorAll('.catalog-stock-chip');
-  const catalogStockLowParamInput = document.getElementById('catalogStockLowParamInput');
-  const chipStockLowLabel = document.getElementById('chipStockLowLabel');
-  const chipStockLowWrapper = document.getElementById('chipStockLowWrapper');
-  const catalogSelectAllCheckbox = document.getElementById('catalogSelectAllCheckbox');
-  const catalogFilteredCount = document.getElementById('catalogFilteredCount');
-  const catalogBatchDefaultQtyInput = document.getElementById('catalogBatchDefaultQtyInput');
-  const btnBatchQtyMinus = document.getElementById('btnBatchQtyMinus');
-  const btnBatchQtyPlus = document.getElementById('btnBatchQtyPlus');
-  const btnApplyBatchQty = document.getElementById('btnApplyBatchQty');
-  const catalogSelectionSummary = document.getElementById('catalogSelectionSummary');
-
-  // Inicializa o estado dos itens do catálogo
-  function initCatalogItemsState() {
-    const master = getMasterCatalog();
-    catalogItemsState = master.map(item => {
-      const inQuery = queryProducts.find(p => p.ean === item.ean);
-      return {
-        item: item,
-        checked: inQuery ? inQuery.selecionado : (item.estoqueLoja === 0),
-        aRepor: inQuery ? inQuery.aRepor : (item.sugestao || Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja))
-      };
-    });
+  
+  // 14.1 Helper: Verifica se a Consulta Possui Filial de Origem Definida
+  function hasOriginBranch() {
+    return !!(currentParams.origem && 
+      !currentParams.origem.toLowerCase().includes('não especificada') && 
+      !currentParams.origem.toLowerCase().includes('nenhuma') &&
+      !currentParams.origem.toLowerCase().includes('entrada direta'));
   }
 
-  // Filtra itens do catálogo com base em todos os critérios ativos
-  function getFilteredCatalogItems() {
-    return catalogItemsState.filter(entry => {
-      const p = entry.item;
+  // 14.2 Classe Utilitária: Combobox Pesquisável com Autocomplete
+  class SearchableCombobox {
+    constructor({ containerId, inputId, clearBtnId, toggleBtnId, dropdownId, getOptions, onSelect }) {
+      this.container = document.getElementById(containerId);
+      this.input = document.getElementById(inputId);
+      this.clearBtn = document.getElementById(clearBtnId);
+      this.toggleBtn = document.getElementById(toggleBtnId);
+      this.dropdown = document.getElementById(dropdownId);
+      this.getOptions = getOptions;
+      this.onSelect = onSelect;
+      this.selectedValue = '';
+      this.isOpen = false;
 
-      // 1. Filtro por Texto / EAN / Marca
-      if (catalogSearchText) {
-        const query = catalogSearchText.toLowerCase();
-        const match = p.nome.toLowerCase().includes(query) ||
-          p.ean.includes(query) ||
-          (p.marca && p.marca.toLowerCase().includes(query));
+      this.init();
+    }
+
+    init() {
+      if (!this.input || !this.dropdown) return;
+
+      this.input.addEventListener('input', (e) => {
+        this.selectedValue = e.target.value.trim();
+        this.updateClearBtn();
+        this.open();
+        this.renderOptions(this.selectedValue);
+        if (this.onSelect) this.onSelect(this.selectedValue);
+      });
+
+      this.input.addEventListener('focus', () => {
+        this.open();
+        this.renderOptions(this.input.value.trim());
+      });
+
+      if (this.toggleBtn) {
+        this.toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this.isOpen) {
+            this.close();
+          } else {
+            this.input.focus();
+            this.open();
+            this.renderOptions('');
+          }
+        });
+      }
+
+      if (this.clearBtn) {
+        this.clearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.setValue('', '');
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (this.container && !this.container.contains(e.target)) {
+          this.close();
+        }
+      });
+
+      this.input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          this.close();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const firstOpt = this.dropdown.querySelector('.combobox-option');
+          if (firstOpt) firstOpt.click();
+        }
+      });
+    }
+
+    open() {
+      this.isOpen = true;
+      if (this.container) this.container.classList.add('open');
+      if (this.dropdown) this.dropdown.style.display = 'block';
+    }
+
+    close() {
+      this.isOpen = false;
+      if (this.container) this.container.classList.remove('open');
+      if (this.dropdown) this.dropdown.style.display = 'none';
+    }
+
+    updateClearBtn() {
+      if (this.clearBtn) {
+        this.clearBtn.style.display = (this.input.value.length > 0) ? 'flex' : 'none';
+      }
+    }
+
+    setValue(value, label) {
+      this.selectedValue = value || '';
+      this.input.value = label || value || '';
+      this.updateClearBtn();
+      this.close();
+      if (this.onSelect) this.onSelect(this.selectedValue);
+    }
+
+    renderOptions(query = '') {
+      const options = this.getOptions();
+      const cleanQuery = query.toLowerCase();
+      
+      let filtered = options;
+      if (cleanQuery) {
+        filtered = options.filter(opt => opt.label.toLowerCase().includes(cleanQuery));
+      }
+
+      if (filtered.length === 0) {
+        this.dropdown.innerHTML = `<div class="combobox-empty-msg">Nenhum resultado encontrado</div>`;
+        return;
+      }
+
+      this.dropdown.innerHTML = filtered.map(opt => {
+        const isSelected = (this.selectedValue && this.selectedValue.toLowerCase() === opt.value.toLowerCase()) || 
+                           (!this.selectedValue && !opt.value && this.input.value === '');
+        
+        let displayText = opt.label;
+        if (cleanQuery && opt.value) {
+          const idx = opt.label.toLowerCase().indexOf(cleanQuery);
+          if (idx > -1) {
+            const before = opt.label.substring(0, idx);
+            const match = opt.label.substring(idx, idx + cleanQuery.length);
+            const after = opt.label.substring(idx + cleanQuery.length);
+            displayText = `${before}<strong>${match}</strong>${after}`;
+          }
+        }
+
+        return `
+          <div class="combobox-option ${isSelected ? 'selected' : ''}" data-value="${opt.value}" data-label="${opt.label}">
+            <span class="combobox-option-text">${displayText}</span>
+            ${opt.count !== undefined ? `<span class="combobox-option-count">${opt.count}</span>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      this.dropdown.querySelectorAll('.combobox-option').forEach(optEl => {
+        optEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const val = optEl.getAttribute('data-value');
+          const lbl = optEl.getAttribute('data-label');
+          this.setValue(val, lbl);
+        });
+      });
+    }
+  }
+
+  // 14.3 Elementos do DOM do Modal
+  const catalogSearchInput = document.getElementById('catalogSearchInput');
+  const btnClearCatalogSearch = document.getElementById('btnClearCatalogSearch');
+  const containerStockCdCondition = document.getElementById('containerStockCdCondition');
+  const chkOnlyAvailableCd = document.getElementById('chkOnlyAvailableCd');
+  const badgeCdOrigemName = document.getElementById('badgeCdOrigemName');
+  const catalogMatchesCount = document.getElementById('catalogMatchesCount');
+
+  // Inicializa Combobox de Grupos
+  const comboboxGrupo = new SearchableCombobox({
+    containerId: 'comboboxGrupo',
+    inputId: 'inputComboboxGrupo',
+    clearBtnId: 'btnClearGrupo',
+    toggleBtnId: 'btnToggleGrupo',
+    dropdownId: 'dropdownGrupo',
+    getOptions: () => {
+      const master = getMasterCatalog();
+      const grupoMap = new Map();
+      master.forEach(p => {
+        const g = p.grupo || p.categoria || 'Outros';
+        grupoMap.set(g, (grupoMap.get(g) || 0) + 1);
+      });
+
+      const list = Array.from(grupoMap.entries()).map(([name, count]) => ({
+        value: name,
+        label: name,
+        count: count
+      }));
+
+      return [
+        { value: '', label: 'Todos os Grupos', count: master.length },
+        ...list.sort((a, b) => a.label.localeCompare(b.label))
+      ];
+    },
+    onSelect: () => updateCatalogMatchesSummary()
+  });
+
+  // Inicializa Combobox de Fornecedores
+  const comboboxFornecedor = new SearchableCombobox({
+    containerId: 'comboboxFornecedor',
+    inputId: 'inputComboboxFornecedor',
+    clearBtnId: 'btnClearFornecedor',
+    toggleBtnId: 'btnToggleFornecedor',
+    dropdownId: 'dropdownFornecedor',
+    getOptions: () => {
+      const master = getMasterCatalog();
+      const fornMap = new Map();
+      master.forEach(p => {
+        const f = p.fornecedor || 'Diversos';
+        fornMap.set(f, (fornMap.get(f) || 0) + 1);
+      });
+
+      const list = Array.from(fornMap.entries()).map(([name, count]) => ({
+        value: name,
+        label: name,
+        count: count
+      }));
+
+      return [
+        { value: '', label: 'Todos os Fornecedores', count: master.length },
+        ...list.sort((a, b) => a.label.localeCompare(b.label))
+      ];
+    },
+    onSelect: () => updateCatalogMatchesSummary()
+  });
+
+  // 14.4 Cálculo dos Produtos Correspondentes
+  function getCatalogMatches() {
+    const master = getMasterCatalog();
+    const search = (catalogSearchInput ? catalogSearchInput.value : '').trim().toLowerCase();
+    const grupo = (comboboxGrupo.selectedValue || '').toLowerCase();
+    const fornecedor = (comboboxFornecedor.selectedValue || '').toLowerCase();
+    const hasCd = hasOriginBranch();
+    const onlyCd = chkOnlyAvailableCd ? chkOnlyAvailableCd.checked : false;
+
+    return master.filter(p => {
+      // 1. Busca por Código EAN, Nome ou Marca
+      if (search) {
+        const match = p.nome.toLowerCase().includes(search) ||
+          p.ean.includes(search) ||
+          (p.marca && p.marca.toLowerCase().includes(search));
         if (!match) return false;
       }
 
-      // 2. Filtro por Grupo (Categoria)
-      if (catalogSelectedGrupo) {
-        const itemGrupo = p.grupo || p.categoria || '';
-        if (itemGrupo.toLowerCase() !== catalogSelectedGrupo.toLowerCase()) return false;
+      // 2. Grupo (Categoria)
+      if (grupo) {
+        const pGrupo = (p.grupo || p.categoria || '').toLowerCase();
+        if (pGrupo !== grupo) return false;
       }
 
-      // 3. Filtro por Fornecedor / Fabricante
-      if (catalogSelectedFornecedor) {
-        const itemForn = p.fornecedor || '';
-        if (!itemForn.toLowerCase().includes(catalogSelectedFornecedor.toLowerCase())) return false;
+      // 3. Fornecedor / Fabricante
+      if (fornecedor) {
+        const pForn = (p.fornecedor || '').toLowerCase();
+        if (!pForn.includes(fornecedor)) return false;
       }
 
-      // 4. Filtro por Nível de Estoque
-      if (catalogStockFilter === 'zero') {
-        return p.estoqueLoja === 0;
-      } else if (catalogStockFilter === 'low') {
-        return p.estoqueLoja <= lowStockThreshold;
-      } else if (catalogStockFilter === 'cd_available') {
-        return (p.estoqueCd || 0) > 0;
+      // 4. Saldo Disponível no Estoque de Origem (CD)
+      if (hasCd && onlyCd) {
+        if ((p.estoqueCd || 0) <= 0) return false;
       }
 
       return true;
     });
   }
 
-  // Renderiza a listagem de produtos dentro do modal de catálogo
-  function renderCatalogList() {
-    if (!extraProductsList) return;
-    const filtered = getFilteredCatalogItems();
-
-    if (catalogFilteredCount) catalogFilteredCount.textContent = filtered.length;
-
-    // Atualiza contagem total de selecionados no catálogo
-    const totalSelected = catalogItemsState.filter(e => e.checked);
-    const totalUnits = totalSelected.reduce((sum, curr) => sum + (parseInt(curr.aRepor) || 0), 0);
-    if (catalogSelectionSummary) {
-      catalogSelectionSummary.textContent = `${totalSelected.length} item(s) selecionado(s) • ${totalUnits} un total`;
+  // Atualiza Contador do Rodapé do Modal
+  function updateCatalogMatchesSummary() {
+    const matches = getCatalogMatches();
+    if (catalogMatchesCount) {
+      catalogMatchesCount.textContent = matches.length;
     }
-
-    // Sincroniza checkbox "Marcar Todos Filtrados"
-    if (catalogSelectAllCheckbox) {
-      if (filtered.length === 0) {
-        catalogSelectAllCheckbox.checked = false;
-        catalogSelectAllCheckbox.indeterminate = false;
-      } else {
-        const allChecked = filtered.every(e => e.checked);
-        const someChecked = filtered.some(e => e.checked);
-        catalogSelectAllCheckbox.checked = allChecked;
-        catalogSelectAllCheckbox.indeterminate = !allChecked && someChecked;
-      }
-    }
-
-    if (filtered.length === 0) {
-      extraProductsList.innerHTML = `
-        <div style="text-align: center; padding: 2.5rem; color: #757575;">
-          <span class="material-icons" style="font-size: 36px; display: block; margin-bottom: 8px; color: #bdbdbd;">search_off</span>
-          Nenhum produto encontrado com os filtros selecionados.
-        </div>
-      `;
-      return;
-    }
-
-    extraProductsList.innerHTML = filtered.map(entry => {
-      const p = entry.item;
-      const isZero = p.estoqueLoja === 0;
-      const isLow = !isZero && p.estoqueLoja <= lowStockThreshold;
-      const lojaClass = isZero ? 'is-zero' : (isLow ? 'is-low' : 'is-ok');
-      const lojaLabel = isZero ? '0 un (Zerado)' : `${p.estoqueLoja} un`;
-
-      return `
-        <div class="catalog-product-row" data-ean="${p.ean}">
-          <div class="catalog-product-main-col">
-            <input 
-              type="checkbox" 
-              class="table-custom-checkbox extra-prod-chk" 
-              data-ean="${p.ean}" 
-              ${entry.checked ? 'checked' : ''}
-              aria-label="Selecionar ${p.nome}"
-            >
-            <img src="${p.foto}" alt="${p.nome}" class="catalog-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
-            <div class="catalog-prod-details">
-              <span class="catalog-prod-ean">${p.ean}</span>
-              <div class="catalog-prod-name" title="${p.nome}">${p.nome}</div>
-              <div class="catalog-prod-tags-row">
-                <span class="catalog-tag-grupo">${p.grupo || p.categoria || 'Geral'}</span>
-                <span class="catalog-tag-fornecedor">${p.fornecedor || p.marca || 'Distribuidor'}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="catalog-product-stock-col">
-            <span class="badge-stock-loja ${lojaClass}" title="Estoque atual na loja">Loja: ${lojaLabel}</span>
-            <span class="badge-stock-cd" title="Estoque disponível no CD">CD: ${p.estoqueCd !== undefined ? p.estoqueCd : 0} un</span>
-            
-            <div class="repor-stepper-wrapper" style="width: 105px;">
-              <button type="button" class="repor-stepper-btn catalog-item-minus" data-ean="${p.ean}">−</button>
-              <input 
-                type="number" 
-                class="repor-stepper-input extra-prod-qty" 
-                data-ean="${p.ean}" 
-                value="${entry.aRepor}" 
-                min="1" 
-                max="999"
-              >
-              <button type="button" class="repor-stepper-btn catalog-item-plus" data-ean="${p.ean}">+</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    bindCatalogRowEvents();
   }
 
-  // Eventos das linhas da lista do catálogo
-  function bindCatalogRowEvents() {
-    const chks = extraProductsList.querySelectorAll('.extra-prod-chk');
-    chks.forEach(chk => {
-      chk.addEventListener('change', () => {
-        const ean = chk.getAttribute('data-ean');
-        const entry = catalogItemsState.find(e => e.item.ean === ean);
-        if (entry) {
-          entry.checked = chk.checked;
-          renderCatalogList();
-        }
-      });
-    });
-
-    const minusBtns = extraProductsList.querySelectorAll('.catalog-item-minus');
-    minusBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const ean = btn.getAttribute('data-ean');
-        const entry = catalogItemsState.find(e => e.item.ean === ean);
-        if (entry && entry.aRepor > 1) {
-          entry.aRepor -= 1;
-          renderCatalogList();
-        }
-      });
-    });
-
-    const plusBtns = extraProductsList.querySelectorAll('.catalog-item-plus');
-    plusBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const ean = btn.getAttribute('data-ean');
-        const entry = catalogItemsState.find(e => e.item.ean === ean);
-        if (entry) {
-          entry.aRepor = (parseInt(entry.aRepor) || 0) + 1;
-          entry.checked = true;
-          renderCatalogList();
-        }
-      });
-    });
-
-    const qtyInputs = extraProductsList.querySelectorAll('.extra-prod-qty');
-    qtyInputs.forEach(inp => {
-      inp.addEventListener('change', () => {
-        const ean = inp.getAttribute('data-ean');
-        const entry = catalogItemsState.find(e => e.item.ean === ean);
-        if (entry) {
-          const val = Math.max(1, parseInt(inp.value) || 1);
-          entry.aRepor = val;
-          entry.checked = true;
-          renderCatalogList();
-        }
-      });
-    });
-  }
-
-  // Controles de Filtros do Modal de Catálogo
+  // Eventos do Campo de Pesquisa Geral
   if (catalogSearchInput) {
     catalogSearchInput.addEventListener('input', (e) => {
-      catalogSearchText = e.target.value.trim();
-      renderCatalogList();
-    });
-  }
-
-  if (catalogGrupoSelect) {
-    catalogGrupoSelect.addEventListener('change', (e) => {
-      catalogSelectedGrupo = e.target.value;
-      renderCatalogList();
-    });
-  }
-
-  if (catalogFornecedorSelect) {
-    catalogFornecedorSelect.addEventListener('change', (e) => {
-      catalogSelectedFornecedor = e.target.value;
-      renderCatalogList();
-    });
-  }
-
-  catalogStockChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      catalogStockChips.forEach(c => c.classList.remove('active'));
-      if (chipStockLowWrapper) chipStockLowWrapper.classList.remove('active');
-
-      chip.classList.add('active');
-      const filterType = chip.getAttribute('data-stock-filter');
-      catalogStockFilter = filterType;
-
-      if (filterType === 'low' && chipStockLowWrapper) {
-        chipStockLowWrapper.classList.add('active');
+      if (btnClearCatalogSearch) {
+        btnClearCatalogSearch.style.display = e.target.value.length > 0 ? 'flex' : 'none';
       }
-
-      renderCatalogList();
-    });
-  });
-
-  if (catalogStockLowParamInput) {
-    catalogStockLowParamInput.addEventListener('input', (e) => {
-      const val = Math.max(1, parseInt(e.target.value) || 1);
-      lowStockThreshold = val;
-      if (chipStockLowLabel) chipStockLowLabel.textContent = `Estoque abaixo de ≤ ${val} un`;
-      document.querySelectorAll('.lbl-empty-low-val').forEach(lbl => lbl.textContent = val);
-      document.querySelectorAll('.input-empty-low-threshold').forEach(inp => inp.value = val);
-      if (catalogStockFilter === 'low') {
-        renderCatalogList();
-      }
+      updateCatalogMatchesSummary();
     });
   }
 
-  if (catalogSelectAllCheckbox) {
-    catalogSelectAllCheckbox.addEventListener('change', () => {
-      const isChecked = catalogSelectAllCheckbox.checked;
-      const filtered = getFilteredCatalogItems();
-      filtered.forEach(entry => entry.checked = isChecked);
-      renderCatalogList();
-    });
-  }
-
-  // Ações de Quantidade em Lote
-  if (btnBatchQtyMinus && catalogBatchDefaultQtyInput) {
-    btnBatchQtyMinus.addEventListener('click', () => {
-      const current = Math.max(1, parseInt(catalogBatchDefaultQtyInput.value) || 1);
-      catalogBatchDefaultQtyInput.value = Math.max(1, current - 1);
-      catalogBatchDefaultQty = parseInt(catalogBatchDefaultQtyInput.value);
-    });
-  }
-
-  if (btnBatchQtyPlus && catalogBatchDefaultQtyInput) {
-    btnBatchQtyPlus.addEventListener('click', () => {
-      const current = parseInt(catalogBatchDefaultQtyInput.value) || 1;
-      catalogBatchDefaultQtyInput.value = current + 1;
-      catalogBatchDefaultQty = parseInt(catalogBatchDefaultQtyInput.value);
-    });
-  }
-
-  if (catalogBatchDefaultQtyInput) {
-    catalogBatchDefaultQtyInput.addEventListener('change', () => {
-      catalogBatchDefaultQty = Math.max(1, parseInt(catalogBatchDefaultQtyInput.value) || 1);
-      catalogBatchDefaultQtyInput.value = catalogBatchDefaultQty;
-    });
-  }
-
-  if (btnApplyBatchQty) {
-    btnApplyBatchQty.addEventListener('click', () => {
-      const checkedEntries = catalogItemsState.filter(e => e.checked);
-      if (checkedEntries.length === 0) {
-        if (typeof Toast !== 'undefined') {
-          Toast.warning('Selecione produtos na lista antes de aplicar a quantidade.');
-        }
-        return;
-      }
-      checkedEntries.forEach(e => e.aRepor = catalogBatchDefaultQty);
-      renderCatalogList();
-      if (typeof Toast !== 'undefined') {
-        Toast.info(`Quantidade de ${catalogBatchDefaultQty} un aplicada a ${checkedEntries.length} produto(s).`);
-      }
-    });
-  }
-
-  // Abertura e Fechamento do Modal de Catálogo
-  function openAddExtraModal() {
-    if (modalAddExtra) {
-      initCatalogItemsState();
-      
-      // Sincroniza parâmetros na abertura
-      if (catalogStockLowParamInput) catalogStockLowParamInput.value = lowStockThreshold;
-      if (chipStockLowLabel) chipStockLowLabel.textContent = `Estoque abaixo de ≤ ${lowStockThreshold} un`;
+  if (btnClearCatalogSearch) {
+    btnClearCatalogSearch.addEventListener('click', () => {
       if (catalogSearchInput) {
         catalogSearchInput.value = '';
-        catalogSearchText = '';
+        btnClearCatalogSearch.style.display = 'none';
+        catalogSearchInput.focus();
       }
+      updateCatalogMatchesSummary();
+    });
+  }
+
+  if (chkOnlyAvailableCd) {
+    chkOnlyAvailableCd.addEventListener('change', updateCatalogMatchesSummary);
+  }
+
+  // 14.5 Abertura e Fechamento do Modal de Catálogo
+  function openAddExtraModal() {
+    if (modalAddExtra) {
+      const hasCd = hasOriginBranch();
       
-      renderCatalogList();
+      // Exibe/Oculta condição de estoque no CD
+      if (containerStockCdCondition) {
+        containerStockCdCondition.style.display = hasCd ? 'block' : 'none';
+      }
+      if (badgeCdOrigemName && hasCd) {
+        badgeCdOrigemName.textContent = `CD: ${currentParams.origem}`;
+      }
+
+      // Reseta campos
+      if (catalogSearchInput) catalogSearchInput.value = '';
+      if (btnClearCatalogSearch) btnClearCatalogSearch.style.display = 'none';
+      comboboxGrupo.setValue('', '');
+      comboboxFornecedor.setValue('', '');
+      if (chkOnlyAvailableCd) chkOnlyAvailableCd.checked = true;
+
+      updateCatalogMatchesSummary();
       modalAddExtra.classList.add('show', 'active');
     }
   }
@@ -1234,14 +1217,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Confirmação de Inclusão dos Produtos Selecionados
+  // 14.6 Confirmação de Inclusão dos Produtos Filtrados na Consulta
   if (btnConfirmAddExtra) {
     btnConfirmAddExtra.addEventListener('click', () => {
-      const selectedEntries = catalogItemsState.filter(e => e.checked && e.aRepor > 0);
+      const matches = getCatalogMatches();
 
-      if (selectedEntries.length === 0) {
+      if (matches.length === 0) {
         if (typeof Toast !== 'undefined') {
-          Toast.warning('Nenhum produto marcado para inclusão.');
+          Toast.warning('Nenhum produto encontrado com os filtros selecionados.');
         }
         return;
       }
@@ -1249,18 +1232,18 @@ document.addEventListener('DOMContentLoaded', () => {
       let countNew = 0;
       let countUpdated = 0;
 
-      selectedEntries.forEach(entry => {
-        const item = entry.item;
+      matches.forEach(item => {
         const existing = queryProducts.find(p => p.ean === item.ean);
+        const reporQty = item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja);
 
         if (existing) {
-          existing.aRepor = entry.aRepor;
           existing.selecionado = true;
+          if (existing.aRepor === 0) existing.aRepor = reporQty;
           countUpdated++;
         } else {
           const copy = JSON.parse(JSON.stringify(item));
           copy.id = Date.now() + Math.floor(Math.random() * 100000);
-          copy.aRepor = entry.aRepor;
+          copy.aRepor = reporQty;
           copy.selecionado = true;
           queryProducts.unshift(copy);
           countNew++;
@@ -1269,7 +1252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       closeAddExtraModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success(`${countNew + countUpdated} produto(s) adicionado(s) à consulta com sucesso!`);
+        Toast.success(`${matches.length} produto(s) adicionado(s) à consulta com sucesso!`);
       }
       renderAll();
     });

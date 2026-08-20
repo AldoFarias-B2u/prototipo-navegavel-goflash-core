@@ -396,132 +396,123 @@
   </div>
 
   <!-- ========================================================================
-       MODAL 2: CATÁLOGO INTELIGENTE DE PRODUTOS PARA REPOSIÇÃO
+       MODAL 2: ADICIONAR PRODUTOS DO CATÁLOGO (FILTRAGEM INTELIGENTE)
        ======================================================================== -->
   <div class="official-modal-overlay" id="modalAddExtraProducts" role="dialog" aria-modal="true">
-    <div class="official-modal-box modal-catalog-box" style="max-width: 780px; width: 95%;">
+    <div class="official-modal-box modal-catalog-box" style="max-width: 580px; width: 95%;">
       
       <div class="official-modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span class="material-icons" style="color: #ffffff; font-size: 22px;">inventory_2</span>
-          <h2 class="official-modal-title">CATÁLOGO DE PRODUTOS PARA REPOSIÇÃO</h2>
+          <h2 class="official-modal-title">ADICIONAR PRODUTOS DO CATÁLOGO</h2>
         </div>
         <button type="button" class="official-modal-close" id="btnCloseAddExtraModal" aria-label="Fechar">&times;</button>
       </div>
 
       <div class="official-modal-body modal-catalog-body">
         
-        <!-- Barra de Busca e Filtros por Grupo e Fornecedor -->
-        <div class="catalog-filters-grid">
-          <!-- Busca Textual / EAN -->
-          <div class="catalog-search-wrapper">
-            <span class="material-icons">search</span>
+        <p class="modal-catalog-intro">
+          Defina os critérios abaixo para localizar e carregar os produtos do catálogo na sua consulta de reposição:
+        </p>
+
+        <!-- 1. Campo de Pesquisa Geral (Código EAN, Nome ou Marca) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="catalogSearchInput">
+            <span class="material-icons field-label-icon">search</span>
+            Código EAN, Nome do Produto ou Marca:
+          </label>
+          <div class="modal-input-wrapper">
             <input 
               type="text" 
               id="catalogSearchInput" 
-              class="catalog-search-input" 
-              placeholder="Pesquisar por nome, marca ou EAN..." 
+              class="modal-filter-input" 
+              placeholder="Digite o código, nome ou marca..." 
               autocomplete="off"
             >
-          </div>
-
-          <!-- Select de Grupo (Categoria Oficial) -->
-          <div class="catalog-select-wrapper">
-            <label class="catalog-select-label" for="catalogGrupoSelect">Grupo (Categoria):</label>
-            <select id="catalogGrupoSelect" class="catalog-select">
-              <option value="">Todos os Grupos</option>
-              <option value="Bebidas e Refrigerantes">Bebidas e Refrigerantes</option>
-              <option value="Snacks e Salgadinhos">Snacks e Salgadinhos</option>
-              <option value="Doces e Chocolates">Doces e Chocolates</option>
-              <option value="Mercearia e Matinais">Mercearia e Matinais</option>
-              <option value="Cervejas e Alcoólicos">Cervejas e Alcoólicos</option>
-            </select>
-          </div>
-
-          <!-- Select de Fornecedor -->
-          <div class="catalog-select-wrapper">
-            <label class="catalog-select-label" for="catalogFornecedorSelect">Fornecedor / Fabricante:</label>
-            <select id="catalogFornecedorSelect" class="catalog-select">
-              <option value="">Todos os Fornecedores</option>
-              <option value="Coca-Cola FEMSA">Coca-Cola FEMSA</option>
-              <option value="Ambev Distribuição">Ambev Distribuição</option>
-              <option value="PepsiCo Alimentos (Elma Chips)">PepsiCo Alimentos (Elma Chips)</option>
-              <option value="Mondelēz Brasil (Lacta)">Mondelēz Brasil (Lacta)</option>
-              <option value="Nestlé Brasil">Nestlé Brasil</option>
-              <option value="Bauducco / Pandurata">Bauducco / Pandurata</option>
-              <option value="Heineken Brasil">Heineken Brasil</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Linha de Chips de Filtro por Nível de Estoque com Parâmetro de Estoque Baixo -->
-        <div class="catalog-stock-filters-row">
-          <span class="catalog-filter-title">Estoque:</span>
-          
-          <button type="button" class="catalog-stock-chip active" data-stock-filter="all">
-            <span class="material-icons">apps</span>
-            Todos
-          </button>
-
-          <button type="button" class="catalog-stock-chip chip-danger" data-stock-filter="zero">
-            <span class="material-icons">report_problem</span>
-            Zerados na Loja (0 un)
-          </button>
-
-          <div class="catalog-stock-chip-param-wrapper" id="chipStockLowWrapper">
-            <button type="button" class="catalog-stock-chip chip-warning" data-stock-filter="low" id="chipStockLowBtn">
-              <span class="material-icons">warning_amber</span>
-              <span id="chipStockLowLabel">Estoque abaixo de ≤ 3 un</span>
-            </button>
-            <div class="stock-param-inline-box" title="Defina o limite de estoque baixo">
-              <span>≤</span>
-              <input type="number" id="catalogStockLowParamInput" class="stock-param-number-input" value="3" min="1" max="99">
-              <span>un</span>
-            </div>
-          </div>
-
-          <button type="button" class="catalog-stock-chip chip-success" data-stock-filter="cd_available">
-            <span class="material-icons">check_circle</span>
-            Disponível no CD (> 0 un)
-          </button>
-        </div>
-
-        <!-- Barra de Ações em Lote e Quantidade Padrão -->
-        <div class="catalog-batch-actions-bar">
-          <div class="catalog-batch-left">
-            <label class="catalog-select-all-label">
-              <input type="checkbox" id="catalogSelectAllCheckbox" class="table-custom-checkbox">
-              <span>Marcar Todos os Filtrados (<strong id="catalogFilteredCount">0</strong>)</span>
-            </label>
-          </div>
-
-          <div class="catalog-batch-right">
-            <span class="batch-qty-label">Qtd Padrão:</span>
-            <div class="batch-qty-stepper">
-              <button type="button" class="batch-qty-btn" id="btnBatchQtyMinus">−</button>
-              <input type="number" id="catalogBatchDefaultQtyInput" class="batch-qty-input" value="5" min="1" max="999">
-              <button type="button" class="batch-qty-btn" id="btnBatchQtyPlus">+</button>
-            </div>
-            <button type="button" class="btn-apply-batch-qty" id="btnApplyBatchQty" title="Aplicar quantidade a todos os itens selecionados">
-              Aplicar aos Marcados
+            <button type="button" class="btn-input-clear" id="btnClearCatalogSearch" title="Limpar busca" style="display: none;">
+              <span class="material-icons">close</span>
             </button>
           </div>
         </div>
 
-        <!-- Lista Scrollable de Produtos -->
-        <div id="extraProductsList" class="catalog-products-scroll-box">
-          <!-- Renderizado dinamicamente via JS -->
+        <!-- 2. Combobox Pesquisável de Grupo (Categoria) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxGrupo">
+            <span class="material-icons field-label-icon">category</span>
+            Grupo (Categoria):
+          </label>
+          <div class="custom-combobox" id="comboboxGrupo">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxGrupo" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver todos..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearGrupo" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleGrupo" title="Ver todas as categorias">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownGrupo" style="display: none;">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Combobox Pesquisável de Fornecedor / Fabricante -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxFornecedor">
+            <span class="material-icons field-label-icon">store</span>
+            Fornecedor / Fabricante:
+          </label>
+          <div class="custom-combobox" id="comboboxFornecedor">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxFornecedor" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver todos..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearFornecedor" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleFornecedor" title="Ver todos os fornecedores">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownFornecedor" style="display: none;">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Filtro Condicional: Saldo Disponível no CD de Origem -->
+        <div id="containerStockCdCondition" class="cd-stock-condition-box" style="display: none;">
+          <label class="cd-stock-checkbox-label">
+            <input type="checkbox" id="chkOnlyAvailableCd" class="table-custom-checkbox" checked>
+            <div class="cd-stock-label-content">
+              <span class="cd-stock-title">Apenas produtos com saldo disponível no Estoque de Origem</span>
+              <span class="cd-stock-badge" id="badgeCdOrigemName">CD: Estoque central</span>
+            </div>
+          </label>
         </div>
 
       </div>
 
       <div class="official-modal-footer catalog-modal-footer">
         <div class="catalog-footer-summary">
-          <span class="catalog-summary-text" id="catalogSelectionSummary">0 item(s) selecionado(s) • 0 un total</span>
+          <span class="catalog-summary-text" id="catalogMatchesSummary">
+            <strong id="catalogMatchesCount">0</strong> produto(s) correspondente(s)
+          </span>
         </div>
         <div class="catalog-footer-buttons">
           <button type="button" class="btn-modal-discard" id="btnDiscardAddExtra">CANCELAR</button>
-          <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra" style="background-color: var(--primary-color);">INCLUIR SELECIONADOS</button>
+          <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra" style="background-color: var(--primary-color);">INCLUIR PRODUTOS</button>
         </div>
       </div>
 
