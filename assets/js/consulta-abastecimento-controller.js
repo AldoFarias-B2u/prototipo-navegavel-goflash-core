@@ -144,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
-  let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])) : [];
-  let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero', 'cd_available', 'low_stock'
+  let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false })) : [];
+  let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero'
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
 
@@ -411,13 +411,13 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         tableBody.innerHTML = filtered.map(item => {
           const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
-          const unselectedClass = !item.selecionado ? 'unselected-row' : '';
+          const selectedClass = item.selecionado ? 'selected-row' : '';
           const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
           const pendingClass = isPendingQty ? 'repor-pending' : '';
 
           if (hasPlan) {
             return `
-              <tr class="${unselectedClass}" data-id="${item.id}">
+              <tr class="${selectedClass}" data-id="${item.id}">
                 <td class="table-checkbox-cell">
                   <input 
                     type="checkbox" 
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       class="repor-stepper-input input-a-repor" 
                       data-id="${item.id}" 
                       value="${item.aRepor !== undefined ? item.aRepor : 0}" 
-                      min="0"
+                      min="0" 
                       max="999"
                       placeholder="0"
                     >
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           } else {
             return `
-              <tr class="${unselectedClass}" data-id="${item.id}">
+              <tr class="${selectedClass}" data-id="${item.id}">
                 <td class="table-checkbox-cell">
                   <input 
                     type="checkbox" 
@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       class="repor-stepper-input input-a-repor" 
                       data-id="${item.id}" 
                       value="${item.aRepor !== undefined ? item.aRepor : 0}" 
-                      min="0"
+                      min="0" 
                       max="999"
                       placeholder="0"
                     >
@@ -541,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         cardsGrid.innerHTML = filtered.map(item => {
           const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
-          const unselectedClass = !item.selecionado ? 'unselected-card' : '';
+          const selectedClass = item.selecionado ? 'selected-card' : '';
           const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
           const pendingClass = isPendingQty ? 'repor-pending' : '';
 
@@ -1139,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hasPlan = checkHasPlan();
 
       if (hasPlan && queryProducts.length === 0) {
-        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || []));
+        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false }));
       }
 
       closeParamsModal();

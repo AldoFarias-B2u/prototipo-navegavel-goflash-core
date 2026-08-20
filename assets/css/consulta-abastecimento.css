@@ -641,9 +641,12 @@
   background-color: #f9f8fc;
 }
 
-.consulta-products-table tbody tr.unselected-row {
-  opacity: 0.55;
-  background-color: #fafafa;
+.consulta-products-table tbody tr.selected-row {
+  background-color: #fbf9fe;
+}
+
+.consulta-products-table tbody tr.selected-row:hover {
+  background-color: #f3ecfb;
 }
 
 /* Coluna de Seleção e Thumbnail */
@@ -1436,9 +1439,10 @@
   transform: translateY(-2px);
 }
 
-.product-mobile-card.unselected-card {
-  opacity: 0.55;
-  background-color: #fafafa;
+.product-mobile-card.selected-card {
+  border-color: #d1b8f5;
+  box-shadow: 0 4px 14px rgba(101, 48, 181, 0.12);
+  background-color: #ffffff;
 }
 
 .card-header-row {

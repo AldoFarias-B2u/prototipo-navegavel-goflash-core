@@ -39,7 +39,7 @@ window.ConsultaProdutosBase = [
     sugestao: 4,
     aRepor: 4,
     preco: 8.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ window.ConsultaProdutosBase = [
     sugestao: 4,
     aRepor: 4,
     preco: 4.50,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 3,
@@ -75,7 +75,7 @@ window.ConsultaProdutosBase = [
     sugestao: 4,
     aRepor: 4,
     preco: 6.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 4,
@@ -93,7 +93,7 @@ window.ConsultaProdutosBase = [
     sugestao: 9,
     aRepor: 9,
     preco: 8.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 5,
@@ -111,7 +111,7 @@ window.ConsultaProdutosBase = [
     sugestao: 9,
     aRepor: 9,
     preco: 8.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 6,
@@ -129,7 +129,7 @@ window.ConsultaProdutosBase = [
     sugestao: 5,
     aRepor: 5,
     preco: 7.20,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 7,
@@ -147,7 +147,7 @@ window.ConsultaProdutosBase = [
     sugestao: 10,
     aRepor: 10,
     preco: 5.50,
-    selecionado: true
+    selecionado: false
   }
 ];
 
@@ -169,7 +169,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 12,
     aRepor: 12,
     preco: 3.89,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 9,
@@ -187,7 +187,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 5,
     aRepor: 5,
     preco: 4.20,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 101,
@@ -205,7 +205,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 12,
     aRepor: 12,
     preco: 9.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 102,
@@ -223,7 +223,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 8,
     aRepor: 8,
     preco: 7.50,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 103,
@@ -241,7 +241,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 14,
     aRepor: 14,
     preco: 5.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 104,
@@ -259,7 +259,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 20,
     aRepor: 20,
     preco: 4.50,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 105,
@@ -277,7 +277,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 13,
     aRepor: 13,
     preco: 3.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 106,
@@ -295,7 +295,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 22,
     aRepor: 22,
     preco: 7.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 107,
@@ -313,7 +313,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 18,
     aRepor: 18,
     preco: 6.99,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 108,
@@ -331,7 +331,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 9,
     aRepor: 9,
     preco: 5.20,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 109,
@@ -349,7 +349,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 9,
     aRepor: 9,
     preco: 4.80,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 110,
@@ -367,7 +367,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 10,
     aRepor: 10,
     preco: 4.20,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 111,
@@ -385,7 +385,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 15,
     aRepor: 15,
     preco: 8.50,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 112,
@@ -403,7 +403,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 9,
     aRepor: 9,
     preco: 6.80,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 113,
@@ -421,7 +421,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 15,
     aRepor: 15,
     preco: 8.90,
-    selecionado: true
+    selecionado: false
   },
   {
     id: 114,
@@ -439,7 +439,7 @@ window.CatalogoExtraProdutos = [
     sugestao: 8,
     aRepor: 8,
     preco: 11.50,
-    selecionado: true
+    selecionado: false
   }
 ];
 
