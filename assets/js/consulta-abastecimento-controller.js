@@ -50,6 +50,40 @@ document.addEventListener('DOMContentLoaded', () => {
   let catalogBatchDefaultQty = 5;
   let catalogItemsState = [];
 
+  // Helper: Obter Status Inteligente de Estoque do Produto (sem ícones)
+  function getProductStockStatus(item) {
+    const ideal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 10;
+    const critico = item.minimoCritico !== undefined ? item.minimoCritico : 2;
+    const loja = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+
+    if (loja === 0) {
+      return {
+        type: 'zerado',
+        label: 'Estoque Zerado',
+        badgeClass: 'status-zerado'
+      };
+    }
+    if (loja <= critico) {
+      return {
+        type: 'critico',
+        label: 'Nível Crítico',
+        badgeClass: 'status-critico'
+      };
+    }
+    if (loja < ideal) {
+      return {
+        type: 'ideal',
+        label: 'Abaixo do Ideal',
+        badgeClass: 'status-ideal'
+      };
+    }
+    return {
+      type: 'ok',
+      label: 'Estoque OK',
+      badgeClass: 'status-ok'
+    };
+  }
+
   // Helper: Catálogo Mestre Consolidado Único por EAN
   function getMasterCatalog() {
     const listA = window.ConsultaProdutosBase || [];
@@ -393,10 +427,11 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       } else {
         tableBody.innerHTML = filtered.map(item => {
-          const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
+          const isCritico = item.estoqueLoja <= (item.minimoCritico !== undefined ? item.minimoCritico : 2);
           const selectedClass = item.selecionado ? 'selected-row' : '';
           const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
           const pendingClass = isPendingQty ? 'repor-pending' : '';
+          const status = getProductStockStatus(item);
 
           if (hasPlan) {
             return `
@@ -414,8 +449,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
                 </td>
                 <td class="product-info-cell">
-                  <a href="javascript:void(0)" class="product-ean-link">${item.ean}</a>
                   <div class="product-desc-title">${item.nome}</div>
+                  <div class="product-info-sub-row">
+                    <span class="product-ean-text"><a href="javascript:void(0)" class="product-ean-link">EAN ${item.ean}</a></span>
+                    <span class="product-meta-separator">•</span>
+                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  </div>
                 </td>
                 <td class="col-plan-param" style="text-align: center;">
                   <span class="stock-pill stock-pill-ideal">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
@@ -470,8 +509,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
                 </td>
                 <td class="product-info-cell">
-                  <a href="javascript:void(0)" class="product-ean-link">${item.ean}</a>
                   <div class="product-desc-title">${item.nome}</div>
+                  <div class="product-info-sub-row">
+                    <span class="product-ean-text"><a href="javascript:void(0)" class="product-ean-link">EAN ${item.ean}</a></span>
+                    <span class="product-meta-separator">•</span>
+                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  </div>
                 </td>
                 <td style="text-align: center;">
                   <span class="stock-pill stock-pill-loja ${item.estoqueLoja === 0 ? 'is-critico' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
@@ -523,10 +566,11 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       } else {
         cardsGrid.innerHTML = filtered.map(item => {
-          const isCritico = hasPlan && item.estoqueLoja <= item.minimoCritico;
+          const isCritico = item.estoqueLoja <= (item.minimoCritico !== undefined ? item.minimoCritico : 2);
           const selectedClass = item.selecionado ? 'selected-card' : '';
           const isPendingQty = item.selecionado && (!item.aRepor || item.aRepor === 0);
           const pendingClass = isPendingQty ? 'repor-pending' : '';
+          const status = getProductStockStatus(item);
 
           let stockGridHtml = '';
           if (hasPlan) {
@@ -588,8 +632,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <img src="${item.foto}" alt="${item.nome}" onerror="this.src='../assets/images/logo-homepage.png'">
                 </div>
                 <div class="card-info-box">
-                  <span class="card-ean-tag">${item.ean}</span>
                   <h4 class="card-product-title">${item.nome}</h4>
+                  <div class="card-info-sub-row">
+                    <span class="card-ean-tag">EAN ${item.ean}</span>
+                    <span class="product-meta-separator">•</span>
+                    <span class="product-status-pill ${status.badgeClass}">${status.label}</span>
+                  </div>
                 </div>
               </div>
 
