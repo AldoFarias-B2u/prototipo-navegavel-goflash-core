@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const summaryItemsCount = document.getElementById('summaryItemsCount');
   const summaryUnitsCount = document.getElementById('summaryUnitsCount');
+  const toolbarChipsRow = document.getElementById('toolbarChipsRow');
   const btnGenerateOrder = document.getElementById('btnGenerateOrder');
   const btnCancelQuery = document.getElementById('btnCancelQuery');
   const btnDraftQuery = document.getElementById('btnDraftQuery');
@@ -345,6 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (btnThClearAll) {
       btnThClearAll.disabled = (queryProducts.length === 0);
+    }
+
+    // Controla a visibilidade da barra de chips (Oculta se lista vazia)
+    if (toolbarChipsRow) {
+      toolbarChipsRow.style.display = (queryProducts.length > 0) ? 'flex' : 'none';
     }
   }
 
