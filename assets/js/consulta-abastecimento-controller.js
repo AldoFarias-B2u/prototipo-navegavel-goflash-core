@@ -26,6 +26,149 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let hasPlan = checkHasPlan();
 
+  // 1.2 Parâmetros Dinâmicos de Catálogo e Estoque
+  let lowStockThreshold = 3;
+  let catalogSearchText = '';
+  let catalogSelectedGrupo = '';
+  let catalogSelectedFornecedor = '';
+  let catalogStockFilter = 'all'; // 'all', 'zero', 'low', 'cd_available'
+  let catalogBatchDefaultQty = 5;
+  let catalogItemsState = [];
+
+  // Helper: Catálogo Mestre Consolidado Único por EAN
+  function getMasterCatalog() {
+    const listA = window.ConsultaProdutosBase || [];
+    const listB = window.CatalogoExtraProdutos || [];
+    const map = new Map();
+    [...listA, ...listB].forEach(item => {
+      if (!map.has(item.ean)) {
+        map.set(item.ean, JSON.parse(JSON.stringify(item)));
+      }
+    });
+    return Array.from(map.values());
+  }
+
+  // Helper: Construtor do Empty State Inteligente
+  function buildEmptyStateHtml() {
+    if (hasPlan) {
+      return `
+        <div class="consulta-empty-state">
+          <div class="empty-state-icon-box">
+            <span class="material-icons">inventory_2</span>
+          </div>
+          <h3 class="empty-state-title">Nenhum produto cadastrado no plano</h3>
+          <p class="empty-state-desc">
+            Não foram encontrados produtos para os parâmetros configurados neste plano.
+          </p>
+          <div class="empty-state-actions">
+            <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
+              <span class="material-icons">add_circle</span>
+              Adicionar Produtos do Catálogo
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="consulta-empty-state">
+        <div class="empty-state-icon-box">
+          <span class="material-icons">tune</span>
+        </div>
+        <h3 class="empty-state-title">Consulta de Reposição sem Plano</h3>
+        <p class="empty-state-desc">
+          Escolha uma ação rápida abaixo para carregar os produtos prioritários ou utilize o catálogo avançado e o leitor de bipe:
+        </p>
+
+        <div class="empty-state-quick-cards-grid">
+          <!-- Card 1: Ruptura / Zerados -->
+          <div class="empty-quick-card">
+            <span class="material-icons empty-quick-card-icon" style="color: #c62828;">report_problem</span>
+            <div class="empty-quick-card-title">Itens Zerados na Loja</div>
+            <div class="empty-quick-card-desc">Carrega diretamente todos os produtos com estoque 0 na loja para reposição urgente.</div>
+            <button type="button" class="empty-quick-card-btn btn-card-rupture btn-quick-add-zero">
+              <span class="material-icons" style="font-size: 16px;">flash_on</span>
+              Carregar Zerados
+            </button>
+          </div>
+
+          <!-- Card 2: Estoque Baixo Parametrizável -->
+          <div class="empty-quick-card">
+            <span class="material-icons empty-quick-card-icon" style="color: #f57f17;">warning_amber</span>
+            <div class="empty-quick-card-title">Estoque Baixo</div>
+            <div class="empty-stock-param-row">
+              <span>Estoque abaixo de ≤</span>
+              <input type="number" class="param-input-small input-empty-low-threshold" value="${lowStockThreshold}" min="1" max="99">
+              <span>un</span>
+            </div>
+            <button type="button" class="empty-quick-card-btn btn-card-low-stock btn-quick-add-low">
+              <span class="material-icons" style="font-size: 16px;">filter_alt</span>
+              Carregar (≤ <span class="lbl-empty-low-val">${lowStockThreshold}</span> un)
+            </button>
+          </div>
+
+          <!-- Card 3: Catálogo Avançado com Filtros -->
+          <div class="empty-quick-card">
+            <span class="material-icons empty-quick-card-icon" style="color: #6530b5;">manage_search</span>
+            <div class="empty-quick-card-title">Catálogo Completo</div>
+            <div class="empty-quick-card-desc">Pesquise por Grupo, Fornecedor, Marca ou EAN com filtros avançados e seleção em lote.</div>
+            <button type="button" class="empty-quick-card-btn btn-card-catalog btn-trigger-add-modal">
+              <span class="material-icons" style="font-size: 16px;">add_circle</span>
+              Abrir Catálogo
+            </button>
+          </div>
+        </div>
+
+        <span class="empty-state-scan-badge">
+          <span class="material-icons" style="font-size: 16px;">keyboard</span>
+          Atalho de bipe ativo: digite o EAN no topo e pressione Enter
+        </span>
+      </div>
+    `;
+  }
+
+  // Helper: Adição Rápida por Critério de Estoque no Empty State
+  function addProductsByFilter(options = {}) {
+    const master = getMasterCatalog();
+    let filtered = [];
+
+    if (options.zeroOnly) {
+      filtered = master.filter(p => p.estoqueLoja === 0);
+    } else if (options.lowStockOnly) {
+      const threshold = options.threshold !== undefined ? options.threshold : lowStockThreshold;
+      filtered = master.filter(p => p.estoqueLoja <= threshold);
+    } else {
+      filtered = master;
+    }
+
+    if (filtered.length === 0) {
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Nenhum produto encontrado com este critério de estoque.');
+      }
+      return;
+    }
+
+    filtered.forEach(item => {
+      const existing = queryProducts.find(p => p.ean === item.ean);
+      const reporQty = item.sugestao > 0 ? item.sugestao : Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja);
+      if (existing) {
+        existing.selecionado = true;
+        if (existing.aRepor === 0) existing.aRepor = reporQty;
+      } else {
+        const copy = JSON.parse(JSON.stringify(item));
+        copy.id = Date.now() + Math.floor(Math.random() * 100000);
+        copy.aRepor = reporQty;
+        copy.selecionado = true;
+        queryProducts.push(copy);
+      }
+    });
+
+    if (typeof Toast !== 'undefined') {
+      Toast.success(`${filtered.length} produto(s) carregado(s) para reposição!`);
+    }
+    renderAll();
+  }
+
   // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
   let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])) : [];
   let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero'
@@ -201,27 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tableBody.innerHTML = `
           <tr class="empty-state-row">
             <td colspan="${colCount}" style="padding: 0; border: none;">
-              <div class="consulta-empty-state">
-                <div class="empty-state-icon-box">
-                  <span class="material-icons">${hasPlan ? 'inventory_2' : 'qr_code_scanner'}</span>
-                </div>
-                <h3 class="empty-state-title">${hasPlan ? 'Nenhum produto cadastrado no plano' : 'Nenhum produto adicionado à consulta'}</h3>
-                <p class="empty-state-desc">
-                  ${hasPlan 
-                    ? 'Não foram encontrados produtos para os parâmetros deste plano.' 
-                    : 'Utilize o leitor de código de barras no campo superior ou clique no botão abaixo para adicionar produtos do catálogo.'}
-                </p>
-                <div class="empty-state-actions">
-                  <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
-                    <span class="material-icons">add_circle</span>
-                    Adicionar Produtos do Catálogo
-                  </button>
-                  <span class="empty-state-scan-badge">
-                    <span class="material-icons" style="font-size: 16px;">keyboard</span>
-                    Atalho de bipe ativo: digite o EAN e pressione Enter
-                  </span>
-                </div>
-              </div>
+              ${buildEmptyStateHtml()}
             </td>
           </tr>
         `;
@@ -295,7 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
             `;
           } else {
-            // MODO SEM PLANO (Apenas colunas relevantes e essenciais)
             return `
               <tr class="${unselectedClass}" data-id="${item.id}">
                 <td class="table-checkbox-cell">
@@ -315,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <div class="product-desc-title">${item.nome}</div>
                 </td>
                 <td style="text-align: center;">
-                  <span class="stock-pill stock-pill-loja">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
+                  <span class="stock-pill stock-pill-loja ${item.estoqueLoja === 0 ? 'is-critico' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
                 </td>
                 <td style="text-align: center;">
                   <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
@@ -351,23 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (queryProducts.length === 0) {
         cardsGrid.innerHTML = `
           <div style="grid-column: 1 / -1;">
-            <div class="consulta-empty-state">
-              <div class="empty-state-icon-box">
-                <span class="material-icons">${hasPlan ? 'inventory_2' : 'qr_code_scanner'}</span>
-              </div>
-              <h3 class="empty-state-title">${hasPlan ? 'Nenhum produto no plano' : 'Nenhum produto adicionado'}</h3>
-              <p class="empty-state-desc">
-                ${hasPlan 
-                  ? 'Não foram encontrados produtos para este plano.' 
-                  : 'Bipe o código de barras no campo superior ou adicione produtos do catálogo.'}
-              </p>
-              <div class="empty-state-actions">
-                <button type="button" class="btn-add-extra-products btn-trigger-add-modal" style="height: 42px; font-size: 0.9rem;">
-                  <span class="material-icons">add_circle</span>
-                  Adicionar Produtos
-                </button>
-              </div>
-            </div>
+            ${buildEmptyStateHtml()}
           </div>
         `;
       } else if (filtered.length === 0) {
@@ -405,11 +511,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card-stock-grid" style="grid-template-columns: 1fr 1fr;">
               <div class="card-stock-item">
                 <span class="card-stock-label">Estoque Loja</span>
-                <span class="card-stock-val" style="color: #1976d2;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
+                <span class="card-stock-val" style="color: ${item.estoqueLoja === 0 ? '#c62828' : '#1976d2'}; font-weight: 700;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
               </div>
               <div class="card-stock-item">
                 <span class="card-stock-label">Estoque CD</span>
-                <span class="card-stock-val" style="color: #388e3c;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+                <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
               </div>
             </div>
           `;
@@ -466,12 +572,40 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
   }
 
-  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção, Gatilhos)
+  // 8. Eventos Interativos (Checkboxes, Steppers, Remoção, Gatilhos Empty State)
   function bindInteractiveEvents() {
-    // Gatilho do botão Adicionar dentro do Empty State
+    // Gatilho de Abrir Catálogo Completo
     const triggerAddBtns = document.querySelectorAll('.btn-trigger-add-modal');
     triggerAddBtns.forEach(btn => {
       btn.addEventListener('click', openAddExtraModal);
+    });
+
+    // Ação Rápida Empty State: Zerados
+    const btnQuickZero = document.querySelectorAll('.btn-quick-add-zero');
+    btnQuickZero.forEach(btn => {
+      btn.addEventListener('click', () => addProductsByFilter({ zeroOnly: true }));
+    });
+
+    // Ação Rápida Empty State: Estoque Baixo
+    const btnQuickLow = document.querySelectorAll('.btn-quick-add-low');
+    btnQuickLow.forEach(btn => {
+      btn.addEventListener('click', () => addProductsByFilter({ lowStockOnly: true, threshold: lowStockThreshold }));
+    });
+
+    // Input de Parâmetro de Estoque Baixo no Empty State
+    const inputsEmptyLow = document.querySelectorAll('.input-empty-low-threshold');
+    inputsEmptyLow.forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const val = Math.max(1, parseInt(e.target.value) || 1);
+        lowStockThreshold = val;
+        
+        // Sincroniza labels e outros inputs
+        document.querySelectorAll('.lbl-empty-low-val').forEach(lbl => lbl.textContent = val);
+        const catalogParamInput = document.getElementById('catalogStockLowParamInput');
+        if (catalogParamInput) catalogParamInput.value = val;
+        const chipLabel = document.getElementById('chipStockLowLabel');
+        if (chipLabel) chipLabel.textContent = `Estoque abaixo de ≤ ${val} un`;
+      });
     });
 
     // Checkboxes de Seleção
@@ -523,7 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inputs Diretos de "A Repor"
     const reporInputs = document.querySelectorAll('.input-a-repor');
     reporInputs.forEach(inp => {
-      inp.addEventListener('change', (e) => {
+      inp.addEventListener('change', () => {
         const id = inp.getAttribute('data-id');
         const prod = queryProducts.find(p => p.id == id);
         if (prod) {
@@ -596,15 +730,14 @@ document.addEventListener('DOMContentLoaded', () => {
           barcodeInput.value = '';
           renderAll();
         } else {
-          // 2. Procura em todos os catálogos cadastrados
-          const extraCatalog = window.CatalogoExtraProdutos || [];
-          const baseCatalog = window.ConsultaProdutosBase || [];
-          const matched = extraCatalog.find(p => p.ean === code) || baseCatalog.find(p => p.ean === code);
+          // 2. Procura no catálogo mestre
+          const master = getMasterCatalog();
+          const matched = master.find(p => p.ean === code);
 
           if (matched) {
             const newProd = JSON.parse(JSON.stringify(matched));
             newProd.id = Date.now();
-            newProd.aRepor = 1;
+            newProd.aRepor = matched.sugestao || 1;
             newProd.selecionado = true;
             queryProducts.unshift(newProd);
             if (typeof Toast !== 'undefined') {
@@ -634,7 +767,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 11.1 Checkbox do Topo da Tabela: Marcar / Desmarcar Todos
+  // 11. Selecionar Todos / Desmarcar Todos da Tela Principal
   if (selectAllCheckbox) {
     selectAllCheckbox.addEventListener('change', () => {
       const isChecked = selectAllCheckbox.checked;
@@ -642,8 +775,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       visible.forEach(prod => {
         prod.selecionado = isChecked;
-        if (isChecked && prod.aRepor === 0 && prod.sugestao > 0) {
-          prod.aRepor = prod.sugestao;
+        if (isChecked && prod.aRepor === 0) {
+          prod.aRepor = (hasPlan && prod.sugestao > 0) ? prod.sugestao : 1;
         }
       });
 
@@ -655,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 12. Chips de Filtro Rápido
+  // 12. Chips de Filtro Rápido da Barra de Ferramentas
   const filterChips = document.querySelectorAll('.filter-chip');
   filterChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -687,11 +820,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (selectPlanoModal && hintPlanoModal) {
       const opt = selectPlanoModal.options[selectPlanoModal.selectedIndex];
-      const hasPlan = !!(opt && opt.value);
-      hintPlanoModal.textContent = opt ? (opt.getAttribute('data-code') || (hasPlan ? opt.value : 'Opcional')) : 'Opcional';
+      const isPlano = !!(opt && opt.value);
+      hintPlanoModal.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
 
       if (containerFiltrosPlanoModal) {
-        if (hasPlan) {
+        if (isPlano) {
           containerFiltrosPlanoModal.classList.remove('hidden');
         } else {
           containerFiltrosPlanoModal.classList.add('hidden');
@@ -699,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (hintNoPlanoModal) {
-        hintNoPlanoModal.style.display = hasPlan ? 'none' : 'flex';
+        hintNoPlanoModal.style.display = isPlano ? 'none' : 'flex';
       }
     }
   }
@@ -712,7 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalParams) {
       modalParams.classList.add('show', 'active');
       
-      // Sincroniza selects com currentParams
       if (selectOrigemModal) {
         for (let i = 0; i < selectOrigemModal.options.length; i++) {
           if (selectOrigemModal.options[i].text === currentParams.origem) {
@@ -740,7 +872,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       updateModalParamsSelectHints();
 
-      // Selecionar radio atual
       const radios = modalParams.querySelectorAll('input[name="filterScope"]');
       radios.forEach(r => {
         r.checked = (r.value === currentParams.filtro);
@@ -763,7 +894,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Seleção de radio card no modal de parâmetros
   const radioCards = document.querySelectorAll('.modal-radio-card');
   radioCards.forEach(card => {
     card.addEventListener('click', () => {
@@ -801,7 +931,6 @@ document.addEventListener('DOMContentLoaded', () => {
         Toast.success('Filtros atualizados com sucesso!');
       }
 
-      // Re-aplica filtro inicial nos produtos
       if (hasPlan && currentParams.filtro === 'saldo_ideal') {
         currentFilterChip = 'ideal';
       } else if (hasPlan && currentParams.filtro === 'saldo_critico') {
@@ -818,33 +947,337 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 14. Modal de Adicionar Produtos Extras (Multicritério)
-  function renderExtraProductsModal() {
-    if (!extraProductsList) return;
-    const extras = window.CatalogoExtraProdutos || [];
+  // ==========================================================================
+  // 14. CATÁLOGO INTELIGENTE DE REPOSIÇÃO (MULTICRITÉRIO COM FILTROS AVANÇADOS)
+  // ==========================================================================
+  const catalogSearchInput = document.getElementById('catalogSearchInput');
+  const catalogGrupoSelect = document.getElementById('catalogGrupoSelect');
+  const catalogFornecedorSelect = document.getElementById('catalogFornecedorSelect');
+  const catalogStockChips = document.querySelectorAll('.catalog-stock-chip');
+  const catalogStockLowParamInput = document.getElementById('catalogStockLowParamInput');
+  const chipStockLowLabel = document.getElementById('chipStockLowLabel');
+  const chipStockLowWrapper = document.getElementById('chipStockLowWrapper');
+  const catalogSelectAllCheckbox = document.getElementById('catalogSelectAllCheckbox');
+  const catalogFilteredCount = document.getElementById('catalogFilteredCount');
+  const catalogBatchDefaultQtyInput = document.getElementById('catalogBatchDefaultQtyInput');
+  const btnBatchQtyMinus = document.getElementById('btnBatchQtyMinus');
+  const btnBatchQtyPlus = document.getElementById('btnBatchQtyPlus');
+  const btnApplyBatchQty = document.getElementById('btnApplyBatchQty');
+  const catalogSelectionSummary = document.getElementById('catalogSelectionSummary');
 
-    extraProductsList.innerHTML = extras.map(item => `
-      <div class="product-selection-row" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid #f0f0f0;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <input type="checkbox" class="table-custom-checkbox extra-prod-chk" data-id="${item.id}" checked>
-          <img src="${item.foto}" alt="${item.nome}" style="width: 44px; height: 44px; object-fit: contain; border-radius: 4px; border: 1px solid #eee; padding: 2px;">
-          <div>
-            <span style="font-size: 0.75rem; color: #1976d2; font-weight: 500;">${item.ean}</span>
-            <div style="font-size: 0.88rem; font-weight: 500; color: #212529;">${item.nome}</div>
-            <span style="font-size: 0.75rem; color: #757575;">${item.categoria} • ${item.marca}</span>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 0.8rem; color: #555;">Repor:</span>
-          <input type="number" class="extra-prod-qty" data-id="${item.id}" value="${item.sugestao || 5}" min="1" style="width: 54px; height: 32px; text-align: center; border: 1px solid #ccc; border-radius: 4px; font-weight: 700;">
-        </div>
-      </div>
-    `).join('');
+  // Inicializa o estado dos itens do catálogo
+  function initCatalogItemsState() {
+    const master = getMasterCatalog();
+    catalogItemsState = master.map(item => {
+      const inQuery = queryProducts.find(p => p.ean === item.ean);
+      return {
+        item: item,
+        checked: inQuery ? inQuery.selecionado : (item.estoqueLoja === 0),
+        aRepor: inQuery ? inQuery.aRepor : (item.sugestao || Math.max(1, (item.estoqueIdeal || 10) - item.estoqueLoja))
+      };
+    });
   }
 
+  // Filtra itens do catálogo com base em todos os critérios ativos
+  function getFilteredCatalogItems() {
+    return catalogItemsState.filter(entry => {
+      const p = entry.item;
+
+      // 1. Filtro por Texto / EAN / Marca
+      if (catalogSearchText) {
+        const query = catalogSearchText.toLowerCase();
+        const match = p.nome.toLowerCase().includes(query) ||
+          p.ean.includes(query) ||
+          (p.marca && p.marca.toLowerCase().includes(query));
+        if (!match) return false;
+      }
+
+      // 2. Filtro por Grupo (Categoria)
+      if (catalogSelectedGrupo) {
+        const itemGrupo = p.grupo || p.categoria || '';
+        if (itemGrupo.toLowerCase() !== catalogSelectedGrupo.toLowerCase()) return false;
+      }
+
+      // 3. Filtro por Fornecedor / Fabricante
+      if (catalogSelectedFornecedor) {
+        const itemForn = p.fornecedor || '';
+        if (!itemForn.toLowerCase().includes(catalogSelectedFornecedor.toLowerCase())) return false;
+      }
+
+      // 4. Filtro por Nível de Estoque
+      if (catalogStockFilter === 'zero') {
+        return p.estoqueLoja === 0;
+      } else if (catalogStockFilter === 'low') {
+        return p.estoqueLoja <= lowStockThreshold;
+      } else if (catalogStockFilter === 'cd_available') {
+        return (p.estoqueCd || 0) > 0;
+      }
+
+      return true;
+    });
+  }
+
+  // Renderiza a listagem de produtos dentro do modal de catálogo
+  function renderCatalogList() {
+    if (!extraProductsList) return;
+    const filtered = getFilteredCatalogItems();
+
+    if (catalogFilteredCount) catalogFilteredCount.textContent = filtered.length;
+
+    // Atualiza contagem total de selecionados no catálogo
+    const totalSelected = catalogItemsState.filter(e => e.checked);
+    const totalUnits = totalSelected.reduce((sum, curr) => sum + (parseInt(curr.aRepor) || 0), 0);
+    if (catalogSelectionSummary) {
+      catalogSelectionSummary.textContent = `${totalSelected.length} item(s) selecionado(s) • ${totalUnits} un total`;
+    }
+
+    // Sincroniza checkbox "Marcar Todos Filtrados"
+    if (catalogSelectAllCheckbox) {
+      if (filtered.length === 0) {
+        catalogSelectAllCheckbox.checked = false;
+        catalogSelectAllCheckbox.indeterminate = false;
+      } else {
+        const allChecked = filtered.every(e => e.checked);
+        const someChecked = filtered.some(e => e.checked);
+        catalogSelectAllCheckbox.checked = allChecked;
+        catalogSelectAllCheckbox.indeterminate = !allChecked && someChecked;
+      }
+    }
+
+    if (filtered.length === 0) {
+      extraProductsList.innerHTML = `
+        <div style="text-align: center; padding: 2.5rem; color: #757575;">
+          <span class="material-icons" style="font-size: 36px; display: block; margin-bottom: 8px; color: #bdbdbd;">search_off</span>
+          Nenhum produto encontrado com os filtros selecionados.
+        </div>
+      `;
+      return;
+    }
+
+    extraProductsList.innerHTML = filtered.map(entry => {
+      const p = entry.item;
+      const isZero = p.estoqueLoja === 0;
+      const isLow = !isZero && p.estoqueLoja <= lowStockThreshold;
+      const lojaClass = isZero ? 'is-zero' : (isLow ? 'is-low' : 'is-ok');
+      const lojaLabel = isZero ? '0 un (Zerado)' : `${p.estoqueLoja} un`;
+
+      return `
+        <div class="catalog-product-row" data-ean="${p.ean}">
+          <div class="catalog-product-main-col">
+            <input 
+              type="checkbox" 
+              class="table-custom-checkbox extra-prod-chk" 
+              data-ean="${p.ean}" 
+              ${entry.checked ? 'checked' : ''}
+              aria-label="Selecionar ${p.nome}"
+            >
+            <img src="${p.foto}" alt="${p.nome}" class="catalog-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
+            <div class="catalog-prod-details">
+              <span class="catalog-prod-ean">${p.ean}</span>
+              <div class="catalog-prod-name" title="${p.nome}">${p.nome}</div>
+              <div class="catalog-prod-tags-row">
+                <span class="catalog-tag-grupo">${p.grupo || p.categoria || 'Geral'}</span>
+                <span class="catalog-tag-fornecedor">${p.fornecedor || p.marca || 'Distribuidor'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="catalog-product-stock-col">
+            <span class="badge-stock-loja ${lojaClass}" title="Estoque atual na loja">Loja: ${lojaLabel}</span>
+            <span class="badge-stock-cd" title="Estoque disponível no CD">CD: ${p.estoqueCd !== undefined ? p.estoqueCd : 0} un</span>
+            
+            <div class="repor-stepper-wrapper" style="width: 105px;">
+              <button type="button" class="repor-stepper-btn catalog-item-minus" data-ean="${p.ean}">−</button>
+              <input 
+                type="number" 
+                class="repor-stepper-input extra-prod-qty" 
+                data-ean="${p.ean}" 
+                value="${entry.aRepor}" 
+                min="1" 
+                max="999"
+              >
+              <button type="button" class="repor-stepper-btn catalog-item-plus" data-ean="${p.ean}">+</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    bindCatalogRowEvents();
+  }
+
+  // Eventos das linhas da lista do catálogo
+  function bindCatalogRowEvents() {
+    const chks = extraProductsList.querySelectorAll('.extra-prod-chk');
+    chks.forEach(chk => {
+      chk.addEventListener('change', () => {
+        const ean = chk.getAttribute('data-ean');
+        const entry = catalogItemsState.find(e => e.item.ean === ean);
+        if (entry) {
+          entry.checked = chk.checked;
+          renderCatalogList();
+        }
+      });
+    });
+
+    const minusBtns = extraProductsList.querySelectorAll('.catalog-item-minus');
+    minusBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ean = btn.getAttribute('data-ean');
+        const entry = catalogItemsState.find(e => e.item.ean === ean);
+        if (entry && entry.aRepor > 1) {
+          entry.aRepor -= 1;
+          renderCatalogList();
+        }
+      });
+    });
+
+    const plusBtns = extraProductsList.querySelectorAll('.catalog-item-plus');
+    plusBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ean = btn.getAttribute('data-ean');
+        const entry = catalogItemsState.find(e => e.item.ean === ean);
+        if (entry) {
+          entry.aRepor = (parseInt(entry.aRepor) || 0) + 1;
+          entry.checked = true;
+          renderCatalogList();
+        }
+      });
+    });
+
+    const qtyInputs = extraProductsList.querySelectorAll('.extra-prod-qty');
+    qtyInputs.forEach(inp => {
+      inp.addEventListener('change', () => {
+        const ean = inp.getAttribute('data-ean');
+        const entry = catalogItemsState.find(e => e.item.ean === ean);
+        if (entry) {
+          const val = Math.max(1, parseInt(inp.value) || 1);
+          entry.aRepor = val;
+          entry.checked = true;
+          renderCatalogList();
+        }
+      });
+    });
+  }
+
+  // Controles de Filtros do Modal de Catálogo
+  if (catalogSearchInput) {
+    catalogSearchInput.addEventListener('input', (e) => {
+      catalogSearchText = e.target.value.trim();
+      renderCatalogList();
+    });
+  }
+
+  if (catalogGrupoSelect) {
+    catalogGrupoSelect.addEventListener('change', (e) => {
+      catalogSelectedGrupo = e.target.value;
+      renderCatalogList();
+    });
+  }
+
+  if (catalogFornecedorSelect) {
+    catalogFornecedorSelect.addEventListener('change', (e) => {
+      catalogSelectedFornecedor = e.target.value;
+      renderCatalogList();
+    });
+  }
+
+  catalogStockChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      catalogStockChips.forEach(c => c.classList.remove('active'));
+      if (chipStockLowWrapper) chipStockLowWrapper.classList.remove('active');
+
+      chip.classList.add('active');
+      const filterType = chip.getAttribute('data-stock-filter');
+      catalogStockFilter = filterType;
+
+      if (filterType === 'low' && chipStockLowWrapper) {
+        chipStockLowWrapper.classList.add('active');
+      }
+
+      renderCatalogList();
+    });
+  });
+
+  if (catalogStockLowParamInput) {
+    catalogStockLowParamInput.addEventListener('input', (e) => {
+      const val = Math.max(1, parseInt(e.target.value) || 1);
+      lowStockThreshold = val;
+      if (chipStockLowLabel) chipStockLowLabel.textContent = `Estoque abaixo de ≤ ${val} un`;
+      document.querySelectorAll('.lbl-empty-low-val').forEach(lbl => lbl.textContent = val);
+      document.querySelectorAll('.input-empty-low-threshold').forEach(inp => inp.value = val);
+      if (catalogStockFilter === 'low') {
+        renderCatalogList();
+      }
+    });
+  }
+
+  if (catalogSelectAllCheckbox) {
+    catalogSelectAllCheckbox.addEventListener('change', () => {
+      const isChecked = catalogSelectAllCheckbox.checked;
+      const filtered = getFilteredCatalogItems();
+      filtered.forEach(entry => entry.checked = isChecked);
+      renderCatalogList();
+    });
+  }
+
+  // Ações de Quantidade em Lote
+  if (btnBatchQtyMinus && catalogBatchDefaultQtyInput) {
+    btnBatchQtyMinus.addEventListener('click', () => {
+      const current = Math.max(1, parseInt(catalogBatchDefaultQtyInput.value) || 1);
+      catalogBatchDefaultQtyInput.value = Math.max(1, current - 1);
+      catalogBatchDefaultQty = parseInt(catalogBatchDefaultQtyInput.value);
+    });
+  }
+
+  if (btnBatchQtyPlus && catalogBatchDefaultQtyInput) {
+    btnBatchQtyPlus.addEventListener('click', () => {
+      const current = parseInt(catalogBatchDefaultQtyInput.value) || 1;
+      catalogBatchDefaultQtyInput.value = current + 1;
+      catalogBatchDefaultQty = parseInt(catalogBatchDefaultQtyInput.value);
+    });
+  }
+
+  if (catalogBatchDefaultQtyInput) {
+    catalogBatchDefaultQtyInput.addEventListener('change', () => {
+      catalogBatchDefaultQty = Math.max(1, parseInt(catalogBatchDefaultQtyInput.value) || 1);
+      catalogBatchDefaultQtyInput.value = catalogBatchDefaultQty;
+    });
+  }
+
+  if (btnApplyBatchQty) {
+    btnApplyBatchQty.addEventListener('click', () => {
+      const checkedEntries = catalogItemsState.filter(e => e.checked);
+      if (checkedEntries.length === 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Selecione produtos na lista antes de aplicar a quantidade.');
+        }
+        return;
+      }
+      checkedEntries.forEach(e => e.aRepor = catalogBatchDefaultQty);
+      renderCatalogList();
+      if (typeof Toast !== 'undefined') {
+        Toast.info(`Quantidade de ${catalogBatchDefaultQty} un aplicada a ${checkedEntries.length} produto(s).`);
+      }
+    });
+  }
+
+  // Abertura e Fechamento do Modal de Catálogo
   function openAddExtraModal() {
     if (modalAddExtra) {
-      renderExtraProductsModal();
+      initCatalogItemsState();
+      
+      // Sincroniza parâmetros na abertura
+      if (catalogStockLowParamInput) catalogStockLowParamInput.value = lowStockThreshold;
+      if (chipStockLowLabel) chipStockLowLabel.textContent = `Estoque abaixo de ≤ ${lowStockThreshold} un`;
+      if (catalogSearchInput) {
+        catalogSearchInput.value = '';
+        catalogSearchText = '';
+      }
+      
+      renderCatalogList();
       modalAddExtra.classList.add('show', 'active');
     }
   }
@@ -863,37 +1296,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Confirmação de Inclusão dos Produtos Selecionados
   if (btnConfirmAddExtra) {
     btnConfirmAddExtra.addEventListener('click', () => {
-      const selectedChecks = extraProductsList.querySelectorAll('.extra-prod-chk:checked');
-      let countAdded = 0;
+      const selectedEntries = catalogItemsState.filter(e => e.checked && e.aRepor > 0);
 
-      selectedChecks.forEach(chk => {
-        const id = chk.getAttribute('data-id');
-        const extraItem = (window.CatalogoExtraProdutos || []).find(p => p.id == id);
-        const qtyInput = extraProductsList.querySelector(`.extra-prod-qty[data-id="${id}"]`);
-        const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+      if (selectedEntries.length === 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Nenhum produto marcado para inclusão.');
+        }
+        return;
+      }
 
-        if (extraItem) {
-          // Verifica se já não existe na consulta
-          const existing = queryProducts.find(p => p.ean === extraItem.ean);
-          if (existing) {
-            existing.aRepor += qty;
-            existing.selecionado = true;
-          } else {
-            const copy = JSON.parse(JSON.stringify(extraItem));
-            copy.id = Date.now() + Math.random();
-            copy.aRepor = qty;
-            copy.selecionado = true;
-            queryProducts.unshift(copy);
-          }
-          countAdded++;
+      let countNew = 0;
+      let countUpdated = 0;
+
+      selectedEntries.forEach(entry => {
+        const item = entry.item;
+        const existing = queryProducts.find(p => p.ean === item.ean);
+
+        if (existing) {
+          existing.aRepor = entry.aRepor;
+          existing.selecionado = true;
+          countUpdated++;
+        } else {
+          const copy = JSON.parse(JSON.stringify(item));
+          copy.id = Date.now() + Math.floor(Math.random() * 100000);
+          copy.aRepor = entry.aRepor;
+          copy.selecionado = true;
+          queryProducts.unshift(copy);
+          countNew++;
         }
       });
 
       closeAddExtraModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success(`${countAdded} produto(s) adicionado(s) à consulta!`);
+        Toast.success(`${countNew + countUpdated} produto(s) adicionado(s) à consulta com sucesso!`);
       }
       renderAll();
     });

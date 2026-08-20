@@ -450,56 +450,161 @@
   display: none !important;
 }
 
-/* Estado Vazio de Produtos (Empty State) */
+/* Estado Vazio de Produtos (Empty State Inteligente) */
 .consulta-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3.5rem 2rem;
+  padding: 3rem 1.5rem;
   background-color: #ffffff;
   border-radius: 8px;
   width: 100%;
 }
 
 .empty-state-icon-box {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   background-color: #f3ebfc;
   color: var(--primary-color, #6530b5);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .empty-state-icon-box .material-icons {
-  font-size: 36px;
+  font-size: 34px;
 }
 
 .empty-state-title {
   font-size: 1.15rem;
   font-weight: 700;
   color: #23143d;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .empty-state-desc {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: #616161;
-  max-width: 480px;
+  max-width: 540px;
   line-height: 1.5;
   margin-bottom: 1.5rem;
 }
 
-.empty-state-actions {
+/* Cards de Ações Rápidas de Reposição no Empty State */
+.empty-state-quick-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 820px;
+  margin-bottom: 1.5rem;
+}
+
+.empty-quick-card {
+  background-color: #fbfbfd;
+  border: 1.5px solid #e8e8ed;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.empty-quick-card:hover {
+  border-color: var(--primary-color, #6530b5);
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.12);
+  transform: translateY(-2px);
+}
+
+.empty-quick-card-icon {
+  font-size: 26px;
+}
+
+.empty-quick-card-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.empty-quick-card-desc {
+  font-size: 0.76rem;
+  color: #757575;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.empty-quick-card-btn {
+  width: 100%;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-card-rupture {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.btn-card-rupture:hover {
+  background-color: #c62828;
+  color: #ffffff;
+}
+
+.btn-card-low-stock {
+  background-color: #fff8e1;
+  color: #f57f17;
+}
+.btn-card-low-stock:hover {
+  background-color: #f57f17;
+  color: #ffffff;
+}
+
+.btn-card-catalog {
+  background-color: #f3ebfc;
+  color: #6530b5;
+}
+.btn-card-catalog:hover {
+  background-color: #6530b5;
+  color: #ffffff;
+}
+
+/* Controle inline de limite de estoque */
+.empty-stock-param-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
   justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.param-input-small {
+  width: 44px;
+  height: 28px;
+  text-align: center;
+  border: 1.5px solid #dcdcdc;
+  border-radius: 4px;
+  font-weight: 700;
+  color: #212529;
+  outline: none;
+}
+.param-input-small:focus {
+  border-color: var(--primary-color, #6530b5);
 }
 
 .empty-state-scan-badge {
@@ -512,6 +617,429 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ==========================================================================
+   MODAL DE CATÁLOGO INTELIGENTE DE REPOSIÇÃO (MULTICRITÉRIO)
+   ========================================================================== */
+.modal-catalog-box {
+  max-width: 780px !important;
+  max-height: 92vh !important;
+}
+
+.modal-catalog-body {
+  padding: 1.25rem 1.5rem !important;
+  gap: 12px !important;
+}
+
+/* Grid de Filtros Superiores do Catálogo */
+.catalog-filters-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .catalog-filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.catalog-search-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dcdfe4;
+  border-radius: 6px;
+  height: 38px;
+  padding: 0 10px;
+  transition: all var(--transition-fast);
+}
+
+.catalog-search-wrapper:focus-within {
+  border-color: var(--primary-color, #6530b5);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15);
+}
+
+.catalog-search-wrapper .material-icons {
+  color: #757575;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.catalog-search-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.catalog-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.catalog-select-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #616161;
+}
+
+.catalog-select {
+  height: 38px;
+  border: 1px solid #dcdfe4;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  padding: 0 8px;
+  font-size: 0.82rem;
+  color: #333333;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.catalog-select:focus {
+  border-color: var(--primary-color, #6530b5);
+  background-color: #ffffff;
+}
+
+/* Linha de Chips de Filtro de Estoque */
+.catalog-stock-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.catalog-filter-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #757575;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.catalog-stock-chip {
+  background-color: #f1f3f6;
+  border: 1px solid #dcdfe4;
+  border-radius: 18px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.catalog-stock-chip .material-icons {
+  font-size: 15px;
+}
+
+.catalog-stock-chip:hover {
+  background-color: #e9ecef;
+}
+
+.catalog-stock-chip.active {
+  background-color: #23143d;
+  color: #ffffff;
+  border-color: #23143d;
+}
+
+.catalog-stock-chip.chip-danger.active {
+  background-color: #c62828;
+  border-color: #b71c1c;
+  color: #ffffff;
+}
+
+.catalog-stock-chip.chip-warning.active {
+  background-color: #f57f17;
+  border-color: #e65100;
+  color: #ffffff;
+}
+
+.catalog-stock-chip.chip-success.active {
+  background-color: #2e7d32;
+  border-color: #1b5e20;
+  color: #ffffff;
+}
+
+/* Wrapper do Chip de Estoque Baixo com Parâmetro Inline */
+.catalog-stock-chip-param-wrapper {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f1f3f6;
+  border: 1px solid #dcdfe4;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.catalog-stock-chip-param-wrapper .catalog-stock-chip {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding-right: 6px;
+}
+
+.catalog-stock-chip-param-wrapper.active {
+  background-color: #f57f17;
+  border-color: #e65100;
+}
+.catalog-stock-chip-param-wrapper.active .catalog-stock-chip {
+  color: #ffffff;
+}
+
+.stock-param-inline-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stock-param-number-input {
+  width: 32px;
+  height: 22px;
+  text-align: center;
+  border: 1px solid #cfd8dc;
+  border-radius: 3px;
+  background: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+/* Barra de Ações em Lote do Catálogo */
+.catalog-batch-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 8px 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.catalog-select-all-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #212529;
+  cursor: pointer;
+}
+
+.catalog-batch-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.batch-qty-label {
+  font-size: 0.78rem;
+  color: #616161;
+}
+
+.batch-qty-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cfd8dc;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.batch-qty-btn {
+  width: 26px;
+  height: 28px;
+  background-color: #f1f3f4;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.batch-qty-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.batch-qty-input {
+  width: 36px;
+  height: 28px;
+  text-align: center;
+  border: none;
+  outline: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.btn-apply-batch-qty {
+  background-color: #23143d;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.btn-apply-batch-qty:hover {
+  background-color: #6530b5;
+}
+
+/* Lista de Produtos do Catálogo */
+.catalog-products-scroll-box {
+  max-height: 330px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #ffffff;
+}
+
+.catalog-product-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color var(--transition-fast);
+  gap: 12px;
+}
+
+.catalog-product-row:hover {
+  background-color: #faf8fd;
+}
+
+.catalog-product-row:last-child {
+  border-bottom: none;
+}
+
+.catalog-product-main-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.catalog-prod-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  padding: 2px;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.catalog-prod-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.catalog-prod-ean {
+  font-size: 0.74rem;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.catalog-prod-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.catalog-prod-tags-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.catalog-tag-grupo {
+  font-size: 0.7rem;
+  background-color: #f3ebfc;
+  color: #6530b5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.catalog-tag-fornecedor {
+  font-size: 0.7rem;
+  background-color: #edf2f7;
+  color: #4a5568;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Coluna de Estoques e Quantidade da Linha */
+.catalog-product-stock-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.badge-stock-loja {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-stock-loja.is-zero {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.badge-stock-loja.is-low {
+  background-color: #fff8e1;
+  color: #f57f17;
+}
+.badge-stock-loja.is-ok {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-stock-cd {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #f1f3f6;
+  color: #455a64;
+}
+
+.catalog-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.catalog-summary-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #212529;
 }
 
 /* Badges de Quantidade de Estoque */

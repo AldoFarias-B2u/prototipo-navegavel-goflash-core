@@ -396,29 +396,133 @@
   </div>
 
   <!-- ========================================================================
-       MODAL 2: ADICIONAR PRODUTOS EXTRAS (MULTICRITÉRIO COM FOTOS)
+       MODAL 2: CATÁLOGO INTELIGENTE DE PRODUTOS PARA REPOSIÇÃO
        ======================================================================== -->
   <div class="official-modal-overlay" id="modalAddExtraProducts" role="dialog" aria-modal="true">
-    <div class="official-modal-box" style="max-width: 680px;">
+    <div class="official-modal-box modal-catalog-box" style="max-width: 780px; width: 95%;">
       
       <div class="official-modal-header">
-        <h2 class="official-modal-title">ADICIONAR PRODUTOS À CONSULTA</h2>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">inventory_2</span>
+          <h2 class="official-modal-title">CATÁLOGO DE PRODUTOS PARA REPOSIÇÃO</h2>
+        </div>
         <button type="button" class="official-modal-close" id="btnCloseAddExtraModal" aria-label="Fechar">&times;</button>
       </div>
 
-      <div class="official-modal-body" style="padding: 1.25rem;">
-        <p style="font-size: 0.85rem; color: #5f6368; margin-bottom: 12px;">
-          Selecione produtos adicionais do catálogo corporativo para incluir neste pedido de abastecimento:
-        </p>
+      <div class="official-modal-body modal-catalog-body">
+        
+        <!-- Barra de Busca e Filtros por Grupo e Fornecedor -->
+        <div class="catalog-filters-grid">
+          <!-- Busca Textual / EAN -->
+          <div class="catalog-search-wrapper">
+            <span class="material-icons">search</span>
+            <input 
+              type="text" 
+              id="catalogSearchInput" 
+              class="catalog-search-input" 
+              placeholder="Pesquisar por nome, marca ou EAN..." 
+              autocomplete="off"
+            >
+          </div>
 
-        <div id="extraProductsList" style="max-height: 320px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+          <!-- Select de Grupo (Categoria Oficial) -->
+          <div class="catalog-select-wrapper">
+            <label class="catalog-select-label" for="catalogGrupoSelect">Grupo (Categoria):</label>
+            <select id="catalogGrupoSelect" class="catalog-select">
+              <option value="">Todos os Grupos</option>
+              <option value="Bebidas e Refrigerantes">Bebidas e Refrigerantes</option>
+              <option value="Snacks e Salgadinhos">Snacks e Salgadinhos</option>
+              <option value="Doces e Chocolates">Doces e Chocolates</option>
+              <option value="Mercearia e Matinais">Mercearia e Matinais</option>
+              <option value="Cervejas e Alcoólicos">Cervejas e Alcoólicos</option>
+            </select>
+          </div>
+
+          <!-- Select de Fornecedor -->
+          <div class="catalog-select-wrapper">
+            <label class="catalog-select-label" for="catalogFornecedorSelect">Fornecedor / Fabricante:</label>
+            <select id="catalogFornecedorSelect" class="catalog-select">
+              <option value="">Todos os Fornecedores</option>
+              <option value="Coca-Cola FEMSA">Coca-Cola FEMSA</option>
+              <option value="Ambev Distribuição">Ambev Distribuição</option>
+              <option value="PepsiCo Alimentos (Elma Chips)">PepsiCo Alimentos (Elma Chips)</option>
+              <option value="Mondelēz Brasil (Lacta)">Mondelēz Brasil (Lacta)</option>
+              <option value="Nestlé Brasil">Nestlé Brasil</option>
+              <option value="Bauducco / Pandurata">Bauducco / Pandurata</option>
+              <option value="Heineken Brasil">Heineken Brasil</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Linha de Chips de Filtro por Nível de Estoque com Parâmetro de Estoque Baixo -->
+        <div class="catalog-stock-filters-row">
+          <span class="catalog-filter-title">Estoque:</span>
+          
+          <button type="button" class="catalog-stock-chip active" data-stock-filter="all">
+            <span class="material-icons">apps</span>
+            Todos
+          </button>
+
+          <button type="button" class="catalog-stock-chip chip-danger" data-stock-filter="zero">
+            <span class="material-icons">report_problem</span>
+            Zerados na Loja (0 un)
+          </button>
+
+          <div class="catalog-stock-chip-param-wrapper" id="chipStockLowWrapper">
+            <button type="button" class="catalog-stock-chip chip-warning" data-stock-filter="low" id="chipStockLowBtn">
+              <span class="material-icons">warning_amber</span>
+              <span id="chipStockLowLabel">Estoque abaixo de ≤ 3 un</span>
+            </button>
+            <div class="stock-param-inline-box" title="Defina o limite de estoque baixo">
+              <span>≤</span>
+              <input type="number" id="catalogStockLowParamInput" class="stock-param-number-input" value="3" min="1" max="99">
+              <span>un</span>
+            </div>
+          </div>
+
+          <button type="button" class="catalog-stock-chip chip-success" data-stock-filter="cd_available">
+            <span class="material-icons">check_circle</span>
+            Disponível no CD (> 0 un)
+          </button>
+        </div>
+
+        <!-- Barra de Ações em Lote e Quantidade Padrão -->
+        <div class="catalog-batch-actions-bar">
+          <div class="catalog-batch-left">
+            <label class="catalog-select-all-label">
+              <input type="checkbox" id="catalogSelectAllCheckbox" class="table-custom-checkbox">
+              <span>Marcar Todos os Filtrados (<strong id="catalogFilteredCount">0</strong>)</span>
+            </label>
+          </div>
+
+          <div class="catalog-batch-right">
+            <span class="batch-qty-label">Qtd Padrão:</span>
+            <div class="batch-qty-stepper">
+              <button type="button" class="batch-qty-btn" id="btnBatchQtyMinus">−</button>
+              <input type="number" id="catalogBatchDefaultQtyInput" class="batch-qty-input" value="5" min="1" max="999">
+              <button type="button" class="batch-qty-btn" id="btnBatchQtyPlus">+</button>
+            </div>
+            <button type="button" class="btn-apply-batch-qty" id="btnApplyBatchQty" title="Aplicar quantidade a todos os itens selecionados">
+              Aplicar aos Marcados
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista Scrollable de Produtos -->
+        <div id="extraProductsList" class="catalog-products-scroll-box">
           <!-- Renderizado dinamicamente via JS -->
         </div>
+
       </div>
 
-      <div class="official-modal-footer">
-        <button type="button" class="btn-modal-discard" id="btnDiscardAddExtra">CANCELAR</button>
-        <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra">INCLUIR PRODUTOS</button>
+      <div class="official-modal-footer catalog-modal-footer">
+        <div class="catalog-footer-summary">
+          <span class="catalog-summary-text" id="catalogSelectionSummary">0 item(s) selecionado(s) • 0 un total</span>
+        </div>
+        <div class="catalog-footer-buttons">
+          <button type="button" class="btn-modal-discard" id="btnDiscardAddExtra">CANCELAR</button>
+          <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra" style="background-color: var(--primary-color);">INCLUIR SELECIONADOS</button>
+        </div>
       </div>
 
     </div>
