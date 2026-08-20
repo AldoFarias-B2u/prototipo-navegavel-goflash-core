@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnToggleProductsView = document.getElementById('btnToggleProductsView');
   const toggleViewIcon = document.getElementById('toggleViewIcon');
   const toggleViewLabel = document.getElementById('toggleViewLabel');
+  const productsCountBadge = document.getElementById('productsCountBadge');
   const fabEditHero = document.getElementById('fabEditHero');
 
   // Elementos do MODO DE EDIÇÃO
@@ -364,6 +365,12 @@ document.addEventListener('DOMContentLoaded', () => {
    * Renderiza a Tabela e os Cards de Produtos
    */
   function renderDetailProducts(itens) {
+    // Atualiza contador de itens no cabeçalho
+    if (productsCountBadge) {
+      const count = itens ? itens.length : 0;
+      productsCountBadge.textContent = `${count} ${count === 1 ? 'item' : 'itens'}`;
+    }
+
     // 0. Renderiza Cabeçalho Dinâmico
     if (detailProductsTableHead) {
       if (isEditMode) {
@@ -400,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr>
             <td colspan="${isEditMode ? 7 : 5}" style="text-align: center; padding: 3rem; color: #757575;">
               <span class="material-icons" style="font-size: 40px; color: #b0bec5; display: block; margin-bottom: 6px;">inventory_2</span>
-              Nenhum produto no plano. Clique em "+ Adicionar Produtos" no topo para incluir itens.
+              Nenhum produto no plano. Clique em "Adicionar Produtos" no topo para incluir itens.
             </td>
           </tr>
         `;

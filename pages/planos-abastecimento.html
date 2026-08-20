@@ -260,21 +260,6 @@
         <button class="fab-edit-hero" id="fabEditHero" title="Entrar no Modo de Edição" aria-label="Editar">
           <span class="material-icons">edit</span>
         </button>
-
-        <!-- Ações do MODO DE EDIÇÃO ATIVO -->
-        <div class="edit-mode-actions-group" id="editModeActionsGroup">
-          <button type="button" class="btn-edit-action btn-edit-add-products" id="btnOpenAddProducts" title="Adicionar novos produtos ao plano">
-            <span class="material-icons">add_circle_outline</span>
-            + Adicionar Produtos
-          </button>
-          <button type="button" class="btn-edit-action btn-edit-cancel" id="btnCancelEditMode" title="Descartar alterações">
-            Cancelar
-          </button>
-          <button type="button" class="btn-edit-action btn-edit-save" id="btnSaveEditMode" title="Salvar todas as alterações">
-            <span class="material-icons">check</span>
-            Salvar Alterações
-          </button>
-        </div>
       </div>
 
       <!-- Banner Informativo do Modo de Edição -->
@@ -288,8 +273,29 @@
       <!-- Seção de Produtos -->
       <section class="products-section-container">
         <div class="products-section-header">
-          <h2 class="products-section-title">Produtos</h2>
+          <div class="products-header-title-group">
+            <h2 class="products-section-title">Produtos</h2>
+            <span class="products-count-badge" id="productsCountBadge">0 itens</span>
+          </div>
+
           <div class="products-header-actions">
+            <!-- Ações do MODO DE EDIÇÃO ATIVO -->
+            <div class="edit-mode-actions-group" id="editModeActionsGroup">
+              <button type="button" class="btn-edit-action btn-edit-cancel" id="btnCancelEditMode" title="Descartar alterações e sair da edição">
+                <span class="material-icons">close</span>
+                <span>Cancelar</span>
+              </button>
+              <button type="button" class="btn-edit-action btn-edit-add-products" id="btnOpenAddProducts" title="Adicionar novos produtos ao plano">
+                <span class="material-icons">add_circle</span>
+                <span>Adicionar Produtos</span>
+              </button>
+              <button type="button" class="btn-edit-action btn-edit-save" id="btnSaveEditMode" title="Salvar todas as alterações">
+                <span class="material-icons">check</span>
+                <span>Salvar Alterações</span>
+              </button>
+              <div class="header-actions-divider"></div>
+            </div>
+
             <button type="button" class="btn-header-view-toggle" id="btnToggleProductsView" title="Alternar entre Lista e Cards de Produtos">
               <span class="material-icons" id="toggleViewIcon">grid_view</span>
               <span id="toggleViewLabel">Ver em Cards</span>
