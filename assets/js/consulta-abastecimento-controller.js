@@ -8,12 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const paramOrigem = urlParams.get('origem');
   const paramPlano = urlParams.get('plano');
+  const paramFiltro = urlParams.get('filtro');
 
   let currentParams = {
     origem: (paramOrigem && paramOrigem.trim()) ? paramOrigem : 'Não especificada (Entrada direta)',
     destino: urlParams.get('destino') || 'Mini Mercado 03 Simples Nacional',
     plano: (paramPlano && paramPlano.trim()) ? paramPlano : 'Sem plano base (Todos os produtos)',
-    filtro: urlParams.get('filtro') || 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
+    filtro: (paramFiltro && paramFiltro.trim()) ? paramFiltro : 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
   };
 
   // 1.1 Verificação de Presença de Plano de Abastecimento
@@ -33,6 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let hasPlan = checkHasPlan();
+
+  // Inicializa o chip de filtro ativo com base no filtro da URL
+  let initialChip = 'all';
+  if (currentParams.filtro === 'saldo_ideal') initialChip = 'ideal';
+  else if (currentParams.filtro === 'saldo_critico') initialChip = 'critico';
+  let currentFilterChip = initialChip;
 
   // 1.3 Parâmetros Dinâmicos de Catálogo e Estoque
   let lowStockThreshold = 3;
@@ -145,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Estado de Produtos da Consulta (Se sem plano, inicia vazio para inserção dinâmica)
   let queryProducts = hasPlan ? JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false })) : [];
-  let currentFilterChip = 'all'; // 'all', 'ideal', 'critico', 'selected', 'zero'
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
 
@@ -238,23 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cdCols.forEach(col => {
       col.classList.toggle('hidden-col', !hasOrigin);
     });
-
-    // Atualiza visibilidade dos chips que dependem de plano
-    const chipIdeal = document.getElementById('chipFilterIdeal');
-    const chipCritico = document.getElementById('chipFilterCritico');
-    if (chipIdeal) chipIdeal.style.display = hasPlan ? 'inline-flex' : 'none';
-    if (chipCritico) chipCritico.style.display = hasPlan ? 'inline-flex' : 'none';
-
-    // Atualiza visibilidade do chip de Estoque CD
-    const chipCdAvailable = document.getElementById('chipFilterCdAvailable');
-    if (chipCdAvailable) chipCdAvailable.style.display = hasOrigin ? 'inline-flex' : 'none';
-
-    if (!hasPlan && (currentFilterChip === 'ideal' || currentFilterChip === 'critico')) {
-      currentFilterChip = 'all';
-    }
-    if (!hasOrigin && currentFilterChip === 'cd_available') {
-      currentFilterChip = 'all';
-    }
   }
 
   // 5. Filtragem e Obtenção de Produtos Visíveis
@@ -275,23 +264,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hideUnselected && !item.selecionado) return false;
 
       // Filtro de Chips
-      if (hasPlan && currentFilterChip === 'ideal') {
-        return item.estoqueLoja < item.estoqueIdeal;
+      if (currentFilterChip === 'ideal') {
+        return item.estoqueLoja < (item.estoqueIdeal !== undefined ? item.estoqueIdeal : 10);
       }
-      if (hasPlan && currentFilterChip === 'critico') {
-        return item.estoqueLoja <= item.minimoCritico;
+      if (currentFilterChip === 'critico') {
+        return item.estoqueLoja <= (item.minimoCritico !== undefined ? item.minimoCritico : 2);
       }
       if (currentFilterChip === 'selected') {
         return item.selecionado;
       }
       if (currentFilterChip === 'zero') {
         return item.estoqueLoja === 0;
-      }
-      if (currentFilterChip === 'cd_available') {
-        return hasOrigin && (item.estoqueCd || 0) > 0;
-      }
-      if (currentFilterChip === 'low_stock') {
-        return item.estoqueLoja <= lowStockThreshold;
       }
 
       return true;
@@ -309,28 +292,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Atualiza contadores dos chips
     const countAll = queryProducts.length;
-    const countIdeal = hasPlan ? queryProducts.filter(p => p.estoqueLoja < p.estoqueIdeal).length : 0;
-    const countCritico = hasPlan ? queryProducts.filter(p => p.estoqueLoja <= p.minimoCritico).length : 0;
+    const countIdeal = queryProducts.filter(p => p.estoqueLoja < (p.estoqueIdeal !== undefined ? p.estoqueIdeal : 10)).length;
+    const countCritico = queryProducts.filter(p => p.estoqueLoja <= (p.minimoCritico !== undefined ? p.minimoCritico : 2)).length;
     const countSelected = queryProducts.filter(p => p.selecionado).length;
     const countZero = queryProducts.filter(p => p.estoqueLoja === 0).length;
-    const countCdAvailable = hasOrigin ? queryProducts.filter(p => (p.estoqueCd || 0) > 0).length : 0;
-    const countLowStock = queryProducts.filter(p => p.estoqueLoja <= lowStockThreshold).length;
 
     const elCountAll = document.getElementById('chipCountAll');
     const elCountIdeal = document.getElementById('chipCountIdeal');
     const elCountCritico = document.getElementById('chipCountCritico');
     const elCountSelected = document.getElementById('chipCountSelected');
     const elCountZero = document.getElementById('chipCountZero');
-    const elCountCdAvailable = document.getElementById('chipCountCdAvailable');
-    const elCountLowStock = document.getElementById('chipCountLowStock');
 
     if (elCountAll) elCountAll.textContent = countAll;
     if (elCountIdeal) elCountIdeal.textContent = countIdeal;
     if (elCountCritico) elCountCritico.textContent = countCritico;
     if (elCountSelected) elCountSelected.textContent = countSelected;
     if (elCountZero) elCountZero.textContent = countZero;
-    if (elCountCdAvailable) elCountCdAvailable.textContent = countCdAvailable;
-    if (elCountLowStock) elCountLowStock.textContent = countLowStock;
+
+    // Sincroniza classes active dos chips
+    const chips = document.querySelectorAll('.filter-chip');
+    chips.forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-chip') === currentFilterChip);
+    });
 
     // Sincroniza o estado do checkbox do topo (Marcar/Desmarcar Todos)
     if (selectAllCheckbox) {
@@ -591,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           return `
-            <div class="product-mobile-card ${unselectedClass}" data-id="${item.id}">
+            <div class="product-mobile-card ${selectedClass}" data-id="${item.id}">
               <div class="card-header-row">
                 <input 
                   type="checkbox" 
