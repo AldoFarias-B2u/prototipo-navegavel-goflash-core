@@ -258,6 +258,83 @@
   border-color: #d1b8f5;
 }
 
+/* Botão Excluir Todos da Toolbar */
+.btn-clear-all-products {
+  background-color: #ffffff;
+  color: #c62828;
+  border: 1.5px solid #ffcdd2;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-clear-all-products:hover {
+  background-color: #ffebee;
+  border-color: #ef5350;
+  color: #b71c1c;
+  transform: translateY(-1px);
+}
+
+.btn-clear-all-products:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: #e0e0e0;
+  color: #9e9e9e;
+}
+
+/* Botão Excluir Todos no Cabeçalho da Tabela */
+.btn-th-clear-all {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c62828;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.btn-th-clear-all:hover {
+  background-color: #ffebee;
+}
+
+.btn-th-clear-all .material-icons {
+  font-size: 20px;
+}
+
+.btn-th-clear-all:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Ícone do Diálogo de Confirmação */
+.confirm-danger-icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ffebee;
+  color: #c62828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.15rem;
+}
+
+.confirm-danger-icon-box .material-icons {
+  font-size: 32px;
+}
+
 /* Alternador de Visualização (Tabela / Cards) */
 .view-mode-toggle-group {
   display: flex;

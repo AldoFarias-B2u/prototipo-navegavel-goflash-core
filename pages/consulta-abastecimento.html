@@ -167,6 +167,11 @@
             <span class="btn-text-unselected">Ocultar Desmarcados</span>
           </button>
 
+          <button type="button" class="btn-clear-all-products" id="btnClearAllProducts" title="Excluir todos os produtos da lista">
+            <span class="material-icons" style="font-size: 18px;">delete_sweep</span>
+            <span class="btn-text-clear-all">Excluir Todos</span>
+          </button>
+
           <button type="button" class="btn-add-extra-products" id="btnAddExtraProducts" title="Adicionar produtos fora do plano">
             <span class="material-icons" style="font-size: 18px;">add_circle</span>
             <span class="btn-text-add">Adicionar Produtos</span>
@@ -238,7 +243,11 @@
               <th id="thEstoqueOrigem" style="width: 105px; text-align: center;">Estoque CD</th>
               <th class="col-plan-param" style="width: 100px; text-align: center;">Sugestão</th>
               <th style="width: 150px; text-align: center;">A Repor</th>
-              <th style="width: 60px; text-align: center;">Ação</th>
+              <th style="width: 60px; text-align: center;">
+                <button type="button" class="btn-th-clear-all" id="btnThClearAll" title="Excluir todos os produtos da lista" aria-label="Excluir todos os produtos">
+                  <span class="material-icons">delete_sweep</span>
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody id="consultaTableBody">
@@ -514,6 +523,40 @@
           <button type="button" class="btn-modal-discard" id="btnDiscardAddExtra">CANCELAR</button>
           <button type="button" class="btn-modal-finalize" id="btnConfirmAddExtra" style="background-color: var(--primary-color);">INCLUIR PRODUTOS</button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: CONFIRMAÇÃO DE EXCLUSÃO TOTAL DE PRODUTOS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmClearAll" role="dialog" aria-modal="true">
+    <div class="official-modal-box modal-confirm-box" style="max-width: 440px; width: 95%;">
+      
+      <div class="official-modal-header" style="background-color: #c62828;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">delete_sweep</span>
+          <h2 class="official-modal-title">EXCLUIR TODOS OS PRODUTOS</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseConfirmClearModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.75rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <div class="confirm-danger-icon-box">
+          <span class="material-icons">warning_amber</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #212529; margin: 0 0 0.5rem 0;">
+          Limpar toda a lista de reposição?
+        </h3>
+        <p style="font-size: 0.88rem; color: #616161; line-height: 1.5; margin: 0;">
+          Tem certeza que deseja remover todos os <strong id="clearAllItemsCount">0</strong> produtos da sua consulta? Esta ação não poderá ser desfeita.
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnCancelClearAll">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnExecuteClearAll" style="background-color: #c62828;">SIM, EXCLUIR TODOS</button>
       </div>
 
     </div>

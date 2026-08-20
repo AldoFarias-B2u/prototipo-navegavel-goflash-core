@@ -163,8 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCancelQuery = document.getElementById('btnCancelQuery');
   const btnDraftQuery = document.getElementById('btnDraftQuery');
   const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+  const btnClearAllProducts = document.getElementById('btnClearAllProducts');
+  const btnThClearAll = document.getElementById('btnThClearAll');
 
   // Modais
+  const modalConfirmClearAll = document.getElementById('modalConfirmClearAll');
+  const btnCloseConfirmClearModal = document.getElementById('btnCloseConfirmClearModal');
+  const btnCancelClearAll = document.getElementById('btnCancelClearAll');
+  const btnExecuteClearAll = document.getElementById('btnExecuteClearAll');
+  const clearAllItemsCount = document.getElementById('clearAllItemsCount');
+
   const modalParams = document.getElementById('modalParamsConsulta');
   const btnEditParams = document.getElementById('btnEditContextParams');
   const btnCloseParams = document.getElementById('btnCloseParamsModal');
@@ -295,6 +303,14 @@ document.addEventListener('DOMContentLoaded', () => {
           selectAllCheckbox.indeterminate = false;
         }
       }
+    }
+
+    // Sincroniza o estado dos botões de exclusão total
+    if (btnClearAllProducts) {
+      btnClearAllProducts.disabled = (queryProducts.length === 0);
+    }
+    if (btnThClearAll) {
+      btnThClearAll.disabled = (queryProducts.length === 0);
     }
   }
 
@@ -722,6 +738,49 @@ document.addEventListener('DOMContentLoaded', () => {
         Toast.info(isChecked ? 'Todos os produtos visíveis foram marcados.' : 'Todos os produtos visíveis foram desmarcados.');
       }
 
+      renderAll();
+    });
+  }
+
+  // 11.1 Exclusão Total de Produtos da Consulta (Tabela e Cards)
+  function openConfirmClearAllModal() {
+    if (queryProducts.length === 0) {
+      if (typeof Toast !== 'undefined') Toast.info('A lista de produtos já está vazia.');
+      return;
+    }
+    if (clearAllItemsCount) {
+      clearAllItemsCount.textContent = queryProducts.length;
+    }
+    if (modalConfirmClearAll) {
+      modalConfirmClearAll.classList.add('show', 'active');
+    }
+  }
+
+  function closeConfirmClearAllModal() {
+    if (modalConfirmClearAll) {
+      modalConfirmClearAll.classList.remove('show', 'active');
+    }
+  }
+
+  if (btnClearAllProducts) btnClearAllProducts.addEventListener('click', openConfirmClearAllModal);
+  if (btnThClearAll) btnThClearAll.addEventListener('click', openConfirmClearAllModal);
+  if (btnCloseConfirmClearModal) btnCloseConfirmClearModal.addEventListener('click', closeConfirmClearAllModal);
+  if (btnCancelClearAll) btnCancelClearAll.addEventListener('click', closeConfirmClearAllModal);
+
+  if (modalConfirmClearAll) {
+    modalConfirmClearAll.addEventListener('click', (e) => {
+      if (e.target === modalConfirmClearAll) closeConfirmClearAllModal();
+    });
+  }
+
+  if (btnExecuteClearAll) {
+    btnExecuteClearAll.addEventListener('click', () => {
+      const count = queryProducts.length;
+      queryProducts = [];
+      closeConfirmClearAllModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Todos os ${count} produto(s) foram removidos da consulta.`);
+      }
       renderAll();
     });
   }
