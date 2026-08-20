@@ -168,6 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const summaryItemsCount = document.getElementById('summaryItemsCount');
   const summaryUnitsCount = document.getElementById('summaryUnitsCount');
   const toolbarChipsRow = document.getElementById('toolbarChipsRow');
+  const btnBatchEditQty = document.getElementById('btnBatchEditQty');
+  const btnBatchBadge = document.getElementById('btnBatchBadge');
   const btnGenerateOrder = document.getElementById('btnGenerateOrder');
   const btnCancelQuery = document.getElementById('btnCancelQuery');
   const btnDraftQuery = document.getElementById('btnDraftQuery');
@@ -176,6 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnThClearAll = document.getElementById('btnThClearAll');
 
   // Modais
+  const modalBatchEditQty = document.getElementById('modalBatchEditQty');
+  const btnCloseBatchModal = document.getElementById('btnCloseBatchModal');
+  const btnCancelBatchModal = document.getElementById('btnCancelBatchModal');
+  const btnApplyBatchQty = document.getElementById('btnApplyBatchQty');
+  const batchModalItemCount = document.getElementById('batchModalItemCount');
+  const batchQtyInput = document.getElementById('batchQtyInput');
+  const btnBatchQtyMinus = document.getElementById('btnBatchQtyMinus');
+  const btnBatchQtyPlus = document.getElementById('btnBatchQtyPlus');
+  const batchPlanRestoreWrapper = document.getElementById('batchPlanRestoreWrapper');
+  const btnBatchRestoreSugestao = document.getElementById('btnBatchRestoreSugestao');
+
   const modalConfirmClearAll = document.getElementById('modalConfirmClearAll');
   const btnCloseConfirmClearModal = document.getElementById('btnCloseConfirmClearModal');
   const btnCancelClearAll = document.getElementById('btnCancelClearAll');
@@ -346,6 +359,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (btnThClearAll) {
       btnThClearAll.disabled = (queryProducts.length === 0);
+    }
+
+    // Sincroniza o estado do botão de edição em lote
+    const totalSelected = queryProducts.filter(p => p.selecionado).length;
+    if (btnBatchEditQty) {
+      btnBatchEditQty.disabled = (totalSelected === 0);
+    }
+    if (btnBatchBadge) {
+      btnBatchBadge.textContent = totalSelected;
+      btnBatchBadge.style.display = (totalSelected > 0) ? 'inline-block' : 'none';
     }
 
     // Controla a visibilidade da barra de chips (Oculta se lista vazia)
@@ -855,6 +878,129 @@ document.addEventListener('DOMContentLoaded', () => {
       closeConfirmClearAllModal();
       if (typeof Toast !== 'undefined') {
         Toast.success(`Todos os ${count} produto(s) foram removidos da consulta.`);
+      }
+      renderAll();
+    });
+  }
+
+  // 11.5 Modal de Edição de Quantidade a Repor em Lote
+  function openBatchEditModal() {
+    const selectedCount = queryProducts.filter(p => p.selecionado).length;
+    if (selectedCount === 0) {
+      if (typeof Toast !== 'undefined') {
+        Toast.warning('Selecione ao menos 1 produto para editar a quantidade em lote.');
+      }
+      return;
+    }
+
+    if (batchModalItemCount) {
+      batchModalItemCount.textContent = selectedCount;
+    }
+
+    if (batchQtyInput) {
+      batchQtyInput.value = 1;
+    }
+
+    if (batchPlanRestoreWrapper) {
+      batchPlanRestoreWrapper.style.display = hasPlan ? 'block' : 'none';
+    }
+
+    if (modalBatchEditQty) {
+      modalBatchEditQty.classList.add('show', 'active');
+      setTimeout(() => {
+        if (batchQtyInput) {
+          batchQtyInput.focus();
+          batchQtyInput.select();
+        }
+      }, 100);
+    }
+  }
+
+  function closeBatchEditModal() {
+    if (modalBatchEditQty) {
+      modalBatchEditQty.classList.remove('show', 'active');
+    }
+  }
+
+  if (btnBatchEditQty) btnBatchEditQty.addEventListener('click', openBatchEditModal);
+  if (btnCloseBatchModal) btnCloseBatchModal.addEventListener('click', closeBatchEditModal);
+  if (btnCancelBatchModal) btnCancelBatchModal.addEventListener('click', closeBatchEditModal);
+
+  if (modalBatchEditQty) {
+    modalBatchEditQty.addEventListener('click', (e) => {
+      if (e.target === modalBatchEditQty) closeBatchEditModal();
+    });
+  }
+
+  if (btnBatchQtyMinus) {
+    btnBatchQtyMinus.addEventListener('click', () => {
+      if (batchQtyInput) {
+        const val = Math.max(0, (parseInt(batchQtyInput.value) || 0) - 1);
+        batchQtyInput.value = val;
+      }
+    });
+  }
+
+  if (btnBatchQtyPlus) {
+    btnBatchQtyPlus.addEventListener('click', () => {
+      if (batchQtyInput) {
+        const val = Math.min(999, (parseInt(batchQtyInput.value) || 0) + 1);
+        batchQtyInput.value = val;
+      }
+    });
+  }
+
+  // Chips Rápidos de Quantidade no Modal
+  const quickQtyChips = document.querySelectorAll('.btn-quick-qty-chip');
+  quickQtyChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const qty = parseInt(chip.getAttribute('data-qty')) || 1;
+      if (batchQtyInput) {
+        batchQtyInput.value = qty;
+      }
+    });
+  });
+
+  // Restaurar Quantidade Sugerida pelo Plano para os Itens Selecionados
+  if (btnBatchRestoreSugestao) {
+    btnBatchRestoreSugestao.addEventListener('click', () => {
+      const selected = queryProducts.filter(p => p.selecionado);
+      if (selected.length === 0) return;
+
+      selected.forEach(p => {
+        const reporQty = p.sugestao > 0 ? p.sugestao : Math.max(1, (p.estoqueIdeal || 10) - p.estoqueLoja);
+        p.aRepor = reporQty;
+      });
+
+      closeBatchEditModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Sugestão do plano restaurada para ${selected.length} produto(s) com sucesso!`);
+      }
+      renderAll();
+    });
+  }
+
+  // Confirmar Aplicação da Quantidade em Lote
+  if (btnApplyBatchQty) {
+    btnApplyBatchQty.addEventListener('click', () => {
+      const selected = queryProducts.filter(p => p.selecionado);
+      if (selected.length === 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Nenhum produto selecionado.');
+        }
+        closeBatchEditModal();
+        return;
+      }
+
+      const newQty = Math.max(0, parseInt(batchQtyInput ? batchQtyInput.value : 0) || 0);
+
+      selected.forEach(p => {
+        p.aRepor = newQty;
+      });
+
+      closeBatchEditModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Quantidade de ${newQty} un aplicada a ${selected.length} produto(s) selecionado(s)!`);
       }
       renderAll();
     });

@@ -167,6 +167,12 @@
             <span class="btn-text-unselected">Ocultar Desmarcados</span>
           </button>
 
+          <button type="button" class="btn-batch-edit-qty" id="btnBatchEditQty" title="Definir quantidade a repor para produtos selecionados" disabled>
+            <span class="material-icons" style="font-size: 18px;">edit_note</span>
+            <span class="btn-text-batch">Definir Qtde em Lote</span>
+            <span class="batch-badge" id="btnBatchBadge" style="display: none;">0</span>
+          </button>
+
           <button type="button" class="btn-clear-all-products" id="btnClearAllProducts" title="Excluir todos os produtos da lista">
             <span class="material-icons" style="font-size: 18px;">delete_sweep</span>
             <span class="btn-text-clear-all">Excluir Todos</span>
@@ -575,6 +581,86 @@
       <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
         <button type="button" class="btn-modal-discard" id="btnCancelClearAll">CANCELAR</button>
         <button type="button" class="btn-modal-finalize" id="btnExecuteClearAll" style="background-color: #c62828;">SIM, EXCLUIR TODOS</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 4: EDIÇÃO DE QUANTIDADE A REPOR EM LOTE
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalBatchEditQty" role="dialog" aria-modal="true">
+    <div class="official-modal-box modal-batch-box">
+      
+      <div class="official-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">edit_note</span>
+          <h2 class="official-modal-title">DEFINIR QUANTIDADE EM LOTE</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseBatchModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body modal-batch-body">
+        
+        <!-- Banner de Contexto de Itens Marcados -->
+        <div class="batch-info-banner">
+          <span class="material-icons banner-icon">playlist_add_check</span>
+          <div class="banner-text">
+            A quantidade informada será aplicada simultaneamente a <strong id="batchModalItemCount">0</strong> produto(s) selecionado(s).
+          </div>
+        </div>
+
+        <!-- Seção de Quantidade a Repor -->
+        <div class="batch-qty-control-group">
+          <label class="modal-field-label" for="batchQtyInput">
+            <span class="material-icons field-label-icon">pin</span>
+            Quantidade a Repor:
+          </label>
+          
+          <div class="batch-stepper-big-wrapper">
+            <button type="button" class="batch-stepper-big-btn" id="btnBatchQtyMinus" aria-label="Diminuir quantidade">−</button>
+            <input 
+              type="number" 
+              id="batchQtyInput" 
+              class="batch-qty-big-input" 
+              value="1" 
+              min="0" 
+              max="999"
+              autocomplete="off"
+            >
+            <button type="button" class="batch-stepper-big-btn" id="btnBatchQtyPlus" aria-label="Aumentar quantidade">+</button>
+          </div>
+
+          <!-- Atalhos Rápidos de Quantidade -->
+          <div class="batch-quick-chips-wrapper">
+            <span class="quick-chips-label">Atalhos rápidos:</span>
+            <div class="batch-quick-chips">
+              <button type="button" class="btn-quick-qty-chip" data-qty="1">1 un</button>
+              <button type="button" class="btn-quick-qty-chip" data-qty="2">2 un</button>
+              <button type="button" class="btn-quick-qty-chip" data-qty="3">3 un</button>
+              <button type="button" class="btn-quick-qty-chip" data-qty="5">5 un</button>
+              <button type="button" class="btn-quick-qty-chip" data-qty="10">10 un</button>
+              <button type="button" class="btn-quick-qty-chip" data-qty="20">20 un</button>
+            </div>
+          </div>
+
+          <!-- Opção Condicional para Restaurar Sugestão do Plano -->
+          <div class="batch-plan-restore-option" id="batchPlanRestoreWrapper" style="display: none;">
+            <button type="button" class="btn-batch-restore-sugestao" id="btnBatchRestoreSugestao">
+              <span class="material-icons">auto_fix_high</span>
+              Restaurar quantidade sugerida pelo Plano de Abastecimento
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelBatchModal">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyBatchQty">
+          <span class="material-icons" style="font-size: 18px; margin-right: 4px;">check</span>
+          APLICAR AOS PRODUTOS
+        </button>
       </div>
 
     </div>

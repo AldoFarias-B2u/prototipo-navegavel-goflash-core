@@ -258,6 +258,48 @@
   border-color: #d1b8f5;
 }
 
+/* Botão Definir Qtde em Lote da Toolbar */
+.btn-batch-edit-qty {
+  background-color: #ffffff;
+  color: #4a148c;
+  border: 1.5px solid #d1b8f5;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-batch-edit-qty:hover {
+  background-color: #f3e5f5;
+  border-color: #ab47bc;
+  color: #6530b5;
+  transform: translateY(-1px);
+}
+
+.btn-batch-edit-qty:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: #e0e0e0;
+  color: #9e9e9e;
+}
+
+.btn-batch-edit-qty .batch-badge {
+  background-color: #6530b5;
+  color: #ffffff;
+  font-size: 0.72rem;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
 /* Botão Excluir Todos da Toolbar */
 .btn-clear-all-products {
   background-color: #ffffff;
@@ -1064,6 +1106,177 @@
   font-size: 0.95rem;
 }
 
+/* ==========================================================================
+   MODAL DE EDIÇÃO DE QUANTIDADE A REPOR EM LOTE
+   ========================================================================== */
+.modal-batch-box {
+  max-width: 480px !important;
+  width: 95% !important;
+}
+
+.modal-batch-body {
+  padding: 1.25rem 1.5rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.batch-info-banner {
+  background-color: #f3e8ff;
+  border: 1px solid #d8b4fe;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #581c87;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.batch-info-banner .banner-icon {
+  font-size: 24px;
+  color: #7e22ce;
+  flex-shrink: 0;
+}
+
+.batch-info-banner strong {
+  color: #6530b5;
+  font-weight: 700;
+}
+
+.batch-qty-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.batch-stepper-big-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 2px solid #dcdfe4;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 8px;
+  transition: border-color var(--transition-fast);
+}
+
+.batch-stepper-big-wrapper:focus-within {
+  border-color: var(--primary-color, #6530b5);
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.batch-stepper-big-btn {
+  background-color: #f1f3f6;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.batch-stepper-big-btn:hover {
+  background-color: #ede3fa;
+  color: #6530b5;
+}
+
+.batch-stepper-big-btn:active {
+  transform: scale(0.95);
+}
+
+.batch-qty-big-input {
+  flex: 1;
+  max-width: 140px;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.batch-qty-big-input::-webkit-outer-spin-button,
+.batch-qty-big-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.batch-quick-chips-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quick-chips-label {
+  font-size: 0.78rem;
+  color: #757575;
+  font-weight: 500;
+}
+
+.batch-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-quick-qty-chip {
+  background-color: #f1f3f6;
+  border: 1px solid #dcdfe4;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #424242;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-quick-qty-chip:hover {
+  background-color: #ede3fa;
+  border-color: #ab47bc;
+  color: #6530b5;
+  transform: translateY(-1px);
+}
+
+.batch-plan-restore-option {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed #e0e0e0;
+}
+
+.btn-batch-restore-sugestao {
+  width: 100%;
+  background-color: #f3e5f5;
+  border: 1px solid #ce93d8;
+  color: #6a1b9a;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.btn-batch-restore-sugestao:hover {
+  background-color: #e1bee7;
+  color: #4a148c;
+}
+
 /* Badges de Quantidade de Estoque */
 .stock-pill {
   display: inline-flex;
@@ -1692,6 +1905,16 @@
     flex: 0 0 auto;
     height: 38px;
     padding: 0 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .btn-batch-edit-qty,
+  .btn-clear-all-products {
+    flex: 0 0 auto;
+    height: 38px;
+    padding: 0 8px;
     font-size: 0.78rem;
     gap: 4px;
     white-space: nowrap;
