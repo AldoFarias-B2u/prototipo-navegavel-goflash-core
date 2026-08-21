@@ -1165,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hintDestinoModal = document.getElementById('hintDestinoModal');
   const hintPlanoModal = document.getElementById('hintPlanoModal');
   const containerFiltrosPlanoModal = document.getElementById('containerFiltrosPlanoModal');
-  const hintNoPlanoModal = document.getElementById('hintNoPlanoModal');
+  const hintPlanoParamsHelper = document.getElementById('hintPlanoParamsHelper');
 
   function updateModalParamsSelectHints() {
     if (selectOrigemModal && hintOrigemModal) {
@@ -1183,14 +1183,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (containerFiltrosPlanoModal) {
         if (isPlano) {
+          containerFiltrosPlanoModal.style.display = 'block';
           containerFiltrosPlanoModal.classList.remove('hidden');
         } else {
+          containerFiltrosPlanoModal.style.display = 'none';
           containerFiltrosPlanoModal.classList.add('hidden');
         }
       }
 
-      if (hintNoPlanoModal) {
-        hintNoPlanoModal.style.display = isPlano ? 'none' : 'flex';
+      if (hintPlanoParamsHelper) {
+        hintPlanoParamsHelper.style.display = isPlano ? 'none' : 'flex';
       }
     }
   }

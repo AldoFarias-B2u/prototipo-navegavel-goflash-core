@@ -231,15 +231,12 @@
 
       <div class="official-modal-body">
         
-        <!-- Caixa de Aviso Informativo Oficial -->
-        <div class="modal-notice-box">
-          <span class="material-icons notice-icon">info</span>
-          <div class="notice-content">
-            <strong class="notice-title">Consulta de Abastecimento</strong>
-            <p class="notice-text">
-              Consulte o estoque das filiais e aplique os filtros para visualizar as necessidades de reposição. A partir do resultado desta consulta, você poderá conferir as quantidades sugeridas e gerar o seu <strong>Pedido de Abastecimento</strong>.
-            </p>
-          </div>
+        <!-- Slim Notice Informativo Oficial -->
+        <div class="modal-slim-notice">
+          <span class="material-icons slim-notice-icon">info</span>
+          <span class="slim-notice-text">
+            Consulte as necessidades de reposição das filiais e gere diretamente o seu <strong>Pedido de Abastecimento</strong>.
+          </span>
         </div>
 
         <!-- Select Filial do Estoque Origem (Opcional) -->
@@ -257,7 +254,7 @@
         </div>
 
         <!-- Select Filial para Repor -->
-        <div class="modal-underline-group" style="margin-top: 8px;">
+        <div class="modal-underline-group" style="margin-top: 14px;">
           <label class="modal-underline-label" for="selectModalDestino">Selecione a Filial para Repor *</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">storefront</span>
@@ -272,19 +269,8 @@
           </div>
         </div>
 
-        <!-- Card Explicativo sobre o Plano de Abastecimento -->
-        <div class="plan-instruction-card">
-          <div class="plan-instruction-header">
-            <span class="material-icons plan-instruction-icon">lightbulb</span>
-            <strong class="plan-instruction-title">Como funciona o Plano de Abastecimento?</strong>
-          </div>
-          <p class="plan-instruction-text">
-            Ao selecionar um plano cadastrado, o sistema calcula e sugere automaticamente as quantidades ideais de reposição para cada produto com base no estoque atual da loja. Se não selecionar nenhum plano, a consulta será aberta para inclusão manual ou via leitor de código de barras.
-          </p>
-        </div>
-
         <!-- Select Plano de Abastecimento (Opcional) -->
-        <div class="modal-underline-group" style="margin-top: 8px;">
+        <div class="modal-underline-group" style="margin-top: 14px;">
           <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento (Opcional)</label>
           <div class="modal-underline-wrapper">
             <span class="material-icons modal-underline-icon">description</span>
@@ -295,16 +281,15 @@
             </select>
             <span class="modal-underline-hint-right" id="hintModalPlano">Opcional</span>
           </div>
-        </div>
-
-        <!-- Dica quando nenhum plano estiver selecionado -->
-        <div id="hintNoPlanoSelected" class="no-plan-hint-box" style="display: none;">
-          <span class="material-icons">qr_code_scanner</span>
-          <span><strong>Sem plano selecionado</strong>: você poderá pesquisar, escanear pelo leitor de código de barras ou adicionar manualmente os produtos para consulta conforme a necessidade.</span>
+          <!-- Helper Text Sutil do Plano -->
+          <div class="modal-field-hint" id="hintPlanoHelper">
+            <span class="material-icons hint-icon">lightbulb</span>
+            <span>Selecione um plano para receber sugestões automáticas de reposição ou deixe vazio para consulta livre.</span>
+          </div>
         </div>
 
         <!-- Filtro do Plano de Abastecimento (Radio Cards - Condicional) -->
-        <div id="containerFiltrosPlano" class="plan-filter-container" style="margin-top: 14px;">
+        <div id="containerFiltrosPlano" class="plan-filter-container" style="margin-top: 12px; display: none;">
           <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Filtro do Plano de Abastecimento</label>
           <div class="modal-radio-cards-group">
             
@@ -364,15 +349,12 @@
 
       <div class="official-modal-body">
         
-        <!-- Caixa de Aviso Informativo Oficial -->
-        <div class="modal-notice-box">
-          <span class="material-icons notice-icon">post_add</span>
-          <div class="notice-content">
-            <strong class="notice-title">Pedido Manual sem Sugestão</strong>
-            <p class="notice-text">
-              Monte o pedido de reposição adicionando produtos e quantidades manualmente. Selecione a <strong>filial de destino</strong> e, opcionalmente, a <strong>filial de origem</strong> caso haja transferência de estoque.
-            </p>
-          </div>
+        <!-- Slim Notice Informativo Oficial -->
+        <div class="modal-slim-notice">
+          <span class="material-icons slim-notice-icon">post_add</span>
+          <span class="slim-notice-text">
+            Monte o pedido de reposição adicionando produtos e quantidades manualmente.
+          </span>
         </div>
 
         <!-- Select Filial para Repor (Destino - Obrigatório) -->

@@ -422,49 +422,52 @@ td.col-num-indicator {
   line-height: 1.45;
 }
 
-/* Card Instrucional do Plano de Abastecimento */
-.plan-instruction-card {
+/* Slim Notice Informativo Compacto */
+.modal-slim-notice {
   background-color: #f7f4fc;
   border: 1px solid #e8ddf8;
-  border-left: 4px solid var(--primary-color, #6530b5);
+  border-left: 3.5px solid var(--primary-color, #6530b5);
   border-radius: 6px;
-  padding: 10px 14px;
-  margin-top: 14px;
-  margin-bottom: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.plan-instruction-header {
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 12px;
 }
 
-.plan-instruction-icon {
+.modal-slim-notice .slim-notice-icon {
   font-size: 18px;
   color: var(--primary-color, #6530b5);
+  flex-shrink: 0;
 }
 
-.plan-instruction-title {
-  font-size: 0.84rem;
+.modal-slim-notice .slim-notice-text {
+  font-size: 0.81rem;
+  color: #4b5563;
+  line-height: 1.35;
+}
+
+.modal-slim-notice .slim-notice-text strong {
+  color: #1f2937;
   font-weight: 600;
-  color: #212529;
 }
 
-.plan-instruction-text {
-  font-size: 0.78rem;
-  color: #555e6c;
-  line-height: 1.45;
-  margin: 0;
-  padding-left: 26px;
+/* Helper Text Sutil Abaixo dos Campos */
+.modal-field-hint {
+  font-size: 0.77rem;
+  color: #6b7280;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  line-height: 1.35;
 }
 
-@media (max-width: 480px) {
-  .plan-instruction-text {
-    padding-left: 0;
-  }
+.modal-field-hint .hint-icon {
+  font-size: 15px;
+  color: var(--primary-color, #6530b5);
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 /* Rodapé do Modal */
