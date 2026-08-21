@@ -11,7 +11,7 @@ const FeatureFlags = (function () {
     // 1. Inteligência Artificial
     ai_chat_fullscreen: true,       // Página de Chat com IA em Tela Cheia (chat-ia.html)
     ai_chat_fab: true,              // Botão Flutuante (FAB IA) nas Telas
-    ai_chat_topbar: true,           // Botão de Atalho GoFlash IA no Topbar / Popover
+    ai_chat_topbar: true,           // Botão de Atalho Maestro IA no Topbar / Popover
 
     // 2. Operação & Abastecimento
     operacao_pedidos: true,         // Listagem e Detalhes de Pedidos de Abastecimento
