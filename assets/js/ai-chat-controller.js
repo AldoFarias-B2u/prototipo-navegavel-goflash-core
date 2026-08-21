@@ -1,5 +1,5 @@
 /**
- * GOFLASH CORE - CONTROLADOR DO CHAT COM IA (GOFLASH AI)
+ * GOFLASH CORE - CONTROLADOR DO CHAT COM IA (MAESTRO IA)
  * Gerencia a abertura em todos os pontos de acesso, ciclo de mensagens,
  * animações de digitação, sugestões interativas e histórico da sessão.
  */
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   } catch (err) {
-    console.warn('GoFlash AI: Não foi possível obter a sessão do usuário.', err);
+    console.warn('Maestro IA: Não foi possível obter a sessão do usuário.', err);
   }
 
   /**
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="ai-msg-bubble">
         ${data.reply}
         ${actionsHtml}
-        <div class="ai-msg-time">${getFormattedTime()} &bull; GoFlash AI</div>
+        <div class="ai-msg-time">${getFormattedTime()} &bull; Maestro IA</div>
       </div>
     `;
 
@@ -198,10 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
     showTypingIndicator();
 
     // 3. Obtém resposta da base de conhecimento
-    const answer = (window.GoFlashAIKnowledge && typeof window.GoFlashAIKnowledge.findAnswer === 'function')
-      ? window.GoFlashAIKnowledge.findAnswer(cleanText)
+    const knowledgeSource = window.MaestroIAKnowledge || window.GoFlashAIKnowledge;
+    const answer = (knowledgeSource && typeof knowledgeSource.findAnswer === 'function')
+      ? knowledgeSource.findAnswer(cleanText)
       : { 
-          title: 'Assistente GoFlash AI',
+          title: 'Assistente Maestro IA',
           reply: `<p>Recebi sua pergunta: <em>"${escapeHtml(cleanText)}"</em>. Como posso ajudar você no GoMarket?</p>`,
           actions: []
         };

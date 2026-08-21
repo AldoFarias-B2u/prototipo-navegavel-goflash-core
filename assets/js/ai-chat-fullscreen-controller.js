@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="ai-msg-bubble">
         ${data.reply}
         ${actionsHtml}
-        <div class="ai-msg-time">${getFormattedTime()} &bull; GoFlash AI Copilot</div>
+        <div class="ai-msg-time">${getFormattedTime()} &bull; Maestro IA</div>
       </div>
     `;
 
@@ -182,10 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
     showTypingIndicator();
 
     // 3. Obtém resposta da base de conhecimento
-    const answer = (window.GoFlashAIKnowledge && typeof window.GoFlashAIKnowledge.findAnswer === 'function')
-      ? window.GoFlashAIKnowledge.findAnswer(cleanText)
+    const knowledgeSource = window.MaestroIAKnowledge || window.GoFlashAIKnowledge;
+    const answer = (knowledgeSource && typeof knowledgeSource.findAnswer === 'function')
+      ? knowledgeSource.findAnswer(cleanText)
       : { 
-          title: 'GoFlash AI',
+          title: 'Maestro IA',
           reply: `<p>Recebi sua pergunta: <em>"${escapeHtml(cleanText)}"</em>. Como posso acelerar suas operações?</p>`,
           actions: []
         };

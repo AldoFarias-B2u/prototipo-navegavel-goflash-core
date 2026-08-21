@@ -61,10 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </a>
 
         ${isAiActive ? `
-        <a href="${chatIaUrl}" class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Assistente GoFlash IA">
+        <a href="${chatIaUrl}" class="app-shortcut-item app-shortcut-item-ai" id="appsPopoverAiShortcut" title="Assistente Maestro IA">
           <span class="ai-new-badge">NOVO</span>
           <span class="material-icons app-shortcut-icon">auto_awesome</span>
-          <span class="app-shortcut-label">GOFLASH IA</span>
+          <span class="app-shortcut-label">MAESTRO IA</span>
         </a>
         ` : `
         <a href="#" class="app-shortcut-item" title="Sobre o Sistema">

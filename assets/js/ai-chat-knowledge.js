@@ -1,9 +1,9 @@
 /**
- * GOFLASH CORE - BASE DE CONHECIMENTO & MOTOR CONVERSACIONAL (GOFLASH AI)
+ * GOFLASH CORE - BASE DE CONHECIMENTO & MOTOR CONVERSACIONAL (MAESTRO IA)
  * Respostas simuladas, sugestões dinâmicas de perguntas e mapeamento de intenções.
  */
 
-window.GoFlashAIKnowledge = {
+const MaestroIAKnowledge = {
   // Sugestões Iniciais do Chat
   initialSuggestions: [
     {
@@ -154,7 +154,7 @@ window.GoFlashAIKnowledge = {
 
     // Resposta padrão caso não haja correspondência exata
     return {
-      title: 'Assistente GoFlash AI',
+      title: 'Assistente Maestro IA',
       reply: `
         <p>Entendi sua dúvida sobre <em>"${query}"</em>!</p>
         <p>Como assistente inteligente do <strong>GoMarket / Goflash CORE</strong>, posso ajudar você a:</p>
@@ -173,3 +173,7 @@ window.GoFlashAIKnowledge = {
     };
   }
 };
+
+// Exportação Global com compatibilidade reversa
+window.MaestroIAKnowledge = MaestroIAKnowledge;
+window.GoFlashAIKnowledge = MaestroIAKnowledge;

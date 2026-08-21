@@ -28,7 +28,7 @@ Protótipo Navegavel Core/
 │   │   ├── module-view.css   # Template CSS unificado para todas as páginas de módulos
 │   │   ├── abastecimento.css # Estilos de planos e pedidos de abastecimento
 │   │   ├── consulta-abastecimento.css # Layout da tela de consulta, steppers táteis e sticky footer
-│   │   └── ai-chat.css       # Design System do Chat com IA (GoFlash AI) e FAB
+│   │   └── ai-chat.css       # Design System do Chat com IA (Maestro IA) e FAB
 │   ├── js/
 │   │   ├── auth.js           # Gerenciador de autenticação, sessão e navegação protegida
 │   │   ├── toast.js          # Sistema leve de notificações com auto-dismiss
@@ -52,7 +52,7 @@ Protótipo Navegavel Core/
 │   └── design-system.md      # Especificação viva do Design System
 ├── pages/
 │   ├── dashboard.html        # Página principal (Home Page)
-│   ├── chat-ia.html          # Página Exclusiva do Assistente GoFlash IA (Full-Screen)
+│   ├── chat-ia.html          # Página Exclusiva do Assistente Maestro IA (Full-Screen)
 │   ├── operacao.html         # Página do Módulo de Operação
 │   ├── planos-abastecimento.html # Tela de Planos de Abastecimento
 │   ├── pedidos-abastecimento.html # Tela Oficial de Pedidos de Abastecimento

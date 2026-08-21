@@ -2,6 +2,21 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.0] - 2026-08-21
+### ✨ Identidade Visual & IA (Maestro IA)
+- **Evolução da Marca da Inteligência Artificial para "Maestro IA"**:
+  - **Identidade Unificada**: Renomeação global de *GoFlash AI / GoFlash IA* para **Maestro IA** em todos os pontos de contato da plataforma.
+  - **Página de Chat Dedicada ([`pages/chat-ia.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/chat-ia.html))**: Atualização do título, Topbar (`MAESTRO IA • COPILOTO INTELIGENTE`), card de versão lateral (`Maestro IA v1.0`), tooltip do Drawer e legenda de rodapé: *"Maestro IA • Inteligência Artificial integrada a plataforma da B2U Sistemas."*.
+  - **Widgets e Menus do Sistema ([`pages/dashboard.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/dashboard.html), [`pages/operacao.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/operacao.html), [`pages/parametrizacoes.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/parametrizacoes.html))**:
+    - Botão de acesso rápido na Topbar com rótulo `Maestro IA`.
+    - Popover de 9 pontos com atalho dinâmico `MAESTRO IA`.
+    - Header do widget flutuante, mensagem inicial de apresentação e rodapé oficial.
+  - **Motor e Base de Conhecimento ([`assets/js/ai-chat-knowledge.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-knowledge.js), [`assets/js/ai-chat-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-controller.js), [`assets/js/ai-chat-fullscreen-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/ai-chat-fullscreen-controller.js))**:
+    - Exportação global `window.MaestroIAKnowledge` com alias retrocompatível `window.GoFlashAIKnowledge`.
+    - Assinatura nos balões de resposta formatada como `Agora • Maestro IA`.
+
+---
+
 ## [1.8.0] - 2026-08-20
 ### ✨ Adicionado & Otimizado
 - **Otimização e Despoluição Visual do Cabeçalho da Consulta de Abastecimento** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
