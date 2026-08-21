@@ -428,28 +428,49 @@ td.col-num-indicator {
   border: 1px solid #e8ddf8;
   border-left: 3.5px solid var(--primary-color, #6530b5);
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
   margin-bottom: 12px;
 }
 
+.slim-notice-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .modal-slim-notice .slim-notice-icon {
-  font-size: 18px;
+  font-size: 19px;
   color: var(--primary-color, #6530b5);
   flex-shrink: 0;
 }
 
+.slim-notice-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: 0.2px;
+}
+
 .modal-slim-notice .slim-notice-text {
-  font-size: 0.81rem;
+  font-size: 0.78rem;
   color: #4b5563;
-  line-height: 1.35;
+  line-height: 1.4;
+  margin: 0;
+  padding-left: 25px;
 }
 
 .modal-slim-notice .slim-notice-text strong {
-  color: #1f2937;
+  color: #111827;
   font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .modal-slim-notice .slim-notice-text {
+    padding-left: 0;
+  }
 }
 
 /* Helper Text Sutil Abaixo dos Campos */
