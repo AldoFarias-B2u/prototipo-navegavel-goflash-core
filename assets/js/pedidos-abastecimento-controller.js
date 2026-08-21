@@ -119,11 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const modalNovaConsulta = document.getElementById('modalNovaConsulta');
   const btnCloseNovaConsulta = document.getElementById('btnCloseNovaConsultaModal');
+  const btnBackNovaConsulta = document.getElementById('btnBackNovaConsulta');
   const btnDiscardNovaConsulta = document.getElementById('btnDiscardNovaConsulta');
   const btnAvancarConsulta = document.getElementById('btnAvancarConsulta');
 
   const modalNovoPedidoBranco = document.getElementById('modalNovoPedidoBranco');
   const btnClosePedidoBranco = document.getElementById('btnClosePedidoBrancoModal');
+  const btnBackPedidoBranco = document.getElementById('btnBackPedidoBranco');
   const btnDiscardPedidoBranco = document.getElementById('btnDiscardPedidoBranco');
   const btnAvancarPedidoBranco = document.getElementById('btnAvancarPedidoBranco');
 
@@ -165,6 +167,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnChooseConsulta) btnChooseConsulta.addEventListener('click', openNovaConsultaModal);
   if (btnChooseBlank) btnChooseBlank.addEventListener('click', openPedidoBrancoModal);
 
+  // Ações de Retorno (Voltar para o Modal Anterior de Escolha)
+  if (btnBackNovaConsulta) {
+    btnBackNovaConsulta.addEventListener('click', () => {
+      closeNovaConsultaModal();
+      openChoiceModal();
+    });
+  }
+
+  if (btnBackPedidoBranco) {
+    btnBackPedidoBranco.addEventListener('click', () => {
+      closePedidoBrancoModal();
+      openChoiceModal();
+    });
+  }
+
   // Fechar ao clicar fora da caixa do modal (no backdrop)
   if (modalChoice) {
     modalChoice.addEventListener('click', (e) => {
@@ -184,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (btnCloseNovaConsulta) btnCloseNovaConsulta.addEventListener('click', closeNovaConsultaModal);
+  if (btnDiscardNovaConsulta) btnDiscardNovaConsulta.addEventListener('click', closeNovaConsultaModal);
   if (btnClosePedidoBranco) btnClosePedidoBranco.addEventListener('click', closePedidoBrancoModal);
   if (btnDiscardPedidoBranco) btnDiscardPedidoBranco.addEventListener('click', closePedidoBrancoModal);
 

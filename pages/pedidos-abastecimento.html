@@ -272,6 +272,17 @@
           </div>
         </div>
 
+        <!-- Card Explicativo sobre o Plano de Abastecimento -->
+        <div class="plan-instruction-card">
+          <div class="plan-instruction-header">
+            <span class="material-icons plan-instruction-icon">lightbulb</span>
+            <strong class="plan-instruction-title">Como funciona o Plano de Abastecimento?</strong>
+          </div>
+          <p class="plan-instruction-text">
+            Ao selecionar um plano cadastrado, o sistema calcula e sugere automaticamente as quantidades ideais de reposição para cada produto com base no estoque atual da loja. Se não selecionar nenhum plano, a consulta será aberta para inclusão manual ou via leitor de código de barras.
+          </p>
+        </div>
+
         <!-- Select Plano de Abastecimento (Opcional) -->
         <div class="modal-underline-group" style="margin-top: 8px;">
           <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento (Opcional)</label>
@@ -327,8 +338,14 @@
       </div>
 
       <div class="official-modal-footer">
-        <button type="button" class="btn-modal-discard" id="btnDiscardNovaConsulta">DESCARTAR</button>
-        <button type="button" class="btn-modal-finalize" id="btnAvancarConsulta" style="background-color: #4caf50;">CONSULTAR</button>
+        <button type="button" class="btn-modal-back" id="btnBackNovaConsulta">
+          <span class="material-icons">arrow_back</span>
+          <span>VOLTAR</span>
+        </button>
+        <div class="modal-footer-actions-right">
+          <button type="button" class="btn-modal-discard" id="btnDiscardNovaConsulta">DESCARTAR</button>
+          <button type="button" class="btn-modal-finalize" id="btnAvancarConsulta" style="background-color: #4caf50;">CONSULTAR</button>
+        </div>
       </div>
 
     </div>
@@ -392,8 +409,14 @@
       </div>
 
       <div class="official-modal-footer">
-        <button type="button" class="btn-modal-discard" id="btnDiscardPedidoBranco">CANCELAR</button>
-        <button type="button" class="btn-modal-finalize" id="btnAvancarPedidoBranco" style="background-color: var(--primary-color);">INICIAR PEDIDO</button>
+        <button type="button" class="btn-modal-back" id="btnBackPedidoBranco">
+          <span class="material-icons">arrow_back</span>
+          <span>VOLTAR</span>
+        </button>
+        <div class="modal-footer-actions-right">
+          <button type="button" class="btn-modal-discard" id="btnDiscardPedidoBranco">DESCARTAR</button>
+          <button type="button" class="btn-modal-finalize" id="btnAvancarPedidoBranco" style="background-color: var(--primary-color);">INICIAR PEDIDO</button>
+        </div>
       </div>
 
     </div>

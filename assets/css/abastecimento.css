@@ -422,6 +422,51 @@ td.col-num-indicator {
   line-height: 1.45;
 }
 
+/* Card Instrucional do Plano de Abastecimento */
+.plan-instruction-card {
+  background-color: #f7f4fc;
+  border: 1px solid #e8ddf8;
+  border-left: 4px solid var(--primary-color, #6530b5);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.plan-instruction-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-instruction-icon {
+  font-size: 18px;
+  color: var(--primary-color, #6530b5);
+}
+
+.plan-instruction-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.plan-instruction-text {
+  font-size: 0.78rem;
+  color: #555e6c;
+  line-height: 1.45;
+  margin: 0;
+  padding-left: 26px;
+}
+
+@media (max-width: 480px) {
+  .plan-instruction-text {
+    padding-left: 0;
+  }
+}
+
 /* Rodapé do Modal */
 .official-modal-footer {
   padding: 1.25rem 2rem;
@@ -430,6 +475,44 @@ td.col-num-indicator {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+}
+
+.btn-modal-back {
+  color: var(--primary-color, #6530b5);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-modal-back .material-icons {
+  font-size: 18px;
+  transition: transform var(--transition-fast);
+}
+
+.btn-modal-back:hover {
+  background-color: #f3ebfc;
+  color: #4a148c;
+}
+
+.btn-modal-back:hover .material-icons {
+  transform: translateX(-3px);
+}
+
+.modal-footer-actions-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .btn-modal-discard {
