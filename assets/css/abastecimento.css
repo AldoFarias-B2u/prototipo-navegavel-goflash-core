@@ -576,6 +576,63 @@ td.col-num-indicator {
   box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
 }
 
+/* Responsividade Mobile para Modais e Rodapés */
+@media (max-width: 600px) {
+  .official-modal-overlay {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .official-modal-box {
+    width: 96%;
+    max-height: 92vh;
+  }
+
+  .official-modal-header {
+    padding: 0.9rem 1rem;
+  }
+
+  .official-modal-title {
+    font-size: 1rem;
+  }
+
+  .official-modal-body {
+    padding: 1rem 1rem;
+  }
+
+  .official-modal-footer {
+    padding: 0.85rem 0.85rem;
+    gap: 6px;
+  }
+
+  .modal-footer-actions-right {
+    gap: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-modal-back {
+    padding: 7px 8px;
+    font-size: 0.76rem;
+    gap: 3px;
+  }
+
+  .btn-modal-back .material-icons {
+    font-size: 16px;
+  }
+
+  .btn-modal-discard {
+    padding: 7px 8px;
+    font-size: 0.76rem;
+  }
+
+  .btn-modal-finalize {
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
 /* --------------------------------------------------------------------------
    TELA 3: DETALHES DO PLANO E LISTAGEM DE PRODUTOS (IMG 3)
    -------------------------------------------------------------------------- */
