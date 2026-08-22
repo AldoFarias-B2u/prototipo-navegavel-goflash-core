@@ -2,7 +2,14 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
-## [1.9.0] - 2026-08-21
+## [1.9.7] - 2026-08-22
+### 🐛 Responsividade & Correção de Modais
+- **Resolução Definitiva da Barra de Rolagem e Responsividade em Modais de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - **Scroll Suave em Notebooks e Telas Menores**: Reestruturação do `.official-modal-body` com `flex: 1 1 auto; min-height: 0; overflow-y: auto;`, permitindo que o corpo do modal acione barra de rolagem roxa suave sempre que a altura útil da tela (ex: 1366x768 ou mobile) for inferior ao conteúdo do formulário.
+  - **Eliminação de Conflitos de CSS**: Remoção da folha `consulta-abastecimento.css` na tela de pedidos e inclusão nativa das classes `.modal-radio-*` e `.initial-choice-*` diretamente em `abastecimento.css`.
+  - **Expansão Dinâmica Reativa**: O formulário agora recalcula seu espaço e exibe instantaneamente os 3 critérios de plano de abastecimento (*Plano completo*, *Apenas saldo < ideal*, *Apenas saldo < crítico*) sem cortes e mantendo cabeçalho e rodapé fixos na tela.
+
+---
 ### ✨ Identidade Visual & IA (Maestro IA)
 - **Evolução da Marca da Inteligência Artificial para "Maestro IA"**:
   - **Identidade Unificada**: Renomeação global de *GoFlash AI / GoFlash IA* para **Maestro IA** em todos os pontos de contato da plataforma.
