@@ -253,9 +253,9 @@ td.col-num-indicator {
 
 .official-modal-body {
   padding: 1.35rem 1.75rem;
-  flex: 1 1 0px;
+  flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto !important;
+  overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -388,6 +388,58 @@ td.col-num-indicator {
 .modal-radio-desc {
   font-size: 0.76rem;
   color: #616161;
+  line-height: 1.35;
+}
+
+/* Modal de Escolha Inicial (Cards Selecionáveis) */
+.initial-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0.5rem 0 0.5rem 0;
+}
+
+.initial-choice-card {
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+}
+
+.initial-choice-card:hover {
+  border-color: #6530b5;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(101, 48, 181, 0.15);
+}
+
+.initial-choice-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #ece3f9;
+  color: #6530b5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.initial-choice-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.initial-choice-desc {
+  font-size: 0.8rem;
+  color: #666666;
   line-height: 1.35;
 }
 
@@ -797,6 +849,11 @@ td.col-num-indicator {
     font-size: 0.80rem;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+
+  .initial-choice-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
