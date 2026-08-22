@@ -1874,17 +1874,14 @@
 
 /* Transição para Filtros Condicionais do Plano */
 .plan-filter-container {
-  transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-  max-height: 400px;
+  transition: opacity 0.25s ease;
   opacity: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .plan-filter-container.hidden {
-  max-height: 0;
+  display: none !important;
   opacity: 0;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
   pointer-events: none;
 }
 
