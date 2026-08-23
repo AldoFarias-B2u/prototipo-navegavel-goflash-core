@@ -1467,11 +1467,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function closeParamsModal() {
-    if (modalParams) modalParams.classList.remove('show', 'active');
+  // 13.3 Modal de Confirmação de Alteração de Parâmetros (Alerta de Sobrescrita)
+  const modalConfirmChangeParams = document.getElementById('modalConfirmChangeParams');
+  const btnCloseConfirmChangeParams = document.getElementById('btnCloseConfirmChangeParams');
+  const btnCancelChangeParams = document.getElementById('btnCancelChangeParams');
+  const btnConfirmChangeParams = document.getElementById('btnConfirmChangeParams');
+
+  function openConfirmChangeParamsModal() {
+    if (modalConfirmChangeParams) modalConfirmChangeParams.classList.add('show', 'active');
   }
 
-  if (btnEditParams) btnEditParams.addEventListener('click', openParamsModal);
+  function closeConfirmChangeParamsModal() {
+    if (modalConfirmChangeParams) modalConfirmChangeParams.classList.remove('show', 'active');
+  }
+
+  if (btnCloseConfirmChangeParams) btnCloseConfirmChangeParams.addEventListener('click', closeConfirmChangeParamsModal);
+  if (btnCancelChangeParams) btnCancelChangeParams.addEventListener('click', closeConfirmChangeParamsModal);
+  
+  if (btnConfirmChangeParams) {
+    btnConfirmChangeParams.addEventListener('click', () => {
+      closeConfirmChangeParamsModal();
+      openParamsModal();
+    });
+  }
+
+  if (modalConfirmChangeParams) {
+    modalConfirmChangeParams.addEventListener('click', (e) => {
+      if (e.target === modalConfirmChangeParams) closeConfirmChangeParamsModal();
+    });
+  }
+
+  if (btnEditParams) {
+    btnEditParams.addEventListener('click', () => {
+      // Se houver produtos na lista atual, exige a confirmação do usuário antes de abrir a alteração
+      if (queryProducts && queryProducts.length > 0) {
+        openConfirmChangeParamsModal();
+      } else {
+        openParamsModal();
+      }
+    });
+  }
+
   if (btnCloseParams) btnCloseParams.addEventListener('click', closeParamsModal);
   if (btnDiscardParams) btnDiscardParams.addEventListener('click', closeParamsModal);
 
@@ -1514,13 +1550,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       hasPlan = checkHasPlan();
 
-      if (hasPlan && queryProducts.length === 0) {
-        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false }));
+      // Recalcula e sobrescreve a lista de produtos com base no novo plano/filial
+      if (hasPlan) {
+        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({
+          ...p,
+          selecionado: false
+        }));
+      } else {
+        queryProducts = [];
       }
+
+      currentFilterChip = 'all';
+      if (currentParams.filtro === 'saldo_ideal') currentFilterChip = 'ideal';
+      else if (currentParams.filtro === 'saldo_critico') currentFilterChip = 'critico';
 
       closeParamsModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success('Parâmetros da consulta atualizados com sucesso!');
+        Toast.success('Parâmetros da consulta alterados e lista recalculada com sucesso!');
       }
       renderAll();
     });

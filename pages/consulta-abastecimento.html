@@ -352,6 +352,12 @@
           </div>
         </div>
 
+        <!-- Faixa de Aviso Preventivo de Sobrescrita -->
+        <div class="modal-warning-strip">
+          <span class="material-icons warning-strip-icon">warning_amber</span>
+          <span><strong>Atenção:</strong> Ao alterar os parâmetros, a lista de produtos atual será recalculada e sobrescrita pela nova seleção.</span>
+        </div>
+
         <!-- 1. Combobox Filial para Repor (Destino - Obrigatório) -->
         <div class="modal-field-group">
           <label class="modal-field-label" for="inputComboboxParamsDestino">
@@ -472,6 +478,43 @@
         <button type="button" class="btn-modal-discard" id="btnDiscardParams">CANCELAR</button>
         <button type="button" class="btn-modal-finalize" id="btnApplyParams"
           style="background-color: #4caf50;">APLICAR FILTROS</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1.1: CONFIRMAÇÃO DE ALTERAÇÃO DE PARÂMETROS (ALERTA DE SOBRESCRITA)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmChangeParams" role="dialog" aria-modal="true">
+    <div class="official-modal-box modal-confirm-box" style="max-width: 460px; width: 95%;">
+      
+      <div class="official-modal-header" style="background-color: #d97706;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">tune</span>
+          <h2 class="official-modal-title">ALTERAR PARÂMETROS DA CONSULTA</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseConfirmChangeParams" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.75rem 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <div class="confirm-warning-icon-box">
+          <span class="material-icons">warning_amber</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #212529; margin: 0 0 0.5rem 0;">
+          Deseja alterar os parâmetros?
+        </h3>
+        <p style="font-size: 0.88rem; color: #555555; line-height: 1.5; margin: 0 0 0.75rem 0;">
+          Ao alterar a filial, origem ou plano de abastecimento, todos os produtos atuais, quantidades digitadas e filtros aplicados serão <strong style="color: #b45309;">excluídos e sobrescritos</strong> pela nova seleção.
+        </p>
+        <p style="font-size: 0.82rem; color: #757575; line-height: 1.4; margin: 0;">
+          Confirma que deseja abrir a alteração de parâmetros?
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnCancelChangeParams">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmChangeParams" style="background-color: #d97706;">SIM, ALTERAR PARÂMETROS</button>
       </div>
 
     </div>
