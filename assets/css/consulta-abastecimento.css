@@ -409,6 +409,241 @@
   }
 }
 
+/* --------------------------------------------------------------------------
+   Dropdown de Visibilidade de Colunas e Campos
+   -------------------------------------------------------------------------- */
+.btn-toggle-columns {
+  height: 38px;
+  padding: 0 14px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-toggle-columns:hover {
+  background-color: #f4f0fa;
+  border-color: #b79be3;
+  color: #6530b5;
+}
+
+.btn-toggle-columns.active,
+.btn-toggle-columns[aria-expanded="true"] {
+  background-color: #ede5f8;
+  border-color: #6530b5;
+  color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.columns-visibility-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 8px 6px;
+  z-index: 1050;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.columns-visibility-dropdown.show {
+  display: flex;
+  animation: dropdownFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.columns-visibility-dropdown .dropdown-header-title {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.columns-visibility-dropdown .dropdown-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.columns-visibility-dropdown .dropdown-check-item:hover {
+  background-color: #f5f3fa;
+  color: #6530b5;
+}
+
+.columns-visibility-dropdown .btn-reset-columns {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #6530b5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.columns-visibility-dropdown .btn-reset-columns:hover {
+  background-color: #ede5f8;
+}
+
+/* Classe Utilitária para Ocultação de Colunas */
+.col-hidden {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Chip Temporário de Filtro Ativo (Threshold de Estoque)
+   -------------------------------------------------------------------------- */
+.filter-chip-threshold {
+  background-color: #ede5f8 !important;
+  border-color: #6530b5 !important;
+  color: #6530b5 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.btn-chip-remove-threshold {
+  background: rgba(101, 48, 181, 0.15);
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6530b5;
+  font-size: 11px;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: all var(--transition-fast);
+}
+
+.btn-chip-remove-threshold:hover {
+  background: #6530b5;
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Modal de Filtro por Saldo em Loja
+   -------------------------------------------------------------------------- */
+.threshold-input-card {
+  background-color: #f9f8fc;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.threshold-input-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.threshold-input-field-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 2px solid #6530b5;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.threshold-prefix-symbol {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #6530b5;
+}
+
+.modal-threshold-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1f2937;
+  width: 100%;
+}
+
+.threshold-unit-tag {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.threshold-quick-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quick-shortcuts-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.quick-shortcuts-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-quick-shortcut {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-quick-shortcut:hover {
+  background-color: #f5f3fa;
+  border-color: #6530b5;
+  color: #6530b5;
+}
+
 /* Botão Excluir Todos no Cabeçalho da Tabela */
 .btn-th-clear-all {
   background: transparent;

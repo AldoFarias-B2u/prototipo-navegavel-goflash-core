@@ -195,6 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let hideUnselected = false;
   let currentViewMode = window.innerWidth <= 768 ? 'cards' : 'table';
 
+  // Estado de Visibilidade de Colunas/Campos & Filtro por Quantidade de Estoque
+  let visibleColumns = {
+    ideal: hasPlan,
+    critico: hasPlan,
+    cd: hasOriginBranch(),
+    sugestao: hasPlan
+  };
+  let stockThresholdValue = null; // null ou número (ex: 5 para Estoque Loja < 5)
+
   // 3. Elementos do DOM
   const tableBody = document.getElementById('consultaTableBody');
   const cardsGrid = document.getElementById('consultaCardsGrid');
@@ -213,6 +222,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const moreActionsContainer = document.getElementById('moreActionsContainer');
   const btnViewTable = document.getElementById('btnViewTable');
   const btnViewCards = document.getElementById('btnViewCards');
+
+  // Elementos do Gerenciador de Colunas
+  const btnToggleColumns = document.getElementById('btnToggleColumns');
+  const columnsVisibilityDropdown = document.getElementById('columnsVisibilityDropdown');
+  const columnsVisibilityContainer = document.getElementById('columnsVisibilityContainer');
+  const colVisToggles = document.querySelectorAll('.col-vis-toggle');
+  const btnResetColumns = document.getElementById('btnResetColumns');
+
+  // Elementos do Modal de Filtro de Estoque por Quantidade
+  const btnOpenFilterThreshold = document.getElementById('btnOpenFilterThreshold');
+  const modalFilterThresholdBackdrop = document.getElementById('modalFilterThresholdBackdrop');
+  const btnCloseFilterThresholdModal = document.getElementById('btnCloseFilterThresholdModal');
+  const btnCancelFilterThreshold = document.getElementById('btnCancelFilterThreshold');
+  const btnApplyFilterThreshold = document.getElementById('btnApplyFilterThreshold');
+  const modalThresholdInput = document.getElementById('modalThresholdInput');
+  const quickShortcutBtns = document.querySelectorAll('.btn-quick-shortcut');
+  const chipActiveThreshold = document.getElementById('chipActiveThreshold');
+  const chipActiveThresholdVal = document.getElementById('chipActiveThresholdVal');
+  const btnRemoveThresholdChip = document.getElementById('btnRemoveThresholdChip');
   
   const summaryItemsCount = document.getElementById('summaryItemsCount');
   const summaryUnitsCount = document.getElementById('summaryUnitsCount');
@@ -257,6 +285,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnConfirmAddExtra = document.getElementById('btnConfirmAddExtra');
   const extraProductsList = document.getElementById('extraProductsList');
 
+  // Sincroniza estado dos checkboxes de colunas
+  function syncColumnCheckboxes() {
+    const colIdealChk = document.getElementById('colVisIdeal');
+    const colCriticoChk = document.getElementById('colVisCritico');
+    const colCdChk = document.getElementById('colVisCd');
+    const colSugestaoChk = document.getElementById('colVisSugestao');
+
+    if (colIdealChk) colIdealChk.checked = visibleColumns.ideal;
+    if (colCriticoChk) colCriticoChk.checked = visibleColumns.critico;
+    if (colCdChk) colCdChk.checked = visibleColumns.cd;
+    if (colSugestaoChk) colSugestaoChk.checked = visibleColumns.sugestao;
+  }
+
   // 4. Atualizar Contexto no Topo & Visibilidade de Colunas/Chips
   function updateContextUI() {
     hasPlan = checkHasPlan();
@@ -276,17 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (filterDescDisplay) filterDescDisplay.textContent = descFiltro;
 
-    // Atualiza visibilidade das colunas de plano no thead
-    const planCols = document.querySelectorAll('.col-plan-param');
-    planCols.forEach(col => {
-      col.classList.toggle('hidden-col', !hasPlan);
-    });
-
-    // Atualiza visibilidade das colunas e chips de Estoque CD
-    const cdCols = document.querySelectorAll('.col-cd-origem');
-    cdCols.forEach(col => {
-      col.classList.toggle('hidden-col', !hasOrigin);
-    });
+    syncColumnCheckboxes();
   }
 
   // 5. Filtragem e Obtenção de Produtos Visíveis
@@ -305,6 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Filtro de Ocultar Desmarcados
       if (hideUnselected && !item.selecionado) return false;
+
+      // Filtro Numérico de Estoque Loja < X (se ativo)
+      if (stockThresholdValue !== null) {
+        const saldoLoja = Number(item.estoqueLoja) || 0;
+        if (saldoLoja >= stockThresholdValue) return false;
+      }
 
       // Filtro de Chips
       if (currentFilterChip === 'ideal') {
@@ -426,11 +463,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const hasOrigin = hasOriginBranch();
     const filtered = getFilteredProducts();
     
-    let colCount = 10;
-    if (hasPlan && hasOrigin) colCount = 10;
-    else if (hasPlan && !hasOrigin) colCount = 9;
-    else if (!hasPlan && hasOrigin) colCount = 7;
-    else if (!hasPlan && !hasOrigin) colCount = 6;
+    // Atualiza cabeçalhos da tabela conforme visibleColumns
+    const thIdeal = document.querySelector('th.col-ideal');
+    const thCritico = document.querySelector('th.col-critico');
+    const thCd = document.querySelector('th.col-cd');
+    const thSugestao = document.querySelector('th.col-sugestao');
+    if (thIdeal) thIdeal.classList.toggle('col-hidden', !visibleColumns.ideal);
+    if (thCritico) thCritico.classList.toggle('col-hidden', !visibleColumns.critico);
+    if (thCd) thCd.classList.toggle('col-hidden', !visibleColumns.cd);
+    if (thSugestao) thSugestao.classList.toggle('col-hidden', !visibleColumns.sugestao);
+
+    // Contagem de colunas visíveis para colspan do empty-state
+    let colCount = 5; // Checkbox, Foto, Produto, Loja, Repor, Ações
+    if (visibleColumns.ideal) colCount++;
+    if (visibleColumns.critico) colCount++;
+    if (visibleColumns.cd) colCount++;
+    if (visibleColumns.sugestao) colCount++;
 
     // Render Tabela
     if (tableBody) {
@@ -459,116 +507,64 @@ document.addEventListener('DOMContentLoaded', () => {
           const pendingClass = isPendingQty ? 'repor-pending' : '';
           const status = getProductStockStatus(item);
 
-          if (hasPlan) {
-            return `
-              <tr class="${selectedClass}" data-id="${item.id}">
-                <td class="table-checkbox-cell">
+          return `
+            <tr class="${selectedClass}" data-id="${item.id}">
+              <td class="table-checkbox-cell">
+                <input 
+                  type="checkbox" 
+                  class="table-custom-checkbox product-select-checkbox" 
+                  data-id="${item.id}"
+                  ${item.selecionado ? 'checked' : ''}
+                  aria-label="Selecionar ${item.nome}"
+                >
+              </td>
+              <td class="table-thumb-cell">
+                <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
+              </td>
+              <td class="product-info-cell">
+                <div class="product-desc-title">${item.nome}</div>
+                <div class="product-meta-row">
+                  <span class="product-ean-label">EAN: <span class="product-ean-val">${item.ean}</span></span>
+                  <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
+                </div>
+              </td>
+              <td class="col-ideal ${!visibleColumns.ideal ? 'col-hidden' : ''}" style="text-align: center;">
+                <span class="stock-pill stock-pill-ideal">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
+              </td>
+              <td class="col-critico ${!visibleColumns.critico ? 'col-hidden' : ''}" style="text-align: center;">
+                <span class="stock-pill stock-pill-critico">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+              </td>
+              <td class="col-loja" style="text-align: center;">
+                <span class="stock-pill stock-pill-loja ${isCritico ? 'is-critico' : ''}">${item.estoqueLoja}</span>
+              </td>
+              <td class="col-cd ${!visibleColumns.cd ? 'col-hidden' : ''}" style="text-align: center;">
+                <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+              </td>
+              <td class="col-sugestao ${!visibleColumns.sugestao ? 'col-hidden' : ''}" style="text-align: center;">
+                <span class="stock-pill stock-pill-sugestao">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
+              </td>
+              <td style="text-align: center; min-width: 140px;">
+                <div class="repor-stepper-wrapper ${pendingClass}">
+                  <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
                   <input 
-                    type="checkbox" 
-                    class="table-custom-checkbox product-select-checkbox" 
-                    data-id="${item.id}"
-                    ${item.selecionado ? 'checked' : ''}
-                    aria-label="Selecionar ${item.nome}"
+                    type="number" 
+                    class="repor-stepper-input input-a-repor" 
+                    data-id="${item.id}" 
+                    value="${item.aRepor !== undefined ? item.aRepor : 0}" 
+                    min="0" 
+                    max="999"
+                    placeholder="0"
                   >
-                </td>
-                <td class="table-thumb-cell">
-                  <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
-                </td>
-                <td class="product-info-cell">
-                  <div class="product-desc-title">${item.nome}</div>
-                  <div class="product-meta-row">
-                    <span class="product-ean-label">EAN: <span class="product-ean-val">${item.ean}</span></span>
-                    <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
-                  </div>
-                </td>
-                <td class="col-plan-param" style="text-align: center;">
-                  <span class="stock-pill stock-pill-ideal">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
-                </td>
-                <td class="col-plan-param" style="text-align: center;">
-                  <span class="stock-pill stock-pill-critico">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
-                </td>
-                <td style="text-align: center;">
-                  <span class="stock-pill stock-pill-loja ${isCritico ? 'is-critico' : ''}">${item.estoqueLoja}</span>
-                </td>
-                <td class="col-cd-origem ${!hasOrigin ? 'hidden-col' : ''}" style="text-align: center;">
-                  <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
-                </td>
-                <td class="col-plan-param" style="text-align: center;">
-                  <span class="stock-pill stock-pill-sugestao">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
-                </td>
-                <td style="text-align: center; min-width: 140px;">
-                  <div class="repor-stepper-wrapper ${pendingClass}">
-                    <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
-                    <input 
-                      type="number" 
-                      class="repor-stepper-input input-a-repor" 
-                      data-id="${item.id}" 
-                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
-                      min="0" 
-                      max="999"
-                      placeholder="0"
-                    >
-                    <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
-                  </div>
-                </td>
-                <td style="text-align: center; width: 50px;">
-                  <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
-                    <span class="material-icons">delete</span>
-                  </button>
-                </td>
-              </tr>
-            `;
-          } else {
-            return `
-              <tr class="${selectedClass}" data-id="${item.id}">
-                <td class="table-checkbox-cell">
-                  <input 
-                    type="checkbox" 
-                    class="table-custom-checkbox product-select-checkbox" 
-                    data-id="${item.id}"
-                    ${item.selecionado ? 'checked' : ''}
-                    aria-label="Selecionar ${item.nome}"
-                  >
-                </td>
-                <td class="table-thumb-cell">
-                  <img src="${item.foto}" alt="${item.nome}" class="product-thumb-img" onerror="this.src='../assets/images/logo-homepage.png'">
-                </td>
-                <td class="product-info-cell">
-                  <div class="product-desc-title">${item.nome}</div>
-                  <div class="product-meta-row">
-                    <span class="product-ean-label">EAN: <span class="product-ean-val">${item.ean}</span></span>
-                    <span class="product-status-tag ${status.badgeClass}">${status.label}</span>
-                  </div>
-                </td>
-                <td style="text-align: center;">
-                  <span class="stock-pill stock-pill-loja ${item.estoqueLoja === 0 ? 'is-critico' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
-                </td>
-                <td class="col-cd-origem ${!hasOrigin ? 'hidden-col' : ''}" style="text-align: center;">
-                  <span class="stock-pill stock-pill-cd">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
-                </td>
-                <td style="text-align: center; min-width: 140px;">
-                  <div class="repor-stepper-wrapper ${pendingClass}">
-                    <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
-                    <input 
-                      type="number" 
-                      class="repor-stepper-input input-a-repor" 
-                      data-id="${item.id}" 
-                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
-                      min="0" 
-                      max="999"
-                      placeholder="0"
-                    >
-                    <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
-                  </div>
-                </td>
-                <td style="text-align: center; width: 50px;">
-                  <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
-                    <span class="material-icons">delete</span>
-                  </button>
-                </td>
-              </tr>
-            `;
-          }
+                  <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                </div>
+              </td>
+              <td style="text-align: center; width: 50px;">
+                <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
+                  <span class="material-icons">delete</span>
+                </button>
+              </td>
+            </tr>
+          `;
         }).join('');
       }
     }
@@ -596,46 +592,45 @@ document.addEventListener('DOMContentLoaded', () => {
           const pendingClass = isPendingQty ? 'repor-pending' : '';
           const status = getProductStockStatus(item);
 
-          let stockGridHtml = '';
-          if (hasPlan) {
-            stockGridHtml = `
-              <div class="card-stock-grid ${hasOrigin ? 'grid-4-cols' : 'grid-3-cols'}">
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Ideal</span>
-                  <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
-                </div>
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Crítico</span>
-                  <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
-                </div>
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Loja</span>
-                  <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : (item.estoqueLoja === 0 ? '#c62828' : '#f57f17')}; font-weight: 700;">${item.estoqueLoja}</span>
-                </div>
-                ${hasOrigin ? `
-                  <div class="card-stock-item">
-                    <span class="card-stock-label">CD</span>
-                    <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
-                  </div>
-                ` : ''}
+          const stockItems = [];
+          if (visibleColumns.ideal) {
+            stockItems.push(`
+              <div class="card-stock-item">
+                <span class="card-stock-label">Ideal</span>
+                <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
               </div>
-            `;
-          } else {
-            stockGridHtml = `
-              <div class="card-stock-grid ${hasOrigin ? 'grid-2-cols' : 'grid-1-col'}">
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Estoque Loja</span>
-                  <span class="card-stock-val" style="color: ${item.estoqueLoja === 0 ? '#c62828' : '#1976d2'}; font-weight: 700;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
-                </div>
-                ${hasOrigin ? `
-                  <div class="card-stock-item">
-                    <span class="card-stock-label">Estoque CD</span>
-                    <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
-                  </div>
-                ` : ''}
-              </div>
-            `;
+            `);
           }
+          if (visibleColumns.critico) {
+            stockItems.push(`
+              <div class="card-stock-item">
+                <span class="card-stock-label">Crítico</span>
+                <span class="card-stock-val" style="color: #e65100;">${item.minimoCritico !== undefined ? item.minimoCritico : '-'}</span>
+              </div>
+            `);
+          }
+          // Loja é sempre visível
+          stockItems.push(`
+            <div class="card-stock-item">
+              <span class="card-stock-label">Loja</span>
+              <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : (item.estoqueLoja === 0 ? '#c62828' : '#f57f17')}; font-weight: 700;">${item.estoqueLoja}</span>
+            </div>
+          `);
+          if (visibleColumns.cd) {
+            stockItems.push(`
+              <div class="card-stock-item">
+                <span class="card-stock-label">CD</span>
+                <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
+              </div>
+            `);
+          }
+
+          let gridColsClass = 'grid-1-col';
+          if (stockItems.length === 4) gridColsClass = 'grid-4-cols';
+          else if (stockItems.length === 3) gridColsClass = 'grid-3-cols';
+          else if (stockItems.length === 2) gridColsClass = 'grid-2-cols';
+
+          const stockGridHtml = stockItems.length > 0 ? `<div class="card-stock-grid ${gridColsClass}">${stockItems.join('')}</div>` : '';
 
           return `
             <div class="product-mobile-card ${selectedClass}" data-id="${item.id}">
@@ -663,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${stockGridHtml}
 
               <div class="card-action-row">
-                ${hasPlan && item.sugestao !== undefined ? `
+                ${visibleColumns.sugestao && item.sugestao !== undefined ? `
                   <div class="card-sugestao-pill btn-apply-sugestao" data-id="${item.id}" data-sugestao="${item.sugestao}" title="Sugestão calculada: ${item.sugestao} un. Clique para preencher.">
                     <span class="material-icons sugestao-icon">lightbulb</span>
                     <span class="sugestao-text"><span class="sugestao-prefix-full">Sugestão: </span><span class="sugestao-prefix-short">Sug: </span><strong>${item.sugestao} un</strong></span>
@@ -1119,6 +1114,173 @@ document.addEventListener('DOMContentLoaded', () => {
       closeBatchEditModal();
       if (typeof Toast !== 'undefined') {
         Toast.success(`Quantidade de ${newQty} un aplicada a ${selected.length} produto(s) selecionado(s)!`);
+      }
+      renderAll();
+    });
+  }
+
+  // 11.6 Modal de Filtro por Saldo em Loja (Threshold)
+  function openFilterThresholdModal() {
+    toggleMoreActionsDropdown(false);
+    if (modalThresholdInput) {
+      modalThresholdInput.value = stockThresholdValue !== null ? stockThresholdValue : '';
+    }
+    if (modalFilterThresholdBackdrop) {
+      modalFilterThresholdBackdrop.classList.add('show', 'active');
+      setTimeout(() => {
+        if (modalThresholdInput) {
+          modalThresholdInput.focus();
+          modalThresholdInput.select();
+        }
+      }, 50);
+    }
+  }
+
+  function closeFilterThresholdModal() {
+    if (modalFilterThresholdBackdrop) {
+      modalFilterThresholdBackdrop.classList.remove('show', 'active');
+    }
+  }
+
+  if (btnOpenFilterThreshold) {
+    btnOpenFilterThreshold.addEventListener('click', openFilterThresholdModal);
+  }
+
+  if (btnCloseFilterThresholdModal) {
+    btnCloseFilterThresholdModal.addEventListener('click', closeFilterThresholdModal);
+  }
+
+  if (btnCancelFilterThreshold) {
+    btnCancelFilterThreshold.addEventListener('click', () => {
+      stockThresholdValue = null;
+      if (chipActiveThreshold) chipActiveThreshold.style.display = 'none';
+      closeFilterThresholdModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Filtro por saldo de estoque removido.');
+      }
+      renderAll();
+    });
+  }
+
+  if (btnApplyFilterThreshold) {
+    btnApplyFilterThreshold.addEventListener('click', () => {
+      const val = parseInt(modalThresholdInput ? modalThresholdInput.value : '');
+      if (isNaN(val) || val <= 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Informe uma quantidade válida maior que 0.');
+        }
+        return;
+      }
+
+      stockThresholdValue = val;
+      if (chipActiveThreshold && chipActiveThresholdVal) {
+        chipActiveThresholdVal.textContent = `${val} un`;
+        chipActiveThreshold.style.display = 'inline-flex';
+      }
+
+      closeFilterThresholdModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Exibindo apenas produtos com Estoque Loja < ${val} un`);
+      }
+      renderAll();
+    });
+  }
+
+  if (modalThresholdInput) {
+    modalThresholdInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (btnApplyFilterThreshold) btnApplyFilterThreshold.click();
+      }
+    });
+  }
+
+  quickShortcutBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-val');
+      if (modalThresholdInput && val) {
+        modalThresholdInput.value = val;
+        if (btnApplyFilterThreshold) btnApplyFilterThreshold.click();
+      }
+    });
+  });
+
+  if (btnRemoveThresholdChip) {
+    btnRemoveThresholdChip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      stockThresholdValue = null;
+      if (chipActiveThreshold) chipActiveThreshold.style.display = 'none';
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Filtro por saldo de estoque removido.');
+      }
+      renderAll();
+    });
+  }
+
+  if (modalFilterThresholdBackdrop) {
+    modalFilterThresholdBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalFilterThresholdBackdrop) closeFilterThresholdModal();
+    });
+  }
+
+  // 11.7 Gerenciador de Visibilidade de Colunas e Campos
+  function toggleColumnsDropdown(show) {
+    if (!columnsVisibilityDropdown || !btnToggleColumns) return;
+    const isCurrentlyShown = columnsVisibilityDropdown.classList.contains('show');
+    const willShow = (show !== undefined) ? show : !isCurrentlyShown;
+    
+    columnsVisibilityDropdown.classList.toggle('show', willShow);
+    btnToggleColumns.classList.toggle('active', willShow);
+    btnToggleColumns.setAttribute('aria-expanded', willShow ? 'true' : 'false');
+  }
+
+  if (btnToggleColumns) {
+    btnToggleColumns.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (moreActionsDropdown && moreActionsDropdown.classList.contains('show')) {
+        toggleMoreActionsDropdown(false);
+      }
+      toggleColumnsDropdown();
+    });
+  }
+
+  // Fechar dropdown de colunas ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (columnsVisibilityContainer && !columnsVisibilityContainer.contains(e.target)) {
+      toggleColumnsDropdown(false);
+    }
+  });
+
+  // Fechar dropdown de colunas ao pressionar ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && columnsVisibilityDropdown && columnsVisibilityDropdown.classList.contains('show')) {
+      toggleColumnsDropdown(false);
+    }
+  });
+
+  // Listeners dos checkboxes de visibilidade de colunas
+  colVisToggles.forEach(chk => {
+    chk.addEventListener('change', () => {
+      const colKey = chk.getAttribute('data-col');
+      if (colKey && visibleColumns.hasOwnProperty(colKey)) {
+        visibleColumns[colKey] = chk.checked;
+        renderAll();
+      }
+    });
+  });
+
+  // Botão Restaurar Padrão de Colunas
+  if (btnResetColumns) {
+    btnResetColumns.addEventListener('click', () => {
+      visibleColumns = {
+        ideal: checkHasPlan(),
+        critico: checkHasPlan(),
+        cd: hasOriginBranch(),
+        sugestao: checkHasPlan()
+      };
+      syncColumnCheckboxes();
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Visualização de colunas restaurada ao padrão da consulta.');
       }
       renderAll();
     });
