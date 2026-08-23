@@ -10,10 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const paramPlano = urlParams.get('plano');
   const paramFiltro = urlParams.get('filtro');
 
+  let defaultPlano = 'Plano MiniMercado 03';
+  if (urlParams.has('plano')) {
+    defaultPlano = (paramPlano && paramPlano.trim()) ? paramPlano : 'Sem plano base (Todos os produtos)';
+  }
+
   let currentParams = {
     origem: (paramOrigem && paramOrigem.trim()) ? paramOrigem : 'Não especificada (Entrada direta)',
     destino: urlParams.get('destino') || 'Mini Mercado 03 Simples Nacional',
-    plano: (paramPlano && paramPlano.trim()) ? paramPlano : 'Sem plano base (Todos os produtos)',
+    plano: defaultPlano,
     filtro: (paramFiltro && paramFiltro.trim()) ? paramFiltro : 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
   };
 
@@ -1465,6 +1470,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnParamsHelpText.setAttribute('aria-expanded', 'false');
       }
     }
+  }
+
+  function closeParamsModal() {
+    if (modalParams) modalParams.classList.remove('show', 'active');
   }
 
   // 13.3 Modal de Confirmação de Alteração de Parâmetros (Alerta de Sobrescrita)
