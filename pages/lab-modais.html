@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Laboratório UI/UX - Teste de Variantes do Modal | GoMarket Core</title>
+
+  <!-- Google Fonts & Material Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- CSS Base & Componentes -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/abastecimento.css">
+
+  <style>
+    body {
+      background-color: #f1f3f6;
+      padding: 12px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .lab-container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .lab-header-card {
+      background: #23143d;
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .lab-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lab-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lab-badge-tag {
+      background: #6530b5;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lab-subtitle {
+      font-size: 0.82rem;
+      color: #d1c4e9;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .btn-return-prod {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffd54f;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .btn-return-prod:hover {
+      text-decoration: underline;
+    }
+
+    /* Switcher de Variantes */
+    .lab-switcher-box {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .switcher-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .switcher-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    @media (min-width: 600px) {
+      .switcher-tabs {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .tab-btn {
+      background: #f8fafc;
+      border: 1.5px solid #dcdfe4;
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #4b5563;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab-btn .tab-num {
+      font-size: 0.68rem;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+
+    .tab-btn:hover {
+      border-color: #6530b5;
+      background: #f5f0fb;
+      color: #6530b5;
+    }
+
+    .tab-btn.active {
+      border-color: #6530b5;
+      background: #ede3fa;
+      color: #6530b5;
+      box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.2);
+    }
+
+    .lab-metrics-bar {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.76rem;
+      color: #4b5563;
+    }
+
+    .metric-pill {
+      background: #f1f3f6;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .metric-pill.good {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .metric-pill.heavy {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    /* Modal Wrapper no Sandbox */
+    .lab-preview-wrapper {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .lab-preview-actions {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .btn-open-fullscreen-modal {
+      background-color: #6530b5;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 8px rgba(101, 48, 181, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-open-fullscreen-modal:hover {
+      background-color: #522496;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="lab-container">
+
+    <!-- Topo do Laboratório -->
+    <div class="lab-header-card">
+      <div class="lab-header-top">
+        <div class="lab-title">
+          <span class="material-icons">science</span>
+          <span>Laboratório de UI/UX</span>
+        </div>
+        <span class="lab-badge-tag">Protótipo de Testes</span>
+      </div>
+      <p class="lab-subtitle">
+        Teste e compare as 4 variantes de cabeçalho de instrução do modal. Alterne entre as opções abaixo para ver a diferença de altura, leitura e densidade visual no smartphone ou computador.
+      </p>
+      <a href="./pedidos-abastecimento.html" class="btn-return-prod">
+        <span class="material-icons" style="font-size: 16px;">arrow_back</span>
+        Voltar para a tela de Pedidos (Produção)
+      </a>
+    </div>
+
+    <!-- Switcher de Opções -->
+    <div class="lab-switcher-box">
+      <div class="switcher-label">
+        <span>Selecione a Variante para Visualizar:</span>
+        <span id="activeOptionLabel" style="color: #6530b5;">Opção A (Micro-Passos)</span>
+      </div>
+
+      <div class="switcher-tabs">
+        <button type="button" class="tab-btn" data-variant="0">
+          <span class="tab-num">Versão 0</span>
+          <span>Atual (Referência)</span>
+        </button>
+        <button type="button" class="tab-btn active" data-variant="1">
+          <span class="tab-num">Opção A</span>
+          <span>Micro-Passos (Chips)</span>
+        </button>
+        <button type="button" class="tab-btn" data-variant="2">
+          <span class="tab-num">Opção B</span>
+          <span>Frase Direta</span>
+        </button>
+        <button type="button" class="tab-btn" data-variant="3">
+          <span class="tab-num">Opção C</span>
+          <span>Colapsável</span>
+        </button>
+      </div>
+
+      <!-- Métricas da Variante Selecionada -->
+      <div class="lab-metrics-bar" id="metricsBar">
+        <div>Altura estimada: <span class="metric-pill good" id="metricHeight">~52px</span></div>
+        <div>Tempo leitura: <span class="metric-pill good" id="metricRead">~1 a 2s</span></div>
+        <div>Escaneabilidade: <span class="metric-pill good" id="metricScan">Excelente (Visual)</span></div>
+      </div>
+    </div>
+
+    <!-- Botão de Teste em Modal Flutuante Overlay -->
+    <div class="lab-preview-actions">
+      <button type="button" class="btn-open-fullscreen-modal" id="btnOpenFloatingModal">
+        <span class="material-icons">open_in_new</span>
+        <span>Testar como Modal Flutuante Real</span>
+      </button>
+    </div>
+
+    <!-- Prévia Embutida do Modal na Página -->
+    <div class="lab-preview-wrapper">
+      <div class="official-modal-header" style="border-radius: 0;">
+        <h2 class="official-modal-title">NOVA CONSULTA DE ABASTECIMENTO</h2>
+        <span style="color: #ffffff; opacity: 0.7; font-size: 0.8rem; font-weight: 500;">Prévia Embutida</span>
+      </div>
+
+      <div class="official-modal-body" style="max-height: none;">
+
+        <!-- ÁREA DINÂMICA DE INSTRUÇÃO (ALTERNADA VIA JS) -->
+        <div id="dynamicInstructionContainer">
+          <!-- Renderizado via JS conforme a aba selecionada -->
+        </div>
+
+        <!-- 1. Combobox Filial para Repor (Destino - Obrigatório) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="labInputDestino">
+            <span class="material-icons field-label-icon">storefront</span>
+            Selecione a Filial para Repor: *
+          </label>
+          <div class="custom-combobox" id="comboboxLabDestino">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="labInputDestino" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                value="Mini Mercado 01"
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearLabDestino" title="Limpar" style="display: flex;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleLabDestino" title="Ver filiais">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownLabDestino"></div>
+          </div>
+        </div>
+
+        <!-- 2. Combobox Filial do Estoque Origem (Opcional) -->
+        <div class="modal-field-group" style="margin-top: 10px;">
+          <label class="modal-field-label" for="labInputOrigem">
+            <span class="material-icons field-label-icon">warehouse</span>
+            Selecione a Filial do Estoque Origem (Opcional):
+          </label>
+          <div class="custom-combobox" id="comboboxLabOrigem">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="labInputOrigem" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                value="Estoque central"
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearLabOrigem" title="Limpar" style="display: flex;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleLabOrigem" title="Ver origens">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownLabOrigem"></div>
+          </div>
+        </div>
+
+        <!-- 3. Combobox Plano de Abastecimento (Opcional) -->
+        <div class="modal-field-group" style="margin-top: 10px;">
+          <label class="modal-field-label" for="labInputPlano">
+            <span class="material-icons field-label-icon">description</span>
+            Plano de Abastecimento (Opcional):
+          </label>
+          <div class="custom-combobox" id="comboboxLabPlano">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="labInputPlano" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                value="Plano MiniMercado 03"
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearLabPlano" title="Limpar" style="display: flex;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleLabPlano" title="Ver planos">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownLabPlano"></div>
+          </div>
+          <!-- Helper Text -->
+          <div class="modal-field-hint" id="labHintPlanoHelper" style="display: none;">
+            <span class="material-icons hint-icon">lightbulb</span>
+            <span>Selecione um plano para receber sugestões automáticas de reposição ou deixe vazio para consulta livre.</span>
+          </div>
+        </div>
+
+        <!-- Filtro do Plano de Abastecimento (Radio Cards) -->
+        <div id="labContainerFiltrosPlano" class="plan-filter-container" style="display: block; margin-top: 12px;">
+          <label class="modal-field-label" style="display: block; margin-bottom: 4px;">
+            Filtro do Plano de Abastecimento:
+          </label>
+          <div class="modal-radio-cards-group">
+            <label class="modal-radio-card active">
+              <input type="radio" name="labFiltroPlano" value="completo" class="modal-radio-input" checked>
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Plano completo</span>
+                <span class="modal-radio-desc">Exibe todos os produtos do plano.</span>
+              </div>
+            </label>
+            <label class="modal-radio-card">
+              <input type="radio" name="labFiltroPlano" value="saldo_ideal" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o estoque ideal</span>
+                <span class="modal-radio-desc">Filtra produtos com necessidade de reposição.</span>
+              </div>
+            </label>
+            <label class="modal-radio-card">
+              <input type="radio" name="labFiltroPlano" value="saldo_critico" class="modal-radio-input">
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Apenas produtos com saldo menor que o crítico</span>
+                <span class="modal-radio-desc">Filtra produtos em nível crítico de ruptura.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-back">
+          <span class="material-icons">arrow_back</span>
+          <span>VOLTAR</span>
+        </button>
+        <div class="modal-footer-actions-right">
+          <button type="button" class="btn-modal-discard">DESCARTAR</button>
+          <button type="button" class="btn-modal-finalize" style="background-color: #4caf50;">CONSULTAR</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Flutuante Real para Testes no Mobile -->
+  <div class="official-modal-overlay" id="floatingLabModal" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 580px;">
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">NOVA CONSULTA DE ABASTECIMENTO</h2>
+        <button type="button" class="official-modal-close" id="btnCloseFloatingModal">&times;</button>
+      </div>
+      <div class="official-modal-body">
+        
+        <!-- Área Dinâmica no Modal Flutuante -->
+        <div id="dynamicFloatingInstructionContainer"></div>
+
+        <!-- Campos de Teste -->
+        <div class="modal-field-group">
+          <label class="modal-field-label">
+            <span class="material-icons field-label-icon">storefront</span>
+            Selecione a Filial para Repor: *
+          </label>
+          <div class="combobox-input-wrapper">
+            <input type="text" class="combobox-input" value="Mini Mercado 01" readonly>
+            <span class="material-icons" style="color: #757575;">arrow_drop_down</span>
+          </div>
+        </div>
+
+        <div class="modal-field-group" style="margin-top: 10px;">
+          <label class="modal-field-label">
+            <span class="material-icons field-label-icon">warehouse</span>
+            Selecione a Filial do Estoque Origem (Opcional):
+          </label>
+          <div class="combobox-input-wrapper">
+            <input type="text" class="combobox-input" value="Estoque central" readonly>
+            <span class="material-icons" style="color: #757575;">arrow_drop_down</span>
+          </div>
+        </div>
+
+        <div class="modal-field-group" style="margin-top: 10px;">
+          <label class="modal-field-label">
+            <span class="material-icons field-label-icon">description</span>
+            Plano de Abastecimento (Opcional):
+          </label>
+          <div class="combobox-input-wrapper">
+            <input type="text" class="combobox-input" value="Plano MiniMercado 03" readonly>
+            <span class="material-icons" style="color: #757575;">arrow_drop_down</span>
+          </div>
+        </div>
+
+        <div class="plan-filter-container" style="display: block; margin-top: 12px;">
+          <label class="modal-field-label" style="display: block; margin-bottom: 4px;">Filtro do Plano de Abastecimento:</label>
+          <div class="modal-radio-cards-group">
+            <label class="modal-radio-card active">
+              <input type="radio" name="floatingRadio" checked>
+              <div class="modal-radio-text-box">
+                <span class="modal-radio-title">Plano completo</span>
+                <span class="modal-radio-desc">Exibe todos os produtos do plano.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-back" id="btnBackFloatingModal">
+          <span class="material-icons">arrow_back</span>
+          <span>VOLTAR</span>
+        </button>
+        <div class="modal-footer-actions-right">
+          <button type="button" class="btn-modal-discard" id="btnDiscardFloatingModal">DESCARTAR</button>
+          <button type="button" class="btn-modal-finalize" style="background-color: #4caf50;">CONSULTAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Templates das 4 Variantes
+    const variants = {
+      0: {
+        label: 'Versão 0: Atual (Referência)',
+        height: '~125px',
+        read: '~8 a 10s',
+        scan: 'Baixa (Texto denso)',
+        isGood: false,
+        html: `
+          <div class="modal-slim-notice">
+            <div class="slim-notice-header">
+              <span class="material-icons slim-notice-icon">manage_search</span>
+              <strong class="slim-notice-title">Consulta de Abastecimento</strong>
+            </div>
+            <p class="slim-notice-text">
+              Identifique rapidamente as necessidades de reposição das filiais. Consulte o estoque, aplique os filtros e, ao selecionar um Plano de Abastecimento, receba sugestões de quantidades para abastecer. Em seguida, revise os itens e gere seu Pedido de Abastecimento.
+            </p>
+          </div>
+        `
+      },
+      1: {
+        label: 'Opção A: Micro-Passos em Chips (Visual & Arejada)',
+        height: '~52px',
+        read: '~1 a 2s',
+        scan: 'Excelente (Visual)',
+        isGood: true,
+        html: `
+          <div class="lab-instruction-a">
+            <div class="lab-inst-header">
+              <span class="material-icons lab-inst-icon">lightbulb</span>
+              <span class="lab-inst-title">Defina os critérios para calcular a reposição:</span>
+            </div>
+            <div class="lab-flow-steps">
+              <span class="lab-step-chip"><span class="step-badge">1</span> Destino</span>
+              <span class="lab-step-arrow">➔</span>
+              <span class="lab-step-chip"><span class="step-badge">2</span> Plano (opcional)</span>
+              <span class="lab-step-arrow">➔</span>
+              <span class="lab-step-chip"><span class="step-badge">3</span> Consultar</span>
+            </div>
+          </div>
+        `
+      },
+      2: {
+        label: 'Opção B: Frase Direta com Destaque (Minimalista)',
+        height: '~42px',
+        read: '~2 a 3s',
+        scan: 'Alta (Direto ao ponto)',
+        isGood: true,
+        html: `
+          <div class="lab-instruction-b">
+            <span class="material-icons lab-inst-icon">info_outline</span>
+            <p class="lab-inst-text">
+              Selecione a <strong>filial de destino</strong> e um <strong>plano</strong> para calcular automaticamente as sugestões de reposição.
+            </p>
+          </div>
+        `
+      },
+      3: {
+        label: 'Opção C: Banner Compacto com Ajuda Colapsável',
+        height: '~38px',
+        read: '~1s (ou sob demanda)',
+        scan: 'Máxima (Zero poluição)',
+        isGood: true,
+        html: `
+          <div class="lab-instruction-c">
+            <div class="lab-inst-summary" id="btnToggleHelpCollapse">
+              <div class="lab-inst-summary-left">
+                <span class="material-icons lab-inst-icon">manage_search</span>
+                <span>Consulta e Reposição de Filiais</span>
+              </div>
+              <button type="button" class="btn-lab-help-toggle" id="btnHelpText">
+                <span>Como funciona?</span>
+                <span class="material-icons toggle-icon" id="iconHelpArrow">expand_more</span>
+              </button>
+            </div>
+            <div class="lab-inst-collapsible" id="collapsibleHelpBody" style="display: none;">
+              <div>• Escolha a filial que precisa de reposição de mercadorias.</div>
+              <div>• Selecione um plano para receber quantidades calculadas ou consulte livremente.</div>
+              <div>• Revise os itens na listagem e gere seu pedido de abastecimento.</div>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    let currentVariant = 1; // Padrão: Opção A
+
+    const container = document.getElementById('dynamicInstructionContainer');
+    const floatingContainer = document.getElementById('dynamicFloatingInstructionContainer');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const activeOptionLabel = document.getElementById('activeOptionLabel');
+    const metricHeight = document.getElementById('metricHeight');
+    const metricRead = document.getElementById('metricRead');
+    const metricScan = document.getElementById('metricScan');
+
+    function renderVariant(v) {
+      currentVariant = v;
+      const data = variants[v];
+
+      if (container) container.innerHTML = data.html;
+      if (floatingContainer) floatingContainer.innerHTML = data.html;
+      if (activeOptionLabel) activeOptionLabel.textContent = data.label;
+
+      if (metricHeight) {
+        metricHeight.textContent = data.height;
+        metricHeight.className = 'metric-pill ' + (data.isGood ? 'good' : 'heavy');
+      }
+      if (metricRead) {
+        metricRead.textContent = data.read;
+        metricRead.className = 'metric-pill ' + (data.isGood ? 'good' : 'heavy');
+      }
+      if (metricScan) {
+        metricScan.textContent = data.scan;
+        metricScan.className = 'metric-pill ' + (data.isGood ? 'good' : 'heavy');
+      }
+
+      tabBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-variant') === String(v));
+      });
+
+      // Hook do colapsável caso seja a opção C
+      if (v === 3) {
+        setupCollapsible('btnToggleHelpCollapse', 'collapsibleHelpBody', 'iconHelpArrow');
+      }
+    }
+
+    function setupCollapsible(btnId, contentId, arrowId) {
+      setTimeout(() => {
+        const btn = document.getElementById(btnId);
+        const content = document.getElementById(contentId);
+        const arrow = document.getElementById(arrowId);
+        if (btn && content) {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = content.style.display === 'flex';
+            content.style.display = isOpen ? 'none' : 'flex';
+            if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+          });
+        }
+      }, 50);
+    }
+
+    // Cliques nas tabs
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const v = parseInt(btn.getAttribute('data-variant'), 10);
+        renderVariant(v);
+      });
+    });
+
+    // Inicialização
+    renderVariant(1);
+
+    // Modal Flutuante Real
+    const floatingModal = document.getElementById('floatingLabModal');
+    const btnOpenFloating = document.getElementById('btnOpenFloatingModal');
+    const btnCloseFloating = document.getElementById('btnCloseFloatingModal');
+    const btnBackFloating = document.getElementById('btnBackFloatingModal');
+    const btnDiscardFloating = document.getElementById('btnDiscardFloatingModal');
+
+    if (btnOpenFloating) {
+      btnOpenFloating.addEventListener('click', () => {
+        if (floatingModal) floatingModal.classList.add('show', 'active');
+      });
+    }
+
+    function closeFloating() {
+      if (floatingModal) floatingModal.classList.remove('show', 'active');
+    }
+
+    if (btnCloseFloating) btnCloseFloating.addEventListener('click', closeFloating);
+    if (btnBackFloating) btnBackFloating.addEventListener('click', closeFloating);
+    if (btnDiscardFloating) btnDiscardFloating.addEventListener('click', closeFloating);
+    if (floatingModal) {
+      floatingModal.addEventListener('click', (e) => {
+        if (e.target === floatingModal) closeFloating();
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -788,6 +788,184 @@ td.col-num-indicator {
   }
 }
 
+/* ==========================================================================
+   LABORATÓRIO DE UI/UX - VARIANTES DE INSTRUÇÃO DO MODAL
+   ========================================================================== */
+
+/* 1. Opção A: Micro-Passos em Chips (Escaneável & Arejada) */
+.lab-instruction-a {
+  background-color: #faf8fd;
+  border: 1px solid #ebdffb;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lab-instruction-a .lab-inst-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lab-instruction-a .lab-inst-icon {
+  font-size: 18px;
+  color: var(--primary-color, #6530b5);
+  flex-shrink: 0;
+}
+
+.lab-instruction-a .lab-inst-title {
+  font-size: 0.81rem;
+  color: #374151;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.lab-flow-steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lab-step-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #ffffff;
+  border: 1px solid #e0d4f5;
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.lab-step-chip .step-badge {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.lab-step-arrow {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+/* 2. Opção B: Frase Direta com Destaque Tipográfico (Minimalista & Compacta) */
+.lab-instruction-b {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid var(--primary-color, #6530b5);
+  border-radius: 6px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lab-instruction-b .lab-inst-icon {
+  font-size: 18px;
+  color: var(--primary-color, #6530b5);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.lab-instruction-b .lab-inst-text {
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.lab-instruction-b .lab-inst-text strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* 3. Opção C: Banner Compacto com Ajuda Colapsável */
+.lab-instruction-c {
+  background-color: #fbf9fe;
+  border: 1px solid #ebdffb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.lab-instruction-c .lab-inst-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lab-instruction-c .lab-inst-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.lab-instruction-c .lab-inst-icon {
+  font-size: 18px;
+  color: var(--primary-color, #6530b5);
+  flex-shrink: 0;
+}
+
+.btn-lab-help-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.74rem;
+  color: var(--primary-color, #6530b5);
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.btn-lab-help-toggle:hover {
+  background-color: #ede3fa;
+}
+
+.btn-lab-help-toggle .toggle-icon {
+  font-size: 16px;
+  transition: transform var(--transition-fast);
+}
+
+.btn-lab-help-toggle.open .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.lab-inst-collapsible {
+  border-top: 1px dashed #e0d4f5;
+  padding-top: 6px;
+  margin-top: 2px;
+  font-size: 0.74rem;
+  color: #4b5563;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 /* Helper Text Sutil Abaixo dos Campos */
 .modal-field-hint {
   font-size: 0.77rem;
