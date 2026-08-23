@@ -2,6 +2,18 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.8] - 2026-08-23
+### ✨ Otimização de Modais & UI/UX
+- **Comboboxes Pesquisáveis e Reordenação Estratégica nos Modais de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css), [`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js)):
+  - **Componente Searchable Combobox**: Substituição dos selects nativos por autocompletes modernos com filtragem instantânea com highlight, dropdown suave e botão de limpeza rápida (`✕`).
+  - **Reordenação Operacional**: Priorização do fluxo: `1º Filial para Repor:` ➔ `2º Filial do Estoque Origem: [Opcional]` ➔ `3º Plano de Abastecimento: [Opcional]`.
+  - **Badges de Quantidade de Itens**: Exibição dos badges numéricos com a contagem de produtos cadastrados em cada plano de abastecimento.
+  - **Banner de Instruções Colapsável**: Redução drástica da altura inicial de cabeçalho para apenas ~38px no mobile com suporte a dicas expansíveis sob demanda (*"Como funciona? ⌵"*).
+  - **Labels Limpos & Badge Visual**: Padronização dos rótulos e inclusão do badge pill `.field-optional-badge` nos campos opcionais.
+  - **Laboratório de Testes UI/UX ([`pages/lab-modais.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/lab-modais.html))**: Vitrine interativa para simulação e teste de variantes de modais em tempo real.
+
+---
+
 ## [1.9.7] - 2026-08-22
 ### 🐛 Responsividade & Correção de Modais
 - **Resolução Definitiva da Barra de Rolagem e Responsividade em Modais de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
