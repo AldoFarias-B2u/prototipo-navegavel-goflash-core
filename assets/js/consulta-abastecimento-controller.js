@@ -1157,153 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 13. Modal de Parâmetros da Consulta (Editar Filtros)
-  const selectOrigemModal = document.getElementById('selectOrigemModal');
-  const selectDestinoModal = document.getElementById('selectDestinoModal');
-  const selectPlanoModal = document.getElementById('selectPlanoModal');
-  const hintOrigemModal = document.getElementById('hintOrigemModal');
-  const hintDestinoModal = document.getElementById('hintDestinoModal');
-  const hintPlanoModal = document.getElementById('hintPlanoModal');
-  const containerFiltrosPlanoModal = document.getElementById('containerFiltrosPlanoModal');
-  const hintPlanoParamsHelper = document.getElementById('hintPlanoParamsHelper');
-
-  function updateModalParamsSelectHints() {
-    if (selectOrigemModal && hintOrigemModal) {
-      const opt = selectOrigemModal.options[selectOrigemModal.selectedIndex];
-      hintOrigemModal.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
-    }
-    if (selectDestinoModal && hintDestinoModal) {
-      const opt = selectDestinoModal.options[selectDestinoModal.selectedIndex];
-      hintDestinoModal.textContent = opt ? (opt.getAttribute('data-code') || opt.value) : '';
-    }
-    if (selectPlanoModal && hintPlanoModal) {
-      const opt = selectPlanoModal.options[selectPlanoModal.selectedIndex];
-      const isPlano = !!(opt && opt.value);
-      hintPlanoModal.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
-
-      if (containerFiltrosPlanoModal) {
-        if (isPlano) {
-          containerFiltrosPlanoModal.style.display = 'block';
-          containerFiltrosPlanoModal.classList.remove('hidden');
-        } else {
-          containerFiltrosPlanoModal.style.display = 'none';
-          containerFiltrosPlanoModal.classList.add('hidden');
-        }
-      }
-
-      if (hintPlanoParamsHelper) {
-        hintPlanoParamsHelper.style.display = isPlano ? 'none' : 'flex';
-      }
-    }
-  }
-
-  if (selectOrigemModal) selectOrigemModal.addEventListener('change', updateModalParamsSelectHints);
-  if (selectDestinoModal) selectDestinoModal.addEventListener('change', updateModalParamsSelectHints);
-  if (selectPlanoModal) selectPlanoModal.addEventListener('change', updateModalParamsSelectHints);
-
-  function openParamsModal() {
-    if (modalParams) {
-      modalParams.classList.add('show', 'active');
-      
-      if (selectOrigemModal) {
-        for (let i = 0; i < selectOrigemModal.options.length; i++) {
-          if (selectOrigemModal.options[i].text === currentParams.origem) {
-            selectOrigemModal.selectedIndex = i;
-            break;
-          }
-        }
-      }
-      if (selectDestinoModal) {
-        for (let i = 0; i < selectDestinoModal.options.length; i++) {
-          if (selectDestinoModal.options[i].text === currentParams.destino) {
-            selectDestinoModal.selectedIndex = i;
-            break;
-          }
-        }
-      }
-      if (selectPlanoModal) {
-        let foundPlano = false;
-        for (let i = 0; i < selectPlanoModal.options.length; i++) {
-          if (selectPlanoModal.options[i].text === currentParams.plano) {
-            selectPlanoModal.selectedIndex = i;
-            foundPlano = true;
-            break;
-          }
-        }
-        if (!foundPlano) selectPlanoModal.selectedIndex = 0;
-      }
-
-      const radioFiltro = modalParams.querySelector(`input[name="filtroEstoque"][value="${currentParams.filtro}"]`);
-      if (radioFiltro) radioFiltro.checked = true;
-
-      updateModalParamsSelectHints();
-    }
-  }
-
-  function closeParamsModal() {
-    if (modalParams) modalParams.classList.remove('show', 'active');
-  }
-
-  if (btnEditParams) btnEditParams.addEventListener('click', openParamsModal);
-  if (btnCloseParams) btnCloseParams.addEventListener('click', closeParamsModal);
-  if (btnDiscardParams) btnDiscardParams.addEventListener('click', closeParamsModal);
-
-  if (modalParams) {
-    modalParams.addEventListener('click', (e) => {
-      if (e.target === modalParams) closeParamsModal();
-    });
-  }
-
-  if (btnApplyParams) {
-    btnApplyParams.addEventListener('click', () => {
-      const optDestino = selectDestinoModal ? selectDestinoModal.options[selectDestinoModal.selectedIndex] : null;
-      if (!optDestino || !optDestino.value) {
-        if (selectDestinoModal) {
-          selectDestinoModal.focus();
-          const grp = selectDestinoModal.closest('.modal-underline-group');
-          if (grp) {
-            grp.classList.add('has-error');
-            setTimeout(() => grp.classList.remove('has-error'), 3000);
-          }
-        }
-        if (typeof Toast !== 'undefined') {
-          Toast.warning('Por favor, selecione a Filial para Repor.');
-        }
-        return;
-      }
-
-      const optOrigem = selectOrigemModal ? selectOrigemModal.options[selectOrigemModal.selectedIndex] : null;
-      const novaOrigem = (optOrigem && optOrigem.value) ? optOrigem.text : '';
-      const novoDestino = optDestino.text;
-      const optPlano = selectPlanoModal ? selectPlanoModal.options[selectPlanoModal.selectedIndex] : null;
-      const novoPlano = (optPlano && optPlano.value) ? optPlano.text : '';
-      
-      const radioSelected = modalParams.querySelector('input[name="filterScope"]:checked') || modalParams.querySelector('input[name="filtroEstoque"]:checked');
-      const novoFiltro = radioSelected ? radioSelected.value : 'completo';
-
-      currentParams = {
-        origem: novaOrigem,
-        destino: novoDestino,
-        plano: novoPlano,
-        filtro: novoFiltro
-      };
-
-      hasPlan = checkHasPlan();
-
-      if (hasPlan && queryProducts.length === 0) {
-        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false }));
-      }
-
-      closeParamsModal();
-      if (typeof Toast !== 'undefined') {
-        Toast.success('Parâmetros da consulta atualizados com sucesso!');
-      }
-      renderAll();
-    });
-  }
-
-  // 14. MODAL INTELIGENTE DE CATÁLOGO (Comboboxes e Filtro CD)
-  // 14.1 Componente Searchable Combobox Vanilla
+  // 13. Componente Reutilizável de Combobox Pesquisável (Searchable Autocomplete)
   class SearchableCombobox {
     constructor(config) {
       this.container = document.getElementById(config.containerId);
@@ -1311,29 +1165,36 @@ document.addEventListener('DOMContentLoaded', () => {
       this.clearBtn = document.getElementById(config.clearBtnId);
       this.toggleBtn = document.getElementById(config.toggleBtnId);
       this.dropdown = document.getElementById(config.dropdownId);
-      this.getOptions = config.getOptions; // Função que retorna array de { value, label, count }
+      this.getOptions = config.getOptions || (() => []);
       this.onSelect = config.onSelect || (() => {});
-      this.selectedValue = '';
-      this.selectedLabel = '';
+      this.selectedValue = config.initialValue || '';
+      this.selectedLabel = config.initialLabel || '';
 
+      if (!this.container || !this.input || !this.dropdown) return;
       this.init();
     }
 
     init() {
-      if (!this.container || !this.input || !this.dropdown) return;
+      // Valor inicial
+      if (this.selectedLabel) {
+        this.setValue(this.selectedValue, this.selectedLabel);
+      }
 
-      // Digitação no input: filtra opções e notifica seleção em tempo real
+      // Digitação para filtrar
       this.input.addEventListener('input', () => {
-        const val = this.input.value.trim();
-        this.selectedValue = val;
-        this.selectedLabel = val;
-        if (this.clearBtn) this.clearBtn.style.display = val ? 'flex' : 'none';
-        this.renderDropdown(val);
+        const query = this.input.value.trim();
+        this.selectedValue = query;
+        this.selectedLabel = query;
+        this.renderDropdown(query);
         this.open();
+        if (this.clearBtn) {
+          this.clearBtn.style.display = query ? 'flex' : 'none';
+        }
+        if (this.container) this.container.classList.remove('has-error');
         this.onSelect(this.selectedValue, this.selectedLabel);
       });
 
-      // Foco ou clique no input abre o dropdown com as opções
+      // Foco para abrir dropdown
       this.input.addEventListener('focus', () => {
         this.renderDropdown(this.input.value.trim());
         this.open();
@@ -1344,7 +1205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.open();
       });
 
-      // Botão de alternar dropdown (seta)
+      // Botão de toggle (abrir/fechar)
       if (this.toggleBtn) {
         this.toggleBtn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1371,7 +1232,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Fechar ao clicar fora
       document.addEventListener('click', (e) => {
-        if (!this.container.contains(e.target)) {
+        if (this.container && !this.container.contains(e.target)) {
           this.close();
         }
       });
@@ -1405,6 +1266,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (this.clearBtn) {
         this.clearBtn.style.display = this.selectedLabel ? 'flex' : 'none';
       }
+      if (this.container) this.container.classList.remove('has-error');
     }
 
     getValue() {
@@ -1428,8 +1290,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       this.dropdown.innerHTML = filtered.map(opt => {
         const isSelected = (opt.value && opt.value.toLowerCase() === this.selectedValue.toLowerCase()) ||
-          (!opt.value && !this.selectedValue);
-        const countBadge = opt.count !== undefined ? `<span class="combobox-count">${opt.count}</span>` : '';
+          (!opt.value && !this.selectedValue && opt.label === this.selectedLabel);
+        const countBadge = (opt.count !== undefined && opt.count !== null && opt.count !== '') ? 
+          `<span class="combobox-count">${opt.count}</span>` : '';
         
         let labelHtml = opt.label;
         if (term && opt.label && opt.value) {
@@ -1442,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return `
-          <div class="combobox-option ${isSelected ? 'selected' : ''}" data-value="${opt.value}" data-label="${opt.label}">
+          <div class="combobox-option ${isSelected ? 'selected' : ''}" data-value="${opt.value || ''}" data-label="${opt.label || ''}">
             <span class="combobox-label">${labelHtml}</span>
             ${countBadge}
           </div>
@@ -1462,6 +1325,205 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
+  }
+
+  // 13.1 Opções Oficiais dos Modais de Consulta
+  const filiaisDestinoOptions = [
+    { value: 'Mini Mercado 03 Simples Nacional', label: 'Mini Mercado 03 Simples Nacional' },
+    { value: 'Mini Mercado 01', label: 'Mini Mercado 01' },
+    { value: 'Mini Mercado 02 Condomínio Jardins', label: 'Mini Mercado 02 Condomínio Jardins' },
+    { value: 'Mini Mercado 04 Empresarial Prime', label: 'Mini Mercado 04 Empresarial Prime' }
+  ];
+
+  const filiaisOrigemOptions = [
+    { value: '', label: '-- Nenhuma (Sem filial de origem) --' },
+    { value: 'Estoque central', label: 'Estoque central' },
+    { value: 'CD Principal Zona Sul', label: 'CD Principal Zona Sul' }
+  ];
+
+  const planosAbastecimentoOptions = [
+    { value: '', label: '-- Nenhum plano (Consulta livre / Sem plano) --' },
+    { value: 'Plano MiniMercado 03', label: 'Plano MiniMercado 03', count: '45 itens' },
+    { value: 'Plano Snacks & Mercearia', label: 'Plano Snacks & Mercearia', count: '32 itens' },
+    { value: 'Plano Bebidas & Conveniência', label: 'Plano Bebidas & Conveniência', count: '28 itens' }
+  ];
+
+  // 13.2 Elementos e Comboboxes do Modal de Parâmetros
+  const containerFiltrosPlanoParams = document.getElementById('containerFiltrosPlanoParams');
+  const hintPlanoParamsHelper = document.getElementById('hintPlanoParamsHelper');
+  const btnToggleParamsHelp = document.getElementById('btnToggleParamsHelp');
+  const bodyParamsHelp = document.getElementById('bodyParamsHelp');
+  const btnParamsHelpText = document.getElementById('btnParamsHelpText');
+
+  if (btnToggleParamsHelp && bodyParamsHelp) {
+    btnToggleParamsHelp.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = bodyParamsHelp.style.display === 'flex';
+      bodyParamsHelp.style.display = isOpen ? 'none' : 'flex';
+      if (btnParamsHelpText) {
+        btnParamsHelpText.classList.toggle('open', !isOpen);
+        btnParamsHelpText.setAttribute('aria-expanded', String(!isOpen));
+      }
+    });
+  }
+
+  const comboboxParamsDestino = new SearchableCombobox({
+    containerId: 'comboboxParamsDestino',
+    inputId: 'inputComboboxParamsDestino',
+    clearBtnId: 'btnClearParamsDestino',
+    toggleBtnId: 'btnToggleParamsDestino',
+    dropdownId: 'dropdownParamsDestino',
+    getOptions: () => filiaisDestinoOptions,
+    onSelect: () => {}
+  });
+
+  const comboboxParamsOrigem = new SearchableCombobox({
+    containerId: 'comboboxParamsOrigem',
+    inputId: 'inputComboboxParamsOrigem',
+    clearBtnId: 'btnClearParamsOrigem',
+    toggleBtnId: 'btnToggleParamsOrigem',
+    dropdownId: 'dropdownParamsOrigem',
+    getOptions: () => filiaisOrigemOptions,
+    onSelect: () => {}
+  });
+
+  const comboboxParamsPlano = new SearchableCombobox({
+    containerId: 'comboboxParamsPlano',
+    inputId: 'inputComboboxParamsPlano',
+    clearBtnId: 'btnClearParamsPlano',
+    toggleBtnId: 'btnToggleParamsPlano',
+    dropdownId: 'dropdownParamsPlano',
+    getOptions: () => planosAbastecimentoOptions,
+    onSelect: (val) => {
+      const isPlano = !!(val && val.trim());
+      if (containerFiltrosPlanoParams) {
+        containerFiltrosPlanoParams.style.display = isPlano ? 'block' : 'none';
+      }
+      if (hintPlanoParamsHelper) {
+        hintPlanoParamsHelper.style.display = isPlano ? 'none' : 'flex';
+      }
+    }
+  });
+
+  // Atualizar classe active nos radio cards ao trocar de opção
+  if (modalParams) {
+    const radioCardsParams = modalParams.querySelectorAll('input[name="filterScopeParams"]');
+    radioCardsParams.forEach(radio => {
+      radio.addEventListener('change', () => {
+        const allCards = modalParams.querySelectorAll('.modal-radio-card');
+        allCards.forEach(c => c.classList.remove('active'));
+        const parentCard = radio.closest('.modal-radio-card');
+        if (parentCard) parentCard.classList.add('active');
+      });
+    });
+  }
+
+  function openParamsModal() {
+    if (modalParams) {
+      modalParams.classList.add('show', 'active');
+      
+      // 1. Destino
+      comboboxParamsDestino.setValue(currentParams.destino, currentParams.destino);
+
+      // 2. Origem
+      const isSemOrigem = !currentParams.origem || 
+        currentParams.origem.toLowerCase().includes('não especificada') || 
+        currentParams.origem.toLowerCase().includes('nenhuma') ||
+        currentParams.origem.toLowerCase().includes('entrada direta');
+      if (isSemOrigem) {
+        comboboxParamsOrigem.setValue('', '');
+      } else {
+        comboboxParamsOrigem.setValue(currentParams.origem, currentParams.origem);
+      }
+
+      // 3. Plano
+      const hasValidPlan = checkHasPlan();
+      if (hasValidPlan) {
+        comboboxParamsPlano.setValue(currentParams.plano, currentParams.plano);
+        if (containerFiltrosPlanoParams) containerFiltrosPlanoParams.style.display = 'block';
+        if (hintPlanoParamsHelper) hintPlanoParamsHelper.style.display = 'none';
+      } else {
+        comboboxParamsPlano.setValue('', '');
+        if (containerFiltrosPlanoParams) containerFiltrosPlanoParams.style.display = 'none';
+        if (hintPlanoParamsHelper) hintPlanoParamsHelper.style.display = 'flex';
+      }
+
+      // 4. Radio do Filtro
+      const radioSelected = modalParams.querySelector(`input[name="filterScopeParams"][value="${currentParams.filtro}"]`);
+      if (radioSelected) {
+        radioSelected.checked = true;
+        const allCards = modalParams.querySelectorAll('.modal-radio-card');
+        allCards.forEach(c => c.classList.remove('active'));
+        const activeCard = radioSelected.closest('.modal-radio-card');
+        if (activeCard) activeCard.classList.add('active');
+      }
+
+      // Resetar banner de ajuda colapsado
+      if (bodyParamsHelp) bodyParamsHelp.style.display = 'none';
+      if (btnParamsHelpText) {
+        btnParamsHelpText.classList.remove('open');
+        btnParamsHelpText.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+
+  function closeParamsModal() {
+    if (modalParams) modalParams.classList.remove('show', 'active');
+  }
+
+  if (btnEditParams) btnEditParams.addEventListener('click', openParamsModal);
+  if (btnCloseParams) btnCloseParams.addEventListener('click', closeParamsModal);
+  if (btnDiscardParams) btnDiscardParams.addEventListener('click', closeParamsModal);
+
+  if (modalParams) {
+    modalParams.addEventListener('click', (e) => {
+      if (e.target === modalParams) closeParamsModal();
+    });
+  }
+
+  if (btnApplyParams) {
+    btnApplyParams.addEventListener('click', () => {
+      const novoDestino = comboboxParamsDestino.getValue();
+      if (!novoDestino || !novoDestino.trim()) {
+        const grp = document.getElementById('comboboxParamsDestino');
+        if (grp) {
+          grp.classList.add('has-error');
+          setTimeout(() => grp.classList.remove('has-error'), 3000);
+        }
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Por favor, selecione a Filial para Repor.');
+        }
+        return;
+      }
+
+      const novaOrigemVal = comboboxParamsOrigem.getValue();
+      const novaOrigem = (novaOrigemVal && novaOrigemVal.trim()) ? novaOrigemVal : 'Não especificada (Entrada direta)';
+
+      const novoPlanoVal = comboboxParamsPlano.getValue();
+      const novoPlano = (novoPlanoVal && novoPlanoVal.trim()) ? novoPlanoVal : 'Sem plano base (Todos os produtos)';
+      
+      const radioSelected = modalParams.querySelector('input[name="filterScopeParams"]:checked');
+      const novoFiltro = radioSelected ? radioSelected.value : 'completo';
+
+      currentParams = {
+        origem: novaOrigem,
+        destino: novoDestino,
+        plano: novoPlano,
+        filtro: novoFiltro
+      };
+
+      hasPlan = checkHasPlan();
+
+      if (hasPlan && queryProducts.length === 0) {
+        queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({ ...p, selecionado: false }));
+      }
+
+      closeParamsModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success('Parâmetros da consulta atualizados com sucesso!');
+      }
+      renderAll();
+    });
   }
 
   // 14.3 Elementos do DOM do Modal
