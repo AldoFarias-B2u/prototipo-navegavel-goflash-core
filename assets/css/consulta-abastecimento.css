@@ -1708,12 +1708,28 @@
 
 .card-stock-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   background-color: #f8f9fa;
-  padding: 8px;
+  padding: 8px 10px;
   border-radius: 6px;
   text-align: center;
+  border: 1px solid #f0f2f5;
+}
+
+.card-stock-grid.grid-4-cols {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.card-stock-grid.grid-3-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card-stock-grid.grid-2-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card-stock-grid.grid-1-col {
+  grid-template-columns: 1fr;
 }
 
 .card-stock-item {
@@ -1726,10 +1742,12 @@
   font-size: 0.68rem;
   color: #757575;
   text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .card-stock-val {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #333333;
 }
@@ -1738,9 +1756,60 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   border-top: 1px solid #f0f0f0;
   padding-top: 10px;
+  flex-wrap: wrap;
+}
+
+.card-sugestao-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #f3e8ff;
+  border: 1px solid #d8b4fe;
+  border-radius: 14px;
+  padding: 4px 9px;
+  color: #6530b5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-size: 0.74rem;
+}
+
+.card-sugestao-pill:hover {
+  background-color: #ede0fd;
+  border-color: #6530b5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.15);
+}
+
+.card-sugestao-pill:active {
+  transform: scale(0.97);
+}
+
+.card-sugestao-pill .sugestao-icon {
+  font-size: 15px;
+  color: #6530b5;
+}
+
+.card-sugestao-pill .sugestao-text {
+  color: #553c7b;
+}
+
+.card-sugestao-pill .sugestao-text strong {
+  color: #6530b5;
+  font-weight: 700;
+}
+
+.card-sugestao-placeholder {
+  flex: 1;
+}
+
+.card-action-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .card-repor-group {
@@ -2236,21 +2305,33 @@
   }
 
   .card-stock-grid {
-    grid-template-columns: repeat(4, 1fr);
     gap: 4px;
-    padding: 8px 6px;
+    padding: 6px 4px;
   }
 
   .card-stock-item {
-    padding: 4px 2px;
+    padding: 3px 2px;
   }
 
   .card-stock-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
   }
 
   .card-stock-val {
     font-size: 0.85rem;
+  }
+
+  .card-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .card-sugestao-pill {
+    padding: 4px 8px;
+    font-size: 0.72rem;
   }
 
   .repor-stepper-btn {
@@ -2260,7 +2341,7 @@
   }
 
   .repor-stepper-input {
-    width: 54px;
+    width: 52px;
     height: 44px;
     font-size: 1.05rem;
   }

@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let stockGridHtml = '';
           if (hasPlan) {
             stockGridHtml = `
-              <div class="card-stock-grid">
+              <div class="card-stock-grid ${hasOrigin ? 'grid-4-cols' : 'grid-3-cols'}">
                 <div class="card-stock-item">
                   <span class="card-stock-label">Ideal</span>
                   <span class="card-stock-val" style="color: #2e7d32;">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : '-'}</span>
@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="card-stock-item">
                   <span class="card-stock-label">Loja</span>
-                  <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : '#f57f17'};">${item.estoqueLoja}</span>
+                  <span class="card-stock-val" style="color: ${isCritico ? '#c62828' : (item.estoqueLoja === 0 ? '#c62828' : '#f57f17')}; font-weight: 700;">${item.estoqueLoja}</span>
                 </div>
                 ${hasOrigin ? `
                   <div class="card-stock-item">
@@ -618,15 +618,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="card-stock-val" style="color: #388e3c; font-weight: 700;">${item.estoqueCd !== undefined ? item.estoqueCd : '-'}</span>
                   </div>
                 ` : ''}
-                <div class="card-stock-item">
-                  <span class="card-stock-label">Sugestão</span>
-                  <span class="card-stock-val" style="color: #6530b5;">${item.sugestao !== undefined ? item.sugestao : '-'}</span>
-                </div>
               </div>
             `;
           } else {
             stockGridHtml = `
-              <div class="card-stock-grid" style="${hasOrigin ? 'grid-template-columns: 1fr 1fr;' : 'grid-template-columns: 1fr;'}">
+              <div class="card-stock-grid ${hasOrigin ? 'grid-2-cols' : 'grid-1-col'}">
                 <div class="card-stock-item">
                   <span class="card-stock-label">Estoque Loja</span>
                   <span class="card-stock-val" style="color: ${item.estoqueLoja === 0 ? '#c62828' : '#1976d2'}; font-weight: 700;">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0}</span>
@@ -667,26 +663,37 @@ document.addEventListener('DOMContentLoaded', () => {
               ${stockGridHtml}
 
               <div class="card-action-row">
-                <div class="card-repor-group">
-                  <span class="card-repor-label">A Repor:</span>
-                  <div class="repor-stepper-wrapper ${pendingClass}">
-                    <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}">−</button>
-                    <input 
-                      type="number" 
-                      class="repor-stepper-input input-a-repor" 
-                      data-id="${item.id}" 
-                      value="${item.aRepor !== undefined ? item.aRepor : 0}" 
-                      min="0"
-                      max="999"
-                      placeholder="0"
-                    >
-                    <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}">+</button>
+                ${hasPlan && item.sugestao !== undefined ? `
+                  <div class="card-sugestao-pill btn-apply-sugestao" data-id="${item.id}" data-sugestao="${item.sugestao}" title="Sugestão calculada: ${item.sugestao} un. Clique para preencher.">
+                    <span class="material-icons sugestao-icon">lightbulb</span>
+                    <span class="sugestao-text">Sugestão: <strong>${item.sugestao} un</strong></span>
                   </div>
-                </div>
+                ` : `
+                  <div class="card-sugestao-placeholder"></div>
+                `}
 
-                <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta">
-                  <span class="material-icons">delete</span>
-                </button>
+                <div class="card-action-right">
+                  <div class="card-repor-group">
+                    <span class="card-repor-label">A Repor:</span>
+                    <div class="repor-stepper-wrapper ${pendingClass}">
+                      <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+                      <input 
+                        type="number" 
+                        class="repor-stepper-input input-a-repor" 
+                        data-id="${item.id}" 
+                        value="${item.aRepor !== undefined ? item.aRepor : 0}" 
+                        min="0" 
+                        max="999"
+                        placeholder="0"
+                      >
+                      <button type="button" class="repor-stepper-btn btn-stepper-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn-delete-row btn-remove-item" data-id="${item.id}" title="Remover da consulta" aria-label="Remover">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </div>
               </div>
             </div>
           `;
@@ -787,6 +794,25 @@ document.addEventListener('DOMContentLoaded', () => {
           queryProducts.splice(prodIndex, 1);
           if (typeof Toast !== 'undefined') {
             Toast.info(`"${removedName.substring(0, 24)}..." removido da consulta.`);
+          }
+          renderAll();
+        }
+      });
+    });
+
+    // Pílulas de Sugestão Tátil (Clique para aplicar a sugestão calculada)
+    const sugestaoPills = document.querySelectorAll('.btn-apply-sugestao');
+    sugestaoPills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = pill.getAttribute('data-id');
+        const sug = parseInt(pill.getAttribute('data-sugestao'), 10) || 0;
+        const prod = queryProducts.find(p => p.id == id);
+        if (prod) {
+          prod.aRepor = sug;
+          prod.selecionado = sug > 0;
+          if (typeof Toast !== 'undefined') {
+            Toast.info(`Sugestão de ${sug} un aplicada para "${prod.nome.substring(0, 22)}...".`);
           }
           renderAll();
         }
