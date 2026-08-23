@@ -674,7 +674,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <div class="card-action-right">
                   <div class="card-repor-group">
-                    <span class="card-repor-label">A Repor:</span>
+                    <span class="card-repor-label">
+                      <span class="repor-text-full">A Repor:</span>
+                      <span class="repor-text-short">Repor:</span>
+                    </span>
                     <div class="repor-stepper-wrapper ${pendingClass}">
                       <button type="button" class="repor-stepper-btn btn-stepper-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
                       <input 

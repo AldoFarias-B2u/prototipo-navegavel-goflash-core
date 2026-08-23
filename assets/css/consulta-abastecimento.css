@@ -1832,6 +1832,14 @@
   color: #555555;
 }
 
+.repor-text-full {
+  display: inline;
+}
+
+.repor-text-short {
+  display: none;
+}
+
 /* --------------------------------------------------------------------------
    Sticky Footer: Barra de Resumo e Ação Primária
    -------------------------------------------------------------------------- */
@@ -2436,45 +2444,12 @@
   }
 }
 
-/* Telas Mobile (≤ 480px, 425px, 375px, 360px) */
-@media (max-width: 480px) {
-  .card-repor-label {
-    display: none !important; /* Oculta o texto 'A Repor:' para manter tudo perfeitamente em 1 linha */
-  }
+/* ==========================================================================
+   Calibração Responsiva dos Cards (Faixas: 425px, 380px, 360px e 320px)
+   ========================================================================== */
 
-  .card-sugestao-pill .sugestao-prefix-full {
-    display: none !important;
-  }
-
-  .card-sugestao-pill .sugestao-prefix-short {
-    display: inline !important;
-  }
-
-  .card-sugestao-pill {
-    padding: 3px 6px;
-    font-size: 0.70rem;
-  }
-
-  .repor-stepper-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.1rem;
-  }
-
-  .repor-stepper-input {
-    width: 42px;
-    height: 36px;
-    font-size: 0.95rem;
-  }
-
-  .btn-delete-row {
-    width: 34px;
-    height: 34px;
-  }
-}
-
-/* Telas Compactas (≤ 420px, 396px, 360px) */
-@media (max-width: 420px) {
+/* 1. Faixa de 425px até 381px: "Sugestão:" completa + "A Repor:" completo */
+@media (max-width: 425px) {
   .consulta-main-container {
     padding: 0.5rem 0.5rem 7.5rem 0.5rem;
   }
@@ -2508,5 +2483,174 @@
 
   .btn-footer-generate-order {
     font-size: 0.82rem;
+  }
+
+  .card-action-row {
+    gap: 4px;
+    padding-top: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .card-sugestao-pill {
+    padding: 3px 6px;
+    font-size: 0.70rem;
+    gap: 3px;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-full {
+    display: inline !important;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-short {
+    display: none !important;
+  }
+
+  .card-repor-label {
+    display: inline-block !important;
+    font-size: 0.76rem;
+  }
+
+  .repor-text-full {
+    display: inline !important;
+  }
+
+  .repor-text-short {
+    display: none !important;
+  }
+
+  .repor-stepper-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .repor-stepper-input {
+    width: 38px;
+    height: 36px;
+    font-size: 0.95rem;
+    padding: 0 1px;
+  }
+
+  .btn-delete-row {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* 2. Faixa de 380px até 361px: "Sugestão:" completa + "Repor:" (sem o "A") */
+@media (max-width: 380px) {
+  .card-sugestao-pill .sugestao-prefix-full {
+    display: inline !important;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-short {
+    display: none !important;
+  }
+
+  .repor-text-full {
+    display: none !important;
+  }
+
+  .repor-text-short {
+    display: inline !important;
+  }
+
+  .card-repor-label {
+    display: inline-block !important;
+    font-size: 0.72rem;
+  }
+
+  .card-sugestao-pill {
+    padding: 3px 5px;
+    font-size: 0.68rem;
+    gap: 3px;
+  }
+
+  .repor-stepper-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .repor-stepper-input {
+    width: 36px;
+    height: 34px;
+    font-size: 0.90rem;
+  }
+
+  .btn-delete-row {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* 3. Faixa de 360px até 321px: "Sugestão:" completa + retira a palavra "Repor" */
+@media (max-width: 360px) {
+  .card-sugestao-pill .sugestao-prefix-full {
+    display: inline !important;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-short {
+    display: none !important;
+  }
+
+  .card-repor-label {
+    display: none !important;
+  }
+
+  .card-sugestao-pill {
+    padding: 3px 5px;
+    font-size: 0.68rem;
+  }
+
+  .repor-stepper-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .repor-stepper-input {
+    width: 36px;
+    height: 34px;
+  }
+
+  .btn-delete-row {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* 4. A partir de 320px para baixo (<= 320px): "Sug:" abreviada + sem "Repor" */
+@media (max-width: 320px) {
+  .card-sugestao-pill .sugestao-prefix-full {
+    display: none !important;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-short {
+    display: inline !important;
+  }
+
+  .card-repor-label {
+    display: none !important;
+  }
+
+  .card-sugestao-pill {
+    padding: 2px 4px;
+    font-size: 0.66rem;
+  }
+
+  .repor-stepper-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .repor-stepper-input {
+    width: 34px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  .btn-delete-row {
+    width: 30px;
+    height: 30px;
   }
 }
