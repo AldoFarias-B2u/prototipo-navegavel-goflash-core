@@ -2,6 +2,19 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.9] - 2026-08-23
+### ✨ Modernização & Segurança na Consulta de Abastecimento
+- **Modal de Alteração de Parâmetros com Comboboxes Pesquisáveis e Pré-Preenchimento Ativo** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - **Componente Searchable Combobox Unificado**: Substituição completa dos selects antigos pelos comboboxes modernos com autocomplete instantâneo, badges de contagem de itens em planos e botão de limpar.
+  - **Pré-Carregamento Inteligente**: O modal abre automaticamente populado com as informações ativas da consulta atual (Destino, Origem, Plano e Filtro).
+  - **Banner de Instruções Colapsável**: Inclusão do cabeçalho com ícone `info` (letra **i**) e dicas de funcionamento expansíveis.
+- **Alerta de Segurança e Confirmação de Sobrescrita de Produtos**:
+  - Diálogo modal de segurança (`#modalConfirmChangeParams`) com destaque âmbar alertando que a troca de parâmetros exclui e sobrescreve produtos da consulta anterior.
+  - Faixa preventiva `.modal-warning-strip` inserida no topo do formulário de edição de parâmetros.
+  - Resolução de dependências de inicialização de scripts e restabelecimento total dos fluxos de adição de produtos do catálogo e filtros.
+
+---
+
 ## [1.9.8] - 2026-08-23
 ### ✨ Otimização de Modais & UI/UX
 - **Comboboxes Pesquisáveis e Reordenação Estratégica nos Modais de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css), [`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js)):
