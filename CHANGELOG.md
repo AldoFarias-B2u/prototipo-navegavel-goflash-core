@@ -2,6 +2,19 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.10] - 2026-08-23
+### ✨ Otimização Ergonômica dos Cards de Abastecimento
+- **Grid de Estoque 100% Simétrico & Pílula Tátil de Sugestão** ([`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - **Simetria no Grid de Métricas**: Grid superior em 4 colunas uniformes (`IDEAL` | `CRÍTICO` | `LOJA` | `CD`), eliminando sobras ou quebras desbalanceadas.
+  - **Sugestão Integrada à Ação**: Posicionamento da `Sugestão` na barra inferior ao lado de `A Repor:` em formato de pílula roxa com preenchimento tátil em 1 clique (`.btn-apply-sugestao`).
+  - **Calibração Fina de Breakpoints Mobile**:
+    - `> 425px` & `425px - 381px`: `[ 💡 Sugestão: 10 un ]` $\longleftrightarrow$ `A Repor: [-] [ 10 ] [+] 🗑️` em 1 linha única.
+    - `380px - 361px` *(ex: 375px)*: `[ 💡 Sugestão: 10 un ]` $\longleftrightarrow$ `Repor: [-] [ 10 ] [+] 🗑️` (sem o "A").
+    - `360px - 321px`: `[ 💡 Sugestão: 10 un ]` $\longleftrightarrow$ `[-] [ 10 ] [+] 🗑️` (sem a palavra Repor).
+    - `≤ 320px`: `[ 💡 Sug: 10 un ]` $\longleftrightarrow$ `[-] [ 10 ] [+] 🗑️` (abreviação fluida para Sug).
+
+---
+
 ## [1.9.9] - 2026-08-23
 ### ✨ Modernização & Segurança na Consulta de Abastecimento
 - **Modal de Alteração de Parâmetros com Comboboxes Pesquisáveis e Pré-Preenchimento Ativo** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
