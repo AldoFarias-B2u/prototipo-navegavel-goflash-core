@@ -139,6 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openNovaConsultaModal() {
     closeChoiceModal();
+    const bodyHelp = document.getElementById('bodyConsultaHelp');
+    const btnHelp = document.getElementById('btnConsultaHelpText');
+    if (bodyHelp) bodyHelp.style.display = 'none';
+    if (btnHelp) {
+      btnHelp.classList.remove('open');
+      btnHelp.setAttribute('aria-expanded', 'false');
+    }
     if (modalNovaConsulta) modalNovaConsulta.classList.add('show', 'active');
   }
 
@@ -398,6 +405,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elementos auxiliares do plano
   const containerFiltrosPlano = document.getElementById('containerFiltrosPlano');
   const hintPlanoHelper = document.getElementById('hintPlanoHelper');
+
+  // 4.1.1 Controle do Banner Colapsável de Instruções
+  const btnToggleConsultaHelp = document.getElementById('btnToggleConsultaHelp');
+  const bodyConsultaHelp = document.getElementById('bodyConsultaHelp');
+  const btnConsultaHelpText = document.getElementById('btnConsultaHelpText');
+
+  if (btnToggleConsultaHelp && bodyConsultaHelp) {
+    btnToggleConsultaHelp.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = bodyConsultaHelp.style.display === 'flex';
+      bodyConsultaHelp.style.display = isOpen ? 'none' : 'flex';
+      if (btnConsultaHelpText) {
+        btnConsultaHelpText.classList.toggle('open', !isOpen);
+        btnConsultaHelpText.setAttribute('aria-expanded', !isOpen ? 'true' : 'false');
+      }
+    });
+  }
 
   // 4.2 Instanciação dos Comboboxes do Modal de Nova Consulta
   const comboboxModalDestino = new SearchableCombobox({

@@ -229,15 +229,23 @@
 
       <div class="official-modal-body">
 
-        <!-- Slim Notice Informativo Oficial -->
-        <div class="modal-slim-notice">
-          <div class="slim-notice-header">
-            <span class="material-icons slim-notice-icon">manage_search</span>
-            <strong class="slim-notice-title">Consulta de Abastecimento</strong>
+        <!-- Banner Informativo Compacto com Ajuda Colapsável (Opção C Aprovada) -->
+        <div class="modal-instruction-collapsible" id="boxInstructionConsulta">
+          <div class="instruction-collapsible-summary" id="btnToggleConsultaHelp">
+            <div class="instruction-summary-left">
+              <span class="material-icons instruction-summary-icon">manage_search</span>
+              <strong class="instruction-summary-title">Consulta e Reposição de Filiais</strong>
+            </div>
+            <button type="button" class="btn-instruction-help-toggle" id="btnConsultaHelpText" aria-expanded="false" title="Ver dicas de como funciona">
+              <span>Como funciona?</span>
+              <span class="material-icons instruction-toggle-icon">expand_more</span>
+            </button>
           </div>
-          <p class="slim-notice-text">
-            Identifique rapidamente as necessidades de reposição das filiais. Consulte o estoque, aplique os filtros e, ao selecionar um Plano de Abastecimento, receba sugestões de quantidades para abastecer. Em seguida, revise os itens e gere seu Pedido de Abastecimento.
-          </p>
+          <div class="instruction-collapsible-body" id="bodyConsultaHelp" style="display: none;">
+            <div class="instruction-help-item">• Escolha a filial que precisa de reposição de mercadorias.</div>
+            <div class="instruction-help-item">• Selecione um plano para receber sugestões calculadas ou consulte livremente.</div>
+            <div class="instruction-help-item">• Revise os itens na listagem e gere seu pedido de abastecimento.</div>
+          </div>
         </div>
 
         <!-- 1. Combobox Filial para Repor (Destino - Obrigatório) -->
