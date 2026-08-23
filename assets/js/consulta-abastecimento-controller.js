@@ -666,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${hasPlan && item.sugestao !== undefined ? `
                   <div class="card-sugestao-pill btn-apply-sugestao" data-id="${item.id}" data-sugestao="${item.sugestao}" title="Sugestão calculada: ${item.sugestao} un. Clique para preencher.">
                     <span class="material-icons sugestao-icon">lightbulb</span>
-                    <span class="sugestao-text">Sugestão: <strong>${item.sugestao} un</strong></span>
+                    <span class="sugestao-text"><span class="sugestao-prefix-full">Sugestão: </span><span class="sugestao-prefix-short">Sug: </span><strong>${item.sugestao} un</strong></span>
                   </div>
                 ` : `
                   <div class="card-sugestao-placeholder"></div>

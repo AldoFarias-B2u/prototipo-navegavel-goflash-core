@@ -1797,6 +1797,14 @@
   color: #553c7b;
 }
 
+.card-sugestao-pill .sugestao-prefix-full {
+  display: inline;
+}
+
+.card-sugestao-pill .sugestao-prefix-short {
+  display: none;
+}
+
 .card-sugestao-pill .sugestao-text strong {
   color: #6530b5;
   font-weight: 700;
@@ -2325,25 +2333,42 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
     padding-top: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .card-action-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .card-sugestao-pill {
     padding: 4px 8px;
     font-size: 0.72rem;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .repor-stepper-btn {
-    width: 44px; /* Touch target 44px recomendado */
-    height: 44px;
-    font-size: 1.25rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
 
   .repor-stepper-input {
-    width: 52px;
-    height: 44px;
-    font-size: 1.05rem;
+    width: 46px;
+    height: 40px;
+    font-size: 1rem;
+    padding: 0 2px;
+  }
+
+  .btn-delete-row {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
   }
 
   /* Tabela com Scroll Suave no Mobile */
@@ -2408,6 +2433,43 @@
 
   .initial-choice-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Telas Mobile (≤ 480px, 425px, 375px, 360px) */
+@media (max-width: 480px) {
+  .card-repor-label {
+    display: none !important; /* Oculta o texto 'A Repor:' para manter tudo perfeitamente em 1 linha */
+  }
+
+  .card-sugestao-pill .sugestao-prefix-full {
+    display: none !important;
+  }
+
+  .card-sugestao-pill .sugestao-prefix-short {
+    display: inline !important;
+  }
+
+  .card-sugestao-pill {
+    padding: 3px 6px;
+    font-size: 0.70rem;
+  }
+
+  .repor-stepper-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .repor-stepper-input {
+    width: 42px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+
+  .btn-delete-row {
+    width: 34px;
+    height: 34px;
   }
 }
 
