@@ -206,22 +206,293 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnClosePedidoBranco) btnClosePedidoBranco.addEventListener('click', closePedidoBrancoModal);
   if (btnDiscardPedidoBranco) btnDiscardPedidoBranco.addEventListener('click', closePedidoBrancoModal);
 
+  /**
+   * Componente Reutilizável de Combobox Pesquisável (Searchable Autocomplete)
+   */
+  class SearchableCombobox {
+    constructor(config) {
+      this.container = document.getElementById(config.containerId);
+      this.input = document.getElementById(config.inputId);
+      this.clearBtn = document.getElementById(config.clearBtnId);
+      this.toggleBtn = document.getElementById(config.toggleBtnId);
+      this.dropdown = document.getElementById(config.dropdownId);
+      this.getOptions = config.getOptions || (() => []);
+      this.onSelect = config.onSelect || (() => {});
+      this.selectedValue = config.initialValue || '';
+      this.selectedLabel = config.initialLabel || '';
+
+      if (!this.container || !this.input || !this.dropdown) return;
+      this.init();
+    }
+
+    init() {
+      // Valor inicial
+      if (this.selectedLabel) {
+        this.setValue(this.selectedValue, this.selectedLabel);
+      }
+
+      // Digitação para filtrar
+      this.input.addEventListener('input', () => {
+        const query = this.input.value.trim();
+        this.renderDropdown(query);
+        this.open();
+        if (this.clearBtn) {
+          this.clearBtn.style.display = query ? 'flex' : 'none';
+        }
+        if (this.container) this.container.classList.remove('has-error');
+      });
+
+      // Foco para abrir dropdown
+      this.input.addEventListener('focus', () => {
+        this.renderDropdown(this.input.value.trim());
+        this.open();
+      });
+
+      // Botão de toggle (abrir/fechar)
+      if (this.toggleBtn) {
+        this.toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (this.isOpen()) {
+            this.close();
+          } else {
+            this.renderDropdown('');
+            this.open();
+            this.input.focus();
+          }
+        });
+      }
+
+      // Botão de limpar
+      if (this.clearBtn) {
+        this.clearBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.setValue('', '');
+          this.close();
+          this.onSelect('', '');
+          this.input.focus();
+        });
+      }
+
+      // Fechar ao clicar fora
+      document.addEventListener('click', (e) => {
+        if (this.container && !this.container.contains(e.target)) {
+          this.close();
+        }
+      });
+    }
+
+    open() {
+      if (!this.dropdown) return;
+      this.dropdown.style.display = 'block';
+      this.dropdown.classList.add('show');
+      if (this.container) this.container.classList.add('open');
+      if (this.toggleBtn) this.toggleBtn.classList.add('open');
+    }
+
+    close() {
+      if (!this.dropdown) return;
+      this.dropdown.style.display = 'none';
+      this.dropdown.classList.remove('show');
+      if (this.container) this.container.classList.remove('open');
+      if (this.toggleBtn) this.toggleBtn.classList.remove('open');
+    }
+
+    isOpen() {
+      if (!this.dropdown) return false;
+      return this.dropdown.style.display === 'block' || this.dropdown.classList.contains('show');
+    }
+
+    setValue(value, label) {
+      this.selectedValue = value || '';
+      this.selectedLabel = label !== undefined ? label : (value || '');
+      this.input.value = this.selectedLabel;
+      if (this.clearBtn) {
+        this.clearBtn.style.display = this.selectedLabel ? 'flex' : 'none';
+      }
+      if (this.container) this.container.classList.remove('has-error');
+    }
+
+    getValue() {
+      return this.selectedValue || this.input.value.trim();
+    }
+
+    getLabel() {
+      return this.selectedLabel || this.input.value.trim();
+    }
+
+    renderDropdown(searchTerm = '') {
+      const options = this.getOptions();
+      const term = searchTerm.toLowerCase();
+
+      const filtered = options.filter(opt => 
+        !term || opt.label.toLowerCase().includes(term) || (opt.value && opt.value.toLowerCase().includes(term))
+      );
+
+      if (filtered.length === 0) {
+        this.dropdown.innerHTML = `
+          <div class="combobox-empty">Nenhum resultado encontrado</div>
+        `;
+        return;
+      }
+
+      this.dropdown.innerHTML = filtered.map(opt => {
+        const isSelected = (opt.value && opt.value.toLowerCase() === this.selectedValue.toLowerCase()) ||
+          (!opt.value && !this.selectedValue && opt.label === this.selectedLabel);
+        const countBadge = (opt.count !== undefined && opt.count !== null && opt.count > 0) ? 
+          `<span class="combobox-count">${opt.count} itens</span>` : '';
+        
+        let labelHtml = opt.label;
+        if (term && opt.label && opt.value) {
+          const idx = opt.label.toLowerCase().indexOf(term);
+          if (idx > -1) {
+            labelHtml = opt.label.substring(0, idx) +
+              `<strong>${opt.label.substring(idx, idx + term.length)}</strong>` +
+              opt.label.substring(idx + term.length);
+          }
+        }
+
+        return `
+          <div class="combobox-option ${isSelected ? 'selected' : ''}" data-value="${opt.value || ''}" data-label="${opt.label || ''}">
+            <span class="combobox-label">${labelHtml}</span>
+            ${countBadge}
+          </div>
+        `;
+      }).join('');
+
+      // Eventos de clique nas opções
+      const optionEls = this.dropdown.querySelectorAll('.combobox-option');
+      optionEls.forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const val = el.getAttribute('data-value');
+          const lbl = el.getAttribute('data-label');
+          this.setValue(val, lbl);
+          this.close();
+          this.onSelect(val, lbl);
+        });
+      });
+    }
+  }
+
+  // 4.1 Dados das Opções dos Comboboxes
+  const filiaisDestinoOptions = [
+    { value: 'Mini Mercado 03 Simples Nacional', label: 'Mini Mercado 03 Simples Nacional' },
+    { value: 'Mini Mercado 01', label: 'Mini Mercado 01' },
+    { value: 'Mini Mercado 02 Condomínio Jardins', label: 'Mini Mercado 02 Condomínio Jardins' },
+    { value: 'Mini Mercado 04 Empresarial Prime', label: 'Mini Mercado 04 Empresarial Prime' }
+  ];
+
+  const filiaisOrigemOptions = [
+    { value: '', label: '-- Nenhuma (Sem filial de origem) --' },
+    { value: 'Estoque central', label: 'Estoque central' },
+    { value: 'CD Principal Zona Sul', label: 'CD Principal Zona Sul' }
+  ];
+
+  const planosAbastecimentoOptions = [
+    { value: '', label: '-- Nenhum plano (Consulta livre / Sem plano) --', count: 0 },
+    { value: 'Plano MiniMercado 03', label: 'Plano MiniMercado 03', count: 45 },
+    { value: 'Plano Snacks & Mercearia', label: 'Plano Snacks & Mercearia', count: 32 },
+    { value: 'Plano Bebidas & Conveniência', label: 'Plano Bebidas & Conveniência', count: 28 }
+  ];
+
+  // Elementos auxiliares do plano
+  const containerFiltrosPlano = document.getElementById('containerFiltrosPlano');
+  const hintPlanoHelper = document.getElementById('hintPlanoHelper');
+
+  // 4.2 Instanciação dos Comboboxes do Modal de Nova Consulta
+  const comboboxModalDestino = new SearchableCombobox({
+    containerId: 'comboboxModalDestino',
+    inputId: 'inputComboboxModalDestino',
+    clearBtnId: 'btnClearModalDestino',
+    toggleBtnId: 'btnToggleModalDestino',
+    dropdownId: 'dropdownModalDestino',
+    getOptions: () => filiaisDestinoOptions,
+    onSelect: () => {}
+  });
+
+  const comboboxModalOrigem = new SearchableCombobox({
+    containerId: 'comboboxModalOrigem',
+    inputId: 'inputComboboxModalOrigem',
+    clearBtnId: 'btnClearModalOrigem',
+    toggleBtnId: 'btnToggleModalOrigem',
+    dropdownId: 'dropdownModalOrigem',
+    getOptions: () => filiaisOrigemOptions,
+    onSelect: () => {}
+  });
+
+  const comboboxModalPlano = new SearchableCombobox({
+    containerId: 'comboboxModalPlano',
+    inputId: 'inputComboboxModalPlano',
+    clearBtnId: 'btnClearModalPlano',
+    toggleBtnId: 'btnToggleModalPlano',
+    dropdownId: 'dropdownModalPlano',
+    getOptions: () => planosAbastecimentoOptions,
+    onSelect: (val) => {
+      const hasPlan = !!val;
+      if (containerFiltrosPlano) {
+        containerFiltrosPlano.style.display = hasPlan ? 'block' : 'none';
+      }
+      if (hintPlanoHelper) {
+        hintPlanoHelper.style.display = hasPlan ? 'none' : 'flex';
+      }
+    }
+  });
+
+  // 4.3 Instanciação dos Comboboxes do Modal de Pedido em Branco
+  const comboboxBlankDestino = new SearchableCombobox({
+    containerId: 'comboboxBlankDestino',
+    inputId: 'inputComboboxBlankDestino',
+    clearBtnId: 'btnClearBlankDestino',
+    toggleBtnId: 'btnToggleBlankDestino',
+    dropdownId: 'dropdownBlankDestino',
+    initialValue: 'Mini Mercado 03 Simples Nacional',
+    initialLabel: 'Mini Mercado 03 Simples Nacional',
+    getOptions: () => filiaisDestinoOptions,
+    onSelect: () => {}
+  });
+
+  const comboboxBlankOrigem = new SearchableCombobox({
+    containerId: 'comboboxBlankOrigem',
+    inputId: 'inputComboboxBlankOrigem',
+    clearBtnId: 'btnClearBlankOrigem',
+    toggleBtnId: 'btnToggleBlankOrigem',
+    dropdownId: 'dropdownBlankOrigem',
+    getOptions: () => [
+      { value: '', label: '-- Nenhuma (Entrada direta / Compra) --' },
+      { value: 'Estoque central', label: 'Estoque central (000005)' },
+      { value: 'CD Principal Zona Sul', label: 'CD Principal Zona Sul (000001)' },
+      { value: 'Mini Mercado 01', label: 'Mini Mercado 01 (Transferência)' },
+      { value: 'Mini Mercado 02 Condomínio Jardins', label: 'Mini Mercado 02 Condomínio Jardins (Transferência)' }
+    ],
+    onSelect: () => {}
+  });
+
+  // Ação Avançar do Modal Pedido em Branco
   if (btnAvancarPedidoBranco) {
     btnAvancarPedidoBranco.addEventListener('click', () => {
-      const selectDestino = document.getElementById('selectBlankDestino');
-      const selectOrigem = document.getElementById('selectBlankOrigem');
+      const destinoVal = comboboxBlankDestino.getValue();
+      const origemVal = comboboxBlankOrigem.getValue();
 
-      const destinoText = selectDestino ? selectDestino.value : 'Mini Mercado 03 Simples Nacional';
-      const origemText = selectOrigem ? selectOrigem.value : '';
+      if (!destinoVal) {
+        const container = document.getElementById('comboboxBlankDestino');
+        if (container) {
+          container.classList.add('has-error');
+          setTimeout(() => container.classList.remove('has-error'), 3000);
+        }
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Por favor, selecione a Filial para Repor (Destino).');
+        }
+        return;
+      }
 
       closePedidoBrancoModal();
       if (typeof Toast !== 'undefined') {
         Toast.info('Iniciando Pedido em Branco...');
       }
 
-      let url = `./pedido-manual.html?destino=${encodeURIComponent(destinoText)}`;
-      if (origemText) {
-        url += `&origem=${encodeURIComponent(origemText)}`;
+      let url = `./pedido-manual.html?destino=${encodeURIComponent(destinoVal)}`;
+      if (origemVal) {
+        url += `&origem=${encodeURIComponent(origemVal)}`;
       }
 
       setTimeout(() => {
@@ -229,60 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     });
   }
-
-  if (btnCloseNovaConsulta) btnCloseNovaConsulta.addEventListener('click', closeNovaConsultaModal);
-  if (btnDiscardNovaConsulta) btnDiscardNovaConsulta.addEventListener('click', closeNovaConsultaModal);
-
-  // 4.1 Controle Reativo dos Selects e Filtros Condicionais no Modal de Consulta
-  const selectModalOrigem = document.getElementById('selectModalOrigem');
-  const selectModalDestino = document.getElementById('selectModalDestino');
-  const selectModalPlano = document.getElementById('selectModalPlano');
-  const hintModalOrigem = document.getElementById('hintModalOrigem');
-  const hintModalDestino = document.getElementById('hintModalDestino');
-  const hintModalPlano = document.getElementById('hintModalPlano');
-  const containerFiltrosPlano = document.getElementById('containerFiltrosPlano');
-  const hintPlanoHelper = document.getElementById('hintPlanoHelper');
-
-  function updateSelectHintsAndPlanVisibility() {
-    if (selectModalOrigem && hintModalOrigem) {
-      const opt = selectModalOrigem.options[selectModalOrigem.selectedIndex];
-      hintModalOrigem.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : 'Opcional')) : 'Opcional';
-    }
-    if (selectModalDestino && hintModalDestino) {
-      const opt = selectModalDestino.options[selectModalDestino.selectedIndex];
-      hintModalDestino.textContent = opt ? (opt.getAttribute('data-code') || (opt.value ? opt.value : '--')) : '--';
-      if (opt && opt.value) {
-        const grp = selectModalDestino.closest('.modal-underline-group');
-        if (grp) grp.classList.remove('has-error');
-      }
-    }
-    if (selectModalPlano && hintModalPlano) {
-      const opt = selectModalPlano.options[selectModalPlano.selectedIndex];
-      const hasPlan = !!(opt && opt.value);
-      hintModalPlano.textContent = opt ? (opt.getAttribute('data-code') || (hasPlan ? opt.value : 'Opcional')) : 'Opcional';
-
-      if (containerFiltrosPlano) {
-        if (hasPlan) {
-          containerFiltrosPlano.style.display = 'block';
-          containerFiltrosPlano.classList.remove('hidden');
-        } else {
-          containerFiltrosPlano.style.display = 'none';
-          containerFiltrosPlano.classList.add('hidden');
-        }
-      }
-
-      if (hintPlanoHelper) {
-        hintPlanoHelper.style.display = hasPlan ? 'none' : 'flex';
-      }
-    }
-  }
-
-  if (selectModalOrigem) selectModalOrigem.addEventListener('change', updateSelectHintsAndPlanVisibility);
-  if (selectModalDestino) selectModalDestino.addEventListener('change', updateSelectHintsAndPlanVisibility);
-  if (selectModalPlano) selectModalPlano.addEventListener('change', updateSelectHintsAndPlanVisibility);
-
-  // Inicializa o estado visual dos filtros
-  updateSelectHintsAndPlanVisibility();
 
   // Seleção de Radio Cards no Modal de Consulta
   const radioCards = document.querySelectorAll('#modalNovaConsulta .modal-radio-card');
@@ -295,23 +512,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Avançar para a Tela de Consulta
+  // Ação Avançar do Modal Nova Consulta
   if (btnAvancarConsulta) {
     btnAvancarConsulta.addEventListener('click', () => {
-      const optOrigem = selectModalOrigem ? selectModalOrigem.options[selectModalOrigem.selectedIndex] : null;
-      const optDestino = selectModalDestino ? selectModalDestino.options[selectModalDestino.selectedIndex] : null;
-      const optPlano = selectModalPlano ? selectModalPlano.options[selectModalPlano.selectedIndex] : null;
+      const destinoVal = comboboxModalDestino.getValue();
+      const origemVal = comboboxModalOrigem.getValue();
+      const planoVal = comboboxModalPlano.getValue();
       const selectedRadio = document.querySelector('input[name="filtroPlanoConsulta"]:checked');
 
       // Validação obrigatória da Filial para Repor
-      if (!optDestino || !optDestino.value) {
-        if (selectModalDestino) {
-          selectModalDestino.focus();
-          const group = selectModalDestino.closest('.modal-underline-group');
-          if (group) {
-            group.classList.add('has-error');
-            setTimeout(() => group.classList.remove('has-error'), 3000);
-          }
+      if (!destinoVal) {
+        const container = document.getElementById('comboboxModalDestino');
+        if (container) {
+          container.classList.add('has-error');
+          setTimeout(() => container.classList.remove('has-error'), 3000);
         }
         if (typeof Toast !== 'undefined') {
           Toast.warning('Por favor, selecione a Filial para Repor para continuar.');
@@ -319,22 +533,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const origemText = (optOrigem && optOrigem.value) ? optOrigem.text : '';
-      const destinoText = optDestino.text;
-      const planoText = (optPlano && optPlano.value) ? optPlano.text : '';
-      const filtroVal = (optPlano && optPlano.value && selectedRadio) ? selectedRadio.value : 'completo';
+      const filtroVal = (planoVal && selectedRadio) ? selectedRadio.value : 'completo';
 
-      let url = `./consulta-abastecimento.html?destino=${encodeURIComponent(destinoText)}`;
-      if (origemText) {
-        url += `&origem=${encodeURIComponent(origemText)}`;
+      let url = `./consulta-abastecimento.html?destino=${encodeURIComponent(destinoVal)}`;
+      if (origemVal) {
+        url += `&origem=${encodeURIComponent(origemVal)}`;
       }
-      if (planoText) {
-        url += `&plano=${encodeURIComponent(planoText)}&filtro=${encodeURIComponent(filtroVal)}`;
+      if (planoVal) {
+        url += `&plano=${encodeURIComponent(planoVal)}&filtro=${encodeURIComponent(filtroVal)}`;
       }
 
       closeNovaConsultaModal();
       if (typeof Toast !== 'undefined') {
-        Toast.info(planoText ? 'Carregando produtos do plano...' : 'Iniciando consulta para inserção de produtos...');
+        Toast.info(planoVal ? 'Carregando produtos do plano...' : 'Iniciando consulta para inserção de produtos...');
       }
 
       setTimeout(() => {

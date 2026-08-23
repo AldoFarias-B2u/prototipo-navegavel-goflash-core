@@ -216,7 +216,7 @@
   </div>
 
   <!-- ========================================================================
-       MODAL B: NOVA CONSULTA DE ABASTECIMENTO (IDÊNTICO À IMAGEM 1)
+       MODAL B: NOVA CONSULTA DE ABASTECIMENTO
        ======================================================================== -->
   <div class="official-modal-overlay" id="modalNovaConsulta" role="dialog" aria-modal="true">
     <div class="official-modal-box" style="max-width: 580px;">
@@ -240,61 +240,100 @@
           </p>
         </div>
 
-        <!-- Select Filial do Estoque Origem (Opcional) -->
-        <div class="modal-underline-group">
-          <label class="modal-underline-label" for="selectModalOrigem">Selecione a Filial do Estoque Origem
-            (Opcional)</label>
-          <div class="modal-underline-wrapper">
-            <span class="material-icons modal-underline-icon">warehouse</span>
-            <select id="selectModalOrigem" class="modal-underline-select">
-              <option value="" data-code="Opcional" selected>-- Nenhuma (Sem filial de origem) --</option>
-              <option value="000005" data-code="000005">Estoque central</option>
-              <option value="000001" data-code="000001">CD Principal Zona Sul</option>
-            </select>
-            <span class="modal-underline-hint-right" id="hintModalOrigem">Opcional</span>
+        <!-- 1. Combobox Filial para Repor (Destino - Obrigatório) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxModalDestino">
+            <span class="material-icons field-label-icon">storefront</span>
+            Selecione a Filial para Repor: *
+          </label>
+          <div class="custom-combobox" id="comboboxModalDestino">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxModalDestino" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearModalDestino" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleModalDestino" title="Ver todas as filiais">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownModalDestino">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
         </div>
 
-        <!-- Select Filial para Repor -->
-        <div class="modal-underline-group" style="margin-top: 14px;">
-          <label class="modal-underline-label" for="selectModalDestino">Selecione a Filial para Repor *</label>
-          <div class="modal-underline-wrapper">
-            <span class="material-icons modal-underline-icon">storefront</span>
-            <select id="selectModalDestino" class="modal-underline-select">
-              <option value="" data-code="" selected>-- Selecione a filial para repor --</option>
-              <option value="000003" data-code="000003">Mini Mercado 03 Simples Nacional</option>
-              <option value="000001" data-code="000001">Mini Mercado 01</option>
-              <option value="000002" data-code="000002">Mini Mercado 02 Condomínio Jardins</option>
-              <option value="000004" data-code="000004">Mini Mercado 04 Empresarial Prime</option>
-            </select>
-            <span class="modal-underline-hint-right" id="hintModalDestino">--</span>
+        <!-- 2. Combobox Filial do Estoque Origem (Opcional) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxModalOrigem">
+            <span class="material-icons field-label-icon">warehouse</span>
+            Selecione a Filial do Estoque Origem (Opcional):
+          </label>
+          <div class="custom-combobox" id="comboboxModalOrigem">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxModalOrigem" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearModalOrigem" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleModalOrigem" title="Ver filiais de origem">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownModalOrigem">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
         </div>
 
-        <!-- Select Plano de Abastecimento (Opcional) -->
-        <div class="modal-underline-group" style="margin-top: 14px;">
-          <label class="modal-underline-label" for="selectModalPlano">Plano de Abastecimento (Opcional)</label>
-          <div class="modal-underline-wrapper">
-            <span class="material-icons modal-underline-icon">description</span>
-            <select id="selectModalPlano" class="modal-underline-select">
-              <option value="" data-code="Opcional" selected>-- Nenhum plano (Consulta geral / Sem plano) --</option>
-              <option value="000003" data-code="000003">Plano MiniMercado 03</option>
-              <option value="000005" data-code="000005">Plano Snacks & Mercearia</option>
-            </select>
-            <span class="modal-underline-hint-right" id="hintModalPlano">Opcional</span>
+        <!-- 3. Combobox Plano de Abastecimento (Opcional) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxModalPlano">
+            <span class="material-icons field-label-icon">description</span>
+            Plano de Abastecimento (Opcional):
+          </label>
+          <div class="custom-combobox" id="comboboxModalPlano">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxModalPlano" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearModalPlano" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleModalPlano" title="Ver planos de abastecimento">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownModalPlano">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
           <!-- Helper Text Sutil do Plano -->
           <div class="modal-field-hint" id="hintPlanoHelper">
             <span class="material-icons hint-icon">lightbulb</span>
-            <span>Selecione um plano para receber sugestões automáticas de reposição ou deixe vazio para consulta
-              livre.</span>
+            <span>Selecione um plano para receber sugestões automáticas de reposição ou deixe vazio para consulta livre.</span>
           </div>
         </div>
 
         <!-- Filtro do Plano de Abastecimento (Radio Cards - Condicional) -->
-        <div id="containerFiltrosPlano" class="plan-filter-container" style="margin-top: 12px; display: none;">
-          <label class="modal-underline-label" style="display: block; margin-bottom: 6px;">Filtro do Plano de
-            Abastecimento</label>
+        <div id="containerFiltrosPlano" class="plan-filter-container" style="display: none;">
+          <label class="modal-field-label" style="display: block; margin-bottom: 4px;">
+            Filtro do Plano de Abastecimento:
+          </label>
           <div class="modal-radio-cards-group">
 
             <label class="modal-radio-card active">
@@ -355,45 +394,70 @@
 
       <div class="official-modal-body">
 
-        <!-- Slim Notice Informativo Oficial -->
+        <!-- Slim Notice Informativo Oficial Padronizado -->
         <div class="modal-slim-notice">
-          <span class="material-icons slim-notice-icon">post_add</span>
-          <span class="slim-notice-text">
+          <div class="slim-notice-header">
+            <span class="material-icons slim-notice-icon">post_add</span>
+            <strong class="slim-notice-title">Pedido em Branco (Manual)</strong>
+          </div>
+          <p class="slim-notice-text">
             Monte o pedido de reposição adicionando produtos e quantidades manualmente.
-          </span>
+          </p>
         </div>
 
-        <!-- Select Filial para Repor (Destino - Obrigatório) -->
-        <div class="modal-underline-group">
-          <label class="modal-underline-label" for="selectBlankDestino">Selecione a Filial para Repor (Destino)
-            *</label>
-          <div class="modal-underline-wrapper">
-            <span class="material-icons modal-underline-icon">storefront</span>
-            <select id="selectBlankDestino" class="modal-underline-select">
-              <option value="Mini Mercado 03 Simples Nacional" selected>Mini Mercado 03 Simples Nacional</option>
-              <option value="Mini Mercado 01">Mini Mercado 01</option>
-              <option value="Mini Mercado 02 Condomínio Jardins">Mini Mercado 02 Condomínio Jardins</option>
-              <option value="Mini Mercado 04 Empresarial Prime">Mini Mercado 04 Empresarial Prime</option>
-            </select>
-            <span class="modal-underline-hint-right">000003</span>
+        <!-- 1. Combobox Filial para Repor (Destino - Obrigatório) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxBlankDestino">
+            <span class="material-icons field-label-icon">storefront</span>
+            Selecione a Filial para Repor (Destino): *
+          </label>
+          <div class="custom-combobox" id="comboboxBlankDestino">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxBlankDestino" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearBlankDestino" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleBlankDestino" title="Ver todas as filiais">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownBlankDestino">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
         </div>
 
-        <!-- Select Filial do Estoque Origem (Opcional) -->
-        <div class="modal-underline-group" style="margin-top: 14px;">
-          <label class="modal-underline-label" for="selectBlankOrigem">Filial do Estoque Origem (Opcional - para
-            Transferências)</label>
-          <div class="modal-underline-wrapper">
-            <span class="material-icons modal-underline-icon">warehouse</span>
-            <select id="selectBlankOrigem" class="modal-underline-select">
-              <option value="" selected>-- Nenhuma (Entrada direta / Compra) --</option>
-              <option value="Estoque central">Estoque central (000005)</option>
-              <option value="CD Principal Zona Sul">CD Principal Zona Sul (000001)</option>
-              <option value="Mini Mercado 01">Mini Mercado 01 (Transferência)</option>
-              <option value="Mini Mercado 02 Condomínio Jardins">Mini Mercado 02 Condomínio Jardins (Transferência)
-              </option>
-            </select>
-            <span class="modal-underline-hint-right">Opcional</span>
+        <!-- 2. Combobox Filial do Estoque Origem (Opcional) -->
+        <div class="modal-field-group">
+          <label class="modal-field-label" for="inputComboboxBlankOrigem">
+            <span class="material-icons field-label-icon">warehouse</span>
+            Filial do Estoque Origem (Opcional - para Transferências):
+          </label>
+          <div class="custom-combobox" id="comboboxBlankOrigem">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputComboboxBlankOrigem" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearBlankOrigem" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleBlankOrigem" title="Ver filiais de origem">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownBlankOrigem">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
         </div>
 
