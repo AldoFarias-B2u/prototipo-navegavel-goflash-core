@@ -181,20 +181,22 @@
 
       <!-- Tabela Oficial de Planos -->
       <div class="plan-list-card">
-        <table class="plans-official-table" aria-label="Lista de Planos de Abastecimento">
-          <thead>
-            <tr>
-              <th style="width: 3%;">#</th>
-              <th style="width: 37%;">Nome</th>
-              <th style="width: 35%;">Filial</th>
-              <th style="width: 12%;">Qtde Itens</th>
-              <th style="width: 13%;">Data criação</th>
-            </tr>
-          </thead>
-          <tbody id="plansTableBody">
-            <!-- Preenchido via abastecimento-controller.js -->
-          </tbody>
-        </table>
+        <div class="table-responsive-container">
+          <table class="plans-official-table" aria-label="Lista de Planos de Abastecimento">
+            <thead>
+              <tr>
+                <th class="col-num-indicator" style="width: 36px;">#</th>
+                <th style="min-width: 170px;">Nome</th>
+                <th style="min-width: 170px;">Filial</th>
+                <th style="min-width: 100px; text-align: center;">Qtde Itens</th>
+                <th style="min-width: 120px;">Data criação</th>
+              </tr>
+            </thead>
+            <tbody id="plansTableBody">
+              <!-- Preenchido via abastecimento-controller.js -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -307,20 +309,22 @@
 
         <!-- 1. Tabela de Produtos com Fotos e Badges -->
         <div class="products-table-card" id="productsTableCard">
-          <table class="products-official-table" aria-label="Grade de Produtos do Plano">
-            <thead id="detailProductsTableHead">
-              <tr>
-                <th style="width: 22%;">Código</th>
-                <th style="width: 44%;">Produto</th>
-                <th style="width: 14%;">Grupo</th>
-                <th style="width: 10%; text-align: center;">Estoque Ideal</th>
-                <th style="width: 10%; text-align: center;">Minimo Crítico</th>
-              </tr>
-            </thead>
-            <tbody id="detailProductsTableBody">
-              <!-- Renderizado via abastecimento-controller.js -->
-            </tbody>
-          </table>
+          <div class="table-responsive-container">
+            <table class="products-official-table" aria-label="Grade de Produtos do Plano">
+              <thead id="detailProductsTableHead">
+                <tr>
+                  <th style="min-width: 140px;">Código</th>
+                  <th style="min-width: 240px;">Produto</th>
+                  <th style="min-width: 110px;">Grupo</th>
+                  <th style="min-width: 105px; text-align: center;">Estoque Ideal</th>
+                  <th style="min-width: 105px; text-align: center;">Minimo Crítico</th>
+                </tr>
+              </thead>
+              <tbody id="detailProductsTableBody">
+                <!-- Renderizado via abastecimento-controller.js -->
+              </tbody>
+            </table>
+          </div>
 
           <!-- Paginação Oficial -->
           <div class="products-table-footer">

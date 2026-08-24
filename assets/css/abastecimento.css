@@ -55,6 +55,12 @@
   overflow: hidden;
 }
 
+.table-responsive-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .plans-official-table {
   width: 100%;
   border-collapse: collapse;
@@ -2260,6 +2266,11 @@ td.col-num-indicator {
 @media (max-width: 768px) {
   .abastecimento-main-wrapper {
     padding: 1rem 1rem 5rem 1rem;
+  }
+
+  .plans-official-table,
+  .products-official-table {
+    min-width: 620px;
   }
 
   .plan-hero-detail-card {
