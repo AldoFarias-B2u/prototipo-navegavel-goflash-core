@@ -2,6 +2,17 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.13] - 2026-08-24
+### ✨ Cards Operacionais Mobile por Padrão & Alternador Tabela/Cards
+- **Cards Operacionais Ricos no Mobile** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - Exibição padrão de pedidos e planos em formato de cards verticais no mobile (`≤ 768px`), com badges de status, identificação de filial, plano associado, contagem de itens e data.
+- **Alternador de Visualização Tabela $\longleftrightarrow$ Cards** ([`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js), [`assets/js/abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/abastecimento-controller.js)):
+  - Botões integrados na sub-barra (`[ ☰ ]` Tabela e `[ ⊞ ]` Cards) com sincronização em tempo real da busca e preservação de layout desktop.
+- **Resolução do Bug da Tarja Preta no Rodapé em Planos** ([`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - Correção do display e posicionamento da barra de lote (`.sticky-batch-bar`), eliminando vazamentos visuais na tela inicial de planos.
+
+---
+
 ## [1.9.12] - 2026-08-24
 ### ✨ Calibração de Topbars, Padronização do Menu 9 Pontos & Scroll de Tabelas
 - **Scroll Horizontal Suave na Tabela de Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
