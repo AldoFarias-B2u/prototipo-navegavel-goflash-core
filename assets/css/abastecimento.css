@@ -2390,3 +2390,32 @@ td.col-num-indicator {
   color: #212529;
 }
 
+/* ==========================================================================
+   TOPBAR RESPONSIVA (PEDIDOS & PLANOS DE ABASTECIMENTO)
+   Exibe: Voltar, Busca, Filtro, Atualizar e Atalhos (9 pontos).
+   Oculta: Mais Opções e Perfil do Usuário no mobile.
+   ========================================================================== */
+@media (max-width: 768px) {
+  .module-topbar .btn-topbar-filter {
+    display: inline-flex !important;
+  }
+
+  .module-topbar .btn-topbar-refresh {
+    display: inline-flex !important;
+  }
+
+  .module-topbar .btn-topbar-more {
+    display: none !important;
+  }
+
+  .module-topbar .btn-topbar-user,
+  .module-topbar .topbar-avatar-btn {
+    display: none !important;
+  }
+
+  .module-topbar .btn-topbar-apps {
+    display: inline-flex !important;
+  }
+}
+
+
