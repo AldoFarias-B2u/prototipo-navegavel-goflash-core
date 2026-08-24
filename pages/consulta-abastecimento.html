@@ -170,7 +170,7 @@
 
           <!-- Dropdown de Mais Ações -->
           <div class="more-actions-container" id="moreActionsContainer">
-            <button type="button" class="btn-more-actions" id="btnMoreActions" title="Mais opções da consulta" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn-more-actions" id="btnMoreActions" title="Mais opções da consulta" aria-haspopup="true" aria-expanded="false" aria-label="Mais opções da consulta">
               <span class="material-icons">more_vert</span>
               <span class="btn-more-text">Mais Ações</span>
             </button>
@@ -182,6 +182,10 @@
               <button type="button" class="dropdown-item" id="btnOpenFilterThreshold">
                 <span class="material-icons">filter_alt</span>
                 <span class="btn-text-filter-threshold">Filtrar Estoque Menor que...</span>
+              </button>
+              <button type="button" class="dropdown-item" id="btnMoreActionsOpenColumns">
+                <span class="material-icons">view_column</span>
+                <span>Colunas e Campos Visíveis</span>
               </button>
               <button type="button" class="dropdown-item" id="btnBatchEditQty" disabled>
                 <span class="material-icons">edit_note</span>
@@ -198,7 +202,7 @@
 
           <!-- Dropdown de Visibilidade de Colunas -->
           <div class="more-actions-container" id="columnsVisibilityContainer">
-            <button type="button" class="btn-toggle-columns" id="btnToggleColumns" title="Escolher colunas e campos visíveis" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn-toggle-columns" id="btnToggleColumns" title="Escolher colunas e campos visíveis" aria-haspopup="true" aria-expanded="false" aria-label="Escolher colunas e campos visíveis">
               <span class="material-icons">view_column</span>
               <span class="btn-columns-text">Colunas</span>
             </button>

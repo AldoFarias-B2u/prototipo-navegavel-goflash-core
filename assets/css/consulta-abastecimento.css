@@ -413,10 +413,10 @@
    Dropdown de Visibilidade de Colunas e Campos
    -------------------------------------------------------------------------- */
 .btn-toggle-columns {
-  height: 38px;
+  height: 40px;
   padding: 0 14px;
   background-color: #ffffff;
-  border: 1px solid #d1d5db;
+  border: 1.5px solid #d1d5db;
   color: #4b5563;
   border-radius: 6px;
   font-size: 0.84rem;
@@ -2475,8 +2475,8 @@
     flex: 1 1 auto;
     min-width: 0;
     height: 40px;
-    padding: 0 12px;
-    font-size: 0.82rem;
+    padding: 0 14px;
+    font-size: 0.84rem;
     gap: 6px;
     white-space: nowrap;
     justify-content: center;
@@ -2484,12 +2484,47 @@
   }
 
   .btn-more-actions {
-    flex: 0 0 auto;
+    flex: 0 0 40px;
+    width: 40px;
     height: 40px;
-    padding: 0 10px;
-    font-size: 0.82rem;
-    gap: 4px;
-    white-space: nowrap;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .btn-more-actions .material-icons {
+    font-size: 22px;
+    margin: 0;
+  }
+
+  .btn-more-text {
+    display: none;
+  }
+
+  .btn-toggle-columns {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+
+  .btn-toggle-columns .material-icons {
+    font-size: 21px;
+    margin: 0;
+  }
+
+  .btn-columns-text {
+    display: none;
+  }
+
+  .columns-visibility-dropdown {
+    max-width: 90vw;
   }
 
   .view-mode-toggle-group {
@@ -2699,8 +2734,17 @@
   }
 
   .btn-more-actions {
-    padding: 0 8px;
-    font-size: 0.8rem;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+  }
+
+  .btn-toggle-columns {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
   }
 
   .btn-view-mode {
@@ -2820,6 +2864,23 @@
 
 /* 3. Faixa de 360px até 321px: "Sugestão:" completa + retira a palavra "Repor" */
 @media (max-width: 360px) {
+  .btn-more-actions {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-toggle-columns {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-view-mode {
+    width: 30px;
+    height: 32px;
+  }
+
   .card-sugestao-pill .sugestao-prefix-full {
     display: inline !important;
   }

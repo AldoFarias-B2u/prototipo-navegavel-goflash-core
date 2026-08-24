@@ -220,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnMoreActions = document.getElementById('btnMoreActions');
   const moreActionsDropdown = document.getElementById('moreActionsDropdown');
   const moreActionsContainer = document.getElementById('moreActionsContainer');
+  const btnMoreActionsOpenColumns = document.getElementById('btnMoreActionsOpenColumns');
   const btnViewTable = document.getElementById('btnViewTable');
   const btnViewCards = document.getElementById('btnViewCards');
 
@@ -1241,6 +1242,16 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleMoreActionsDropdown(false);
       }
       toggleColumnsDropdown();
+    });
+  }
+
+  if (btnMoreActionsOpenColumns) {
+    btnMoreActionsOpenColumns.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMoreActionsDropdown(false);
+      setTimeout(() => {
+        toggleColumnsDropdown(true);
+      }, 50);
     });
   }
 
