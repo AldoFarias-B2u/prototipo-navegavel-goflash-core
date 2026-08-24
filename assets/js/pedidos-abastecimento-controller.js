@@ -13,35 +13,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const breadcrumbCount = document.getElementById('breadcrumbCount');
   const fabNewPedido = document.getElementById('fabNewPedido');
   const emptyState = document.getElementById('pedidosEmptyState');
+  const pedidosTableCard = document.getElementById('pedidosTableCard');
+  const pedidosCardsContainer = document.getElementById('pedidosCardsContainer');
+  const btnViewTable = document.getElementById('btnViewTable');
+  const btnViewCards = document.getElementById('btnViewCards');
+
+  // Modo de visualização: padrão Cards no mobile (<= 768px), Tabela no desktop
+  let isCardsMode = window.innerWidth <= 768;
+
+  function getStatusBadgeClass(status) {
+    const statusLower = (status || '').toLowerCase();
+    if (statusLower.includes('cancelado')) return 'badge-status-cancelado';
+    if (statusLower.includes('recebido')) return 'badge-status-recebido';
+    if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) return 'badge-status-pendente-abastecimento';
+    if (statusLower.includes('finalizado') || statusLower.includes('concluído') || statusLower.includes('concluido')) return 'badge-status-finalizado';
+    return 'badge-status-aberto';
+  }
+
+  function openPedidoDetail(item) {
+    if (!item) return;
+    if (typeof Toast !== 'undefined') {
+      Toast.info(`Abrindo Pedido ${item.codigo} (${item.status})...`);
+    }
+    setTimeout(() => {
+      window.location.href = `./pedido-manual.html?id=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.codigo)}`;
+    }, 200);
+  }
 
   // 2. Renderização da Tabela Oficial
   function renderTable(dataToRender) {
     if (!tbody) return;
 
-    if (dataToRender.length === 0) {
-      tbody.innerHTML = '';
-      if (emptyState) emptyState.style.display = 'block';
-      if (breadcrumbCount) breadcrumbCount.textContent = '0 item(s)';
-      return;
-    }
-
-    if (emptyState) emptyState.style.display = 'none';
-    if (breadcrumbCount) breadcrumbCount.textContent = `${dataToRender.length} item(s)`;
-
     const rowsHtml = dataToRender.map((item, index) => {
-      // Normalização da classe de status
-      const statusLower = (item.status || '').toLowerCase();
-      let statusBadgeClass = 'badge-status-aberto';
-      if (statusLower.includes('cancelado')) {
-        statusBadgeClass = 'badge-status-cancelado';
-      } else if (statusLower.includes('recebido')) {
-        statusBadgeClass = 'badge-status-recebido';
-      } else if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
-        statusBadgeClass = 'badge-status-pendente-abastecimento';
-      } else if (statusLower.includes('finalizado') || statusLower.includes('concluído') || statusLower.includes('concluido')) {
-        statusBadgeClass = 'badge-status-finalizado';
-      }
-
+      const statusBadgeClass = getStatusBadgeClass(item.status);
       return `
         <tr data-id="${item.id}" class="pedido-row" title="Clique para ver detalhes do Pedido ${item.codigo}">
           <td class="col-num-indicator">${index + 1}</td>
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td>${item.filial || '-'}</td>
           <td>${item.planoBase || (item.tipo === 'manual' ? '<span style="color:#888; font-style:italic;">Manual (Em branco)</span>' : '')}</td>
-          <td>${item.qtdeItens}</td>
+          <td style="text-align: center;">${item.qtdeItens}</td>
           <td>${item.dataCriacao}</td>
           <td>
             <span class="badge-status-pedido ${statusBadgeClass}">${item.status}</span>
@@ -64,25 +68,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tbody.innerHTML = rowsHtml;
 
-    // Vincular clique nas linhas para abrir os detalhes do pedido
+    // Vincular clique nas linhas da tabela
     const rows = tbody.querySelectorAll('.pedido-row');
     rows.forEach(row => {
       row.addEventListener('click', () => {
         const id = row.getAttribute('data-id');
         const selected = rawData.find(p => p.id == id);
-        if (selected) {
-          if (typeof Toast !== 'undefined') {
-            Toast.info(`Abrindo Pedido ${selected.codigo} (${selected.status})...`);
-          }
-          setTimeout(() => {
-            window.location.href = `./pedido-manual.html?id=${encodeURIComponent(id)}&codigo=${encodeURIComponent(selected.codigo)}`;
-          }, 200);
-        }
+        openPedidoDetail(selected);
       });
     });
   }
 
-  // 3. Filtragem Dinâmica em Tempo Real
+  // 3. Renderização dos Cards Operacionais (Mobile & Alternativo)
+  function renderCards(dataToRender) {
+    if (!pedidosCardsContainer) return;
+
+    const cardsHtml = dataToRender.map((item) => {
+      const statusBadgeClass = getStatusBadgeClass(item.status);
+      const planoText = item.planoBase || (item.tipo === 'manual' ? 'Manual (Em branco)' : 'Sem plano associado');
+      const itemLabel = item.qtdeItens == 1 ? 'item' : 'itens';
+
+      return `
+        <div class="pedido-mobile-card" data-id="${item.id}" title="Ver Pedido ${item.codigo}">
+          <div class="card-mobile-header">
+            <div class="card-code-title">
+              <span class="material-icons card-type-icon">assignment</span>
+              <strong class="card-code-num">${item.codigo}</strong>
+            </div>
+            <span class="badge-status-pedido ${statusBadgeClass}">${item.status}</span>
+          </div>
+
+          <div class="card-mobile-body">
+            <div class="card-info-line">
+              <span class="material-icons">store</span>
+              <span class="card-filial-text">${item.filial || '-'}</span>
+            </div>
+            <div class="card-info-line">
+              <span class="material-icons">description</span>
+              <span class="card-plano-text">${planoText}</span>
+            </div>
+          </div>
+
+          <div class="card-mobile-footer">
+            <div class="card-metric-pill">
+              <span class="material-icons">inventory_2</span>
+              <span><strong>${item.qtdeItens}</strong> ${itemLabel}</span>
+            </div>
+            <div class="card-date-meta">
+              <span class="material-icons">event</span>
+              <span>${item.dataCriacao}</span>
+            </div>
+            <span class="material-icons card-chevron-icon">chevron_right</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    pedidosCardsContainer.innerHTML = cardsHtml;
+
+    // Vincular clique nos cards
+    const cards = pedidosCardsContainer.querySelectorAll('.pedido-mobile-card');
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.getAttribute('data-id');
+        const selected = rawData.find(p => p.id == id);
+        openPedidoDetail(selected);
+      });
+    });
+  }
+
+  // 4. Controle Unificado de Visualização
+  function updateViewModeDisplay() {
+    if (btnViewTable) btnViewTable.classList.toggle('active', !isCardsMode);
+    if (btnViewCards) btnViewCards.classList.toggle('active', isCardsMode);
+
+    if (pedidosTableCard) {
+      pedidosTableCard.style.display = isCardsMode ? 'none' : 'block';
+    }
+    if (pedidosCardsContainer) {
+      pedidosCardsContainer.style.display = isCardsMode ? 'grid' : 'none';
+    }
+  }
+
+  function renderAll(dataToRender) {
+    if (breadcrumbCount) {
+      breadcrumbCount.textContent = `${dataToRender.length} item(s)`;
+    }
+
+    if (dataToRender.length === 0) {
+      if (tbody) tbody.innerHTML = '';
+      if (pedidosCardsContainer) pedidosCardsContainer.innerHTML = '';
+      if (emptyState) emptyState.style.display = 'block';
+      if (pedidosTableCard) pedidosTableCard.style.display = 'none';
+      if (pedidosCardsContainer) pedidosCardsContainer.style.display = 'none';
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+    renderTable(dataToRender);
+    renderCards(dataToRender);
+    updateViewModeDisplay();
+  }
+
+  // Listeners do Alternador de Visualização
+  if (btnViewTable) {
+    btnViewTable.addEventListener('click', () => {
+      isCardsMode = false;
+      updateViewModeDisplay();
+    });
+  }
+
+  if (btnViewCards) {
+    btnViewCards.addEventListener('click', () => {
+      isCardsMode = true;
+      updateViewModeDisplay();
+    });
+  }
+
+  // 5. Filtragem Dinâmica em Tempo Real
   function handleSearch() {
     const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
     if (!query) {
@@ -97,8 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return cod.includes(query) || fil.includes(query) || pla.includes(query) || sta.includes(query) || dat.includes(query);
       });
     }
-    renderTable(currentList);
+    renderAll(currentList);
   }
+
+  // Inicialização inicial da listagem
+  renderAll(currentList);
 
   if (searchInput) {
     searchInput.addEventListener('input', handleSearch);

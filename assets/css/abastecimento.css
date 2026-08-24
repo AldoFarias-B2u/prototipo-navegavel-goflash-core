@@ -45,6 +45,232 @@
   font-size: 0.8rem;
 }
 
+/* Sub-Barra com Breadcrumb e Alternador Tabela/Cards */
+.list-subbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 0.85rem;
+  flex-wrap: nowrap;
+}
+
+.view-mode-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8ebf0;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.btn-view-mode {
+  background: transparent;
+  border: none;
+  color: #757575;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.btn-view-mode:hover {
+  color: #6530b5;
+}
+
+.btn-view-mode.active {
+  background-color: #ffffff;
+  color: #6530b5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.btn-view-mode .material-icons {
+  font-size: 19px;
+}
+
+/* Grids de Cards Operacionais Mobile */
+.pedidos-cards-grid,
+.planos-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+@media (min-width: 769px) {
+  .pedidos-cards-grid,
+  .planos-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+  }
+}
+
+/* Card Operacional de Pedido & Plano */
+.pedido-mobile-card,
+.plano-mobile-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+.pedido-mobile-card:hover,
+.plano-mobile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.09);
+  border-color: #c7d2fe;
+}
+
+.pedido-mobile-card:active,
+.plano-mobile-card:active {
+  transform: translateY(0);
+}
+
+.card-mobile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.card-code-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.card-code-title .card-type-icon {
+  color: #6530b5;
+  font-size: 20px;
+}
+
+.card-name-text {
+  font-weight: 500;
+  color: #4b5563;
+  font-size: 0.9rem;
+  margin-left: 2px;
+}
+
+.card-mobile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-info-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #4b5563;
+}
+
+.card-info-line .material-icons {
+  font-size: 17px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.card-filial-text {
+  font-weight: 500;
+  color: #374151;
+}
+
+.card-plano-text {
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.card-mobile-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.card-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #f5f3fa;
+  color: #6530b5;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.card-metric-pill .material-icons {
+  font-size: 15px;
+}
+
+.card-date-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+  font-size: 0.78rem;
+}
+
+.card-date-meta .material-icons {
+  font-size: 15px;
+  color: #9ca3af;
+}
+
+.card-chevron-icon {
+  color: #9ca3af;
+  font-size: 20px;
+  transition: transform var(--transition-fast);
+}
+
+.pedido-mobile-card:hover .card-chevron-icon,
+.plano-mobile-card:hover .card-chevron-icon {
+  transform: translateX(3px);
+  color: #6530b5;
+}
+
+.badge-status-plano {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.badge-plano-ativo {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-plano-inativo {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
 /* --------------------------------------------------------------------------
    TELA 1: LISTAGEM DE PLANOS DE ABASTECIMENTO (IMG 1)
    -------------------------------------------------------------------------- */
@@ -1682,20 +1908,25 @@ td.col-num-indicator {
   position: fixed;
   bottom: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(120px);
+  transform: translateX(-50%) translateY(200px);
   background-color: #23143d;
   color: #ffffff;
   padding: 12px 24px;
   border-radius: 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15);
-  display: flex;
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
   align-items: center;
   gap: 16px;
   z-index: 1500;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
 }
 
 .sticky-batch-bar.show {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
   transform: translateX(-50%) translateY(0);
 }
 

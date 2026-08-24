@@ -12,8 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Elementos da Lista (Imagem 1)
   const plansTableBody = document.getElementById('plansTableBody');
+  const plansTableCard = document.getElementById('plansTableCard');
+  const plansCardsContainer = document.getElementById('plansCardsContainer');
+  const btnPlanViewTable = document.getElementById('btnPlanViewTable');
+  const btnPlanViewCards = document.getElementById('btnPlanViewCards');
   const breadcrumbCount = document.getElementById('breadcrumbCount');
   const fabRedAdd = document.getElementById('fabRedAdd');
+
+  // Modo de visualização de Planos: padrão Cards no mobile (<= 768px), Tabela no desktop
+  let isPlanCardsMode = window.innerWidth <= 768;
 
   // Elementos do Modal NOVO PLANO (Imagem 2)
   const newPlanModal = document.getElementById('newPlanModal');
@@ -170,7 +177,79 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Renderiza a Tabela Oficial de Planos (Imagem 1)
+   * Atualiza a visibilidade entre Tabela e Cards de Planos
+   */
+  function updatePlanViewModeDisplay() {
+    if (btnPlanViewTable) btnPlanViewTable.classList.toggle('active', !isPlanCardsMode);
+    if (btnPlanViewCards) btnPlanViewCards.classList.toggle('active', isPlanCardsMode);
+
+    if (plansTableCard) {
+      plansTableCard.style.display = isPlanCardsMode ? 'none' : 'block';
+    }
+    if (plansCardsContainer) {
+      plansCardsContainer.style.display = isPlanCardsMode ? 'grid' : 'none';
+    }
+  }
+
+  /**
+   * Renderiza os Cards Operacionais de Planos (Mobile)
+   */
+  function renderPlanCards(filtered) {
+    if (!plansCardsContainer) return;
+
+    if (filtered.length === 0) {
+      plansCardsContainer.innerHTML = `
+        <div class="module-no-results" style="padding: 2.5rem 1rem; background-color: #fff; border-radius: 6px; text-align: center;">
+          <span class="material-icons" style="font-size: 40px; color: #bbb;">search_off</span>
+          <h4 style="margin: 8px 0 4px; color: #555;">Nenhum plano encontrado</h4>
+          <p style="color: #888; font-size: 0.85rem;">Tente buscar por outro termo.</p>
+        </div>
+      `;
+      return;
+    }
+
+    plansCardsContainer.innerHTML = filtered.map((p) => {
+      const itemCount = p.itens ? p.itens.length : 0;
+      const itemLabel = itemCount === 1 ? 'item' : 'itens';
+      return `
+        <div class="plano-mobile-card" onclick="window.AbastecimentoController.showDetailView('${p.id}')" title="Ver Detalhes do Plano ${p.nome}">
+          <div class="card-mobile-header">
+            <div class="card-code-title">
+              <span class="material-icons card-type-icon">description</span>
+              <strong class="card-code-num">${p.codigo}</strong>
+              <span class="card-name-text">${p.nome}</span>
+            </div>
+            <span class="badge-status-plano badge-plano-ativo">
+              <span class="material-icons" style="font-size: 13px;">check_circle</span>
+              Ativo
+            </span>
+          </div>
+
+          <div class="card-mobile-body">
+            <div class="card-info-line">
+              <span class="material-icons">store</span>
+              <span class="card-filial-text">${p.filialNome}</span>
+            </div>
+          </div>
+
+          <div class="card-mobile-footer">
+            <div class="card-metric-pill">
+              <span class="material-icons">inventory_2</span>
+              <span><strong>${itemCount}</strong> ${itemLabel}</span>
+            </div>
+            <div class="card-date-meta">
+              <span class="material-icons">event</span>
+              <span>${p.dataCriacao || '-'}</span>
+            </div>
+            <span class="material-icons card-chevron-icon">chevron_right</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  /**
+   * Renderiza a Tabela e os Cards Oficiais de Planos
    */
   function renderPlansTable() {
     const term = (pageSearchInput?.value || '').toLowerCase().trim();
@@ -185,45 +264,62 @@ document.addEventListener('DOMContentLoaded', () => {
       breadcrumbCount.textContent = `> ${filtered.length} item(s)`;
     }
 
-    if (!plansTableBody) return;
-
-    if (filtered.length === 0) {
-      plansTableBody.innerHTML = `
-        <tr>
-          <td colspan="5" style="text-align: center; padding: 3rem; color: #757575;">
-            Nenhum plano de abastecimento encontrado.
-          </td>
-        </tr>
-      `;
-      return;
+    if (plansTableBody) {
+      if (filtered.length === 0) {
+        plansTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 3rem; color: #757575;">
+              Nenhum plano de abastecimento encontrado.
+            </td>
+          </tr>
+        `;
+      } else {
+        plansTableBody.innerHTML = filtered.map((p, index) => {
+          const itemCount = p.itens ? p.itens.length : 0;
+          return `
+            <tr onclick="window.AbastecimentoController.showDetailView('${p.id}')">
+              <td class="col-num-indicator">${index + 1}</td>
+              <td>
+                <div class="plan-name-flex">
+                  <span class="material-icons plan-doc-icon">description</span>
+                  <div>
+                    <span class="plan-code-bold">${p.codigo}</span>
+                    <span class="plan-title-text">${p.nome}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span style="color: #424242;">${p.filialNome}</span>
+              </td>
+              <td style="color: #424242; text-align: center;">
+                ${itemCount}
+              </td>
+              <td style="color: #616161;">
+                ${p.dataCriacao || '-'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
     }
 
-    plansTableBody.innerHTML = filtered.map((p, index) => {
-      const itemCount = p.itens ? p.itens.length : 0;
-      return `
-        <tr onclick="window.AbastecimentoController.showDetailView('${p.id}')">
-          <td class="col-num-indicator">${index + 1}</td>
-          <td>
-            <div class="plan-name-flex">
-              <span class="material-icons plan-doc-icon">description</span>
-              <div>
-                <span class="plan-code-bold">${p.codigo}</span>
-                <span class="plan-title-text">${p.nome}</span>
-              </div>
-            </div>
-          </td>
-          <td>
-            <span style="color: #424242;">${p.filialNome}</span>
-          </td>
-          <td style="color: #424242;">
-            ${itemCount}
-          </td>
-          <td style="color: #616161;">
-            ${p.dataCriacao || '-'}
-          </td>
-        </tr>
-      `;
-    }).join('');
+    renderPlanCards(filtered);
+    updatePlanViewModeDisplay();
+  }
+
+  // Listeners do Alternador de Visualização de Planos
+  if (btnPlanViewTable) {
+    btnPlanViewTable.addEventListener('click', () => {
+      isPlanCardsMode = false;
+      updatePlanViewModeDisplay();
+    });
+  }
+
+  if (btnPlanViewCards) {
+    btnPlanViewCards.addEventListener('click', () => {
+      isPlanCardsMode = true;
+      updatePlanViewModeDisplay();
+    });
   }
 
   /**

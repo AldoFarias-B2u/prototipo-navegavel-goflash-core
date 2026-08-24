@@ -172,15 +172,27 @@
          TELA 1: LISTAGEM DE PLANOS DE ABASTECIMENTO (IMG 1)
          ---------------------------------------------------------------------- -->
     <div id="planListView">
-      <!-- Breadcrumb Idêntico à Img 1 -->
-      <div class="abastecimento-breadcrumb">
-        <span class="breadcrumb-arrow">&rsaquo;</span>
-        <span class="breadcrumb-link">Plano de Abastecimento</span>
-        <span class="breadcrumb-count" id="breadcrumbCount">&rsaquo; 4 item(s)</span>
+      <!-- Sub-Barra com Breadcrumb e Alternador Tabela/Cards -->
+      <div class="list-subbar-row">
+        <div class="abastecimento-breadcrumb">
+          <span class="breadcrumb-arrow">&rsaquo;</span>
+          <span class="breadcrumb-link">Plano de Abastecimento</span>
+          <span class="breadcrumb-count" id="breadcrumbCount">&rsaquo; 4 item(s)</span>
+        </div>
+
+        <!-- Alternador Tabela / Cards -->
+        <div class="view-mode-toggle-group" id="planosViewModeToggle">
+          <button type="button" class="btn-view-mode" id="btnPlanViewTable" title="Visualização em Tabela">
+            <span class="material-icons">table_rows</span>
+          </button>
+          <button type="button" class="btn-view-mode active" id="btnPlanViewCards" title="Visualização em Cards">
+            <span class="material-icons">grid_view</span>
+          </button>
+        </div>
       </div>
 
-      <!-- Tabela Oficial de Planos -->
-      <div class="plan-list-card">
+      <!-- 1. Tabela Oficial de Planos -->
+      <div class="plan-list-card" id="plansTableCard">
         <div class="table-responsive-container">
           <table class="plans-official-table" aria-label="Lista de Planos de Abastecimento">
             <thead>
@@ -197,6 +209,11 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- 2. Grid de Cards Operacionais de Planos (Padrão Mobile) -->
+      <div class="planos-cards-grid" id="plansCardsContainer">
+        <!-- Preenchido via abastecimento-controller.js -->
       </div>
     </div>
 

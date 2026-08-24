@@ -121,27 +121,39 @@
        ======================================================================== -->
   <main class="abastecimento-main-wrapper" id="pedidosListView">
 
-    <!-- Breadcrumb Superior -->
-    <nav class="abastecimento-breadcrumb" aria-label="Trilha de Navegação">
-      <span class="material-icons breadcrumb-arrow">chevron_right</span>
-      <span class="breadcrumb-current" style="color: #616161; font-weight: 500;">Pedido de Abastecimento</span>
-      <span class="material-icons breadcrumb-arrow">chevron_right</span>
-      <span class="breadcrumb-count" id="breadcrumbCount">32 item(s)</span>
-    </nav>
+    <!-- Breadcrumb e Alternador de Modo de Visualização -->
+    <div class="list-subbar-row">
+      <nav class="abastecimento-breadcrumb" aria-label="Trilha de Navegação">
+        <span class="material-icons breadcrumb-arrow">chevron_right</span>
+        <span class="breadcrumb-current" style="color: #616161; font-weight: 500;">Pedido de Abastecimento</span>
+        <span class="material-icons breadcrumb-arrow">chevron_right</span>
+        <span class="breadcrumb-count" id="breadcrumbCount">32 item(s)</span>
+      </nav>
 
-    <!-- Card Branco com Tabela Oficial -->
-    <div class="plan-list-card">
+      <!-- Alternador Tabela / Cards -->
+      <div class="view-mode-toggle-group" id="pedidosViewModeToggle">
+        <button type="button" class="btn-view-mode" id="btnViewTable" title="Visualização em Tabela">
+          <span class="material-icons">table_rows</span>
+        </button>
+        <button type="button" class="btn-view-mode active" id="btnViewCards" title="Visualização em Cards">
+          <span class="material-icons">grid_view</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. Tabela Oficial de Pedidos -->
+    <div class="plan-list-card" id="pedidosTableCard">
       <div class="table-responsive-container" style="overflow-x: auto;">
         <table class="plans-official-table">
           <thead>
             <tr>
               <th class="col-num-indicator" style="width: 32px;">#</th>
-              <th style="width: 140px;">Nome</th>
-              <th>Filial</th>
-              <th>Plano Base</th>
-              <th style="width: 110px;">Qtde Itens</th>
-              <th style="width: 130px;">Data criação</th>
-              <th style="width: 120px;">Status</th>
+              <th style="min-width: 140px;">Nome</th>
+              <th style="min-width: 180px;">Filial</th>
+              <th style="min-width: 160px;">Plano Base</th>
+              <th style="min-width: 100px; text-align: center;">Qtde Itens</th>
+              <th style="min-width: 120px;">Data criação</th>
+              <th style="min-width: 130px;">Status</th>
             </tr>
           </thead>
           <tbody id="pedidosTableBody">
@@ -149,13 +161,18 @@
           </tbody>
         </table>
       </div>
+    </div>
 
-      <!-- Empty State quando busca não retorna nada -->
-      <div id="pedidosEmptyState" class="module-no-results" style="display: none; padding: 3rem 1rem;">
-        <span class="material-icons no-results-icon">search_off</span>
-        <h3 class="no-results-title">Nenhum pedido encontrado</h3>
-        <p class="no-results-desc">Tente alterar os termos da sua pesquisa.</p>
-      </div>
+    <!-- 2. Grid de Cards Operacionais de Pedidos (Padrão Mobile) -->
+    <div class="pedidos-cards-grid" id="pedidosCardsContainer">
+      <!-- Renderizado dinamicamente via JS -->
+    </div>
+
+    <!-- Empty State quando busca não retorna nada -->
+    <div id="pedidosEmptyState" class="module-no-results" style="display: none; padding: 3rem 1rem; background-color: #fff; border-radius: 6px;">
+      <span class="material-icons no-results-icon">search_off</span>
+      <h3 class="no-results-title">Nenhum pedido encontrado</h3>
+      <p class="no-results-desc">Tente alterar os termos da sua pesquisa.</p>
     </div>
 
     <!-- Botão Flutuante Circular Vermelho (FAB Add) -->
