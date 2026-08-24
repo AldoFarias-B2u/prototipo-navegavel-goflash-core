@@ -202,6 +202,38 @@ html {
   text-align: center;
 }
 
+/* Card do Chat IA no Popover de Atalhos (9 Pontos) */
+.app-shortcut-item-ai {
+  position: relative;
+  background: linear-gradient(135deg, rgba(101, 48, 181, 0.08), rgba(255, 214, 0, 0.08));
+  border: 1px dashed rgba(101, 48, 181, 0.35);
+  border-radius: 8px;
+}
+
+.app-shortcut-item-ai:hover {
+  background: linear-gradient(135deg, rgba(101, 48, 181, 0.15), rgba(255, 214, 0, 0.15));
+  border-color: #6530b5;
+  transform: translateY(-2px);
+}
+
+.app-shortcut-item-ai .app-shortcut-icon {
+  color: #6530b5;
+}
+
+.ai-new-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background-color: #ffd600;
+  color: #23143d;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+  line-height: 1.2;
+}
+
 /* Popover de Usuário (Img 2) */
 #userPopover {
   width: 310px;
