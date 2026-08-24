@@ -2,6 +2,19 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.12] - 2026-08-24
+### ✨ Calibração de Topbars, Padronização do Menu 9 Pontos & Scroll de Tabelas
+- **Scroll Horizontal Suave na Tabela de Planos de Abastecimento** ([`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - Envelopamento com `.table-responsive-container` e definição de `min-width: 620px` e larguras mínimas nas colunas, permitindo deslizamento horizontal suave no mobile sem comprimir dados.
+- **Padronização Global do Card Maestro IA no Menu de 9 Pontos** ([`assets/css/dashboard.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/dashboard.css)):
+  - Centralização dos estilos `.app-shortcut-item-ai` e `.ai-new-badge` no CSS global compartilhado por todo o ERP, garantindo renderização idêntica com contorno pontilhado, fundo gradiente e tag `NOVO` em todas as páginas.
+- **Calibração de Cabeçalhos Mobile em Listagens de Abastecimento** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
+  - Topbar mobile exibindo exclusivamente: `Voltar` + `Busca com seletor` + `Filtro` + `Atualizar` + `Atalhos 9 Pontos`.
+- **Despoluição da Topbar na Página de Operação** ([`pages/operacao.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/operacao.html), [`assets/css/module-view.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/module-view.css)):
+  - Ocultação de botões secundários no mobile para expansão e conforto da barra de pesquisa centralizada.
+
+---
+
 ## [1.9.11] - 2026-08-24
 ### ✨ Otimização de Layout Mobile na Toolbar & Botão de Colunas
 - **Botões Secundários em Formato Icon-Only no Mobile** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
