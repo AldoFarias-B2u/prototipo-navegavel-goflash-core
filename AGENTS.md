@@ -106,7 +106,7 @@ Protótipo Navegavel Core/
 8. **Não Assumir Regras de Negócio**: Em caso de ambiguidade sobre fluxos ou regras de negócio do ERP, **pergunte ao usuário** antes de tomar decisões arbitrárias.
 9. **Planejamento Obrigatório**: Apresente um plano claro antes de executar grandes mudanças estruturais ou criar novas páginas.
 10. **Commits e Branches**: Trabalhe estritamente em branches de feature/fix/style (`feature/*`, `fix/*`, `style/*`) e mantenha as mensagens de commit no padrão Conventional Commits (`feat:`, `style:`, `fix:`).
-11. **Merge em Developer/Main Somente sob Autorização Explícita**: **NUNCA mescle alterações na branch `develop` ou `main` automaticamente**. O agente deve concluir a implementação na branch de trabalho, convidar o usuário a testar e aguardar o comando explícito de autorização ("pode liberar", "ok") antes de realizar qualquer merge para `develop` ou `main`.
+11. **Merge e Publicação Remota Somente sob Autorização Explícita**: **NUNCA mescle alterações na branch `develop` ou `main` automaticamente**. O agente deve concluir a implementação na branch de trabalho, convidar o usuário a testar e aguardar o comando explícito de autorização ("pode liberar", "ok"). **No repositório remoto (GitHub), envie SOMENTE as branches `main` e `develop`**; as branches de feature devem permanecer estritamente locais e nunca serem enviadas ao repositório remoto.
 
 ---
 
