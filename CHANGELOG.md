@@ -2,6 +2,17 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.11] - 2026-08-24
+### ✨ Otimização de Layout Mobile na Toolbar & Botão de Colunas
+- **Botões Secundários em Formato Icon-Only no Mobile** ([`pages/consulta-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/consulta-abastecimento.html), [`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - **Botão "Colunas" Compacto**: Em telas móveis (`≤ 768px`), o botão passa a exibir exclusivamente seu ícone representativo (`view_column`) em formato quadrado de `40px × 40px` (com calibração até `36px × 36px` em telas ultra compactas).
+  - **Botão "Mais Ações" Compacto**: Ocultação responsiva do texto descritivo e exibição do ícone `more_vert` em botão quadrado de `40px × 40px`.
+  - **Área Total Livre para o Botão "Adicionar"**: O botão primário roxo `+ ADICIONAR` passa a ocupar todo o espaço horizontal restante (`flex: 1 1 auto;`), garantindo que o texto e ícone fiquem 100% legíveis sem truncamentos ou quebras em qualquer smartphone (inclusive 360px).
+  - **Atalho Redundante de Colunas**: Inclusão da opção *"Colunas e Campos Visíveis"* dentro do dropdown *"Mais Ações"*, permitindo acesso alternativo rápido.
+  - **Preservação do Desktop**: O layout desktop (> 768px) mantém todos os rótulos de texto e espaçamentos originais intactos.
+
+---
+
 ## [1.9.10] - 2026-08-23
 ### ✨ Otimização Ergonômica dos Cards de Abastecimento
 - **Grid de Estoque 100% Simétrico & Pílula Tátil de Sugestão** ([`assets/css/consulta-abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/consulta-abastecimento.css), [`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
