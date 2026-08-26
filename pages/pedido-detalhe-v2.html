@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6530b5">
+  <title>Goflash CORE - Detalhes do Pedido de Abastecimento (v2)</title>
+  
+  <!-- CSS Global, Componentes, Dashboard, Module-View, Abastecimento e Pedido Detalhe v2 -->
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/module-view.css">
+  <link rel="stylesheet" href="../assets/css/abastecimento.css">
+  <link rel="stylesheet" href="../assets/css/pedido-manual.css">
+  <link rel="stylesheet" href="../assets/css/pedido-detalhe-v2.css">
+</head>
+<body class="module-page-body">
+
+  <!-- ========================================================================
+       TOPBAR / CABEÇALHO SUPERIOR (ROXO CLARO / OFICIAL)
+       ======================================================================== -->
+  <header class="module-topbar topbar-primary" id="mainTopbar">
+    <div class="module-topbar-left">
+      <button class="topbar-btn btn-nav-back" id="topbarBackBtn" data-nav="back" data-fallback-url="./pedidos-abastecimento.html" title="Voltar para Lista de Pedidos" aria-label="Voltar">
+        <span class="material-icons">arrow_back</span>
+      </button>
+      <span class="module-page-title">Pedido de Abastecimento</span>
+    </div>
+
+    <!-- Barra de Pesquisa Centralizada do Header -->
+    <div class="module-search-wrapper">
+      <div class="module-search-box">
+        <span class="material-icons search-icon">search</span>
+        <input 
+          type="text" 
+          id="pageHeaderSearchInput" 
+          class="module-search-input" 
+          placeholder="pesquisar produto no pedido..." 
+          autocomplete="off"
+        >
+      </div>
+    </div>
+
+    <!-- Ações do Topo Direito -->
+    <div class="module-topbar-right">
+      <button class="topbar-btn" id="btnHeaderSave" title="Concluir e Salvar Pedido" aria-label="Salvar Pedido" style="display: none;">
+        <span class="material-icons">check</span>
+      </button>
+
+      <button class="topbar-btn" id="btnHeaderEditToggle" title="Editar Pedido" aria-label="Editar Pedido">
+        <span class="material-icons">edit</span>
+      </button>
+
+      <button class="topbar-btn" id="appsBtn" title="Atalhos de Módulos" aria-label="Atalhos">
+        <span class="material-icons">apps</span>
+      </button>
+
+      <button class="topbar-btn topbar-avatar-btn" id="userBtn" title="Perfil do Usuário" aria-label="Perfil">
+        <span class="material-icons">account_circle</span>
+      </button>
+
+      <!-- Popover de Módulos (9 Pontos) -->
+      <div class="popover-container" id="appsPopover" role="dialog" aria-label="Módulos Rápidos">
+        <div class="popover-arrow"></div>
+        <div class="apps-row apps-row-top">
+          <a href="#" class="app-shortcut-item" title="Módulo Gerencial">
+            <span class="material-icons app-shortcut-icon">insert_chart</span>
+            <span class="app-shortcut-label">GERENCIAL</span>
+          </a>
+          <a href="./operacao.html" class="app-shortcut-item" title="Módulo Operação">
+            <span class="material-icons app-shortcut-icon">local_shipping</span>
+            <span class="app-shortcut-label">OPERAÇÃO</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Módulo Financeiro">
+            <span class="material-icons app-shortcut-icon">credit_card</span>
+            <span class="app-shortcut-label">FINANCEIRO</span>
+          </a>
+        </div>
+        <div class="apps-row apps-row-bottom">
+          <a href="./dashboard.html" class="app-shortcut-item" title="Home">
+            <span class="material-icons app-shortcut-icon">dashboard</span>
+            <span class="app-shortcut-label">HOME</span>
+          </a>
+          <a href="#" class="app-shortcut-item" title="Painel de Controles">
+            <span class="material-icons app-shortcut-icon">tune</span>
+            <span class="app-shortcut-label">PAINEL DE CO...</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Popover de Perfil do Usuário -->
+      <div class="popover-container user-popover" id="userPopover" role="dialog" aria-label="Perfil do Usuário">
+        <div class="popover-arrow"></div>
+        <div class="user-popover-header">
+          <span class="material-icons user-popover-avatar">account_circle</span>
+          <div class="user-popover-info">
+            <strong id="popoverUserName">B2U</strong>
+            <span>Administrador</span>
+          </div>
+        </div>
+        <div class="user-popover-actions">
+          <a href="#" class="popover-action-link">
+            <span class="material-icons">settings</span>
+            <span>Configurações</span>
+          </a>
+          <a href="#" class="popover-action-link action-logout">
+            <span class="material-icons">exit_to_app</span>
+            <span>Sair</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL: DESIGN V2 DE DETALHES DO PEDIDO
+       ======================================================================== -->
+  <main class="pedido-v2-main-container" id="pedidoContainer">
+
+    <!-- 1. HERO CARD ROXO SUPERIOR (ESTILO REFERÊNCIA IMAGEM 1) -->
+    <div class="order-hero-card">
+      
+      <div class="order-hero-content-row">
+        <!-- Ícone Circular Branco -->
+        <div class="order-hero-icon-circle" title="Pedido de Abastecimento">
+          <span class="material-icons">receipt_long</span>
+        </div>
+
+        <!-- Grid de Campos com Linha Inferior Material -->
+        <div class="order-hero-fields-grid">
+          
+          <!-- Campo: Filial para Repor -->
+          <div class="order-hero-field-group">
+            <span class="order-hero-field-label">
+              <span class="material-icons">storefront</span>
+              Filial
+            </span>
+            <div class="order-hero-input-underline">
+              <select id="heroDestinoSelect" class="order-hero-select-native" aria-label="Filial de Destino">
+                <option value="Mini Mercado 01">Mini Mercado 01</option>
+                <option value="Mini Mercado 02 Condomínio Jardins">Mini Mercado 02 Condomínio Jardins</option>
+                <option value="Mini Mercado 03 Simples Nacional" selected>Mini Mercado 03 Simples Nacional</option>
+                <option value="Mini Mercado 04 Empresarial Prime">Mini Mercado 04 Empresarial Prime</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Campo: Filial de Origem (CD) -->
+          <div class="order-hero-field-group">
+            <span class="order-hero-field-label">
+              <span class="material-icons">warehouse</span>
+              Origem
+            </span>
+            <div class="order-hero-input-underline">
+              <select id="heroOrigemSelect" class="order-hero-select-native" aria-label="Filial de Origem">
+                <option value="" selected>-- Entrada Direta (Sem Origem) --</option>
+                <option value="Estoque central">Estoque central (000005)</option>
+                <option value="CD Principal Zona Sul">CD Principal Zona Sul (000001)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Campo: Código do Pedido -->
+          <div class="order-hero-field-group">
+            <span class="order-hero-field-label">
+              <span class="material-icons">tag</span>
+              Código
+            </span>
+            <div class="order-hero-input-underline">
+              <span class="order-code-badge-pill" id="heroOrderCodeTxt">000042</span>
+            </div>
+          </div>
+
+          <!-- Badge de Status -->
+          <div class="order-hero-field-group" style="align-self: center;">
+            <span class="order-hero-field-label">Status</span>
+            <div style="padding-top: 4px;">
+              <span class="order-status-badge status-aberto" id="heroStatusBadge">Aberto</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Abas de Navegação Integradas (PRODUTOS / DETALHES) -->
+      <div class="order-hero-tabs-row">
+        <button type="button" class="order-tab-item-btn active" id="tabBtnProdutos" data-tab="produtos">
+          <span class="material-icons" style="font-size: 18px;">inventory_2</span>
+          PRODUTOS
+          <span class="order-tab-count-tag" id="heroProductsCount">5</span>
+        </button>
+        <button type="button" class="order-tab-item-btn" id="tabBtnDetalhes" data-tab="detalhes">
+          <span class="material-icons" style="font-size: 18px;">description</span>
+          DETALHES
+        </button>
+      </div>
+
+      <!-- FAB Flutuante de Edição (Lápis / Concluir) -->
+      <button type="button" class="fab-edit-order" id="fabEditOrder" title="Editar Itens do Pedido" aria-label="Editar Itens do Pedido">
+        <span class="material-icons" id="fabEditIcon">edit</span>
+      </button>
+
+    </div>
+
+    <!-- 2. CARD DE CONTEÚDO BRANCO FLUTUANTE -->
+    <div class="order-content-surface">
+      
+      <!-- Banner Contextual do Modo (Visualização vs Edição) -->
+      <div class="mode-status-banner mode-view" id="modeStatusBanner">
+        <div class="mode-status-left">
+          <span class="material-icons" id="modeBannerIcon">visibility</span>
+          <span id="modeBannerText"><strong>Modo de Visualização:</strong> Pedido aberto para consulta e conferência. Clique no botão de lápis para editar quantidades ou itens.</span>
+        </div>
+        <button type="button" class="btn-toggle-edit-mode" id="btnBannerActionToggle">
+          <span class="material-icons" style="font-size: 16px;">edit</span>
+          EDITAR PEDIDO
+        </button>
+      </div>
+
+      <!-- PAINEL 1: PRODUTOS -->
+      <div class="order-tab-pane active" id="paneProdutos">
+        
+        <!-- Topo da Seção de Produtos -->
+        <div class="order-section-topbar">
+          <div class="order-section-title-group">
+            <h2 class="order-section-title">Itens do Pedido</h2>
+            <span class="order-mode-pill pill-view" id="orderModePill">Visualização</span>
+          </div>
+
+          <div class="order-section-actions">
+            <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" style="display: none;" title="Adicionar Produtos do Catálogo">
+              <span class="material-icons">add_circle</span>
+              + ADICIONAR PRODUTOS
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Bipe e Busca Rápida (Omnibar - Visível em Modo Edição) -->
+        <div class="order-omnibar-box" id="orderOmnibarBox" style="display: none;">
+          <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
+          <input 
+            type="text" 
+            id="omnibarInput" 
+            class="order-omnibar-input" 
+            placeholder="Bipar código de barras EAN ou digitar nome do produto (Pressione Enter)..." 
+            autocomplete="off"
+          >
+          <span class="order-omnibar-hint">Enter para adicionar</span>
+
+          <!-- Dropdown Autocomplete Instantâneo -->
+          <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+        <!-- Tabela de Produtos (Desktop / Tablet) -->
+        <div class="order-table-responsive" id="orderTableWrapper">
+          <table class="order-items-table" id="orderItemsTable" aria-label="Tabela de Produtos do Pedido">
+            <thead>
+              <tr>
+                <th style="width: 36px; text-align: center;">#</th>
+                <th style="width: 52px; text-align: center;">Foto</th>
+                <th style="width: 140px;">Código EAN</th>
+                <th>Produto / Categoria</th>
+                <th style="width: 110px; text-align: center;">Estoque Loja</th>
+                <th style="width: 110px; text-align: right;">Preço Un.</th>
+                <th style="width: 140px; text-align: center;">Qtde Pedido</th>
+                <th style="width: 120px; text-align: right;">Subtotal</th>
+                <th style="width: 160px; text-align: center;">Validade / Lotes</th>
+                <th class="col-actions-header" style="width: 50px; text-align: center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody">
+              <!-- Renderizado dinamicamente via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Grid de Cards de Produtos (Mobile) -->
+        <div class="order-cards-mobile-grid" id="orderCardsGrid">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <!-- Empty State quando não há itens -->
+        <div class="order-empty-state" id="orderEmptyState" style="display: none;">
+          <div class="order-empty-icon-box">
+            <span class="material-icons">add_shopping_cart</span>
+          </div>
+          <h3 class="order-empty-title">Nenhum produto adicionado ao pedido</h3>
+          <p class="order-empty-desc">
+            Clique no botão <strong>+ ADICIONAR PRODUTOS</strong> ou escaneie o código de barras EAN na barra superior.
+          </p>
+          <button type="button" class="btn-add-catalog-v2" id="btnEmptyAdd">
+            <span class="material-icons">add_circle</span>
+            Selecionar Produtos do Catálogo
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PAINEL 2: DETALHES -->
+      <div class="order-tab-pane" id="paneDetalhes" style="display: none;">
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: #212529; margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="color: #6530b5;">description</span>
+          Informações Complementares e Observações
+        </h3>
+
+        <div class="order-details-grid">
+          <div class="input-group">
+            <label class="input-label" for="inputResponsavel">Responsável pelo Pedido / Abastecedor</label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">person</span>
+              <input type="text" id="inputResponsavel" class="input-field" placeholder="Nome do operador responsável" value="B2U Operações" disabled>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="inputPrevisao">Previsão de Entrega / Abastecimento</label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">event</span>
+              <input type="date" id="inputPrevisao" class="input-field" disabled>
+            </div>
+          </div>
+
+          <div class="order-details-full input-group">
+            <label class="input-label" for="textareaObservacoes">Observações Gerais e Instruções de Reposição</label>
+            <textarea id="textareaObservacoes" class="custom-textarea" placeholder="Ex: Reposição prioritária para o final de semana. Conferir Shelf-life na gôndola." disabled></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       STICKY FOOTER: BARRA DE RESUMO & CONFIRMAÇÃO
+       ======================================================================== -->
+  <footer class="order-sticky-footer">
+    <div class="footer-metrics-container">
+      <div class="footer-metric-pill">
+        <span class="footer-metric-label">Itens (SKUs)</span>
+        <span class="footer-metric-val highlight-purple" id="footerSkusCount">0</span>
+      </div>
+
+      <div class="footer-metric-pill">
+        <span class="footer-metric-label">Total Unidades</span>
+        <span class="footer-metric-val" id="footerUnitsCount">0 un</span>
+      </div>
+
+      <div class="footer-metric-pill">
+        <span class="footer-metric-label">Valor Estimado</span>
+        <span class="footer-metric-val highlight-green" id="footerTotalValue">R$ 0,00</span>
+      </div>
+    </div>
+
+    <div class="footer-actions-container">
+      <button type="button" class="btn-footer-secondary" id="btnFooterCancelEdit" style="display: none;">Cancelar Edição</button>
+      <button type="button" class="btn-footer-secondary" id="btnFooterDraft" style="display: none;">Salvar Rascunho</button>
+      <button type="button" class="btn-footer-primary" id="btnFooterConfirm">
+        <span class="material-icons">check_circle</span>
+        <span id="btnFooterConfirmTxt">CONFIRMAR PEDIDO</span>
+      </button>
+      <button type="button" class="btn-footer-secondary" id="btnFooterBackToList" style="display: inline-flex;">
+        <span class="material-icons">arrow_back</span>
+        Voltar para Lista
+      </button>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL 1: CATÁLOGO DE PRODUTOS PARA INSERÇÃO RÁPIDA
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalCatalog" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 800px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">CATÁLOGO DE PRODUTOS</h2>
+        <button type="button" class="official-modal-close" id="btnCloseCatalogModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.25rem;">
+        
+        <!-- Campo de Busca no Catálogo -->
+        <div class="order-omnibar-box" style="margin-bottom: 10px; background-color: #ffffff;">
+          <span class="material-icons" style="color: #757575;">search</span>
+          <input 
+            type="text" 
+            id="catalogSearchInput" 
+            class="order-omnibar-input" 
+            placeholder="Filtrar catálogo por nome, marca ou código EAN..."
+          >
+        </div>
+
+        <!-- Chips de Categoria -->
+        <div class="catalog-category-chips" id="catalogCategoryChips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+          <button type="button" class="catalog-cat-chip active" data-cat="ALL">Todos os Produtos</button>
+          <button type="button" class="catalog-cat-chip" data-cat="Bebidas">Bebidas & Refrigerantes</button>
+          <button type="button" class="catalog-cat-chip" data-cat="Snacks">Snacks & Salgados</button>
+          <button type="button" class="catalog-cat-chip" data-cat="Doces">Doces & Chocolates</button>
+          <button type="button" class="catalog-cat-chip" data-cat="Cervejas">Cervejas & Alcoólicos</button>
+        </div>
+
+        <!-- Grid de Cards do Catálogo -->
+        <div class="catalog-modal-grid" id="catalogModalGrid">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-finalize" id="btnCloseCatalogBtn" style="background-color: var(--primary-color);">CONCLUIR INSERÇÃO</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: GERENCIAR LOTES / VALIDADES (SHELF-LIFE)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalGerenciarLotes" role="dialog" aria-modal="true">
+    <div class="lotes-modal-box">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">GERENCIAR LOTES E VALIDADES</h2>
+        <button type="button" class="official-modal-close" id="btnCloseLotesModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <!-- Barra de Identificação do Produto -->
+      <div class="lotes-product-info-bar">
+        <div class="lotes-product-details">
+          <img id="lotesModalProdImg" src="../assets/images/logo-homepage.png" alt="Produto" class="lotes-product-img">
+          <div>
+            <div class="lotes-product-title" id="lotesModalProdName">Produto</div>
+            <div class="lotes-product-code" id="lotesModalProdEan">EAN: 0000000000000</div>
+          </div>
+        </div>
+
+        <button type="button" class="btn-add-catalog-v2" id="btnModalAddLote" style="padding: 6px 12px; font-size: 0.8rem;">
+          <span class="material-icons" style="font-size: 16px;">add</span>
+          NOVO LOTE
+        </button>
+      </div>
+
+      <!-- Barra de Progresso de Alocação -->
+      <div class="allocation-progress-card">
+        <div class="allocation-metrics-row">
+          <span class="allocation-label">Itens Alocados nos Lotes:</span>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="allocation-counter-text" id="lotesCounterText">0 / 10</span>
+            <span class="allocation-badge pending" id="lotesAllocationBadge">Pendente</span>
+          </div>
+        </div>
+        <div class="allocation-bar-track">
+          <div class="allocation-bar-fill" id="lotesBarFill"></div>
+        </div>
+      </div>
+
+      <!-- Tabela Dinâmica de Lotes -->
+      <div class="lotes-table-container">
+        <table class="lotes-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Lote (Código)</th>
+              <th style="width: 20%;">Quantidade *</th>
+              <th style="width: 25%;">Fabricação</th>
+              <th style="width: 25%;">Validade *</th>
+              <th style="width: 5%; text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody id="lotesTableBody">
+            <!-- Renderizado dinamicamente via JS -->
+          </tbody>
+        </table>
+
+        <button type="button" class="btn-add-lote-row" id="btnTableAddLote">
+          <span class="material-icons">add</span>
+          + Adicionar Outro Lote / Validade
+        </button>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelLotes">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnSaveLotes" style="background-color: var(--primary-color);">CONFIRMAR LOTES</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 3: CONCLUIR PEDIDO (ESCOLHA DE STATUS E FINALIZAÇÃO)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConcluirPedido" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 620px;">
+      
+      <div class="official-modal-header">
+        <h2 class="official-modal-title">CONCLUIR PEDIDO DE ABASTECIMENTO</h2>
+        <button type="button" class="official-modal-close" id="btnCloseConcluirModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.25rem 1.5rem;">
+        <p style="font-size: 0.9rem; color: #555555; margin-bottom: 1rem; line-height: 1.4;">
+          O pedido <strong id="modalConcluirCod">000042</strong> contém <strong id="modalConcluirQtde">0 itens</strong> destinados a <strong id="modalConcluirDestino">Mini Mercado</strong>. Escolha a ação de conclusão:
+        </p>
+
+        <!-- Opções de Status -->
+        <div class="finish-options-grid">
+          
+          <!-- Opção 1: Pendente de Abastecimento (Trânsito) -->
+          <div class="finish-option-card selected" data-status="Pendente de Abastecimento">
+            <div class="finish-option-icon" style="background-color: #fff3e0; color: #e65100;">
+              <span class="material-icons">local_shipping</span>
+            </div>
+            <div class="finish-option-info">
+              <div class="finish-option-title">Colocar em Trânsito (Pendente de Abastecimento)</div>
+              <p class="finish-option-desc">
+                O pedido sai para entrega e fica aguardando a chegada física na loja autônoma. Bloqueia edições.
+              </p>
+            </div>
+          </div>
+
+          <!-- Opção 2: Finalizado Imediatamente (Recebido) -->
+          <div class="finish-option-card" data-status="Recebido">
+            <div class="finish-option-icon" style="background-color: #e8f5e9; color: #2e7d32;">
+              <span class="material-icons">task_alt</span>
+            </div>
+            <div class="finish-option-info">
+              <div class="finish-option-title">Finalizar Imediatamente (Recebido)</div>
+              <p class="finish-option-desc">
+                Conclui o processo e executa a movimentação definitiva de entrada de estoque na loja.
+              </p>
+            </div>
+          </div>
+
+          <!-- Opção 3: Salvar como Rascunho (Aberto) -->
+          <div class="finish-option-card" data-status="Aberto">
+            <div class="finish-option-icon" style="background-color: #f1f3f6; color: #555555;">
+              <span class="material-icons">edit_note</span>
+            </div>
+            <div class="finish-option-info">
+              <div class="finish-option-title">Manter Aberto (Rascunho)</div>
+              <p class="finish-option-desc">
+                Salva todas as alterações permitindo que o pedido continue sendo editado posteriormente.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="official-modal-footer">
+        <button type="button" class="btn-modal-discard" id="btnCancelConcluir">VOLTAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnSubmitFinalizarPedido" style="background-color: var(--primary-color);">CONFIRMAR E GERAR</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/version.js"></script>
+  <script src="../assets/js/toast.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/navigation.js"></script>
+  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/data/pedidos-abastecimento-mock.js"></script>
+  <script src="../assets/js/pedido-detalhe-v2-controller.js"></script>
+</body>
+</html>
