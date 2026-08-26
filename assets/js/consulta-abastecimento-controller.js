@@ -10,40 +10,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const paramPlano = urlParams.get('plano');
   const paramFiltro = urlParams.get('filtro');
 
-  let defaultPlano = 'Plano MiniMercado 03';
-  if (urlParams.has('plano')) {
-    defaultPlano = (paramPlano && paramPlano.trim()) ? paramPlano : 'Sem plano base (Todos os produtos)';
-  }
-
   let currentParams = {
-    origem: (paramOrigem && paramOrigem.trim()) ? paramOrigem : 'Não especificada (Entrada direta)',
+    origem: (paramOrigem && paramOrigem.trim()) ? paramOrigem.trim() : '',
     destino: urlParams.get('destino') || 'Mini Mercado 03 Simples Nacional',
-    plano: defaultPlano,
-    filtro: (paramFiltro && paramFiltro.trim()) ? paramFiltro : 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
+    plano: (paramPlano && paramPlano.trim()) ? paramPlano.trim() : '',
+    filtro: (paramFiltro && paramFiltro.trim()) ? paramFiltro.trim() : 'completo' // 'completo', 'saldo_ideal', 'saldo_critico'
   };
 
   // 1.1 Verificação de Presença de Plano de Abastecimento
   function checkHasPlan() {
-    return !(!currentParams.plano || 
-      currentParams.plano.toLowerCase().includes('sem plano') || 
-      currentParams.plano.toLowerCase().includes('todos os produtos') ||
-      currentParams.plano.toLowerCase().includes('nenhum'));
+    if (!currentParams.plano) return false;
+    const p = currentParams.plano.trim().toLowerCase();
+    return !(p === '' || 
+      p.includes('sem plano') || 
+      p.includes('todos os produtos') || 
+      p.includes('nenhum') ||
+      p === 'null' ||
+      p === 'undefined');
   }
 
   // 1.2 Verificação de Filial de Origem Especificada
   function hasOriginBranch() {
-    return !(!currentParams.origem || 
-      currentParams.origem.toLowerCase().includes('não especificada') || 
-      currentParams.origem.toLowerCase().includes('nenhuma') ||
-      currentParams.origem.toLowerCase().includes('entrada direta'));
+    if (!currentParams.origem) return false;
+    const o = currentParams.origem.trim().toLowerCase();
+    return !(o === '' || 
+      o.includes('não especificada') || 
+      o.includes('nenhuma') || 
+      o.includes('entrada direta') ||
+      o === 'null' ||
+      o === 'undefined');
   }
 
   let hasPlan = checkHasPlan();
 
-  // Inicializa o chip de filtro ativo com base no filtro da URL
+  // Inicializa o chip de filtro ativo com base no filtro da URL (apenas se houver plano)
   let initialChip = 'all';
-  if (currentParams.filtro === 'saldo_ideal') initialChip = 'ideal';
-  else if (currentParams.filtro === 'saldo_critico') initialChip = 'critico';
+  if (hasPlan) {
+    if (currentParams.filtro === 'saldo_ideal') initialChip = 'ideal';
+    else if (currentParams.filtro === 'saldo_critico') initialChip = 'critico';
+  }
   let currentFilterChip = initialChip;
 
   // 1.3 Parâmetros Dinâmicos de Catálogo e Estoque
@@ -305,18 +310,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const hasOrigin = hasOriginBranch();
 
     if (destNameDisplay) destNameDisplay.textContent = currentParams.destino || 'Mini Mercado 03 Simples Nacional';
-    if (cdNameDisplay) cdNameDisplay.textContent = currentParams.origem || 'Não especificada (Entrada direta)';
-    if (planNameDisplay) planNameDisplay.textContent = hasPlan ? currentParams.plano : 'Sem Plano (Inserção Avulsa)';
+    if (cdNameDisplay) cdNameDisplay.textContent = hasOrigin ? currentParams.origem : 'Nenhuma (Entrada direta)';
+    if (planNameDisplay) planNameDisplay.textContent = hasPlan ? currentParams.plano : 'Nenhum (Consulta livre / Sem plano)';
     
     let descFiltro = 'Plano Completo';
     if (!hasPlan) {
-      descFiltro = 'Inserção Manual / Escaneamento';
+      descFiltro = 'Consulta Livre / Inserção Avulsa';
     } else if (currentParams.filtro === 'saldo_ideal') {
       descFiltro = 'Saldo < Ideal';
     } else if (currentParams.filtro === 'saldo_critico') {
       descFiltro = 'Saldo <= Crítico';
     }
     if (filterDescDisplay) filterDescDisplay.textContent = descFiltro;
+
+    // Atualiza visibilidade dos chips de filtro rápido de plano (Ideal e Crítico)
+    const planChips = document.querySelectorAll('.filter-chip.col-plan-param');
+    planChips.forEach(chip => {
+      chip.style.display = hasPlan ? 'inline-flex' : 'none';
+    });
+
+    if (!hasPlan && (currentFilterChip === 'ideal' || currentFilterChip === 'critico')) {
+      currentFilterChip = 'all';
+    }
 
     syncColumnCheckboxes();
   }
@@ -659,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${stockGridHtml}
 
               <div class="card-action-row">
-                ${visibleColumns.sugestao && item.sugestao !== undefined ? `
+                ${visibleColumns.sugestao && hasPlan && item.sugestao !== undefined ? `
                   <div class="card-sugestao-pill btn-apply-sugestao" data-id="${item.id}" data-sugestao="${item.sugestao}" title="Sugestão calculada: ${item.sugestao} un. Clique para preencher.">
                     <span class="material-icons sugestao-icon">lightbulb</span>
                     <span class="sugestao-text"><span class="sugestao-prefix-full">Sugestão: </span><span class="sugestao-prefix-short">Sug: </span><strong>${item.sugestao} un</strong></span>
@@ -1633,14 +1648,11 @@ document.addEventListener('DOMContentLoaded', () => {
       comboboxParamsDestino.setValue(currentParams.destino, currentParams.destino);
 
       // 2. Origem
-      const isSemOrigem = !currentParams.origem || 
-        currentParams.origem.toLowerCase().includes('não especificada') || 
-        currentParams.origem.toLowerCase().includes('nenhuma') ||
-        currentParams.origem.toLowerCase().includes('entrada direta');
-      if (isSemOrigem) {
-        comboboxParamsOrigem.setValue('', '');
-      } else {
+      const hasOrigin = hasOriginBranch();
+      if (hasOrigin) {
         comboboxParamsOrigem.setValue(currentParams.origem, currentParams.origem);
+      } else {
+        comboboxParamsOrigem.setValue('', '');
       }
 
       // 3. Plano
@@ -1744,13 +1756,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const novaOrigemVal = comboboxParamsOrigem.getValue();
-      const novaOrigem = (novaOrigemVal && novaOrigemVal.trim()) ? novaOrigemVal : 'Não especificada (Entrada direta)';
+      const novaOrigem = (novaOrigemVal && novaOrigemVal.trim()) ? novaOrigemVal.trim() : '';
 
       const novoPlanoVal = comboboxParamsPlano.getValue();
-      const novoPlano = (novoPlanoVal && novoPlanoVal.trim()) ? novoPlanoVal : 'Sem plano base (Todos os produtos)';
+      const novoPlano = (novoPlanoVal && novoPlanoVal.trim()) ? novoPlanoVal.trim() : '';
       
       const radioSelected = modalParams.querySelector('input[name="filterScopeParams"]:checked');
-      const novoFiltro = radioSelected ? radioSelected.value : 'completo';
+      const novoFiltro = (novoPlano && radioSelected) ? radioSelected.value : 'completo';
 
       currentParams = {
         origem: novaOrigem,
@@ -1761,7 +1773,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       hasPlan = checkHasPlan();
 
-      // Recalcula e sobrescreve a lista de produtos com base no novo plano/filial
+      // Sincroniza visibilidade das colunas com o novo contexto
+      visibleColumns = {
+        ideal: hasPlan,
+        critico: hasPlan,
+        cd: hasOriginBranch(),
+        sugestao: hasPlan
+      };
+
+      // Recalcula e sobrescreve a lista de produtos com base no novo plano
       if (hasPlan) {
         queryProducts = JSON.parse(JSON.stringify(window.ConsultaProdutosBase || [])).map(p => ({
           ...p,
@@ -1772,8 +1792,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       currentFilterChip = 'all';
-      if (currentParams.filtro === 'saldo_ideal') currentFilterChip = 'ideal';
-      else if (currentParams.filtro === 'saldo_critico') currentFilterChip = 'critico';
+      if (hasPlan) {
+        if (currentParams.filtro === 'saldo_ideal') currentFilterChip = 'ideal';
+        else if (currentParams.filtro === 'saldo_critico') currentFilterChip = 'critico';
+      }
 
       closeParamsModal();
       if (typeof Toast !== 'undefined') {
