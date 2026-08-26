@@ -34,12 +34,14 @@
 }
 
 .pedido-v2-main-container {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 1.25rem 1.5rem 6.5rem 1.5rem;
   box-sizing: border-box;
   position: relative;
   z-index: 2;
+  flex: 1 0 auto;
 }
 
 @media (max-width: 768px) {
@@ -52,6 +54,8 @@
    2. HERO CARD ROXO SUPERIOR (CABEÇALHO DO PEDIDO)
    ========================================================================== */
 .order-hero-card {
+  width: 100%;
+  box-sizing: border-box;
   position: relative;
   background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
   border-radius: 4px 4px 0 0;
@@ -381,6 +385,8 @@
    5. CARD BRANCO DE CONTEÚDO FLUTUANTE
    ========================================================================== */
 .order-content-surface {
+  width: 100%;
+  box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 0 0 4px 4px;
   border: 1px solid #e2e8f0;
@@ -389,6 +395,11 @@
   padding: 1.75rem 1.75rem 2rem 1.75rem;
   position: relative;
   z-index: 5;
+}
+
+.order-tab-pane {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -1148,22 +1159,26 @@
 .order-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .order-details-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
 .order-details-full {
   grid-column: 1 / -1;
+  width: 100%;
 }
 
 .custom-textarea {
   width: 100%;
-  min-height: 100px;
+  min-height: 110px;
   padding: 10px 12px;
   border: 1px solid #ced4da;
   border-radius: 4px;
