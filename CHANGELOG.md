@@ -2,6 +2,20 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.14] - 2026-08-26
+### ✨ Condicionamento Estrito de Produtos e Colunas aos Parâmetros da Consulta
+- **Carga Condicional de Produtos por Plano** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - Sem plano selecionado na abertura inicial ou na alteração de parâmetros, a lista de produtos inicia **vazia** (`queryProducts = []`), exibindo o *Empty State* de inserção avulsa / catálogo / bipe de código de barras.
+  - Com plano selecionado, carrega os produtos planejados e respeita o escopo de filtros (*Plano completo*, *Saldo < Ideal*, *Saldo <= Crítico*).
+- **Ocultação / Exibição Inteligente de Colunas e Métricas de Plano** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - As colunas **Estoque Ideal**, **Mínimo Crítico** e **Sugestão de Reposição** só são exibidas quando há um plano de abastecimento ativo. Sem plano, ficam totalmente ocultas na tabela desktop, nos cards mobile e nos chips de filtro rápido do topo.
+- **Ocultação / Exibição Condicional de Estoque CD (Origem)** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - A coluna **Estoque CD** só é exibida caso uma Filial de Origem tenha sido informada. Sem filial de origem, a coluna fica oculta e o banner superior exibe *"Origem: Nenhuma (Entrada direta)"*.
+- **Sincronização Dinâmica em "Alterar Parâmetros"** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - Ao aplicar novos parâmetros pelo modal, o estado da tela, lista de produtos e visibilidade de colunas/chips são recalculados e atualizados instantaneamente.
+
+---
+
 ## [1.9.13] - 2026-08-24
 ### ✨ Cards Operacionais Mobile por Padrão & Alternador Tabela/Cards
 - **Cards Operacionais Ricos no Mobile** ([`pages/pedidos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedidos-abastecimento.html), [`pages/planos-abastecimento.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/planos-abastecimento.html), [`assets/css/abastecimento.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/abastecimento.css)):
