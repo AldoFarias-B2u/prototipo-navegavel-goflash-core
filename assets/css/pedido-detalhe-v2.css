@@ -1,17 +1,45 @@
 /**
  * GOFLASH CORE - ESTILOS DA TELA DE DETALHES / ITENS DO PEDIDO (V2 REDESIGN)
- * Implementa o layout de referência visual com Hero Card Roxo, campos Material Underline,
- * abas integradas, FAB de edição sobreposto e card de conteúdo branco flutuante.
+ * Implementa o layout de referência visual com Topbar Escuro (#23143d), Faixa de Fundo Escura,
+ * Hero Card Roxo vibrante (#6530b5), campos Material Underline, abas integradas,
+ * FAB de edição sobreposto e card de conteúdo branco flutuante.
  */
 
 /* ==========================================================================
    1. ESTRUTURA GERAL & FUNDO DA PÁGINA
    ========================================================================== */
+.module-page-body {
+  background-color: #f1f3f6;
+  color: var(--text-main, #212529);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Faixa Superior Escura de Fundo (Dark Hero Backdrop - Estilo Imagem 2) */
+.order-hero-backdrop {
+  position: absolute;
+  top: 64px; /* Logo abaixo da Topbar */
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: linear-gradient(180deg, #23143d 0%, #1e1035 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .order-hero-backdrop {
+    height: 180px;
+  }
+}
+
 .pedido-v2-main-container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 1.25rem 1.5rem 6.5rem 1.5rem;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
 }
 
 @media (max-width: 768px) {
@@ -29,7 +57,7 @@
   border-radius: 4px 4px 0 0;
   color: #ffffff;
   padding: 1.5rem 1.75rem 0 1.75rem;
-  box-shadow: 0 4px 18px rgba(101, 48, 181, 0.25), 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(101, 48, 181, 0.3);
   z-index: 10;
 }
 
@@ -66,7 +94,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
   margin-top: 4px;
 }
 
@@ -622,7 +650,7 @@
 }
 
 /* ==========================================================================
-   6. TABELA DE PRODUTOS (DESKTOP / TABLET)
+   6. TABELA DE PRODUTOS (DESKTOP) & CONTROLE ESTRITO DE VISIBILIDADE
    ========================================================================== */
 .order-table-responsive {
   width: 100%;
@@ -631,6 +659,7 @@
   border-radius: 4px;
   border: 1px solid #e9ecef;
   margin-bottom: 1rem;
+  display: block; /* Padrão Desktop */
 }
 
 .order-items-table {
@@ -882,20 +911,30 @@
 }
 
 /* ==========================================================================
-   7. CARDS DE PRODUTOS (MOBILE - ≤ 768px)
+   7. CARDS DE PRODUTOS (MOBILE - ≤ 768px) & CONTROLE DE MIDIA
    ========================================================================== */
 .order-cards-mobile-grid {
-  display: none;
+  display: none; /* Oculto no desktop */
   grid-template-columns: 1fr;
   gap: 10px;
 }
 
-@media (max-width: 768px) {
+/* RESPONSIVIDADE ESTRITA: Desktop = Tabela, Mobile = Cards */
+@media (min-width: 769px) {
   .order-table-responsive {
-    display: none;
+    display: block !important;
   }
   .order-cards-mobile-grid {
-    display: grid;
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-table-responsive {
+    display: none !important;
+  }
+  .order-cards-mobile-grid {
+    display: grid !important;
   }
 }
 

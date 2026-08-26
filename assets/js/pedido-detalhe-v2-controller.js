@@ -408,8 +408,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (tableWrapper) tableWrapper.style.display = 'block';
-    if (cardsGrid) cardsGrid.style.display = 'grid';
+    if (tableWrapper) tableWrapper.style.display = '';
+    if (cardsGrid) cardsGrid.style.display = '';
     if (emptyState) emptyState.style.display = 'none';
 
     // 7.1 Render Tabela Desktop
