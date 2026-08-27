@@ -655,10 +655,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCatalogGrid(query = '', selectedCategory = 'ALL') {
     if (!catalogModalGrid) return;
-    const term = query.toLowerCase();
+    const term = query.toLowerCase().trim();
 
     const filtered = rawCatalog.filter(p => {
-      const matchText = !term || p.nome.toLowerCase().includes(term) || p.ean.includes(term);
+      const matchText = !term || 
+        (p.nome && p.nome.toLowerCase().includes(term)) || 
+        (p.ean && p.ean.includes(term)) ||
+        (p.marca && p.marca.toLowerCase().includes(term));
       const cat = p.categoria || p.grupo || 'Outros';
       const matchCat = (selectedCategory === 'ALL') || cat.toLowerCase().includes(selectedCategory.toLowerCase());
       return matchText && matchCat;
@@ -667,39 +670,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filtered.length === 0) {
       catalogModalGrid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #757575;">
-          <span class="material-icons" style="font-size: 36px; color: #bdbdbd; display: block; margin-bottom: 8px;">search_off</span>
-          Nenhum produto encontrado no catálogo.
+          <span class="material-icons" style="font-size: 36px; color: #bbb; display: block; margin-bottom: 8px;">search_off</span>
+          <p style="margin: 0; font-size: 0.9rem;">Nenhum produto encontrado neste filtro.</p>
         </div>
       `;
       return;
     }
 
-    catalogModalGrid.innerHTML = filtered.map(p => {
-      const preco = Number(p.precoVenda || p.preco || 5.00);
-      const inCart = cartItems.find(item => item.ean === p.ean);
+    catalogModalGrid.innerHTML = filtered.map(prod => {
+      const preco = Number(prod.precoVenda || prod.preco || 6.50);
+      const inCart = cartItems.find(i => String(i.id) === String(prod.id) || i.ean === prod.ean);
+      const isAdded = !!inCart;
 
       return `
-        <div class="catalog-product-card" style="border: 1px solid #e9ecef; border-radius: 6px; padding: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #ffffff;">
-          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-            <img src="${p.foto}" alt="${p.nome}" style="width: 44px; height: 44px; border-radius: 4px; object-fit: cover;" onerror="this.src='../assets/images/logo-homepage.png'">
-            <div style="min-width: 0;">
-              <div style="font-weight: 600; font-size: 0.9rem; color: #212529; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nome}</div>
-              <div style="font-size: 0.76rem; color: #6530b5; font-family: monospace;">EAN: ${p.ean}</div>
-              <div style="font-size: 0.85rem; font-weight: 700; color: #2e7d32;">R$ ${preco.toFixed(2).replace('.', ',')}</div>
-            </div>
+        <div class="catalog-item-card" data-ean="${prod.ean}">
+          <img src="${prod.foto || prod.imagem || '../assets/images/logo-homepage.png'}" alt="${prod.nome}" class="catalog-item-img" onerror="this.src='../assets/images/logo-homepage.png'">
+          <div>
+            <div class="catalog-item-name" title="${prod.nome}">${prod.nome}</div>
+            <div style="font-size: 0.72rem; color: #757575; margin-top: 2px;">EAN: ${prod.ean}</div>
           </div>
-
-          <button type="button" class="btn-add-catalog-item" data-ean="${p.ean}" style="background-color: ${inCart ? '#edf7ed' : '#6530b5'}; color: ${inCart ? '#2e7d32' : '#ffffff'}; border: ${inCart ? '1px solid #a5d6a7' : 'none'}; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap;">
-            ${inCart ? 'Adicionado ✓' : '+ Adicionar'}
-          </button>
+          <div class="catalog-item-bottom">
+            <span class="catalog-item-price">R$ ${preco.toFixed(2).replace('.', ',')}</span>
+            <button type="button" class="btn-catalog-add ${isAdded ? 'added' : ''}" data-ean="${prod.ean}">
+              <span class="material-icons" style="font-size: 16px;">${isAdded ? 'check' : 'add'}</span>
+              <span>${isAdded ? `No Pedido (${inCart.quantidade})` : 'Adicionar'}</span>
+            </button>
+          </div>
         </div>
       `;
     }).join('');
 
     // Eventos de adicionar item pelo catálogo
-    const addBtns = catalogModalGrid.querySelectorAll('.btn-add-catalog-item');
+    const addBtns = catalogModalGrid.querySelectorAll('.btn-catalog-add');
     addBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const ean = btn.getAttribute('data-ean');
         const prod = rawCatalog.find(p => p.ean === ean);
         if (!prod) return;
@@ -713,10 +718,10 @@ document.addEventListener('DOMContentLoaded', () => {
             id: Date.now(),
             nome: prod.nome,
             ean: prod.ean,
-            foto: prod.foto,
+            foto: prod.foto || prod.imagem || '../assets/images/logo-homepage.png',
             categoria: prod.categoria || prod.grupo || 'Geral',
-            estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 0,
-            preco: prod.precoVenda || prod.preco || 5.00,
+            estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 6,
+            preco: prod.precoVenda || prod.preco || 6.50,
             quantidade: 1,
             lotes: []
           });
@@ -724,7 +729,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         renderProducts();
-        renderCatalogGrid(catalogSearchInput ? catalogSearchInput.value : '');
+        const activeChip = document.querySelector('.catalog-cat-chip.active');
+        const cat = activeChip ? activeChip.getAttribute('data-cat') : 'ALL';
+        renderCatalogGrid(catalogSearchInput ? catalogSearchInput.value : '', cat);
       });
     });
   }
