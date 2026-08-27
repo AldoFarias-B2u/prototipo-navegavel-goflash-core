@@ -31,15 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const paneProdutos = document.getElementById('paneProdutos');
   const paneDetalhes = document.getElementById('paneDetalhes');
 
-  // FAB e Banners de Modo
+  // FAB e Pílula de Modo
   const fabEditOrder = document.getElementById('fabEditOrder');
   const fabEditIcon = document.getElementById('fabEditIcon');
-  const modeStatusBanner = document.getElementById('modeStatusBanner');
-  const modeBannerIcon = document.getElementById('modeBannerIcon');
-  const modeBannerText = document.getElementById('modeBannerText');
-  const btnBannerActionToggle = document.getElementById('btnBannerActionToggle');
   const orderModePill = document.getElementById('orderModePill');
-  const btnHeaderEditToggle = document.getElementById('btnHeaderEditToggle');
   const btnHeaderSave = document.getElementById('btnHeaderSave');
 
   // Ações de Produtos
@@ -196,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4.2 Pedido Bloqueado (Read-Only Permanente)
     if (isReadOnly) {
       if (fabEditOrder) fabEditOrder.style.display = 'none';
-      if (btnHeaderEditToggle) btnHeaderEditToggle.style.display = 'none';
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'none';
       if (orderOmnibarBox) orderOmnibarBox.style.display = 'none';
       
@@ -212,17 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (orderModePill) {
         orderModePill.className = 'order-mode-pill pill-view';
-        orderModePill.textContent = 'Somente Leitura';
-      }
-
-      if (modeStatusBanner) {
-        modeStatusBanner.style.display = 'flex';
-        modeStatusBanner.className = 'mode-status-banner mode-readonly-locked';
-        if (modeBannerIcon) modeBannerIcon.textContent = 'lock';
-        if (modeBannerText) {
-          modeBannerText.innerHTML = `<strong>Pedido ${statusName}:</strong> Este pedido já foi processado e encontra-se bloqueado para alterações.`;
-        }
-        if (btnBannerActionToggle) btnBannerActionToggle.style.display = 'none';
+        orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">lock</span> Somente Leitura';
       }
 
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
@@ -240,13 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (fabEditOrder) {
         fabEditOrder.style.display = 'flex';
         fabEditOrder.classList.add('is-editing');
-        fabEditOrder.title = 'Salvar e Concluir Edição';
+        fabEditOrder.title = 'Concluir Edição';
         if (fabEditIcon) fabEditIcon.textContent = 'check';
-      }
-
-      if (btnHeaderEditToggle) {
-        btnHeaderEditToggle.title = 'Visualizar Pedido';
-        btnHeaderEditToggle.querySelector('.material-icons').textContent = 'visibility';
       }
 
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'inline-flex';
@@ -264,20 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (orderModePill) {
         orderModePill.className = 'order-mode-pill pill-edit';
-        orderModePill.textContent = 'Modo de Edição';
-      }
-
-      if (modeStatusBanner) {
-        modeStatusBanner.style.display = 'flex';
-        modeStatusBanner.className = 'mode-status-banner mode-edit';
-        if (modeBannerIcon) modeBannerIcon.textContent = 'edit_note';
-        if (modeBannerText) {
-          modeBannerText.innerHTML = `<strong>Modo de Edição Ativo:</strong> Você pode ajustar quantidades, bipar produtos ou adicionar itens pelo catálogo.`;
-        }
-        if (btnBannerActionToggle) {
-          btnBannerActionToggle.style.display = 'inline-flex';
-          btnBannerActionToggle.innerHTML = `<span class="material-icons" style="font-size: 16px;">visibility</span> VISUALIZAR`;
-        }
+        orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">edit</span> Modo de Edição';
       }
 
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
@@ -297,11 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fabEditIcon) fabEditIcon.textContent = 'edit';
       }
 
-      if (btnHeaderEditToggle) {
-        btnHeaderEditToggle.title = 'Editar Pedido';
-        btnHeaderEditToggle.querySelector('.material-icons').textContent = 'edit';
-      }
-
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'none';
       if (orderOmnibarBox) orderOmnibarBox.style.display = 'none';
 
@@ -317,20 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (orderModePill) {
         orderModePill.className = 'order-mode-pill pill-view';
-        orderModePill.textContent = 'Visualização';
-      }
-
-      if (modeStatusBanner) {
-        modeStatusBanner.style.display = 'flex';
-        modeStatusBanner.className = 'mode-status-banner mode-view';
-        if (modeBannerIcon) modeBannerIcon.textContent = 'visibility';
-        if (modeBannerText) {
-          modeBannerText.innerHTML = `<strong>Modo de Visualização:</strong> Pedido aberto para conferência. Clique no botão de lápis para editar quantidades ou itens.`;
-        }
-        if (btnBannerActionToggle) {
-          btnBannerActionToggle.style.display = 'inline-flex';
-          btnBannerActionToggle.innerHTML = `<span class="material-icons" style="font-size: 16px;">edit</span> EDITAR PEDIDO`;
-        }
+        orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">visibility</span> Visualização';
       }
 
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
@@ -345,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
   }
 
-  // 5. Toggle de Edição via FAB, Botão de Banner e Botão do Topbar
+  // 5. Toggle de Edição via FAB
   function toggleEditMode() {
     if (isReadOnly) return;
     isEditMode = !isEditMode;
@@ -353,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof Toast !== 'undefined') {
       if (isEditMode) {
-        Toast.info('Modo de edição ativado. Ajuste os itens e confirme as alterações.');
+        Toast.info('Modo de edição ativado. Ajuste quantidades ou adicione itens.');
       } else {
         Toast.info('Retornado ao modo de visualização.');
       }
@@ -361,8 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (fabEditOrder) fabEditOrder.addEventListener('click', toggleEditMode);
-  if (btnBannerActionToggle) btnBannerActionToggle.addEventListener('click', toggleEditMode);
-  if (btnHeaderEditToggle) btnHeaderEditToggle.addEventListener('click', toggleEditMode);
   
   if (btnFooterCancelEdit) {
     btnFooterCancelEdit.addEventListener('click', () => {
