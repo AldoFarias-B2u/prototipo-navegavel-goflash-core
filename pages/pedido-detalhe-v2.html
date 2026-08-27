@@ -242,6 +242,10 @@
             <h2 class="order-section-title">
               Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
             </h2>
+            <button type="button" class="btn-clear-all-items" id="btnClearAllItems" style="display: none;" title="Excluir todos os produtos deste pedido">
+              <span class="material-icons">delete_sweep</span>
+              <span>Limpar Todos</span>
+            </button>
           </div>
           <span class="order-mode-pill pill-view" id="orderModePill">
             <span class="material-icons" style="font-size: 13px;">visibility</span>
@@ -263,7 +267,11 @@
                 <th style="width: 140px; text-align: center;">Qtde Pedido</th>
                 <th style="width: 120px; text-align: right;">Subtotal</th>
                 <th style="width: 160px; text-align: center;">Validade / Lotes</th>
-                <th class="col-actions-header" style="width: 50px; text-align: center;">Ações</th>
+                <th class="col-actions-header" style="width: 60px; text-align: center;">
+                  <button type="button" class="btn-table-clear-all" id="btnTableClearAll" title="Excluir todos os produtos do pedido">
+                    <span class="material-icons">delete_sweep</span>
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody id="orderTableBody">
@@ -555,6 +563,41 @@
         <button type="button" class="btn-modal-finalize" id="btnSubmitFinalizarPedido" style="background-color: var(--primary-color);">CONFIRMAR E GERAR</button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 4: CONFIRMAÇÃO DE LIMPEZA DE TODOS OS ITENS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmClearAll" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 480px;">
+      <div class="official-modal-header" style="background-color: #d32f2f;">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">warning</span>
+          LIMPAR TODOS OS ITENS
+        </h2>
+        <button type="button" class="official-modal-close" id="btnCloseClearAllModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem; text-align: center;">
+        <div class="modal-confirm-icon-box danger">
+          <span class="material-icons">delete_forever</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #212529; margin: 0 0 0.5rem 0;">
+          Tem certeza que deseja remover todos os itens?
+        </h3>
+        <p style="color: #616161; font-size: 0.9rem; line-height: 1.45; margin: 0 0 1.25rem 0;" id="clearAllModalDesc">
+          Esta ação removerá todos os produtos do pedido atual, incluindo quantidades e validades informadas.
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnCancelClearAll">Cancelar</button>
+        <button type="button" class="btn-danger-confirm" id="btnConfirmClearAll">
+          <span class="material-icons" style="font-size: 16px;">delete</span>
+          Sim, Limpar Todos
+        </button>
+      </div>
     </div>
   </div>
 

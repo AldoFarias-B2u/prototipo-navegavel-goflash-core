@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
 
+  // Botões de Limpar Todos os Itens
+  const btnClearAllItems = document.getElementById('btnClearAllItems');
+  const btnTableClearAll = document.getElementById('btnTableClearAll');
+
   // Modais
   const modalCatalog = document.getElementById('modalCatalog');
   const btnCloseCatalogModal = document.getElementById('btnCloseCatalogModal');
@@ -68,6 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const catalogSearchInput = document.getElementById('catalogSearchInput');
   const catalogModalGrid = document.getElementById('catalogModalGrid');
   const catalogCategoryChips = document.querySelectorAll('.catalog-cat-chip');
+
+  const modalConfirmClearAll = document.getElementById('modalConfirmClearAll');
+  const btnCloseClearAllModal = document.getElementById('btnCloseClearAllModal');
+  const btnCancelClearAll = document.getElementById('btnCancelClearAll');
+  const btnConfirmClearAll = document.getElementById('btnConfirmClearAll');
+  const clearAllModalDesc = document.getElementById('clearAllModalDesc');
 
   const modalGerenciarLotes = document.getElementById('modalGerenciarLotes');
   const btnCloseLotesModal = document.getElementById('btnCloseLotesModal');
@@ -346,10 +356,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (heroProductsCount) heroProductsCount.textContent = cartItems.length;
     if (sectionProductsCount) sectionProductsCount.textContent = `(${cartItems.length})`;
 
+    const canClear = isEditMode && !isReadOnly && cartItems.length > 0;
+    if (btnClearAllItems) btnClearAllItems.style.display = canClear ? 'inline-flex' : 'none';
+
     // Header da coluna de ações
     const colActionsHeader = document.querySelector('.col-actions-header');
     if (colActionsHeader) {
       colActionsHeader.style.display = (isEditMode && !isReadOnly) ? 'table-cell' : 'none';
+    }
+    if (btnTableClearAll) {
+      btnTableClearAll.style.display = canClear ? 'inline-flex' : 'none';
     }
 
     if (cartItems.length === 0) {
@@ -759,6 +775,42 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCatalogGrid(catalogSearchInput ? catalogSearchInput.value : '', cat);
     });
   });
+
+  // 11. Modal de Confirmação de Limpeza em Massa (Excluir Todos os Itens)
+  function openClearAllModal() {
+    if (isReadOnly || !isEditMode || cartItems.length === 0) return;
+    if (clearAllModalDesc) {
+      clearAllModalDesc.innerHTML = `Tem certeza que deseja remover todos os <strong>${cartItems.length} produtos</strong> deste pedido? Esta ação removerá quantidades e validades informadas.`;
+    }
+    if (modalConfirmClearAll) modalConfirmClearAll.classList.add('show', 'active');
+  }
+
+  function closeClearAllModal() {
+    if (modalConfirmClearAll) modalConfirmClearAll.classList.remove('show', 'active');
+  }
+
+  function executeClearAll() {
+    const count = cartItems.length;
+    cartItems = [];
+    renderProducts();
+    updateTotals();
+    closeClearAllModal();
+    if (typeof Toast !== 'undefined') {
+      Toast.info(`Todos os ${count} itens foram removidos do pedido.`);
+    }
+  }
+
+  if (btnClearAllItems) btnClearAllItems.addEventListener('click', openClearAllModal);
+  if (btnTableClearAll) btnTableClearAll.addEventListener('click', openClearAllModal);
+  if (btnCloseClearAllModal) btnCloseClearAllModal.addEventListener('click', closeClearAllModal);
+  if (btnCancelClearAll) btnCancelClearAll.addEventListener('click', closeClearAllModal);
+  if (btnConfirmClearAll) btnConfirmClearAll.addEventListener('click', executeClearAll);
+
+  if (modalConfirmClearAll) {
+    modalConfirmClearAll.addEventListener('click', (e) => {
+      if (e.target === modalConfirmClearAll) closeClearAllModal();
+    });
+  }
 
   // 12. Modal de Gerenciamento de Lotes e Validades
   function openLotesModal(item) {
