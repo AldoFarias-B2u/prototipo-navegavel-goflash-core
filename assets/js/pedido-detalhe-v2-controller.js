@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'CONFIRMAR PEDIDO';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'CONFIRMAR';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
 
