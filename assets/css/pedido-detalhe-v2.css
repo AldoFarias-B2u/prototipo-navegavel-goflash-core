@@ -975,20 +975,30 @@
 /* RESPONSIVIDADE ESTRITA: Desktop = Tabela, Mobile = Cards */
 @media (min-width: 769px) {
   .order-table-responsive {
-    display: block !important;
+    display: block;
   }
   .order-cards-mobile-grid {
-    display: none !important;
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
   .order-table-responsive {
-    display: none !important;
+    display: none;
   }
   .order-cards-mobile-grid {
-    display: grid !important;
+    display: grid;
   }
+}
+
+/* Quando o carrinho estiver vazio, ocultar tabela e cards incondicionalmente */
+.is-empty-cart .order-table-responsive,
+.is-empty-cart .order-cards-mobile-grid {
+  display: none !important;
+}
+
+.is-empty-cart .order-empty-state {
+  display: flex !important;
 }
 
 .order-mobile-product-card {

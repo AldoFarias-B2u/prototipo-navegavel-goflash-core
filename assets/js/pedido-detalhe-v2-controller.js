@@ -369,13 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (cartItems.length === 0) {
+      if (tbody) tbody.innerHTML = '';
+      if (cardsGrid) cardsGrid.innerHTML = '';
       if (tableWrapper) tableWrapper.style.display = 'none';
       if (cardsGrid) cardsGrid.style.display = 'none';
       if (emptyState) emptyState.style.display = 'flex';
+      if (mainContainer) mainContainer.classList.add('is-empty-cart');
       updateTotals();
       return;
     }
 
+    if (mainContainer) mainContainer.classList.remove('is-empty-cart');
     if (tableWrapper) tableWrapper.style.display = '';
     if (cardsGrid) cardsGrid.style.display = '';
     if (emptyState) emptyState.style.display = 'none';
