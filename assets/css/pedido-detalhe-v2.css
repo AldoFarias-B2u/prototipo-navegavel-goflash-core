@@ -1294,13 +1294,24 @@
    ========================================================================== */
 .catalog-category-chips {
   display: flex;
+  align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
   overflow-x: auto;
+  white-space: nowrap;
   padding-bottom: 6px;
+  margin-bottom: 12px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.catalog-category-chips::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .catalog-cat-chip {
+  flex-shrink: 0;
   background-color: #f1f3f6;
   border: 1px solid #dee2e6;
   border-radius: 16px;
