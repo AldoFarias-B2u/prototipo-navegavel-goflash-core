@@ -406,101 +406,21 @@
   }
 }
 
-/* Topo da Seção de Produtos */
-.order-section-topbar {
+/* ==========================================================================
+   6. FERRAMENTAS DE INSERÇÃO & TOPO DA SEÇÃO DE PRODUTOS
+   ========================================================================== */
+.order-insertion-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 12px;
   margin-bottom: 1.25rem;
 }
 
 @media (max-width: 768px) {
-  .order-section-topbar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    margin-bottom: 0.65rem;
+  .order-insertion-toolbar {
+    gap: 8px;
+    margin-bottom: 0.75rem;
   }
-}
-
-.order-section-title-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-@media (max-width: 768px) {
-  .order-section-title-group {
-    gap: 6px;
-  }
-}
-
-.order-section-title {
-  font-size: 1.18rem;
-  font-weight: 700;
-  color: #212529;
-  margin: 0;
-  letter-spacing: -0.2px;
-}
-
-@media (max-width: 768px) {
-  .order-section-title {
-    font-size: 1.02rem;
-  }
-}
-
-.order-mode-pill {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.order-mode-pill.pill-view {
-  background-color: #f1f3f6;
-  color: #5f6368;
-  border: 1px solid #e2e8f0;
-}
-
-.order-mode-pill.pill-edit {
-  background-color: #ede5f8;
-  color: #6530b5;
-  border: 1px solid #d8c7f5;
-  font-weight: 700;
-  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
-}
-
-.btn-add-catalog-v2 {
-  background-color: #6530b5;
-  color: #ffffff;
-  border: none;
-  padding: 9px 18px;
-  border-radius: 4px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.btn-add-catalog-v2:hover {
-  background-color: #522396;
-  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.35);
-  transform: translateY(-1px);
 }
 
 /* Barra de Bipe e Busca Inteligente (Omnibar) */
@@ -513,14 +433,13 @@
   border-radius: 6px;
   padding: 0 1rem;
   height: 48px;
-  margin-bottom: 1.25rem;
+  flex: 1;
   transition: all var(--transition-fast, 0.2s ease);
 }
 
 @media (max-width: 768px) {
   .order-omnibar-box {
-    height: 38px;
-    margin-bottom: 0.65rem;
+    height: 40px;
     padding: 0 0.65rem;
   }
 }
@@ -556,7 +475,7 @@
 
 @media (max-width: 768px) {
   .order-omnibar-input {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
   }
 }
 
@@ -565,18 +484,160 @@
 }
 
 .order-omnibar-hint {
-  font-size: 0.76rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: #8e959e;
-  font-family: 'Roboto Mono', monospace, inherit;
-  background-color: #eef1f5;
-  padding: 2px 8px;
+  background-color: #e9ecef;
+  padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid #dce2e8;
+  white-space: nowrap;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .order-omnibar-hint {
+    display: none; /* Oculta tecla hint no mobile */
+  }
+}
+
+/* Botão Adicionar do Catálogo */
+.btn-add-catalog-v2 {
+  background-color: #6530b5;
+  color: #ffffff;
+  border: none;
+  padding: 0 18px;
+  height: 48px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
+  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-add-catalog-v2:hover {
+  background-color: #522396;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-add-txt-desktop {
+  display: inline;
+}
+.btn-add-txt-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .btn-add-catalog-v2 {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+    border-radius: 6px;
+  }
+  .btn-add-catalog-v2 .material-icons {
+    font-size: 16px;
+  }
+  .btn-add-txt-desktop {
     display: none;
+  }
+  .btn-add-txt-mobile {
+    display: inline;
+  }
+}
+
+/* Topo da Seção de Produtos (Divisor e Título antes dos cards/tabela) */
+.order-section-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .order-section-topbar {
+    gap: 6px;
+    margin-bottom: 0.65rem;
+  }
+}
+
+.order-section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-items-count-inline {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6530b5;
+}
+
+@media (max-width: 768px) {
+  .order-section-title {
+    font-size: 1rem;
+  }
+  .order-items-count-inline {
+    font-size: 0.85rem;
+  }
+}
+
+.order-mode-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.order-mode-pill.pill-view {
+  background-color: #f1f3f6;
+  color: #5f6368;
+  border: 1px solid #e2e8f0;
+}
+
+.order-mode-pill.pill-edit {
+  background-color: #ede5f8;
+  color: #6530b5;
+  border: 1px solid #d8c7f5;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
+}
+
+@media (max-width: 768px) {
+  .order-mode-pill {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    gap: 3px;
+  }
+  .order-mode-pill .material-icons {
+    font-size: 11px;
   }
 }
 

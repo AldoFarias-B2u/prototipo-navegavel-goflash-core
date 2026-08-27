@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderModePill = document.getElementById('orderModePill');
   const btnHeaderSave = document.getElementById('btnHeaderSave');
 
-  // Ações de Produtos
+  // Ações de Produtos & Ferramentas de Inserção
+  const orderInsertionToolbar = document.getElementById('orderInsertionToolbar');
+  const sectionProductsCount = document.getElementById('sectionProductsCount');
   const btnOpenCatalogModal = document.getElementById('btnOpenCatalogModal');
   const orderOmnibarBox = document.getElementById('orderOmnibarBox');
   const omnibarInput = document.getElementById('omnibarInput');
@@ -191,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4.2 Pedido Bloqueado (Read-Only Permanente)
     if (isReadOnly) {
       if (fabEditOrder) fabEditOrder.style.display = 'none';
+      if (orderInsertionToolbar) orderInsertionToolbar.style.display = 'none';
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'none';
       if (orderOmnibarBox) orderOmnibarBox.style.display = 'none';
       
@@ -228,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fabEditIcon) fabEditIcon.textContent = 'check';
       }
 
+      if (orderInsertionToolbar) orderInsertionToolbar.style.display = 'flex';
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'inline-flex';
       if (orderOmnibarBox) orderOmnibarBox.style.display = 'flex';
       
@@ -263,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fabEditIcon) fabEditIcon.textContent = 'edit';
       }
 
+      if (orderInsertionToolbar) orderInsertionToolbar.style.display = 'none';
       if (btnOpenCatalogModal) btnOpenCatalogModal.style.display = 'none';
       if (orderOmnibarBox) orderOmnibarBox.style.display = 'none';
 
@@ -339,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 7. Renderização da Lista de Produtos (Tabela e Cards Mobile)
   function renderProducts() {
     if (heroProductsCount) heroProductsCount.textContent = cartItems.length;
+    if (sectionProductsCount) sectionProductsCount.textContent = `(${cartItems.length})`;
 
     // Header da coluna de ações
     const colActionsHeader = document.querySelector('.col-actions-header');
@@ -931,7 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnFooterDraft.addEventListener('click', () => {
       saveOrderToStorage('Aberto');
       if (typeof Toast !== 'undefined') {
-        Toast.success(`Rascunho do pedido ${currentOrderCode} salvo com sucesso!`);
+        Toast.success(`Pedido ${currentOrderCode} salvo com sucesso!`);
       }
       isEditMode = false;
       applyModeUI();

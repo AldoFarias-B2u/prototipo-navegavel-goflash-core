@@ -208,37 +208,45 @@
       <!-- PAINEL 1: PRODUTOS -->
       <div class="order-tab-pane active" id="paneProdutos">
         
-        <!-- Topo da Seção de Produtos -->
-        <div class="order-section-topbar">
-          <div class="order-section-title-group">
-            <h2 class="order-section-title">Itens do Pedido</h2>
-            <span class="order-mode-pill pill-view" id="orderModePill">Visualização</span>
+        <!-- Barra Integrada de Ferramentas de Inserção (Bipe EAN + Botão Adicionar - Visível em Modo Edição) -->
+        <div class="order-insertion-toolbar" id="orderInsertionToolbar" style="display: none;">
+          <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
+          <div class="order-omnibar-box" id="orderOmnibarBox">
+            <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
+            <input 
+              type="text" 
+              id="omnibarInput" 
+              class="order-omnibar-input" 
+              placeholder="Bipar código EAN ou pesquisar produto..." 
+              autocomplete="off"
+            >
+            <span class="order-omnibar-hint">Enter</span>
+
+            <!-- Dropdown Autocomplete Instantâneo -->
+            <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
           </div>
 
-          <div class="order-section-actions">
-            <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" style="display: none;" title="Adicionar Produtos do Catálogo">
-              <span class="material-icons">add_circle</span>
-              + ADICIONAR PRODUTOS
-            </button>
-          </div>
+          <!-- Botão Adicionar do Catálogo -->
+          <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
+            <span class="material-icons">add_circle</span>
+            <span class="btn-add-txt-desktop">+ ADICIONAR PRODUTOS</span>
+            <span class="btn-add-txt-mobile">+ Adicionar</span>
+          </button>
         </div>
 
-        <!-- Barra de Bipe e Busca Rápida (Omnibar - Visível em Modo Edição) -->
-        <div class="order-omnibar-box" id="orderOmnibarBox" style="display: none;">
-          <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
-          <input 
-            type="text" 
-            id="omnibarInput" 
-            class="order-omnibar-input" 
-            placeholder="Bipar código de barras EAN ou digitar nome do produto (Pressione Enter)..." 
-            autocomplete="off"
-          >
-          <span class="order-omnibar-hint">Enter para adicionar</span>
-
-          <!-- Dropdown Autocomplete Instantâneo -->
-          <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
-            <!-- Renderizado dinamicamente via JS -->
+        <!-- Topo da Seção de Produtos (Divisor e Título antes dos cards/tabela) -->
+        <div class="order-section-topbar">
+          <div class="order-section-title-group">
+            <h2 class="order-section-title">
+              Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
+            </h2>
           </div>
+          <span class="order-mode-pill pill-view" id="orderModePill">
+            <span class="material-icons" style="font-size: 13px;">visibility</span>
+            Visualização
+          </span>
         </div>
 
         <!-- Tabela de Produtos (Desktop / Tablet) -->
@@ -349,7 +357,7 @@
       </button>
       <button type="button" class="btn-footer-secondary" id="btnFooterDraft" style="display: none;">
         <span class="material-icons btn-action-icon">save</span>
-        <span>Rascunho</span>
+        <span>Salvar</span>
       </button>
       <button type="button" class="btn-footer-primary" id="btnFooterConfirm">
         <span class="material-icons">check_circle</span>
