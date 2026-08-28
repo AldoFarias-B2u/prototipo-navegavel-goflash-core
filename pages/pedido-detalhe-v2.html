@@ -208,36 +208,9 @@
       <!-- PAINEL 1: PRODUTOS -->
       <div class="order-tab-pane active" id="paneProdutos">
         
-        <!-- Barra Integrada de Ferramentas de Inserção (Bipe EAN + Botão Adicionar - Visível em Modo Edição) -->
-        <div class="order-insertion-toolbar" id="orderInsertionToolbar" style="display: none;">
-          <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
-          <div class="order-omnibar-box" id="orderOmnibarBox">
-            <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
-            <input 
-              type="text" 
-              id="omnibarInput" 
-              class="order-omnibar-input" 
-              placeholder="Bipar código EAN ou pesquisar produto..." 
-              autocomplete="off"
-            >
-            <span class="order-omnibar-hint">Enter</span>
-
-            <!-- Dropdown Autocomplete Instantâneo -->
-            <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
-              <!-- Renderizado dinamicamente via JS -->
-            </div>
-          </div>
-
-          <!-- Botão Adicionar do Catálogo -->
-          <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
-            <span class="material-icons">add_circle</span>
-            <span class="btn-add-txt-desktop">+ ADICIONAR PRODUTOS</span>
-            <span class="btn-add-txt-mobile">+ Adicionar</span>
-          </button>
-        </div>
-
-        <!-- Topo da Seção de Produtos (Divisor, Título, Modo, Alternador de View e Mais Ações) -->
-        <div class="order-section-topbar">
+        <!-- Topo da Seção de Produtos (Integrado: Título + Inserção + Ações em linha única no Desktop) -->
+        <div class="order-section-topbar" id="orderSectionTopbar">
+          <!-- Grupo 1: Título e Status da Seção -->
           <div class="order-section-title-group">
             <h2 class="order-section-title">
               Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
@@ -248,7 +221,35 @@
             </span>
           </div>
 
-          <!-- Controles de Visualização e Ações Rápidas -->
+          <!-- Grupo 2: Inserção de Produtos (Bipe EAN + Botão Catálogo - Visível no Modo Edição) -->
+          <div class="order-insertion-toolbar" id="orderInsertionToolbar" style="display: none;">
+            <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
+            <div class="order-omnibar-box" id="orderOmnibarBox">
+              <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
+              <input 
+                type="text" 
+                id="omnibarInput" 
+                class="order-omnibar-input" 
+                placeholder="Bipar EAN ou buscar produto..." 
+                autocomplete="off"
+              >
+              <span class="order-omnibar-hint">Enter</span>
+
+              <!-- Dropdown Autocomplete Instantâneo -->
+              <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
+                <!-- Renderizado dinamicamente via JS -->
+              </div>
+            </div>
+
+            <!-- Botão Adicionar do Catálogo (Sem o sinal '+' duplicado) -->
+            <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
+              <span class="material-icons">add_circle</span>
+              <span class="btn-add-txt-desktop">ADICIONAR PRODUTOS</span>
+              <span class="btn-add-txt-mobile">Adicionar</span>
+            </button>
+          </div>
+
+          <!-- Grupo 3: Controles de Visualização e Ações Rápidas -->
           <div class="order-section-controls">
             <!-- Botão Mais Ações (Dropdown) -->
             <div class="more-actions-wrapper" id="moreActionsWrapper">

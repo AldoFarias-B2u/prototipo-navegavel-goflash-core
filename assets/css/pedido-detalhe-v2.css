@@ -415,166 +415,15 @@
 /* ==========================================================================
    6. FERRAMENTAS DE INSERÇÃO & TOPO DA SEÇÃO DE PRODUTOS
    ========================================================================== */
-.order-insertion-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 1.25rem;
-}
 
-@media (max-width: 768px) {
-  .order-insertion-toolbar {
-    gap: 8px;
-    margin-bottom: 0.75rem;
-  }
-}
-
-/* Barra de Bipe e Busca Inteligente (Omnibar) */
-.order-omnibar-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  padding: 0 1rem;
-  height: 48px;
-  flex: 1;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-box {
-    height: 40px;
-    padding: 0 0.65rem;
-  }
-}
-
-.order-omnibar-box:focus-within {
-  background-color: #ffffff;
-  border-color: #6530b5;
-  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
-}
-
-.order-omnibar-icon {
-  color: #6530b5;
-  font-size: 22px;
-  margin-right: 10px;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-icon {
-    font-size: 18px;
-    margin-right: 6px;
-  }
-}
-
-.order-omnibar-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-family: inherit;
-  font-size: 0.92rem;
-  color: #212529;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-input {
-    font-size: 0.82rem;
-  }
-}
-
-.order-omnibar-input::placeholder {
-  color: #8e959e;
-}
-
-.order-omnibar-hint {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #8e959e;
-  background-color: #e9ecef;
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-hint {
-    display: none; /* Oculta tecla hint no mobile */
-  }
-}
-
-/* Botão Adicionar do Catálogo */
-.btn-add-catalog-v2 {
-  background-color: #6530b5;
-  color: #ffffff;
-  border: none;
-  padding: 0 18px;
-  height: 48px;
-  border-radius: 6px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
-  transition: all var(--transition-fast, 0.2s ease);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.btn-add-catalog-v2:hover {
-  background-color: #522396;
-  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.35);
-  transform: translateY(-1px);
-}
-
-.btn-add-txt-desktop {
-  display: inline;
-}
-.btn-add-txt-mobile {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .btn-add-catalog-v2 {
-    height: 40px;
-    padding: 0 10px;
-    font-size: 0.78rem;
-    gap: 4px;
-    border-radius: 6px;
-  }
-  .btn-add-catalog-v2 .material-icons {
-    font-size: 16px;
-  }
-  .btn-add-txt-desktop {
-    display: none;
-  }
-  .btn-add-txt-mobile {
-    display: inline;
-  }
-}
-
-/* Topo da Seção de Produtos (Divisor e Título antes dos cards/tabela) */
+/* Topo da Seção de Produtos (Integrado: Título + Inserção + Ações em linha única no Desktop) */
 .order-section-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 12px;
+  margin-bottom: 1.15rem;
   padding-top: 0.25rem;
-}
-
-@media (max-width: 768px) {
-  .order-section-topbar {
-    gap: 8px;
-    margin-bottom: 0.75rem;
-  }
 }
 
 .order-section-title-group {
@@ -582,6 +431,7 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .order-section-title {
@@ -600,16 +450,6 @@
   font-size: 0.95rem;
   font-weight: 500;
   color: #6530b5;
-}
-
-@media (max-width: 768px) {
-  .order-section-title {
-    font-size: 1.05rem;
-    white-space: nowrap;
-  }
-  .order-items-count-inline {
-    font-size: 0.9rem;
-  }
 }
 
 .order-mode-pill {
@@ -640,9 +480,179 @@
   box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
 }
 
-@media (max-width: 768px) {
+/* Barra Integrada de Ferramentas de Inserção */
+.order-insertion-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto; /* Empurra para a direita junto com as ações no desktop */
+}
+
+/* Barra de Bipe e Busca Inteligente (Omnibar Compacto Desktop) */
+.order-omnibar-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0 0.75rem;
+  height: 34px;
+  width: 280px;
+  box-sizing: border-box;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.order-omnibar-box:focus-within {
+  background-color: #ffffff;
+  border-color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.order-omnibar-icon {
+  color: #6530b5;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.order-omnibar-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: #212529;
+  min-width: 0;
+}
+
+.order-omnibar-input::placeholder {
+  color: #8e959e;
+}
+
+.order-omnibar-hint {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #6c757d;
+  background-color: #e9ecef;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* Botão Adicionar do Catálogo */
+.btn-add-catalog-v2 {
+  background-color: #6530b5;
+  color: #ffffff;
+  border: none;
+  padding: 0 14px;
+  height: 34px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.2);
+  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.btn-add-catalog-v2:hover {
+  background-color: #522396;
+  box-shadow: 0 3px 8px rgba(101, 48, 181, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-add-catalog-v2 .material-icons {
+  font-size: 17px;
+}
+
+.btn-add-txt-desktop {
+  display: inline;
+}
+.btn-add-txt-mobile {
+  display: none;
+}
+
+/* Layout Responsivo no Mobile e Tablet (≤ 991px) */
+@media (max-width: 991px) {
+  .order-section-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .order-insertion-toolbar {
+    order: 1;
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    gap: 8px;
+  }
+
+  .order-omnibar-box {
+    flex: 1;
+    width: auto;
+    height: 38px;
+    padding: 0 0.65rem;
+    border-radius: 6px;
+  }
+
+  .order-omnibar-icon {
+    font-size: 18px;
+    margin-right: 6px;
+  }
+
+  .order-omnibar-hint {
+    display: none;
+  }
+
+  .btn-add-catalog-v2 {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+    border-radius: 6px;
+  }
+
+  .btn-add-txt-desktop {
+    display: none;
+  }
+
+  .btn-add-txt-mobile {
+    display: inline;
+  }
+
+  .order-section-title-group {
+    order: 2;
+  }
+
+  .order-section-title {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .order-items-count-inline {
+    font-size: 0.9rem;
+  }
+
   .order-mode-pill {
-    display: none; /* No mobile, o modo já é evidenciado pela omnibar de bipagem e pelo FAB */
+    display: none;
+  }
+
+  .order-section-controls {
+    order: 3;
+    gap: 6px;
   }
 }
 
