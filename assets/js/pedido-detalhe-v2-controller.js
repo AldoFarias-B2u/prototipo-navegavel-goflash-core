@@ -671,63 +671,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const highlightCardClass = item._justAdded ? 'item-card-highlight' : '';
 
+        const isStockCritical = (estoqueLojaVal <= (item.minimoCritico !== undefined ? item.minimoCritico : 3));
+
+        // Bloco 1: Chips de Estoque & Plano
+        const hasStockMetrics = visibleColumns.estoqueLoja || visibleColumns.estoqueOrigem || visibleColumns.estoqueIdeal || visibleColumns.minimoCritico || visibleColumns.sugestao;
+        
+        let stockChipsHtml = '';
+        if (hasStockMetrics) {
+          stockChipsHtml = `
+            <div class="mobile-card-stock-chips">
+              ${visibleColumns.estoqueLoja ? `
+                <span class="stock-chip stock-chip-loja ${isStockCritical ? 'is-critical' : ''}" title="Estoque atual na loja de destino">
+                  <span class="chip-label">Loja:</span>
+                  <strong>${estoqueLojaVal} un</strong>
+                </span>
+              ` : ''}
+
+              ${visibleColumns.estoqueOrigem ? `
+                <span class="stock-chip stock-chip-origem" title="Estoque disponível no CD / Origem">
+                  <span class="chip-label">Origem:</span>
+                  <strong>${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</strong>
+                </span>
+              ` : ''}
+
+              ${visibleColumns.estoqueIdeal ? `
+                <span class="stock-chip stock-chip-ideal" title="Estoque ideal / meta">
+                  <span class="chip-label">Ideal:</span>
+                  <strong>${estoqueIdealVal} un</strong>
+                </span>
+              ` : ''}
+
+              ${visibleColumns.minimoCritico ? `
+                <span class="stock-chip stock-chip-min" title="Estoque mínimo crítico">
+                  <span class="chip-label">Mín:</span>
+                  <strong>${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</strong>
+                </span>
+              ` : ''}
+
+              ${visibleColumns.sugestao ? `
+                <span class="stock-chip-sugestao" title="Quantidade sugerida pelo plano de reposição">
+                  <span class="material-icons" style="font-size: 14px;">lightbulb</span>
+                  <span>Sugestão:</span>
+                  <strong>${sugestaoVal} un</strong>
+                </span>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        // Bloco 2: Resumo Financeiro (Separado e limpo)
+        let financialBarHtml = '';
+        if (visibleColumns.precos) {
+          financialBarHtml = `
+            <div class="mobile-card-financial-bar">
+              <span class="fin-price">Preço Un.: <strong>R$ ${itemPreco.toFixed(2).replace('.', ',')}</strong></span>
+              <span class="fin-subtotal">Subtotal: <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></span>
+            </div>
+          `;
+        }
+
         return `
           <div class="order-mobile-product-card ${highlightCardClass}" data-index="${index}">
             <div class="mobile-card-top-row">
               <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
               <div class="mobile-card-info">
                 <h4 class="mobile-card-title">${item.nome}</h4>
-                <div class="mobile-card-ean">EAN: ${item.ean} • <span style="color: #757575;">${item.categoria || 'Geral'}</span></div>
+                <div class="mobile-card-ean">EAN: ${item.ean} • <span class="mobile-card-category">${item.categoria || 'Geral'}</span></div>
               </div>
             </div>
 
-            <div class="mobile-card-metrics-row">
-              ${visibleColumns.estoqueLoja ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Est. Loja</span>
-                  <span class="mobile-metric-val">${estoqueLojaVal} un</span>
-                </div>
-              ` : ''}
+            ${stockChipsHtml}
 
-              ${visibleColumns.estoqueOrigem ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Est. Origem</span>
-                  <span class="mobile-metric-val" style="color: #6530b5;">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
-                </div>
-              ` : ''}
-
-              ${visibleColumns.estoqueIdeal ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Ideal</span>
-                  <span class="mobile-metric-val">${estoqueIdealVal} un</span>
-                </div>
-              ` : ''}
-
-              ${visibleColumns.minimoCritico ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Mín. Crítico</span>
-                  <span class="mobile-metric-val" style="color: #d32f2f;">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
-                </div>
-              ` : ''}
-
-              ${visibleColumns.sugestao ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Sugestão</span>
-                  <span class="mobile-metric-val" style="color: #6530b5;">${sugestaoVal} un</span>
-                </div>
-              ` : ''}
-
-              ${visibleColumns.precos ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Preço Un.</span>
-                  <span class="mobile-metric-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
-                </div>
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Subtotal</span>
-                  <span class="mobile-metric-val" style="color: #2e7d32;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-                </div>
-              ` : ''}
-            </div>
+            ${financialBarHtml}
 
             <div class="mobile-card-bottom-actions">
               ${mobileLotesBadgeHtml}
@@ -739,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1">
                     <button type="button" class="order-stepper-btn btn-plus" data-index="${index}">+</button>
                   </div>
-                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}">
+                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}" title="Remover produto do pedido">
                     <span class="material-icons">delete</span>
                   </button>
                 ` : `

@@ -1078,26 +1078,35 @@
 
 .order-mobile-product-card {
   background-color: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.order-mobile-product-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
 }
 
 .mobile-card-top-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 0.75rem;
 }
 
 .mobile-card-thumb {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border-radius: 6px;
   object-fit: cover;
   background-color: #f1f3f6;
   border: 1px solid #e2e8f0;
+  flex-shrink: 0;
 }
 
 .mobile-card-info {
@@ -1106,55 +1115,160 @@
 }
 
 .mobile-card-title {
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  color: #212529;
-  margin: 0 0 3px 0;
-  line-height: 1.3;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  line-height: 1.35;
 }
 
 .mobile-card-ean {
   font-family: 'Roboto Mono', monospace;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   color: #6530b5;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mobile-card-category {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.7rem;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-family: var(--font-primary, inherit);
+}
+
+/* Bloco 1: Chips de Estoque & Plano */
+.mobile-card-stock-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background-color: #f8fafc;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.stock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.stock-chip .chip-label {
+  color: #64748b;
   font-weight: 500;
 }
 
-.mobile-card-metrics-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 8px;
-  background-color: #f8f9fa;
-  padding: 8px 10px;
-  border-radius: 4px;
-  margin-bottom: 0.75rem;
-  font-size: 0.8rem;
-}
-
-.mobile-metric-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.mobile-metric-label {
-  font-size: 0.68rem;
-  color: #757575;
-  text-transform: uppercase;
-}
-
-.mobile-metric-val {
+.stock-chip strong {
   font-weight: 700;
-  color: #212529;
+  color: #0f172a;
 }
 
+.stock-chip.stock-chip-loja.is-critical {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.stock-chip.stock-chip-loja.is-critical .chip-label,
+.stock-chip.stock-chip-loja.is-critical strong {
+  color: #b91c1c;
+}
+
+.stock-chip.stock-chip-origem {
+  background-color: #ede7f6;
+  border-color: #d1c4e9;
+  color: #5b21b6;
+}
+
+.stock-chip.stock-chip-origem .chip-label {
+  color: #7c3aed;
+}
+
+.stock-chip.stock-chip-origem strong {
+  color: #5b21b6;
+}
+
+.stock-chip.stock-chip-min {
+  background-color: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.stock-chip.stock-chip-min .chip-label,
+.stock-chip.stock-chip-min strong {
+  color: #be123c;
+}
+
+.stock-chip.stock-chip-sugestao {
+  background-color: #e8eaf6;
+  border-color: #c5cae9;
+  color: #1a237e;
+  font-weight: 700;
+  padding: 3px 9px;
+}
+
+.stock-chip.stock-chip-sugestao .material-icons {
+  color: #3949ab;
+}
+
+.stock-chip.stock-chip-sugestao strong {
+  color: #1a237e;
+}
+
+/* Bloco 2: Resumo Financeiro (Separado e Limpo) */
+.mobile-card-financial-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  font-size: 0.82rem;
+}
+
+.mobile-card-financial-bar .fin-price {
+  color: #4b5563;
+}
+
+.mobile-card-financial-bar .fin-price strong {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+.mobile-card-financial-bar .fin-subtotal {
+  color: #15803d;
+  font-size: 0.88rem;
+}
+
+.mobile-card-financial-bar .fin-subtotal strong {
+  color: #15803d;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+/* Bloco 3: Rodapé de Ações */
 .mobile-card-bottom-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 6px;
-  border-top: 1px solid #f1f3f6;
+  padding-top: 4px;
 }
 
 /* ==========================================================================
