@@ -17,6 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentLoadedOrder = null;
   let currentOrderCode = '000042';
 
+  // Novos Estados: Visualização, Colunas Visíveis e Tabela de Preço
+  let isCardsView = window.innerWidth <= 768; // Mobile inicia Cards, Desktop inicia Tabela
+  let activePriceTable = 'NONE'; // 'NONE' (Sem Preços - Padrão), 'CUSTO', 'VENDA'
+  let visibleColumns = {
+    estoqueLoja: true,
+    estoqueOrigem: false,
+    estoqueIdeal: false,
+    minimoCritico: false,
+    precos: false
+  };
+
   // 2. Elementos Principais do DOM
   const mainContainer = document.getElementById('pedidoContainer');
   const heroDestinoSelect = document.getElementById('heroDestinoSelect');
@@ -45,6 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const omnibarInput = document.getElementById('omnibarInput');
   const omnibarDropdown = document.getElementById('omnibarDropdown');
 
+  // Controles de Seção (Alternar View e Mais Ações)
+  const btnToggleView = document.getElementById('btnToggleView');
+  const toggleViewIcon = document.getElementById('toggleViewIcon');
+  const toggleViewText = document.getElementById('toggleViewText');
+
+  const moreActionsWrapper = document.getElementById('moreActionsWrapper');
+  const btnMoreActions = document.getElementById('btnMoreActions');
+  const moreActionsDropdown = document.getElementById('moreActionsDropdown');
+  const actionBatchQty = document.getElementById('actionBatchQty');
+  const actionManageCols = document.getElementById('actionManageCols');
+  const actionPriceTable = document.getElementById('actionPriceTable');
+  const actionClearAll = document.getElementById('actionClearAll');
+  const currentPriceTableLabel = document.getElementById('currentPriceTableLabel');
+
   // Tabela e Cards
   const tbody = document.getElementById('orderTableBody');
   const cardsGrid = document.getElementById('orderCardsGrid');
@@ -55,15 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerSkusCount = document.getElementById('footerSkusCount');
   const footerUnitsCount = document.getElementById('footerUnitsCount');
   const footerTotalValue = document.getElementById('footerTotalValue');
+  const footerMetricValorBox = document.getElementById('footerMetricValorBox');
+  const footerPriceTableBadge = document.getElementById('footerPriceTableBadge');
   const btnFooterCancelEdit = document.getElementById('btnFooterCancelEdit');
   const btnFooterDraft = document.getElementById('btnFooterDraft');
   const btnFooterConfirm = document.getElementById('btnFooterConfirm');
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
-
-  // Botões de Limpar Todos os Itens
-  const btnClearAllItems = document.getElementById('btnClearAllItems');
-  const btnTableClearAll = document.getElementById('btnTableClearAll');
 
   // Modais
   const modalCatalog = document.getElementById('modalCatalog');
@@ -78,6 +101,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCancelClearAll = document.getElementById('btnCancelClearAll');
   const btnConfirmClearAll = document.getElementById('btnConfirmClearAll');
   const clearAllModalDesc = document.getElementById('clearAllModalDesc');
+
+  // Modal 5: Quantidade em Lote
+  const modalBatchQuantity = document.getElementById('modalBatchQuantity');
+  const btnCloseBatchQtyModal = document.getElementById('btnCloseBatchQtyModal');
+  const btnCancelBatchQty = document.getElementById('btnCancelBatchQty');
+  const btnApplyBatchQty = document.getElementById('btnApplyBatchQty');
+  const inputBatchQtyValue = document.getElementById('inputBatchQtyValue');
+  const quickQtyBtns = document.querySelectorAll('.btn-quick-qty');
+
+  // Modal 6: Colunas Visíveis
+  const modalManageColumns = document.getElementById('modalManageColumns');
+  const btnCloseManageColsModal = document.getElementById('btnCloseManageColsModal');
+  const btnCancelManageCols = document.getElementById('btnCancelManageCols');
+  const btnApplyManageCols = document.getElementById('btnApplyManageCols');
+  const chkColEstoqueLoja = document.getElementById('chkColEstoqueLoja');
+  const chkColEstoqueOrigem = document.getElementById('chkColEstoqueOrigem');
+  const chkColEstoqueIdeal = document.getElementById('chkColEstoqueIdeal');
+  const chkColMinCritico = document.getElementById('chkColMinCritico');
+  const chkColPrecos = document.getElementById('chkColPrecos');
+
+  // Modal 7: Tabela de Preços
+  const modalPriceTable = document.getElementById('modalPriceTable');
+  const btnClosePriceTableModal = document.getElementById('btnClosePriceTableModal');
+  const btnCancelPriceTable = document.getElementById('btnCancelPriceTable');
+  const btnApplyPriceTable = document.getElementById('btnApplyPriceTable');
+  const priceOptionCards = document.querySelectorAll('.price-option-card');
 
   const modalGerenciarLotes = document.getElementById('modalGerenciarLotes');
   const btnCloseLotesModal = document.getElementById('btnCloseLotesModal');
@@ -165,6 +214,25 @@ document.addEventListener('DOMContentLoaded', () => {
       cartItems = demoItems;
     }
   }
+
+  // Verificação inteligente de colunas iniciais baseada em Origem e Plano
+  const hasOrigem = (heroOrigemSelect && heroOrigemSelect.value !== 'DIRETA' && heroOrigemSelect.value !== '');
+  if (hasOrigem) {
+    visibleColumns.estoqueOrigem = true;
+  }
+  const inputDetalhesPlano = document.getElementById('inputDetalhesPlano');
+  const hasPlano = (inputDetalhesPlano && inputDetalhesPlano.value && inputDetalhesPlano.value.trim() !== '' && inputDetalhesPlano.value !== '--');
+  if (hasPlano) {
+    visibleColumns.estoqueIdeal = true;
+    visibleColumns.minimoCritico = true;
+  }
+
+  // Sincronizar checkboxes do modal de colunas
+  if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+  if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+  if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+  if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+  if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
 
   if (heroOrderCodeTxt) heroOrderCodeTxt.textContent = currentOrderCode;
 
@@ -269,11 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
 
     } else {
-      // MODO DE VISUALIZAÇÃO ATIVO (PADRÃO)
+      // MODO DE VISUALIZAÇÃO ATIVO (Pedido Aberto)
       if (fabEditOrder) {
         fabEditOrder.style.display = 'flex';
         fabEditOrder.classList.remove('is-editing');
-        fabEditOrder.title = 'Editar Itens do Pedido';
+        fabEditOrder.title = 'Editar Pedido';
         if (fabEditIcon) fabEditIcon.textContent = 'edit';
       }
 
@@ -300,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'EDITAR PEDIDO';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'FINALIZAR PEDIDO';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
     }
@@ -308,32 +376,19 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
   }
 
-  // 5. Toggle de Edição via FAB
-  function toggleEditMode() {
-    if (isReadOnly) return;
-    isEditMode = !isEditMode;
-    applyModeUI();
-
-    if (typeof Toast !== 'undefined') {
-      if (isEditMode) {
-        Toast.info('Modo de edição ativado. Ajuste quantidades ou adicione itens.');
-      } else {
-        Toast.info('Retornado ao modo de visualização.');
-      }
-    }
-  }
-
-  if (fabEditOrder) fabEditOrder.addEventListener('click', toggleEditMode);
-  
-  if (btnFooterCancelEdit) {
-    btnFooterCancelEdit.addEventListener('click', () => {
-      isEditMode = false;
+  // 5. FAB de Lápis / Conclusão de Edição
+  if (fabEditOrder) {
+    fabEditOrder.addEventListener('click', () => {
+      if (isReadOnly) return;
+      isEditMode = !isEditMode;
       applyModeUI();
-      if (typeof Toast !== 'undefined') Toast.info('Edição cancelada.');
+      if (typeof Toast !== 'undefined') {
+        Toast.info(isEditMode ? 'Modo de Edição ativado.' : 'Modo de Visualização ativado.');
+      }
     });
   }
 
-  // 6. Navegação entre Abas (PRODUTOS / DETALHES)
+  // 6. Controle de Abas (Produtos vs. Detalhes)
   function switchTab(tabName) {
     if (tabName === 'produtos') {
       if (tabBtnProdutos) tabBtnProdutos.classList.add('active');
@@ -351,22 +406,64 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tabBtnProdutos) tabBtnProdutos.addEventListener('click', () => switchTab('produtos'));
   if (tabBtnDetalhes) tabBtnDetalhes.addEventListener('click', () => switchTab('detalhes'));
 
-  // 7. Renderização da Lista de Produtos (Tabela e Cards Mobile)
+  // 7. Sincronização de Visibilidade de Colunas na Tabela
+  function syncTableColumnsHeader() {
+    const thLoja = document.querySelector('.col-estoque-loja');
+    const thOrigem = document.querySelector('.col-estoque-origem');
+    const thIdeal = document.querySelector('.col-estoque-ideal');
+    const thCritico = document.querySelector('.col-min-critico');
+    const thPreco = document.querySelector('.col-preco-un');
+    const thSubtotal = document.querySelector('.col-subtotal');
+    const thAcoes = document.querySelector('.col-actions-header');
+
+    if (thLoja) thLoja.style.display = visibleColumns.estoqueLoja ? 'table-cell' : 'none';
+    if (thOrigem) thOrigem.style.display = visibleColumns.estoqueOrigem ? 'table-cell' : 'none';
+    if (thIdeal) thIdeal.style.display = visibleColumns.estoqueIdeal ? 'table-cell' : 'none';
+    if (thCritico) thCritico.style.display = visibleColumns.minimoCritico ? 'table-cell' : 'none';
+    if (thPreco) thPreco.style.display = visibleColumns.precos ? 'table-cell' : 'none';
+    if (thSubtotal) thSubtotal.style.display = visibleColumns.precos ? 'table-cell' : 'none';
+    if (thAcoes) thAcoes.style.display = (isEditMode && !isReadOnly) ? 'table-cell' : 'none';
+  }
+
+  // 8. Alternador de Visualização (Tabela vs. Cards)
+  function applyViewMode() {
+    if (isCardsView) {
+      if (tableWrapper) tableWrapper.style.display = 'none';
+      if (cardsGrid) {
+        cardsGrid.style.display = 'grid';
+        cardsGrid.classList.add('desktop-grid-mode');
+      }
+      if (toggleViewIcon) toggleViewIcon.textContent = 'view_list';
+      if (toggleViewText) toggleViewText.textContent = 'Ver em Tabela';
+      if (btnToggleView) btnToggleView.classList.add('active');
+    } else {
+      if (tableWrapper) tableWrapper.style.display = 'block';
+      if (cardsGrid) {
+        cardsGrid.style.display = 'none';
+        cardsGrid.classList.remove('desktop-grid-mode');
+      }
+      if (toggleViewIcon) toggleViewIcon.textContent = 'grid_view';
+      if (toggleViewText) toggleViewText.textContent = 'Ver em Cards';
+      if (btnToggleView) btnToggleView.classList.remove('active');
+    }
+  }
+
+  if (btnToggleView) {
+    btnToggleView.addEventListener('click', () => {
+      isCardsView = !isCardsView;
+      applyViewMode();
+      if (typeof Toast !== 'undefined') {
+        Toast.info(isCardsView ? 'Visualização em Cards ativada.' : 'Visualização em Tabela ativada.');
+      }
+    });
+  }
+
+  // 9. Renderização da Lista de Produtos (Tabela e Cards)
   function renderProducts() {
     if (heroProductsCount) heroProductsCount.textContent = cartItems.length;
     if (sectionProductsCount) sectionProductsCount.textContent = `(${cartItems.length})`;
 
-    const canClear = isEditMode && !isReadOnly && cartItems.length > 0;
-    if (btnClearAllItems) btnClearAllItems.style.display = canClear ? 'inline-flex' : 'none';
-
-    // Header da coluna de ações
-    const colActionsHeader = document.querySelector('.col-actions-header');
-    if (colActionsHeader) {
-      colActionsHeader.style.display = (isEditMode && !isReadOnly) ? 'table-cell' : 'none';
-    }
-    if (btnTableClearAll) {
-      btnTableClearAll.style.display = canClear ? 'inline-flex' : 'none';
-    }
+    syncTableColumnsHeader();
 
     if (cartItems.length === 0) {
       if (tbody) tbody.innerHTML = '';
@@ -380,20 +477,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (mainContainer) mainContainer.classList.remove('is-empty-cart');
-    if (tableWrapper) tableWrapper.style.display = '';
-    if (cardsGrid) cardsGrid.style.display = '';
     if (emptyState) emptyState.style.display = 'none';
+    applyViewMode();
 
-    // 7.1 Render Tabela Desktop
+    // 9.1 Render Tabela Desktop
     if (tbody) {
       tbody.innerHTML = cartItems.map((item, index) => {
         const itemPreco = Number(item.preco) || 0;
         const itemQtde = Number(item.quantidade) || 0;
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
-        const isStockLow = item.estoqueLoja <= 2;
+        const isStockLow = (item.estoqueLoja !== undefined && item.estoqueLoja <= 2);
 
-        let lotesBadgeHtml = `
+        const lotesBadgeHtml = `
           <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
             <span class="material-icons" style="font-size: 16px;">calendar_today</span>
             ${lotesCount > 0 ? `${lotesCount} Lote(s)` : 'Informar Validade'}
@@ -418,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let actionCellHtml = '';
         if (isEditMode && !isReadOnly) {
           actionCellHtml = `
-            <td style="text-align: center;">
+            <td class="col-actions-header" style="text-align: center;">
               <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}" title="Remover produto do pedido">
                 <span class="material-icons" style="font-size: 18px;">delete</span>
               </button>
@@ -429,40 +525,71 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <tr data-index="${index}">
             <td style="text-align: center; color: #757575; font-size: 0.8rem; font-weight: 500;">${index + 1}</td>
-            <td style="text-align: center;">
-              <img src="${item.foto}" alt="${item.nome}" class="table-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
-            </td>
+            
+            <!-- Coluna de Produto Unificada: Foto + Nome + EAN + Categoria -->
             <td>
-              <span class="table-prod-ean">${item.ean}</span>
-            </td>
-            <td>
-              <div class="table-prod-info">
-                <span class="table-prod-name">${item.nome}</span>
-                <span class="table-prod-meta">${item.categoria || 'Geral'}</span>
+              <div class="table-prod-unified-cell">
+                <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="table-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
+                <div class="table-prod-unified-info">
+                  <div class="table-prod-name" title="${item.nome}">${item.nome}</div>
+                  <div class="table-prod-meta-row">
+                    <span class="table-prod-ean">EAN: ${item.ean}</span>
+                    <span class="table-prod-category">${item.categoria || 'Geral'}</span>
+                  </div>
+                </div>
               </div>
             </td>
-            <td style="text-align: center;">
-              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${item.estoqueLoja} un</span>
+
+            <!-- Coluna Estoque Loja -->
+            <td class="col-estoque-loja" style="text-align: center; ${visibleColumns.estoqueLoja ? '' : 'display: none;'}">
+              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0} un</span>
             </td>
-            <td style="text-align: right; font-weight: 500; color: #495057;">
+
+            <!-- Coluna Estoque Origem (CD) -->
+            <td class="col-estoque-origem" style="text-align: center; ${visibleColumns.estoqueOrigem ? '' : 'display: none;'}">
+              <span class="stock-pill-loja" style="background-color: #ede7f6; color: #6530b5; border: 1px solid #d1c4e9;">
+                ${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un
+              </span>
+            </td>
+
+            <!-- Coluna Estoque Ideal -->
+            <td class="col-estoque-ideal" style="text-align: center; color: #495057; font-weight: 600; ${visibleColumns.estoqueIdeal ? '' : 'display: none;'}">
+              ${item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12} un
+            </td>
+
+            <!-- Coluna Mínimo Crítico -->
+            <td class="col-min-critico" style="text-align: center; color: #d32f2f; font-weight: 600; ${visibleColumns.minimoCritico ? '' : 'display: none;'}">
+              ${item.minimoCritico !== undefined ? item.minimoCritico : 3} un
+            </td>
+
+            <!-- Coluna Preço Unitário -->
+            <td class="col-preco-un" style="text-align: right; font-weight: 500; color: #495057; ${visibleColumns.precos ? '' : 'display: none;'}">
               R$ ${itemPreco.toFixed(2).replace('.', ',')}
             </td>
-            <td style="text-align: center;">
+
+            <!-- Coluna Quantidade Pedido -->
+            <td class="col-qtde" style="text-align: center;">
               ${qtyCellHtml}
             </td>
-            <td style="text-align: right; font-weight: 700; color: #2e7d32;">
+
+            <!-- Coluna Subtotal -->
+            <td class="col-subtotal" style="text-align: right; font-weight: 700; color: #2e7d32; ${visibleColumns.precos ? '' : 'display: none;'}">
               R$ ${subtotal.toFixed(2).replace('.', ',')}
             </td>
-            <td style="text-align: center;">
+
+            <!-- Coluna Lotes e Validades -->
+            <td class="col-lotes" style="text-align: center;">
               ${lotesBadgeHtml}
             </td>
+
+            <!-- Coluna de Ações -->
             ${actionCellHtml}
           </tr>
         `;
       }).join('');
     }
 
-    // 7.2 Render Cards Mobile
+    // 9.2 Render Cards Mobile / Desktop Grid
     if (cardsGrid) {
       cardsGrid.innerHTML = cartItems.map((item, index) => {
         const itemPreco = Number(item.preco) || 0;
@@ -473,26 +600,52 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <div class="order-mobile-product-card" data-index="${index}">
             <div class="mobile-card-top-row">
-              <img src="${item.foto}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
+              <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
               <div class="mobile-card-info">
                 <h4 class="mobile-card-title">${item.nome}</h4>
-                <div class="mobile-card-ean">EAN: ${item.ean}</div>
+                <div class="mobile-card-ean">EAN: ${item.ean} • <span style="color: #757575;">${item.categoria || 'Geral'}</span></div>
               </div>
             </div>
 
             <div class="mobile-card-metrics-row">
-              <div class="mobile-metric-item">
-                <span class="mobile-metric-label">Estoque Loja</span>
-                <span class="mobile-metric-val">${item.estoqueLoja} un</span>
-              </div>
-              <div class="mobile-metric-item">
-                <span class="mobile-metric-label">Preço Un.</span>
-                <span class="mobile-metric-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
-              </div>
-              <div class="mobile-metric-item">
-                <span class="mobile-metric-label">Subtotal</span>
-                <span class="mobile-metric-val" style="color: #2e7d32;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-              </div>
+              ${visibleColumns.estoqueLoja ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Estoque Loja</span>
+                  <span class="mobile-metric-val">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0} un</span>
+                </div>
+              ` : ''}
+
+              ${visibleColumns.estoqueOrigem ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Estoque Origem</span>
+                  <span class="mobile-metric-val" style="color: #6530b5;">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
+                </div>
+              ` : ''}
+
+              ${visibleColumns.estoqueIdeal ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Ideal</span>
+                  <span class="mobile-metric-val">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12} un</span>
+                </div>
+              ` : ''}
+
+              ${visibleColumns.minimoCritico ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Mín. Crítico</span>
+                  <span class="mobile-metric-val" style="color: #d32f2f;">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
+                </div>
+              ` : ''}
+
+              ${visibleColumns.precos ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Preço Un.</span>
+                  <span class="mobile-metric-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Subtotal</span>
+                  <span class="mobile-metric-val" style="color: #2e7d32;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+              ` : ''}
             </div>
 
             <div class="mobile-card-bottom-actions">
@@ -525,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTotals();
   }
 
-  // 8. Eventos Interativos da Lista de Produtos
+  // 10. Eventos Interativos da Lista de Produtos
   function bindProductRowEvents() {
     // Steppers Menos (-)
     const minusBtns = document.querySelectorAll('.btn-minus');
@@ -596,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 9. Cálculo e Atualização dos Totais no Sticky Footer
+  // 11. Cálculo e Atualização dos Totais no Sticky Footer
   function updateTotals() {
     const totalSkus = cartItems.length;
     const totalUnits = cartItems.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
@@ -604,7 +757,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (footerSkusCount) footerSkusCount.textContent = totalSkus;
     if (footerUnitsCount) footerUnitsCount.textContent = `${totalUnits} un`;
-    if (footerTotalValue) footerTotalValue.textContent = `R$ ${totalMonetary.toFixed(2).replace('.', ',')}`;
+
+    if (footerMetricValorBox) {
+      if (activePriceTable === 'NONE' || !visibleColumns.precos) {
+        footerMetricValorBox.style.display = 'none';
+      } else {
+        footerMetricValorBox.style.display = 'flex';
+        if (footerTotalValue) {
+          footerTotalValue.textContent = 'R$ ' + totalMonetary.toFixed(2).replace('.', ',');
+        }
+        if (footerPriceTableBadge) {
+          footerPriceTableBadge.textContent = activePriceTable === 'CUSTO' ? '[ Custo ]' : '[ Venda ]';
+        }
+      }
+    }
   }
 
   // 10. Bipe por Código de Barras (Omnibar)
@@ -780,7 +946,179 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Modal de Confirmação de Limpeza em Massa (Excluir Todos os Itens)
+  // 11. Controle do Menu Suspenso "Mais Ações"
+  if (btnMoreActions && moreActionsDropdown) {
+    btnMoreActions.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreActionsDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!moreActionsWrapper || !moreActionsWrapper.contains(e.target)) {
+        moreActionsDropdown.classList.remove('show');
+      }
+    });
+  }
+
+  // Ação 1: Abrir Modal de Quantidade em Lote
+  if (actionBatchQty) {
+    actionBatchQty.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (modalBatchQuantity) modalBatchQuantity.classList.add('show', 'active');
+    });
+  }
+
+  function closeBatchQtyModal() {
+    if (modalBatchQuantity) modalBatchQuantity.classList.remove('show', 'active');
+  }
+
+  if (btnCloseBatchQtyModal) btnCloseBatchQtyModal.addEventListener('click', closeBatchQtyModal);
+  if (btnCancelBatchQty) btnCancelBatchQty.addEventListener('click', closeBatchQtyModal);
+
+  quickQtyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-qty');
+      if (inputBatchQtyValue) inputBatchQtyValue.value = q;
+    });
+  });
+
+  if (btnApplyBatchQty) {
+    btnApplyBatchQty.addEventListener('click', () => {
+      const val = parseInt(inputBatchQtyValue.value, 10);
+      if (isNaN(val) || val < 1) {
+        if (typeof Toast !== 'undefined') Toast.warning('Informe uma quantidade válida (mínimo 1).');
+        return;
+      }
+      cartItems.forEach(item => item.quantidade = val);
+      renderProducts();
+      closeBatchQtyModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Quantidade de todos os produtos definida para ${val} un.`);
+      }
+    });
+  }
+
+  // Ação 2: Abrir Modal de Colunas e Campos Visíveis
+  if (actionManageCols) {
+    actionManageCols.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+      if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+      if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+      if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+      if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+      if (modalManageColumns) modalManageColumns.classList.add('show', 'active');
+    });
+  }
+
+  function closeManageColsModal() {
+    if (modalManageColumns) modalManageColumns.classList.remove('show', 'active');
+  }
+
+  if (btnCloseManageColsModal) btnCloseManageColsModal.addEventListener('click', closeManageColsModal);
+  if (btnCancelManageCols) btnCancelManageCols.addEventListener('click', closeManageColsModal);
+
+  if (btnApplyManageCols) {
+    btnApplyManageCols.addEventListener('click', () => {
+      visibleColumns.estoqueLoja = !!(chkColEstoqueLoja && chkColEstoqueLoja.checked);
+      visibleColumns.estoqueOrigem = !!(chkColEstoqueOrigem && chkColEstoqueOrigem.checked);
+      visibleColumns.estoqueIdeal = !!(chkColEstoqueIdeal && chkColEstoqueIdeal.checked);
+      visibleColumns.minimoCritico = !!(chkColMinCritico && chkColMinCritico.checked);
+      visibleColumns.precos = !!(chkColPrecos && chkColPrecos.checked);
+
+      if (!visibleColumns.precos) {
+        activePriceTable = 'NONE';
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+      }
+
+      renderProducts();
+      closeManageColsModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success('Configuração de colunas atualizada com sucesso.');
+      }
+    });
+  }
+
+  // Ação 3: Abrir Modal de Tabela de Preços
+  if (actionPriceTable) {
+    actionPriceTable.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      priceOptionCards.forEach(card => {
+        const val = card.getAttribute('data-value');
+        if (val === activePriceTable) {
+          card.classList.add('selected');
+          const r = card.querySelector('input[type="radio"]');
+          if (r) r.checked = true;
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+      if (modalPriceTable) modalPriceTable.classList.add('show', 'active');
+    });
+  }
+
+  priceOptionCards.forEach(card => {
+    card.addEventListener('click', () => {
+      priceOptionCards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const r = card.querySelector('input[type="radio"]');
+      if (r) r.checked = true;
+    });
+  });
+
+  function closePriceTableModal() {
+    if (modalPriceTable) modalPriceTable.classList.remove('show', 'active');
+  }
+
+  if (btnClosePriceTableModal) btnClosePriceTableModal.addEventListener('click', closePriceTableModal);
+  if (btnCancelPriceTable) btnCancelPriceTable.addEventListener('click', closePriceTableModal);
+
+  if (btnApplyPriceTable) {
+    btnApplyPriceTable.addEventListener('click', () => {
+      const selectedRadio = document.querySelector('input[name="priceTableRadio"]:checked');
+      const chosen = selectedRadio ? selectedRadio.value : 'NONE';
+      activePriceTable = chosen;
+
+      if (chosen === 'NONE') {
+        visibleColumns.precos = false;
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+        if (typeof Toast !== 'undefined') Toast.info('Tabela de preços desativada. Pedido operando apenas com quantidades.');
+      } else if (chosen === 'VENDA') {
+        visibleColumns.precos = true;
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Tabela Padrão de Venda';
+        // Aplica preços de venda originais
+        cartItems.forEach(item => {
+          const raw = rawCatalog.find(p => p.ean === item.ean);
+          if (raw) item.preco = Number(raw.precoVenda || raw.preco || 6.90);
+        });
+        if (typeof Toast !== 'undefined') Toast.success('Tabela de Venda aplicada ao pedido.');
+      } else if (chosen === 'CUSTO') {
+        visibleColumns.precos = true;
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Tabela Padrão de Custo';
+        // Aplica preços de custo estimados (~60% do valor de venda)
+        cartItems.forEach(item => {
+          const raw = rawCatalog.find(p => p.ean === item.ean);
+          const basePrice = Number(raw ? (raw.precoVenda || raw.preco || 6.90) : (item.preco || 6.90));
+          item.preco = Number((basePrice * 0.62).toFixed(2));
+        });
+        if (typeof Toast !== 'undefined') Toast.success('Tabela de Custo aplicada ao pedido.');
+      }
+
+      if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+      renderProducts();
+      closePriceTableModal();
+    });
+  }
+
+  // Ação 4: Excluir Todos os Itens
+  if (actionClearAll) {
+    actionClearAll.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      openClearAllModal();
+    });
+  }
+
+  // 12. Modal de Confirmação de Limpeza em Massa (Excluir Todos os Itens)
   function openClearAllModal() {
     if (isReadOnly || !isEditMode || cartItems.length === 0) return;
     if (clearAllModalDesc) {
@@ -804,8 +1142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (btnClearAllItems) btnClearAllItems.addEventListener('click', openClearAllModal);
-  if (btnTableClearAll) btnTableClearAll.addEventListener('click', openClearAllModal);
   if (btnCloseClearAllModal) btnCloseClearAllModal.addEventListener('click', closeClearAllModal);
   if (btnCancelClearAll) btnCancelClearAll.addEventListener('click', closeClearAllModal);
   if (btnConfirmClearAll) btnConfirmClearAll.addEventListener('click', executeClearAll);

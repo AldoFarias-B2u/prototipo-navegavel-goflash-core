@@ -1586,3 +1586,350 @@
   box-shadow: 0 5px 14px rgba(211, 47, 47, 0.45);
   transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   12. CONTROLES DA SEÇÃO, COLUNA UNIFICADA, DROPDOWN & NOVOS MODAIS
+   ========================================================================== */
+
+/* Coluna de Produto Unificada na Tabela */
+.table-prod-unified-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.table-prod-unified-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.table-prod-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.table-prod-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.table-prod-ean {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.72rem;
+  color: #6530b5;
+  font-weight: 500;
+}
+
+.table-prod-category {
+  background-color: #f1f3f6;
+  color: #555555;
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Controles de Seção (Alternar View e Mais Ações) */
+.order-section-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-section-control {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  color: #495057;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-section-control:hover {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+  color: #212529;
+}
+
+.btn-section-control.active {
+  background-color: #ede7f6;
+  border-color: #d1c4e9;
+  color: #6530b5;
+}
+
+.btn-section-control .material-icons {
+  font-size: 18px;
+  color: #6530b5;
+}
+
+@media (max-width: 768px) {
+  .order-section-controls {
+    gap: 6px;
+  }
+  .btn-section-control {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+  .btn-section-control .material-icons {
+    font-size: 16px;
+  }
+}
+
+/* Dropdown Suspenso "Mais Ações" */
+.more-actions-wrapper {
+  position: relative;
+}
+
+.more-actions-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  padding: 6px 0;
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.more-actions-dropdown.show {
+  display: flex;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-action-item {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+.dropdown-action-item:hover {
+  background-color: #f1f3f6;
+}
+
+.dropdown-action-item .material-icons {
+  font-size: 18px;
+  color: #6530b5;
+  flex-shrink: 0;
+}
+
+.action-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.action-item-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.action-item-desc {
+  font-size: 0.7rem;
+  color: #757575;
+}
+
+.dropdown-action-item.text-danger .material-icons {
+  color: #d32f2f;
+}
+
+.dropdown-action-item.text-danger .action-item-title {
+  color: #d32f2f;
+}
+
+.dropdown-action-item.text-danger:hover {
+  background-color: #ffebee;
+}
+
+.dropdown-item-divider {
+  height: 1px;
+  background-color: #eeeeee;
+  margin: 4px 0;
+}
+
+/* Botões Rápidos de Quantidade em Lote */
+.btn-quick-qty {
+  background-color: #f1f3f6;
+  border: 1px solid #dee2e6;
+  border-radius: 14px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #495057;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-quick-qty:hover {
+  background-color: #ede7f6;
+  border-color: #d1c4e9;
+  color: #6530b5;
+}
+
+/* Modal de Seleção de Colunas */
+.columns-selector-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.column-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+.column-check-item:hover {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+}
+
+.column-check-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #6530b5;
+  cursor: pointer;
+}
+
+.column-check-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.column-check-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.column-check-desc {
+  font-size: 0.76rem;
+  color: #757575;
+}
+
+/* Modal de Tabela de Preço */
+.price-table-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.price-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s ease);
+  background-color: #ffffff;
+}
+
+.price-option-card:hover {
+  border-color: #6530b5;
+  background-color: #faf8ff;
+}
+
+.price-option-card.selected {
+  border-color: #6530b5;
+  background-color: #f6f2fc;
+}
+
+.price-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.price-option-icon .material-icons {
+  font-size: 22px;
+}
+
+.price-option-info {
+  flex: 1;
+}
+
+.price-option-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 2px;
+}
+
+.price-option-desc {
+  font-size: 0.78rem;
+  color: #616161;
+  line-height: 1.35;
+}
+
+.footer-price-badge {
+  background-color: #ede7f6;
+  color: #6530b5;
+  border: 1px solid #d1c4e9;
+  font-size: 0.62rem;
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* Visualização em Cards no Desktop (quando alternado) */
+.order-cards-mobile-grid.desktop-grid-mode {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 14px !important;
+}

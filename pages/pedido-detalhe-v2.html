@@ -236,21 +236,65 @@
           </button>
         </div>
 
-        <!-- Topo da Seção de Produtos (Divisor e Título antes dos cards/tabela) -->
+        <!-- Topo da Seção de Produtos (Divisor, Título, Modo, Alternador de View e Mais Ações) -->
         <div class="order-section-topbar">
           <div class="order-section-title-group">
             <h2 class="order-section-title">
               Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
             </h2>
-            <button type="button" class="btn-clear-all-items" id="btnClearAllItems" style="display: none;" title="Excluir todos os produtos deste pedido">
-              <span class="material-icons">delete_sweep</span>
-              <span>Limpar Todos</span>
-            </button>
+            <span class="order-mode-pill pill-view" id="orderModePill">
+              <span class="material-icons" style="font-size: 13px;">visibility</span>
+              Visualização
+            </span>
           </div>
-          <span class="order-mode-pill pill-view" id="orderModePill">
-            <span class="material-icons" style="font-size: 13px;">visibility</span>
-            Visualização
-          </span>
+
+          <!-- Controles de Visualização e Ações Rápidas -->
+          <div class="order-section-controls">
+            <!-- Botão Alternar Tabela / Cards -->
+            <button type="button" class="btn-section-control" id="btnToggleView" title="Alternar entre visualização em Tabela e Cards">
+              <span class="material-icons" id="toggleViewIcon">grid_view</span>
+              <span id="toggleViewText">Ver em Cards</span>
+            </button>
+
+            <!-- Botão Mais Ações (Dropdown) -->
+            <div class="more-actions-wrapper" id="moreActionsWrapper">
+              <button type="button" class="btn-section-control btn-more-actions" id="btnMoreActions" aria-expanded="false" title="Mais opções para os itens do pedido">
+                <span class="material-icons">more_vert</span>
+                <span>Mais Ações</span>
+              </button>
+              <div class="more-actions-dropdown" id="moreActionsDropdown">
+                <button type="button" class="dropdown-action-item" id="actionBatchQty">
+                  <span class="material-icons">tune</span>
+                  <div class="action-item-text">
+                    <span class="action-item-title">Definir Qtde em Lote</span>
+                    <span class="action-item-desc">Ajustar quantidades de todos os itens</span>
+                  </div>
+                </button>
+                <button type="button" class="dropdown-action-item" id="actionManageCols">
+                  <span class="material-icons">view_column</span>
+                  <div class="action-item-text">
+                    <span class="action-item-title">Colunas e Campos Visíveis</span>
+                    <span class="action-item-desc">Escolher quais colunas exibir</span>
+                  </div>
+                </button>
+                <button type="button" class="dropdown-action-item" id="actionPriceTable">
+                  <span class="material-icons">sell</span>
+                  <div class="action-item-text">
+                    <span class="action-item-title">Definir Tabela de Preços</span>
+                    <span class="action-item-desc" id="currentPriceTableLabel">Sem Preços (Apenas Físico)</span>
+                  </div>
+                </button>
+                <div class="dropdown-item-divider"></div>
+                <button type="button" class="dropdown-action-item text-danger" id="actionClearAll">
+                  <span class="material-icons">delete_sweep</span>
+                  <div class="action-item-text">
+                    <span class="action-item-title">Excluir Todos os Itens</span>
+                    <span class="action-item-desc">Remover todos os produtos do pedido</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Tabela de Produtos (Desktop / Tablet) -->
@@ -259,19 +303,16 @@
             <thead>
               <tr>
                 <th style="width: 36px; text-align: center;">#</th>
-                <th style="width: 52px; text-align: center;">Foto</th>
-                <th style="width: 140px;">Código EAN</th>
-                <th>Produto / Categoria</th>
-                <th style="width: 110px; text-align: center;">Estoque Loja</th>
-                <th style="width: 110px; text-align: right;">Preço Un.</th>
-                <th style="width: 140px; text-align: center;">Qtde Pedido</th>
-                <th style="width: 120px; text-align: right;">Subtotal</th>
-                <th style="width: 160px; text-align: center;">Validade / Lotes</th>
-                <th class="col-actions-header" style="width: 60px; text-align: center;">
-                  <button type="button" class="btn-table-clear-all" id="btnTableClearAll" title="Excluir todos os produtos do pedido">
-                    <span class="material-icons">delete_sweep</span>
-                  </button>
-                </th>
+                <th style="min-width: 250px;">Produto</th>
+                <th class="col-estoque-loja" style="width: 100px; text-align: center;">Estoque Loja</th>
+                <th class="col-estoque-origem" style="width: 110px; text-align: center;">Estoque Origem</th>
+                <th class="col-estoque-ideal" style="width: 100px; text-align: center;">Estoque Ideal</th>
+                <th class="col-min-critico" style="width: 100px; text-align: center;">Mín. Crítico</th>
+                <th class="col-preco-un" style="width: 105px; text-align: right;">Preço Un.</th>
+                <th class="col-qtde" style="width: 130px; text-align: center;">Qtde Pedido</th>
+                <th class="col-subtotal" style="width: 110px; text-align: right;">Subtotal</th>
+                <th class="col-lotes" style="width: 150px; text-align: center;">Validade / Lotes</th>
+                <th class="col-actions-header" style="width: 50px; text-align: center;">Ações</th>
               </tr>
             </thead>
             <tbody id="orderTableBody">
@@ -352,8 +393,10 @@
         <span class="footer-metric-val" id="footerUnitsCount">0 un</span>
       </div>
 
-      <div class="footer-metric-pill">
-        <span class="footer-metric-label">Valor Estimado</span>
+      <div class="footer-metric-pill" id="footerMetricValorBox" style="display: none;">
+        <span class="footer-metric-label">
+          Valor Estimado <span id="footerPriceTableBadge" class="footer-price-badge"></span>
+        </span>
         <span class="footer-metric-val highlight-green" id="footerTotalValue">R$ 0,00</span>
       </div>
     </div>
@@ -596,6 +639,188 @@
         <button type="button" class="btn-danger-confirm" id="btnConfirmClearAll">
           <span class="material-icons" style="font-size: 16px;">delete</span>
           Sim, Limpar Todos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 5: DEFINIR QUANTIDADES EM LOTE
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalBatchQuantity" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 460px;">
+      <div class="official-modal-header" style="background-color: var(--primary-color);">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">tune</span>
+          DEFINIR QUANTIDADE EM LOTE
+        </h2>
+        <button type="button" class="official-modal-close" id="btnCloseBatchQtyModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem;">
+        <p style="font-size: 0.9rem; color: #555555; margin-bottom: 1.25rem; line-height: 1.45;">
+          Defina uma quantidade para ser aplicada simultaneamente a todos os produtos listados neste pedido:
+        </p>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #333333; margin-bottom: 6px;">
+            Quantidade para todos os itens:
+          </label>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="number" id="inputBatchQtyValue" min="1" max="999" value="1" style="width: 120px; padding: 10px 14px; font-size: 1.1rem; font-weight: 700; border: 1px solid #ced4da; border-radius: 4px; text-align: center;">
+            <span style="font-size: 0.9rem; color: #757575;">unidades por produto</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn-quick-qty" data-qty="1">1 un</button>
+          <button type="button" class="btn-quick-qty" data-qty="2">2 un</button>
+          <button type="button" class="btn-quick-qty" data-qty="5">5 un</button>
+          <button type="button" class="btn-quick-qty" data-qty="10">10 un</button>
+          <button type="button" class="btn-quick-qty" data-qty="20">20 un</button>
+        </div>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnCancelBatchQty">Cancelar</button>
+        <button type="button" class="btn-footer-primary" id="btnApplyBatchQty" style="min-width: 140px;">
+          <span class="material-icons">check</span>
+          Aplicar a Todos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 6: COLUNAS E CAMPOS VISÍVEIS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalManageColumns" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 480px;">
+      <div class="official-modal-header" style="background-color: var(--primary-color);">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">view_column</span>
+          COLUNAS E CAMPOS VISÍVEIS
+        </h2>
+        <button type="button" class="official-modal-close" id="btnCloseManageColsModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem;">
+        <p style="font-size: 0.9rem; color: #555555; margin-bottom: 1.25rem;">
+          Selecione os campos e colunas que deseja visualizar na listagem de itens do pedido:
+        </p>
+
+        <div class="columns-selector-list">
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColEstoqueLoja" checked>
+            <div class="column-check-info">
+              <span class="column-check-name">Estoque Loja (Destino)</span>
+              <span class="column-check-desc">Exibe o saldo atual de estoque na loja de destino</span>
+            </div>
+          </label>
+
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColEstoqueOrigem">
+            <div class="column-check-info">
+              <span class="column-check-name">Estoque Origem (CD / Matriz)</span>
+              <span class="column-check-desc">Exibe o saldo disponível na filial de origem selecionada</span>
+            </div>
+          </label>
+
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColEstoqueIdeal">
+            <div class="column-check-info">
+              <span class="column-check-name">Estoque Ideal</span>
+              <span class="column-check-desc">Meta planejada de abastecimento cadastrada no plano</span>
+            </div>
+          </label>
+
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColMinCritico">
+            <div class="column-check-info">
+              <span class="column-check-name">Mínimo Crítico</span>
+              <span class="column-check-desc">Ponto de ruptura mínimo definido no plano</span>
+            </div>
+          </label>
+
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColPrecos">
+            <div class="column-check-info">
+              <span class="column-check-name">Preço Unitário e Subtotais</span>
+              <span class="column-check-desc">Exibe valores financeiros e cálculos monetários</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnCancelManageCols">Fechar</button>
+        <button type="button" class="btn-footer-primary" id="btnApplyManageCols" style="min-width: 140px;">
+          <span class="material-icons">check</span>
+          Salvar Exibição
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 7: DEFINIR TABELA DE PREÇOS
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalPriceTable" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 500px;">
+      <div class="official-modal-header" style="background-color: var(--primary-color);">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">sell</span>
+          DEFINIR TABELA DE PREÇOS
+        </h2>
+        <button type="button" class="official-modal-close" id="btnClosePriceTableModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem;">
+        <p style="font-size: 0.9rem; color: #555555; margin-bottom: 1.25rem;">
+          Escolha como os valores financeiros do pedido devem ser calculados:
+        </p>
+
+        <div class="price-table-options-list">
+          <label class="price-option-card selected" data-value="NONE">
+            <input type="radio" name="priceTableRadio" value="NONE" checked style="display: none;">
+            <div class="price-option-icon" style="background-color: #f1f3f6; color: #616161;">
+              <span class="material-icons">do_not_disturb_on</span>
+            </div>
+            <div class="price-option-info">
+              <div class="price-option-title">Sem Preços (Apenas Físico)</div>
+              <div class="price-option-desc">O pedido opera puramente com unidades físicas de reposição, ocultando valores monetários.</div>
+            </div>
+          </label>
+
+          <label class="price-option-card" data-value="VENDA">
+            <input type="radio" name="priceTableRadio" value="VENDA" style="display: none;">
+            <div class="price-option-icon" style="background-color: #e8f5e9; color: #2e7d32;">
+              <span class="material-icons">point_of_sale</span>
+            </div>
+            <div class="price-option-info">
+              <div class="price-option-title">Tabela Padrão de Venda</div>
+              <div class="price-option-desc">Calcula com base nos preços de venda aos consumidores finais da loja.</div>
+            </div>
+          </label>
+
+          <label class="price-option-card" data-value="CUSTO">
+            <input type="radio" name="priceTableRadio" value="CUSTO" style="display: none;">
+            <div class="price-option-icon" style="background-color: #ede7f6; color: #6530b5;">
+              <span class="material-icons">receipt_long</span>
+            </div>
+            <div class="price-option-info">
+              <div class="price-option-title">Tabela Padrão de Custo</div>
+              <div class="price-option-desc">Calcula com base nos custos médios de aquisição e reposição dos produtos.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnCancelPriceTable">Cancelar</button>
+        <button type="button" class="btn-footer-primary" id="btnApplyPriceTable" style="min-width: 140px;">
+          <span class="material-icons">check</span>
+          Confirmar Tabela
         </button>
       </div>
     </div>
