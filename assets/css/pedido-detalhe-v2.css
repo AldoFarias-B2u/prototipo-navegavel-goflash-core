@@ -424,12 +424,16 @@
   gap: 16px;
   margin-bottom: 1.15rem;
   padding-top: 0.15rem;
+  width: 100%;
 }
 
-.order-toolbar-actions-row {
+/* Grupo Esquerdo: Inserção de Produtos (Bipe + Catálogo) */
+.order-insertion-left-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Barra de Bipe e Busca Inteligente (Omnibar) */
@@ -601,14 +605,19 @@
 /* Layout Responsivo no Mobile e Tablet (≤ 991px) */
 @media (max-width: 991px) {
   .order-top-toolbar {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 8px;
     margin-bottom: 0.75rem;
     width: 100%;
   }
 
+  .order-insertion-left-group {
+    display: contents;
+  }
+
   .order-omnibar-box {
+    grid-column: 1 / -1;
     width: 100% !important;
     max-width: 100% !important;
     height: 40px;
@@ -626,38 +635,35 @@
     display: none;
   }
 
-  .order-toolbar-actions-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    width: 100%;
-  }
-
   .btn-add-catalog-v2 {
+    grid-column: 1;
+    width: 100% !important;
     height: 36px;
-    padding: 0 12px;
-    font-size: 0.8rem;
-    gap: 5px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+    gap: 6px;
     border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    box-sizing: border-box;
   }
 
   .btn-add-txt-desktop {
-    display: inline;
-  }
-
-  .btn-add-txt-mobile {
     display: none;
   }
 
+  .btn-add-txt-mobile {
+    display: inline;
+  }
+
   .order-section-controls {
+    grid-column: 2;
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-left: auto;
+    justify-content: flex-end;
     flex-shrink: 0;
   }
 
@@ -667,17 +673,6 @@
     justify-content: space-between;
     margin-bottom: 0.65rem;
   }
-}
-
-@media (max-width: 480px) {
-  .btn-add-txt-desktop {
-    display: none;
-  }
-
-  .btn-add-txt-mobile {
-    display: inline;
-  }
-}
 
   .order-section-title {
     font-size: 1.05rem;
@@ -686,14 +681,6 @@
 
   .order-items-count-inline {
     font-size: 0.9rem;
-  }
-
-  .order-mode-pill {
-    display: none;
-  }
-
-  .order-section-controls {
-    gap: 6px;
   }
 }
 
@@ -2050,8 +2037,8 @@
 
   /* Posicionamento Inteligente de Dropdowns no Mobile */
   .more-actions-dropdown {
-    right: auto !important;
-    left: 0 !important;
+    right: 0 !important;
+    left: auto !important;
     width: 260px !important;
     max-width: calc(100vw - 24px) !important;
   }

@@ -210,35 +210,36 @@
         
         <!-- LINHA 1: BARRA DE FERRAMENTAS SUPERIOR (Inserção à esquerda / Ações à direita) -->
         <div class="order-top-toolbar" id="orderTopToolbar">
-          <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
-          <div class="order-omnibar-box" id="orderOmnibarBox">
-            <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
-            <input 
-              type="text" 
-              id="omnibarInput" 
-              class="order-omnibar-input" 
-              placeholder="Escanear ou digitar código EAN (Enter)..." 
-              autocomplete="off"
-            >
-            <span class="order-omnibar-hint">Enter</span>
+          <!-- Esquerda: Ferramentas de Inserção (Bipe EAN + Adicionar Catálogo - Visível no Modo Edição) -->
+          <div class="order-insertion-left-group" id="orderInsertionToolbar">
+            <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
+            <div class="order-omnibar-box" id="orderOmnibarBox">
+              <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
+              <input 
+                type="text" 
+                id="omnibarInput" 
+                class="order-omnibar-input" 
+                placeholder="Escanear ou digitar código EAN (Enter)..." 
+                autocomplete="off"
+              >
+              <span class="order-omnibar-hint">Enter</span>
 
-            <!-- Dropdown Autocomplete Instantâneo -->
-            <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
-              <!-- Renderizado dinamicamente via JS -->
+              <!-- Dropdown Autocomplete Instantâneo -->
+              <div class="omnibar-autocomplete-dropdown" id="omnibarDropdown">
+                <!-- Renderizado dinamicamente via JS -->
+              </div>
             </div>
-          </div>
 
-          <!-- Linha de Ações e Controles (Direita no Desktop / Linha 2 no Mobile) -->
-          <div class="order-toolbar-actions-row" id="orderToolbarActionsRow">
             <!-- Botão Adicionar do Catálogo -->
             <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
               <span class="material-icons">add_circle</span>
               <span class="btn-add-txt-desktop">ADICIONAR DO CATÁLOGO</span>
-              <span class="btn-add-txt-mobile">Do Catálogo</span>
+              <span class="btn-add-txt-mobile">Adicionar</span>
             </button>
+          </div>
 
-            <!-- Controles de Seção (Mais Ações, Colunas, View Switcher) -->
-            <div class="order-section-controls">
+          <!-- Direita: Controles de Visualização e Ações Rápidas (Sempre à Direita) -->
+          <div class="order-section-controls" id="orderSectionControls">
               <!-- Botão Mais Ações (Dropdown) -->
               <div class="more-actions-wrapper" id="moreActionsWrapper">
                 <button type="button" class="btn-section-control btn-more-actions" id="btnMoreActions" aria-expanded="false" title="Mais opções para os itens do pedido">
@@ -340,7 +341,6 @@
               </div>
             </div>
           </div>
-        </div>
 
         <!-- LINHA 2: CABEÇALHO DA SEÇÃO DE ITENS (Logo acima da tabela) -->
         <div class="order-section-topbar" id="orderSectionTopbar">
