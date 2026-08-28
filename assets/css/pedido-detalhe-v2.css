@@ -426,13 +426,10 @@
   padding-top: 0.15rem;
 }
 
-/* Grupo Esquerdo: Inserção de Produtos */
-.order-insertion-left-group {
+.order-toolbar-actions-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
+  gap: 12px;
 }
 
 /* Barra de Bipe e Busca Inteligente (Omnibar) */
@@ -604,22 +601,20 @@
 /* Layout Responsivo no Mobile e Tablet (≤ 991px) */
 @media (max-width: 991px) {
   .order-top-toolbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     margin-bottom: 0.75rem;
-  }
-
-  .order-insertion-left-group {
-    display: contents;
+    width: 100%;
   }
 
   .order-omnibar-box {
-    grid-column: 1 / -1;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     height: 40px;
     padding: 0 0.75rem;
     border-radius: 6px;
+    box-sizing: border-box;
   }
 
   .order-omnibar-icon {
@@ -631,17 +626,24 @@
     display: none;
   }
 
+  .order-toolbar-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
   .btn-add-catalog-v2 {
-    grid-column: 1;
     height: 36px;
-    padding: 0 14px;
-    font-size: 0.82rem;
-    gap: 6px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    gap: 5px;
     border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+    flex-shrink: 0;
   }
 
   .btn-add-txt-desktop {
@@ -653,11 +655,10 @@
   }
 
   .order-section-controls {
-    grid-column: 2;
     display: flex;
     align-items: center;
     gap: 6px;
-    justify-content: flex-end;
+    flex-shrink: 0;
   }
 
   .order-section-topbar {
@@ -666,6 +667,17 @@
     justify-content: space-between;
     margin-bottom: 0.65rem;
   }
+}
+
+@media (max-width: 480px) {
+  .btn-add-txt-desktop {
+    display: none;
+  }
+
+  .btn-add-txt-mobile {
+    display: inline;
+  }
+}
 
   .order-section-title {
     font-size: 1.05rem;

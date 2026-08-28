@@ -1242,22 +1242,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Ação 2: Abrir Dropdown/Modal de Colunas e Campos Visíveis
   if (actionManageCols) {
-    actionManageCols.addEventListener('click', () => {
+    actionManageCols.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
-      if (columnsVisibilityDropdown && btnToggleColumns) {
-        syncColumnsDropdownInputs();
-        columnsVisibilityDropdown.classList.add('show');
-        btnToggleColumns.classList.add('active');
-        btnToggleColumns.setAttribute('aria-expanded', 'true');
-      } else if (modalManageColumns) {
-        if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
-        if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
-        if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
-        if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
-        if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
-        if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
-        modalManageColumns.classList.add('show', 'active');
-      }
+      if (btnMoreActions) btnMoreActions.setAttribute('aria-expanded', 'false');
+
+      setTimeout(() => {
+        if (columnsVisibilityDropdown && btnToggleColumns) {
+          syncColumnsDropdownInputs();
+          columnsVisibilityDropdown.classList.add('show');
+          btnToggleColumns.classList.add('active');
+          btnToggleColumns.setAttribute('aria-expanded', 'true');
+        } else if (modalManageColumns) {
+          if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+          if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+          if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+          if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+          if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
+          if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+          modalManageColumns.classList.add('show', 'active');
+        }
+      }, 50);
     });
   }
 
