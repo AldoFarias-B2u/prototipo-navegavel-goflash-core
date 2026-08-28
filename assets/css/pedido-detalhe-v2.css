@@ -875,15 +875,32 @@
   color: #64748b;
 }
 
-.tbl-sugestao-val {
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: #334155;
+.tbl-sugestao-btn {
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
-  padding: 2px 8px;
-  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
+}
+
+.tbl-sugestao-btn:hover {
+  background-color: #ede5f8;
+  border-color: #d8c7f5;
+  color: #6530b5;
+  transform: scale(1.05);
+  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
+}
+
+.tbl-sugestao-btn:active {
+  transform: scale(0.97);
 }
 
 .tbl-preco-val {
@@ -1313,6 +1330,37 @@
 .metric-col.metric-col-sugestao .metric-val {
   color: #6530b5;
   font-weight: 800;
+}
+
+/* Interatividade e Feedback ao Clicar na Sugestão dos Cards */
+.metric-col-clickable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
+}
+
+.metric-col-clickable:hover {
+  background-color: #ede5f8;
+}
+
+.metric-col-clickable:active {
+  transform: scale(0.94);
+}
+
+.card-metrics-panel.is-clickable {
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
+}
+
+.card-metrics-panel.is-clickable:hover {
+  background-color: #ede5f8;
+  border-color: #d8c7f5;
+}
+
+.card-metrics-panel.is-clickable:active {
+  transform: scale(0.98);
 }
 
 /* Bloco 2: Linha Financeira Discreta e Elegante (sem fundos chamativos) */

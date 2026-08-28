@@ -628,7 +628,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </td>
 
             <td class="col-sugestao" style="text-align: center; ${visibleColumns.sugestao ? '' : 'display: none;'}">
-              <span class="tbl-sugestao-val">${sugestaoVal} un</span>
+              <button type="button" class="tbl-sugestao-btn btn-apply-sugestao" data-index="${index}" title="Clique para aplicar sugestão de ${sugestaoVal} un ao pedido">
+                ${sugestaoVal} un
+              </button>
             </td>
 
             <td class="col-qtde" style="text-align: center;">
@@ -695,7 +697,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isStockCritical = (estoqueLojaVal <= (item.minimoCritico !== undefined ? item.minimoCritico : 3));
 
-        // Bloco 1: Painel de Métricas Neutro & Coeso com Divisores Finos
         const activeMetricsCount = (visibleColumns.estoqueLoja ? 1 : 0) +
           (visibleColumns.estoqueOrigem ? 1 : 0) +
           (visibleColumns.estoqueIdeal ? 1 : 0) +
@@ -704,9 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let metricsPanelHtml = '';
         if (activeMetricsCount === 1) {
-          // Cenário com apenas 1 campo ativo (ex: apenas Estoque da Loja)
           let singleLabel = '';
           let singleVal = '';
+          let isClickableSugestao = false;
           if (visibleColumns.estoqueLoja) {
             singleLabel = 'Estoque na Loja:';
             singleVal = `${estoqueLojaVal} un`;
@@ -722,16 +723,16 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (visibleColumns.sugestao) {
             singleLabel = 'Sugestão de Reposição:';
             singleVal = `${sugestaoVal} un`;
+            isClickableSugestao = true;
           }
 
           metricsPanelHtml = `
-            <div class="card-metrics-panel is-single-metric">
+            <div class="card-metrics-panel is-single-metric ${isClickableSugestao ? 'is-clickable btn-apply-sugestao' : ''}" data-index="${index}" title="${isClickableSugestao ? `Clique para aplicar sugestão de ${sugestaoVal} un ao pedido` : ''}">
               <span class="single-metric-label">${singleLabel}</span>
               <strong class="single-metric-val ${isStockCritical && visibleColumns.estoqueLoja ? 'val-warning' : ''}">${singleVal}</strong>
             </div>
           `;
         } else if (activeMetricsCount > 1) {
-          // Cenário com múltiplos campos (distribuídos com divisores verticais)
           const bothIdealAndMin = visibleColumns.estoqueIdeal && visibleColumns.minimoCritico;
 
           metricsPanelHtml = `
@@ -772,16 +773,15 @@ document.addEventListener('DOMContentLoaded', () => {
               `}
 
               ${visibleColumns.sugestao ? `
-                <div class="metric-col metric-col-sugestao">
+                <div class="metric-col metric-col-sugestao metric-col-clickable btn-apply-sugestao" data-index="${index}" title="Clique para aplicar sugestão de ${sugestaoVal} un ao pedido">
                   <span class="metric-label">Sugestão</span>
-                  <span class="metric-val">${sugestaoVal} un</span>
+                  <span class="metric-val metric-val-sugestao">${sugestaoVal} un</span>
                 </div>
               ` : ''}
             </div>
           `;
         }
 
-        // Bloco 2: Linha Financeira Discreta e Elegante (sem fundos chamativos)
         let financialBarHtml = '';
         if (visibleColumns.precos) {
           financialBarHtml = `
@@ -809,14 +809,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="mobile-card-bottom-actions">
               ${mobileLotesBadgeHtml}
 
-              <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="mobile-card-stepper-group">
                 ${(isEditMode && !isReadOnly) ? `
                   <div class="order-stepper-wrapper">
                     <button type="button" class="order-stepper-btn btn-minus" data-index="${index}">−</button>
-                    <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1">
+                    <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1" max="999">
                     <button type="button" class="order-stepper-btn btn-plus" data-index="${index}">+</button>
                   </div>
-                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}" title="Remover produto do pedido">
+                  <button type="button" class="btn-card-delete btn-remove-item" data-index="${index}" title="Remover item">
                     <span class="material-icons">delete</span>
                   </button>
                 ` : `
@@ -832,7 +832,6 @@ document.addEventListener('DOMContentLoaded', () => {
     bindProductRowEvents();
     updateTotals();
 
-    // Limpa a flag temporária de highlight após a animação CSS terminar
     setTimeout(() => {
       cartItems.forEach(i => { delete i._justAdded; });
     }, 2000);
@@ -840,7 +839,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 10. Eventos Interativos da Lista de Produtos
   function bindProductRowEvents() {
-    // Steppers Menos (-)
     const minusBtns = document.querySelectorAll('.btn-minus');
     minusBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -853,7 +851,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Steppers Mais (+)
     const plusBtns = document.querySelectorAll('.btn-plus');
     plusBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -866,7 +863,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Inputs Diretos de Quantidade
     const qtyInputs = document.querySelectorAll('.input-qty');
     qtyInputs.forEach(inp => {
       inp.addEventListener('change', () => {
@@ -879,7 +875,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Botões de Remover Produto
     const removeBtns = document.querySelectorAll('.btn-remove-item');
     removeBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
