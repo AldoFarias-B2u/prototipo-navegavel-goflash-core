@@ -572,8 +572,8 @@
 
 @media (max-width: 768px) {
   .order-section-topbar {
-    gap: 6px;
-    margin-bottom: 0.65rem;
+    gap: 8px;
+    margin-bottom: 0.75rem;
   }
 }
 
@@ -581,6 +581,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .order-section-title {
@@ -592,6 +593,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .order-items-count-inline {
@@ -602,10 +604,11 @@
 
 @media (max-width: 768px) {
   .order-section-title {
-    font-size: 1rem;
+    font-size: 1.05rem;
+    white-space: nowrap;
   }
   .order-items-count-inline {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -620,6 +623,7 @@
   align-items: center;
   gap: 5px;
   transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
 }
 
 .order-mode-pill.pill-view {
@@ -638,12 +642,7 @@
 
 @media (max-width: 768px) {
   .order-mode-pill {
-    font-size: 0.68rem;
-    padding: 2px 7px;
-    gap: 3px;
-  }
-  .order-mode-pill .material-icons {
-    font-size: 11px;
+    display: none; /* No mobile, o modo já é evidenciado pela omnibar de bipagem e pelo FAB */
   }
 }
 
@@ -1736,14 +1735,31 @@
 @media (max-width: 768px) {
   .order-section-controls {
     gap: 6px;
+    flex-shrink: 0;
   }
-  .btn-section-control {
-    padding: 5px 8px;
-    font-size: 0.75rem;
-    gap: 4px;
+  .btn-more-actions-text {
+    display: none;
   }
-  .btn-section-control .material-icons {
-    font-size: 16px;
+  .btn-more-actions {
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    justify-content: center;
+    border-radius: 6px;
+  }
+  .btn-more-actions .material-icons {
+    font-size: 20px;
+    margin: 0;
+  }
+  .view-segmented-switcher {
+    height: 34px;
+  }
+  .view-segment-btn {
+    width: 30px;
+    height: 28px;
+  }
+  .view-segment-btn .material-icons {
+    font-size: 17px;
   }
 }
 
@@ -1757,6 +1773,7 @@
   top: calc(100% + 6px);
   right: 0;
   width: 250px;
+  max-width: calc(100vw - 32px);
   background-color: #ffffff;
   border: 1px solid #dee2e6;
   border-radius: 6px;

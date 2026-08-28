@@ -250,21 +250,11 @@
 
           <!-- Controles de Visualização e Ações Rápidas -->
           <div class="order-section-controls">
-            <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
-            <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
-              <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
-                <span class="material-icons">reorder</span>
-              </button>
-              <button type="button" class="view-segment-btn" id="btnViewCards" title="Visualizar em Cards">
-                <span class="material-icons">grid_view</span>
-              </button>
-            </div>
-
             <!-- Botão Mais Ações (Dropdown) -->
             <div class="more-actions-wrapper" id="moreActionsWrapper">
               <button type="button" class="btn-section-control btn-more-actions" id="btnMoreActions" aria-expanded="false" title="Mais opções para os itens do pedido">
                 <span class="material-icons">more_vert</span>
-                <span>Mais Ações</span>
+                <span class="btn-more-actions-text">Mais Ações</span>
               </button>
               <div class="more-actions-dropdown" id="moreActionsDropdown">
                 <button type="button" class="dropdown-action-item" id="actionBatchQty">
@@ -297,6 +287,16 @@
                   </div>
                 </button>
               </div>
+            </div>
+
+            <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
+            <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
+              <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
+                <span class="material-icons">reorder</span>
+              </button>
+              <button type="button" class="view-segment-btn" id="btnViewCards" title="Visualizar em Cards">
+                <span class="material-icons">grid_view</span>
+              </button>
             </div>
           </div>
         </div>
