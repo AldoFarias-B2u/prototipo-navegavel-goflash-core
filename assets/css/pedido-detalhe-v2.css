@@ -768,11 +768,11 @@
 
 .order-items-table thead th {
   background-color: #f8f9fa;
-  color: #5f6368;
-  font-size: 0.78rem;
-  font-weight: 700;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   padding: 12px 14px;
   border-bottom: 1px solid #dee2e6;
   white-space: nowrap;
@@ -812,9 +812,9 @@
 }
 
 .table-prod-name {
-  font-weight: 600;
+  font-weight: 500;
   color: #212529;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.35;
 }
 
@@ -834,14 +834,14 @@
 
 /* Células de Dados Tipográficos Minimalistas da Tabela */
 .tbl-stock-val {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #1e293b;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #334155;
 }
 
 .tbl-stock-low-badge {
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #b91c1c;
   background-color: #fef2f2;
   border: 1px solid #fee2e2;
@@ -852,8 +852,8 @@
 
 .tbl-stock-origem-val {
   font-size: 0.86rem;
-  font-weight: 500;
-  color: #475569;
+  font-weight: 400;
+  color: #64748b;
 }
 
 .tbl-ideal-cell {
@@ -865,13 +865,13 @@
 
 .tbl-ideal-val {
   font-size: 0.86rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #334155;
 }
 
 .tbl-min-hint {
   font-size: 0.72rem;
-  font-weight: 500;
+  font-weight: 400;
   color: #64748b;
 }
 
@@ -881,7 +881,7 @@
   border-radius: 4px;
   padding: 3px 8px;
   font-size: 0.86rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #334155;
   cursor: pointer;
   display: inline-flex;
@@ -905,14 +905,14 @@
 
 .tbl-preco-val {
   font-size: 0.86rem;
-  font-weight: 500;
+  font-weight: 400;
   color: #64748b;
 }
 
 .tbl-subtotal-val {
   font-size: 0.88rem;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 /* Stepper de Quantidade Tátil */
@@ -1293,7 +1293,7 @@
 .metric-label {
   font-size: 0.65rem;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -1301,20 +1301,20 @@
 
 .metric-val {
   font-size: 0.86rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-weight: 600;
+  color: #334155;
   white-space: nowrap;
 }
 
 /* Destaque sutil puramente tipográfico para o Estoque da Loja */
 .metric-col.metric-col-loja .metric-label {
   color: #334155;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .metric-col.metric-col-loja .metric-val {
-  color: #0f172a;
-  font-weight: 800;
+  color: #1e293b;
+  font-weight: 600;
 }
 
 .metric-val.val-warning {
@@ -1324,12 +1324,12 @@
 /* Destaque sutil para a Sugestão do Plano */
 .metric-col.metric-col-sugestao .metric-label {
   color: #6530b5;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .metric-col.metric-col-sugestao .metric-val {
   color: #6530b5;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 /* Interatividade e Feedback ao Clicar na Sugestão dos Cards */
@@ -1914,7 +1914,7 @@
 
 .table-prod-name {
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #212529;
   line-height: 1.3;
   white-space: nowrap;
