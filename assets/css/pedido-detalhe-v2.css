@@ -1212,9 +1212,9 @@
 }
 
 .mobile-card-title {
-  font-size: 0.94rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #212529;
   margin: 0 0 4px 0;
   line-height: 1.35;
 }
@@ -1370,18 +1370,18 @@
   justify-content: space-between;
   padding: 4px 2px;
   font-size: 0.82rem;
-  color: #64748b;
+  color: #5f6368;
 }
 
 .card-finance-row strong {
-  color: #1e293b;
-  font-weight: 700;
+  color: #333333;
+  font-weight: 600;
 }
 
 .finance-subtotal-item strong {
-  color: #0f172a;
-  font-size: 0.9rem;
-  font-weight: 800;
+  color: #1e293b;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 /* Bloco 3: Rodapé de Ações */

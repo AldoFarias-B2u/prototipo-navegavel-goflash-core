@@ -816,7 +816,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1" max="999">
                     <button type="button" class="order-stepper-btn btn-plus" data-index="${index}">+</button>
                   </div>
-                  <button type="button" class="btn-card-delete btn-remove-item" data-index="${index}" title="Remover item">
+                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}" title="Remover item">
                     <span class="material-icons">delete</span>
                   </button>
                 ` : `
@@ -899,6 +899,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const idx = parseInt(btn.getAttribute('data-index'), 10);
         if (cartItems[idx]) {
           openLotesModal(cartItems[idx]);
+        }
+      });
+    });
+
+    // Ação Rápida: Aplicar Sugestão de Reposição ao Clicar (Tabela e Cards)
+    const applySugestaoBtns = document.querySelectorAll('.btn-apply-sugestao');
+    applySugestaoBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isEditMode || isReadOnly) {
+          if (typeof Toast !== 'undefined') {
+            Toast.info('Ative o modo de edição para alterar as quantidades do pedido.');
+          }
+          return;
+        }
+
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        const item = cartItems[idx];
+        if (item) {
+          const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
+          const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+          const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
+
+          if (sugestaoVal <= 0) {
+            if (typeof Toast !== 'undefined') {
+              Toast.warning(`O estoque atual (${estoqueLojaVal} un) já atinge ou supera a meta ideal (${estoqueIdealVal} un).`);
+            }
+            return;
+          }
+
+          item.quantidade = sugestaoVal;
+          if (typeof Toast !== 'undefined') {
+            Toast.success(`Sugestão de ${sugestaoVal} un aplicada para "${item.nome.substring(0, 22)}...".`);
+          }
+          renderProducts();
         }
       });
     });
