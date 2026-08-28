@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
               ${bothIdealAndMin ? `
                 <div class="metric-col">
-                  <span class="metric-label">Meta Ideal</span>
+                  <span class="metric-label">Ideal</span>
                   <span class="metric-val">${estoqueIdealVal} <small style="font-size: 0.72rem; color: #64748b; font-weight: 500;">(Mín ${item.minimoCritico !== undefined ? item.minimoCritico : 3})</small></span>
                 </div>
               ` : `
@@ -1092,19 +1092,115 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Controle do Menu Suspenso "Mais Ações"
-  if (btnMoreActions && moreActionsDropdown) {
-    btnMoreActions.addEventListener('click', (e) => {
-      e.stopPropagation();
-      moreActionsDropdown.classList.toggle('show');
-    });
+  // 11. Controle do Menu Suspenso "Mais Ações" e Dropdown de Colunas
+  const btnToggleColumns = document.getElementById('btnToggleColumns');
+  const columnsVisibilityDropdown = document.getElementById('columnsVisibilityDropdown');
+  const columnsVisibilityContainer = document.getElementById('columnsVisibilityContainer');
+  const btnResetColumnsDropdown = document.getElementById('btnResetColumnsDropdown');
+  const colVisToggleInputs = document.querySelectorAll('.col-vis-toggle-input');
 
-    document.addEventListener('click', (e) => {
-      if (!moreActionsWrapper || !moreActionsWrapper.contains(e.target)) {
-        moreActionsDropdown.classList.remove('show');
+  function syncColumnsDropdownInputs() {
+    colVisToggleInputs.forEach(input => {
+      const colKey = input.getAttribute('data-col');
+      if (colKey && visibleColumns[colKey] !== undefined) {
+        input.checked = !!visibleColumns[colKey];
       }
     });
   }
+
+  // Abertura/Fechamento do Menu Mais Ações
+  if (btnMoreActions && moreActionsDropdown) {
+    btnMoreActions.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (columnsVisibilityDropdown) columnsVisibilityDropdown.classList.remove('show');
+      moreActionsDropdown.classList.toggle('show');
+      btnMoreActions.setAttribute('aria-expanded', moreActionsDropdown.classList.contains('show'));
+    });
+  }
+
+  // Abertura/Fechamento do Dropdown Direto de Colunas
+  if (btnToggleColumns && columnsVisibilityDropdown) {
+    btnToggleColumns.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      syncColumnsDropdownInputs();
+      columnsVisibilityDropdown.classList.toggle('show');
+      btnToggleColumns.classList.toggle('active', columnsVisibilityDropdown.classList.contains('show'));
+      btnToggleColumns.setAttribute('aria-expanded', columnsVisibilityDropdown.classList.contains('show'));
+    });
+
+    // Checkboxes de Visibilidade de Colunas (Atualização Imediata em Tempo Real)
+    colVisToggleInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        const colKey = input.getAttribute('data-col');
+        if (colKey && visibleColumns[colKey] !== undefined) {
+          visibleColumns[colKey] = input.checked;
+
+          if (colKey === 'precos' && !input.checked) {
+            activePriceTable = 'NONE';
+            if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+          } else if (colKey === 'precos' && input.checked && activePriceTable === 'NONE') {
+            activePriceTable = 'VENDA';
+            if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Tabela Padrão de Venda';
+          }
+
+          // Sincroniza também com o modal se estiver aberto
+          if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+          if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+          if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+          if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+          if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
+          if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+
+          renderProducts();
+        }
+      });
+    });
+
+    // Botão Restaurar Padrão no Dropdown
+    if (btnResetColumnsDropdown) {
+      btnResetColumnsDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        visibleColumns.estoqueLoja = true;
+        visibleColumns.estoqueOrigem = true;
+        visibleColumns.estoqueIdeal = true;
+        visibleColumns.minimoCritico = true;
+        visibleColumns.sugestao = true;
+        visibleColumns.precos = false;
+        activePriceTable = 'NONE';
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+
+        syncColumnsDropdownInputs();
+        renderProducts();
+        if (typeof Toast !== 'undefined') Toast.success('Visualização padrão de colunas restaurada.');
+      });
+    }
+  }
+
+  // Fechamento de Dropdowns ao Clicar Fora ou com ESC
+  document.addEventListener('click', (e) => {
+    if (moreActionsWrapper && !moreActionsWrapper.contains(e.target)) {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (btnMoreActions) btnMoreActions.setAttribute('aria-expanded', 'false');
+    }
+    if (columnsVisibilityContainer && !columnsVisibilityContainer.contains(e.target)) {
+      if (columnsVisibilityDropdown) columnsVisibilityDropdown.classList.remove('show');
+      if (btnToggleColumns) {
+        btnToggleColumns.classList.remove('active');
+        btnToggleColumns.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (columnsVisibilityDropdown) {
+        columnsVisibilityDropdown.classList.remove('show');
+        if (btnToggleColumns) btnToggleColumns.classList.remove('active');
+      }
+    }
+  });
 
   // Ação 1: Abrir Modal de Quantidade em Lote
   if (actionBatchQty) {
@@ -1144,17 +1240,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ação 2: Abrir Modal de Colunas e Campos Visíveis
+  // Ação 2: Abrir Dropdown/Modal de Colunas e Campos Visíveis
   if (actionManageCols) {
     actionManageCols.addEventListener('click', () => {
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
-      if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
-      if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
-      if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
-      if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
-      if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
-      if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
-      if (modalManageColumns) modalManageColumns.classList.add('show', 'active');
+      if (columnsVisibilityDropdown && btnToggleColumns) {
+        syncColumnsDropdownInputs();
+        columnsVisibilityDropdown.classList.add('show');
+        btnToggleColumns.classList.add('active');
+        btnToggleColumns.setAttribute('aria-expanded', 'true');
+      } else if (modalManageColumns) {
+        if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+        if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+        if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+        if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+        if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
+        if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+        modalManageColumns.classList.add('show', 'active');
+      }
     });
   }
 

@@ -1912,9 +1912,84 @@
   box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
 }
 
-.btn-section-control .material-icons {
-  font-size: 19px;
+/* Botão e Dropdown de Visibilidade de Colunas */
+.columns-visibility-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 8px 6px;
+  z-index: 1050;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.columns-visibility-dropdown.show {
+  display: flex;
+  animation: dropdownFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.columns-visibility-dropdown .dropdown-header-title {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-divider-sutil {
+  height: 1px;
+  background-color: #f1f3f6;
+  margin: 4px 0;
+}
+
+.columns-visibility-dropdown .dropdown-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast, 0.2s ease);
+}
+
+.columns-visibility-dropdown .dropdown-check-item:hover {
+  background-color: #f5f3fa;
   color: #6530b5;
+}
+
+.columns-visibility-dropdown .btn-reset-columns {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #6530b5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s ease);
+}
+
+.columns-visibility-dropdown .btn-reset-columns:hover {
+  background-color: #ede5f8;
 }
 
 @media (max-width: 768px) {
@@ -1922,17 +1997,20 @@
     gap: 6px;
     flex-shrink: 0;
   }
-  .btn-more-actions-text {
+  .btn-more-actions-text,
+  .btn-columns-text {
     display: none;
   }
-  .btn-more-actions {
+  .btn-more-actions,
+  .btn-toggle-columns {
     width: 34px;
     height: 34px;
     padding: 0 !important;
     justify-content: center;
     border-radius: 6px;
   }
-  .btn-more-actions .material-icons {
+  .btn-more-actions .material-icons,
+  .btn-toggle-columns .material-icons {
     font-size: 20px;
     margin: 0;
   }

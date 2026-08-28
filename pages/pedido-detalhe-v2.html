@@ -286,6 +286,50 @@
               </div>
             </div>
 
+            <!-- Dropdown de Visibilidade de Colunas (Direto e Rápido) -->
+            <div class="more-actions-wrapper" id="columnsVisibilityContainer">
+              <button type="button" class="btn-section-control btn-toggle-columns" id="btnToggleColumns" aria-expanded="false" title="Escolher colunas e campos visíveis" aria-label="Escolher colunas e campos visíveis">
+                <span class="material-icons">view_column</span>
+                <span class="btn-columns-text">Colunas</span>
+              </button>
+              <div class="columns-visibility-dropdown" id="columnsVisibilityDropdown">
+                <div class="dropdown-header-title">
+                  <span class="material-icons" style="font-size: 16px; color: #6530b5;">tune</span>
+                  <span>Campos Visíveis</span>
+                </div>
+                <div class="dropdown-divider-sutil"></div>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueLoja" id="colVisLoja" checked>
+                  <span>Estoque Loja</span>
+                </label>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueOrigem" id="colVisOrigem" checked>
+                  <span>Estoque Origem (CD)</span>
+                </label>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueIdeal" id="colVisIdeal" checked>
+                  <span>Estoque Ideal</span>
+                </label>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="minimoCritico" id="colVisCritico" checked>
+                  <span>Mínimo Crítico</span>
+                </label>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="sugestao" id="colVisSugestao" checked>
+                  <span>Sugestão de Reposição</span>
+                </label>
+                <label class="dropdown-check-item">
+                  <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="precos" id="colVisPrecos">
+                  <span>Tabela de Preços (Valores R$)</span>
+                </label>
+                <div class="dropdown-divider-sutil"></div>
+                <button type="button" class="btn-reset-columns" id="btnResetColumnsDropdown">
+                  <span class="material-icons" style="font-size: 15px;">restart_alt</span>
+                  Restaurar Padrão
+                </button>
+              </div>
+            </div>
+
             <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
             <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
               <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
