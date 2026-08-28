@@ -496,18 +496,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemQtde = Number(item.quantidade) || 0;
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
+        const totalLotesQty = item.lotes ? item.lotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0) : 0;
         const isStockLow = (item.estoqueLoja !== undefined && item.estoqueLoja <= 2);
 
         const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
         const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
         const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
 
-        const lotesBadgeHtml = `
-          <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
-            <span class="material-icons" style="font-size: 16px;">calendar_today</span>
-            ${lotesCount > 0 ? `${lotesCount} Lote(s)` : 'Informar Validade'}
-          </button>
-        `;
+        let lotesBadgeHtml = '';
+        if (lotesCount === 0) {
+          // Estado 1: Sem Lote Informado (Cinza Suave)
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">event</span>
+              Informar Validade
+            </button>
+          `;
+        } else if (totalLotesQty === itemQtde) {
+          // Estado 2: Validade OK (Verde)
+          const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">verified</span>
+              Validade OK (${loteText})
+            </button>
+          `;
+        } else {
+          // Estado 3: Divergente (Amarelo/Laranja)
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">warning_amber</span>
+              Divergente (${totalLotesQty}/${itemQtde} un)
+            </button>
+          `;
+        }
 
         let qtyCellHtml = '';
         if (isEditMode && !isReadOnly) {
@@ -553,19 +575,19 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </td>
 
-            <!-- Coluna Estoque Loja -->
+            <!-- Coluna Est. Loja -->
             <td class="col-estoque-loja" style="text-align: center; ${visibleColumns.estoqueLoja ? '' : 'display: none;'}">
               <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${estoqueLojaVal} un</span>
             </td>
 
-            <!-- Coluna Estoque Origem (CD) -->
+            <!-- Coluna Est. Origem (CD) -->
             <td class="col-estoque-origem" style="text-align: center; ${visibleColumns.estoqueOrigem ? '' : 'display: none;'}">
               <span class="stock-pill-loja" style="background-color: #ede7f6; color: #6530b5; border: 1px solid #d1c4e9;">
                 ${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un
               </span>
             </td>
 
-            <!-- Coluna Estoque Ideal -->
+            <!-- Coluna Ideal -->
             <td class="col-estoque-ideal" style="text-align: center; color: #495057; font-weight: 600; ${visibleColumns.estoqueIdeal ? '' : 'display: none;'}">
               ${estoqueIdealVal} un
             </td>
@@ -614,10 +636,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemQtde = Number(item.quantidade) || 0;
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
+        const totalLotesQty = item.lotes ? item.lotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0) : 0;
 
         const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
         const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
         const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
+
+        let mobileLotesBadgeHtml = '';
+        if (lotesCount === 0) {
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">event</span>
+              Informar Validade
+            </button>
+          `;
+        } else if (totalLotesQty === itemQtde) {
+          const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">verified</span>
+              Validade OK (${loteText})
+            </button>
+          `;
+        } else {
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">warning_amber</span>
+              Divergente (${totalLotesQty}/${itemQtde} un)
+            </button>
+          `;
+        }
 
         return `
           <div class="order-mobile-product-card" data-index="${index}">
@@ -632,14 +680,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="mobile-card-metrics-row">
               ${visibleColumns.estoqueLoja ? `
                 <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Estoque Loja</span>
+                  <span class="mobile-metric-label">Est. Loja</span>
                   <span class="mobile-metric-val">${estoqueLojaVal} un</span>
                 </div>
               ` : ''}
 
               ${visibleColumns.estoqueOrigem ? `
                 <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Estoque Origem</span>
+                  <span class="mobile-metric-label">Est. Origem</span>
                   <span class="mobile-metric-val" style="color: #6530b5;">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
                 </div>
               ` : ''}
@@ -678,10 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <div class="mobile-card-bottom-actions">
-              <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
-                <span class="material-icons" style="font-size: 15px;">calendar_today</span>
-                ${lotesCount > 0 ? `${lotesCount} Lote(s)` : 'Validade'}
-              </button>
+              ${mobileLotesBadgeHtml}
 
               <div style="display: flex; align-items: center; gap: 8px;">
                 ${(isEditMode && !isReadOnly) ? `

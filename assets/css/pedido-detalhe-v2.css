@@ -876,32 +876,74 @@
   border: 1px solid #e5d9fa;
 }
 
-/* Botão de Validades / Lotes */
+/* Botão de Validades / Lotes (3 Estados Dinâmicos) */
 .btn-manage-lotes-table {
-  background-color: #ffffff;
-  border: 1px solid #ced4da;
-  color: #495057;
-  padding: 6px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 4px 10px;
   border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  transition: all var(--transition-fast, 0.15s ease);
+  height: 30px;
+  box-sizing: border-box;
 }
 
-.btn-manage-lotes-table:hover {
-  border-color: #6530b5;
-  color: #6530b5;
-  background-color: #fbf9fe;
+.btn-manage-lotes-table:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
 }
 
-.btn-manage-lotes-table.has-lotes {
-  background-color: #edf7ed;
+.btn-manage-lotes-table .material-icons {
+  font-size: 16px;
+  color: #475569;
+}
+
+/* Estado 2: Validade OK (Verde) */
+.btn-manage-lotes-table.status-ok {
+  background-color: #e8f5e9;
   border-color: #a5d6a7;
   color: #2e7d32;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-ok:hover:not(:disabled) {
+  background-color: #dcfce7;
+  border-color: #86efac;
+}
+
+.btn-manage-lotes-table.status-ok .material-icons {
+  color: #2e7d32;
+}
+
+/* Estado 3: Divergente (Amarelo / Âmbar) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fff8e1;
+  border-color: #fed7aa;
+  color: #e65100;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.btn-manage-lotes-table.status-divergent .material-icons {
+  color: #e65100;
+}
+
+.btn-manage-lotes-table:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
 }
 
 /* Botão de Excluir Linha */
@@ -1707,7 +1749,9 @@
   color: #495057;
   font-size: 0.82rem;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 0 12px;
+  height: 34px;
+  box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
