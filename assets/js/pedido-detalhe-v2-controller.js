@@ -1186,10 +1186,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ação 4: Excluir Todos os Itens
+  // Ação 4: Incluir por Categoria (Modal com Filtros por Grupo, Subgrupo, Fornecedor e Saldo)
+  const actionAddByCategory = document.getElementById('actionAddByCategory');
+  if (actionAddByCategory) {
+    actionAddByCategory.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      openAddByCategoryModal();
+    });
+  }
+
+  // Ação 5: Excluir Todos os Itens (Menu Mais Ações)
   if (actionClearAll) {
     actionClearAll.addEventListener('click', () => {
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      openClearAllModal();
+    });
+  }
+
+  // Botão de Lixeira no Cabeçalho da Tabela (Excluir Todos os Itens)
+  const btnClearAllHeader = document.getElementById('btnClearAllHeader');
+  if (btnClearAllHeader) {
+    btnClearAllHeader.addEventListener('click', () => {
+      if (isReadOnly || !isEditMode) return;
+      if (cartItems.length === 0) {
+        if (typeof Toast !== 'undefined') Toast.info('O pedido já está vazio.');
+        return;
+      }
       openClearAllModal();
     });
   }
@@ -1225,6 +1247,497 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalConfirmClearAll) {
     modalConfirmClearAll.addEventListener('click', (e) => {
       if (e.target === modalConfirmClearAll) closeClearAllModal();
+    });
+  }
+
+  // ==========================================================================
+  // 12.1 MODAL: ADICIONAR PRODUTOS DO CATÁLOGO (FILTRAGEM POR CATEGORIA / SUBGRUPO)
+  // ==========================================================================
+  const modalAddByCategory = document.getElementById('modalAddByCategory');
+  const btnCloseAddByCategoryModal = document.getElementById('btnCloseAddByCategoryModal');
+  const btnDiscardAddByCategory = document.getElementById('btnDiscardAddByCategory');
+  const btnConfirmAddByCategory = document.getElementById('btnConfirmAddByCategory');
+
+  const comboboxCategoryGrupo = document.getElementById('comboboxCategoryGrupo');
+  const inputCategoryGrupo = document.getElementById('inputCategoryGrupo');
+  const btnClearCategoryGrupo = document.getElementById('btnClearCategoryGrupo');
+  const btnToggleCategoryGrupo = document.getElementById('btnToggleCategoryGrupo');
+  const dropdownCategoryGrupo = document.getElementById('dropdownCategoryGrupo');
+
+  const comboboxCategorySubgrupo = document.getElementById('comboboxCategorySubgrupo');
+  const inputCategorySubgrupo = document.getElementById('inputCategorySubgrupo');
+  const btnClearCategorySubgrupo = document.getElementById('btnClearCategorySubgrupo');
+  const btnToggleCategorySubgrupo = document.getElementById('btnToggleCategorySubgrupo');
+  const dropdownCategorySubgrupo = document.getElementById('dropdownCategorySubgrupo');
+
+  const comboboxCategoryFornecedor = document.getElementById('comboboxCategoryFornecedor');
+  const inputCategoryFornecedor = document.getElementById('inputCategoryFornecedor');
+  const btnClearCategoryFornecedor = document.getElementById('btnClearCategoryFornecedor');
+  const btnToggleCategoryFornecedor = document.getElementById('btnToggleCategoryFornecedor');
+  const dropdownCategoryFornecedor = document.getElementById('dropdownCategoryFornecedor');
+
+  const inputCategorySearchText = document.getElementById('inputCategorySearchText');
+  const btnClearCategorySearchText = document.getElementById('btnClearCategorySearchText');
+  const chkCategoryOnlyAvailableCd = document.getElementById('chkCategoryOnlyAvailableCd');
+  const badgeCategoryCdOrigemName = document.getElementById('badgeCategoryCdOrigemName');
+  const categoryMatchesCount = document.getElementById('categoryMatchesCount');
+
+  // Mapeamento Oficial de Grupos para Subgrupos
+  const GROUP_SUBGROUPS_MAP = {
+    'Bebidas e Refrigerantes': ['Energéticos', 'Refrigerantes', 'Sucos e Chás', 'Águas e Isotônicos', 'Cervejas e Alcoólicos'],
+    'Alimentos e Snacks': ['Salgadinhos e Snacks', 'Biscoitos e Bolachas', 'Sanduíches e Prontos', 'Massas e Molhos'],
+    'Doces e Chocolates': ['Chocolates', 'Balas e Gomas', 'Sobremesas', 'Barras de Cereal'],
+    'Higiene e Limpeza': ['Higiene Pessoal', 'Limpeza Geral', 'Descartáveis'],
+    'Tabacaria': ['Cigarros', 'Palheiros', 'Acessórios']
+  };
+
+  function inferSubgroup(prod) {
+    if (prod.subgrupo) return prod.subgrupo;
+    const name = (prod.nome || '').toLowerCase();
+    const cat = prod.categoria || 'Geral';
+    if (cat === 'Bebidas e Refrigerantes') {
+      if (name.includes('energ') || name.includes('monster') || name.includes('red bull')) return 'Energéticos';
+      if (name.includes('suco') || name.includes('chá') || name.includes('cha')) return 'Sucos e Chás';
+      if (name.includes('cerveja') || name.includes('heineken') || name.includes('amstel')) return 'Cervejas e Alcoólicos';
+      if (name.includes('água') || name.includes('agua') || name.includes('gatorade')) return 'Águas e Isotônicos';
+      return 'Refrigerantes';
+    }
+    if (cat === 'Alimentos e Snacks') {
+      if (name.includes('biscoito') || name.includes('bolacha') || name.includes('oreo')) return 'Biscoitos e Bolachas';
+      if (name.includes('sandu') || name.includes('pronto')) return 'Sanduíches e Prontos';
+      return 'Salgadinhos e Snacks';
+    }
+    if (cat === 'Doces e Chocolates') {
+      if (name.includes('bala') || name.includes('goma') || name.includes('trident')) return 'Balas e Gomas';
+      return 'Chocolates';
+    }
+    if (cat === 'Higiene e Limpeza') {
+      if (name.includes('detergente') || name.includes('limpeza')) return 'Limpeza Geral';
+      return 'Higiene Pessoal';
+    }
+    return 'Geral';
+  }
+
+  function inferFornecedor(prod) {
+    if (prod.fornecedor) return prod.fornecedor;
+    const name = (prod.nome || '').toLowerCase();
+    if (name.includes('monster')) return 'Monster Energy Brasil';
+    if (name.includes('coca') || name.includes('fanta') || name.includes('sprite')) return 'Coca-Cola FEMSA';
+    if (name.includes('ambev') || name.includes('pepsi') || name.includes('guaraná')) return 'Ambev Brasil';
+    if (name.includes('nestle') || name.includes('nestlé') || name.includes('garoto')) return 'Nestlé Alimentos';
+    if (name.includes('doritos') || name.includes('lays') || name.includes('cheetos') || name.includes('fandangos')) return 'PepsiCo do Brasil';
+    return 'Distribuidora Central B2U';
+  }
+
+  function openAddByCategoryModal() {
+    if (!modalAddByCategory) return;
+
+    // Atualiza nome do CD no badge
+    const origSelect = document.getElementById('heroOrigemSelect');
+    const origName = (origSelect && origSelect.options[origSelect.selectedIndex]) 
+      ? origSelect.options[origSelect.selectedIndex].text 
+      : 'CD: Estoque Central';
+    if (badgeCategoryCdOrigemName) {
+      badgeCategoryCdOrigemName.textContent = origName.replace('--', '').trim() || 'CD: Estoque Central';
+    }
+
+    // Reset filtros
+    if (inputCategoryGrupo) inputCategoryGrupo.value = '';
+    if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = 'none';
+    
+    if (inputCategorySubgrupo) {
+      inputCategorySubgrupo.value = '';
+      inputCategorySubgrupo.disabled = true;
+      inputCategorySubgrupo.placeholder = 'Selecione um Grupo primeiro...';
+    }
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('is-disabled');
+
+    if (inputCategoryFornecedor) inputCategoryFornecedor.value = '';
+    if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = 'none';
+
+    if (inputCategorySearchText) inputCategorySearchText.value = '';
+    if (btnClearCategorySearchText) btnClearCategorySearchText.style.display = 'none';
+
+    if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = true;
+
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+
+    modalAddByCategory.style.display = 'flex';
+    modalAddByCategory.classList.add('show', 'active');
+  }
+
+  function closeAddByCategoryModal() {
+    if (modalAddByCategory) {
+      modalAddByCategory.style.display = 'none';
+      modalAddByCategory.classList.remove('show', 'active');
+    }
+    closeAllCategoryComboboxes();
+  }
+
+  function closeAllCategoryComboboxes() {
+    if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'none';
+    if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.remove('open');
+
+    if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('open');
+
+    if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'none';
+    if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.remove('open');
+  }
+
+  // 1. População de Grupos
+  function populateGruposDropdown(filterText = '') {
+    if (!dropdownCategoryGrupo) return;
+    const grupos = Object.keys(GROUP_SUBGROUPS_MAP);
+    const filtered = filterText ? grupos.filter(g => g.toLowerCase().includes(filterText.toLowerCase())) : grupos;
+
+    if (filtered.length === 0) {
+      dropdownCategoryGrupo.innerHTML = '<div class="combobox-empty-msg">Nenhum grupo encontrado</div>';
+      return;
+    }
+
+    dropdownCategoryGrupo.innerHTML = filtered.map(grupo => {
+      const count = rawCatalog.filter(p => p.categoria === grupo).length;
+      const isSelected = inputCategoryGrupo && inputCategoryGrupo.value === grupo;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${grupo}">
+          <span class="combobox-option-text">${grupo}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    dropdownCategoryGrupo.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectGrupo(val);
+      });
+    });
+  }
+
+  function selectGrupo(grupo) {
+    if (inputCategoryGrupo) inputCategoryGrupo.value = grupo;
+    if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = grupo ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+
+    // Habilita e carrega os Subgrupos vinculados
+    if (inputCategorySubgrupo) {
+      inputCategorySubgrupo.value = '';
+      inputCategorySubgrupo.disabled = false;
+      inputCategorySubgrupo.placeholder = 'Digite ou clique para escolher o subgrupo...';
+    }
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
+
+    updateCategoryMatchesCount();
+  }
+
+  // 2. População de Subgrupos (Condicionado ao Grupo)
+  function populateSubgruposDropdown(filterText = '') {
+    if (!dropdownCategorySubgrupo) return;
+    const selectedGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
+    if (!selectedGrupo || !GROUP_SUBGROUPS_MAP[selectedGrupo]) {
+      dropdownCategorySubgrupo.innerHTML = '<div class="combobox-empty-msg">Selecione um Grupo primeiro</div>';
+      return;
+    }
+
+    const subgrupos = GROUP_SUBGROUPS_MAP[selectedGrupo] || [];
+    const filtered = filterText ? subgrupos.filter(s => s.toLowerCase().includes(filterText.toLowerCase())) : subgrupos;
+
+    if (filtered.length === 0) {
+      dropdownCategorySubgrupo.innerHTML = '<div class="combobox-empty-msg">Nenhum subgrupo encontrado</div>';
+      return;
+    }
+
+    dropdownCategorySubgrupo.innerHTML = filtered.map(sub => {
+      const count = rawCatalog.filter(p => p.categoria === selectedGrupo && (p.subgrupo || inferSubgroup(p)) === sub).length;
+      const isSelected = inputCategorySubgrupo && inputCategorySubgrupo.value === sub;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${sub}">
+          <span class="combobox-option-text">${sub}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    dropdownCategorySubgrupo.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectSubgrupo(val);
+      });
+    });
+  }
+
+  function selectSubgrupo(subgrupo) {
+    if (inputCategorySubgrupo) inputCategorySubgrupo.value = subgrupo;
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = subgrupo ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+  }
+
+  // 3. População de Fornecedores
+  function populateFornecedoresDropdown(filterText = '') {
+    if (!dropdownCategoryFornecedor) return;
+    const fornecedoresSet = new Set();
+    rawCatalog.forEach(p => fornecedoresSet.add(p.fornecedor || inferFornecedor(p)));
+    const fornecedores = Array.from(fornecedoresSet).sort();
+
+    const filtered = filterText ? fornecedores.filter(f => f.toLowerCase().includes(filterText.toLowerCase())) : fornecedores;
+
+    if (filtered.length === 0) {
+      dropdownCategoryFornecedor.innerHTML = '<div class="combobox-empty-msg">Nenhum fornecedor encontrado</div>';
+      return;
+    }
+
+    dropdownCategoryFornecedor.innerHTML = filtered.map(forn => {
+      const count = rawCatalog.filter(p => (p.fornecedor || inferFornecedor(p)) === forn).length;
+      const isSelected = inputCategoryFornecedor && inputCategoryFornecedor.value === forn;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${forn}">
+          <span class="combobox-option-text">${forn}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    dropdownCategoryFornecedor.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectFornecedor(val);
+      });
+    });
+  }
+
+  function selectFornecedor(forn) {
+    if (inputCategoryFornecedor) inputCategoryFornecedor.value = forn;
+    if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = forn ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+  }
+
+  // Listeners Combobox Grupo
+  if (btnToggleCategoryGrupo) {
+    btnToggleCategoryGrupo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = comboboxCategoryGrupo && comboboxCategoryGrupo.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategoryGrupo) {
+        populateGruposDropdown();
+        dropdownCategoryGrupo.style.display = 'block';
+        if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategoryGrupo) {
+    inputCategoryGrupo.addEventListener('input', () => {
+      if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = inputCategoryGrupo.value ? 'flex' : 'none';
+      populateGruposDropdown(inputCategoryGrupo.value);
+      if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'block';
+      if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategoryGrupo.addEventListener('focus', () => {
+      populateGruposDropdown(inputCategoryGrupo.value);
+      if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'block';
+      if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+    });
+  }
+
+  if (btnClearCategoryGrupo) {
+    btnClearCategoryGrupo.addEventListener('click', () => {
+      if (inputCategoryGrupo) inputCategoryGrupo.value = '';
+      btnClearCategoryGrupo.style.display = 'none';
+
+      // Reseta também o subgrupo
+      if (inputCategorySubgrupo) {
+        inputCategorySubgrupo.value = '';
+        inputCategorySubgrupo.disabled = true;
+        inputCategorySubgrupo.placeholder = 'Selecione um Grupo primeiro...';
+      }
+      if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('is-disabled');
+
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Listeners Combobox Subgrupo
+  if (btnToggleCategorySubgrupo) {
+    btnToggleCategorySubgrupo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (inputCategorySubgrupo && inputCategorySubgrupo.disabled) return;
+      const isOpen = comboboxCategorySubgrupo && comboboxCategorySubgrupo.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategorySubgrupo) {
+        populateSubgruposDropdown();
+        dropdownCategorySubgrupo.style.display = 'block';
+        if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategorySubgrupo) {
+    inputCategorySubgrupo.addEventListener('input', () => {
+      if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = inputCategorySubgrupo.value ? 'flex' : 'none';
+      populateSubgruposDropdown(inputCategorySubgrupo.value);
+      if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'block';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategorySubgrupo.addEventListener('focus', () => {
+      if (inputCategorySubgrupo.disabled) return;
+      populateSubgruposDropdown(inputCategorySubgrupo.value);
+      if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'block';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+    });
+  }
+
+  if (btnClearCategorySubgrupo) {
+    btnClearCategorySubgrupo.addEventListener('click', () => {
+      if (inputCategorySubgrupo) inputCategorySubgrupo.value = '';
+      btnClearCategorySubgrupo.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Listeners Combobox Fornecedor
+  if (btnToggleCategoryFornecedor) {
+    btnToggleCategoryFornecedor.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = comboboxCategoryFornecedor && comboboxCategoryFornecedor.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategoryFornecedor) {
+        populateFornecedoresDropdown();
+        dropdownCategoryFornecedor.style.display = 'block';
+        if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategoryFornecedor) {
+    inputCategoryFornecedor.addEventListener('input', () => {
+      if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = inputCategoryFornecedor.value ? 'flex' : 'none';
+      populateFornecedoresDropdown(inputCategoryFornecedor.value);
+      if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'block';
+      if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategoryFornecedor.addEventListener('focus', () => {
+      populateFornecedoresDropdown(inputCategoryFornecedor.value);
+      if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'block';
+      if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+    });
+  }
+
+  if (btnClearCategoryFornecedor) {
+    btnClearCategoryFornecedor.addEventListener('click', () => {
+      if (inputCategoryFornecedor) inputCategoryFornecedor.value = '';
+      btnClearCategoryFornecedor.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Busca Textual & Saldo CD
+  if (inputCategorySearchText) {
+    inputCategorySearchText.addEventListener('input', () => {
+      if (btnClearCategorySearchText) btnClearCategorySearchText.style.display = inputCategorySearchText.value ? 'flex' : 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  if (btnClearCategorySearchText) {
+    btnClearCategorySearchText.addEventListener('click', () => {
+      if (inputCategorySearchText) inputCategorySearchText.value = '';
+      btnClearCategorySearchText.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  if (chkCategoryOnlyAvailableCd) {
+    chkCategoryOnlyAvailableCd.addEventListener('change', updateCategoryMatchesCount);
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-combobox')) {
+      closeAllCategoryComboboxes();
+    }
+  });
+
+  function getFilteredCategoryProducts() {
+    const selGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
+    const selSubgrupo = (inputCategorySubgrupo ? inputCategorySubgrupo.value : '').trim();
+    const selFornecedor = (inputCategoryFornecedor ? inputCategoryFornecedor.value : '').trim();
+    const searchTxt = (inputCategorySearchText ? inputCategorySearchText.value : '').trim().toLowerCase();
+    const onlyCd = chkCategoryOnlyAvailableCd ? chkCategoryOnlyAvailableCd.checked : false;
+
+    return rawCatalog.filter(prod => {
+      if (selGrupo && prod.categoria !== selGrupo) return false;
+      if (selSubgrupo && (prod.subgrupo || inferSubgroup(prod)) !== selSubgrupo) return false;
+      if (selFornecedor && (prod.fornecedor || inferFornecedor(prod)) !== selFornecedor) return false;
+      if (searchTxt) {
+        const matchName = (prod.nome || '').toLowerCase().includes(searchTxt);
+        const matchEan = (prod.ean || '').toLowerCase().includes(searchTxt);
+        if (!matchName && !matchEan) return false;
+      }
+      if (onlyCd) {
+        const cdStock = prod.estoqueOrigem !== undefined ? prod.estoqueOrigem : 24;
+        if (cdStock <= 0) return false;
+      }
+      return true;
+    });
+  }
+
+  function updateCategoryMatchesCount() {
+    const matches = getFilteredCategoryProducts();
+    if (categoryMatchesCount) categoryMatchesCount.textContent = matches.length;
+  }
+
+  if (btnCloseAddByCategoryModal) btnCloseAddByCategoryModal.addEventListener('click', closeAddByCategoryModal);
+  if (btnDiscardAddByCategory) btnDiscardAddByCategory.addEventListener('click', closeAddByCategoryModal);
+
+  if (btnConfirmAddByCategory) {
+    btnConfirmAddByCategory.addEventListener('click', () => {
+      const matches = getFilteredCategoryProducts();
+      if (matches.length === 0) {
+        if (typeof Toast !== 'undefined') Toast.warning('Nenhum produto correspondente encontrado para incluir.');
+        return;
+      }
+
+      let addedCount = 0;
+      matches.forEach(prod => {
+        const existing = cartItems.find(item => item.ean === prod.ean);
+        if (!existing) {
+          cartItems.push({
+            id: prod.id || Date.now() + Math.random(),
+            nome: prod.nome,
+            ean: prod.ean,
+            foto: prod.foto,
+            categoria: prod.categoria || 'Geral',
+            subgrupo: prod.subgrupo || inferSubgroup(prod),
+            quantidade: prod.quantidade || 1,
+            preco: Number(prod.precoVenda || prod.preco || 6.90),
+            estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 4,
+            estoqueOrigem: prod.estoqueOrigem !== undefined ? prod.estoqueOrigem : 36,
+            estoqueIdeal: prod.estoqueIdeal !== undefined ? prod.estoqueIdeal : 12,
+            minimoCritico: prod.minimoCritico !== undefined ? prod.minimoCritico : 3,
+            lotes: []
+          });
+          addedCount++;
+        }
+      });
+
+      renderProducts();
+      updateTotals();
+      closeAddByCategoryModal();
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`${addedCount > 0 ? addedCount : 'Produtos'} produto(s) incluído(s) no pedido com sucesso!`);
+      }
     });
   }
 
