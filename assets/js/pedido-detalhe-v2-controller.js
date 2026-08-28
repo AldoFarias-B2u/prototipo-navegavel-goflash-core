@@ -487,6 +487,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mainContainer) mainContainer.classList.remove('is-empty-cart');
     if (emptyState) emptyState.style.display = 'none';
+    
+    // Atualiza cabeçalho dinâmico de Ideal / Mínimo
+    const thColIdealMin = document.getElementById('thColIdealMin');
+    if (thColIdealMin) {
+      if (visibleColumns.estoqueIdeal && visibleColumns.minimoCritico) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Ideal / Mínimo';
+      } else if (visibleColumns.estoqueIdeal) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Ideal';
+      } else if (visibleColumns.minimoCritico) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Mín. Crítico';
+      } else {
+        thColIdealMin.style.display = 'none';
+      }
+    }
+
     applyViewMode();
 
     // 9.1 Render Tabela Desktop
@@ -496,18 +514,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemQtde = Number(item.quantidade) || 0;
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
+        const totalLotesQty = item.lotes ? item.lotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0) : 0;
         const isStockLow = (item.estoqueLoja !== undefined && item.estoqueLoja <= 2);
 
         const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
         const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+        const estoqueOrigemVal = item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48;
+        const minCriticoVal = item.minimoCritico !== undefined ? item.minimoCritico : 3;
         const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
 
-        const lotesBadgeHtml = `
-          <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
-            <span class="material-icons" style="font-size: 16px;">calendar_today</span>
-            ${lotesCount > 0 ? `${lotesCount} Lote(s)` : 'Informar Validade'}
-          </button>
-        `;
+        const isIdealVisible = !!visibleColumns.estoqueIdeal;
+        const isMinVisible = !!visibleColumns.minimoCritico;
+        const showIdealMinCol = isIdealVisible || isMinVisible;
+
+        let idealMinHtml = '';
+        if (isIdealVisible && isMinVisible) {
+          idealMinHtml = `
+            <div class="tbl-ideal-cell">
+              <span class="tbl-ideal-val">${estoqueIdealVal} un</span>
+              <span class="tbl-min-hint">Mín: ${minCriticoVal} un</span>
+            </div>
+          `;
+        } else if (isIdealVisible) {
+          idealMinHtml = `<span class="tbl-ideal-val">${estoqueIdealVal} un</span>`;
+        } else if (isMinVisible) {
+          idealMinHtml = `<span class="tbl-min-hint">Mín: ${minCriticoVal} un</span>`;
+        }
+
+        const stockLojaHtml = isStockLow 
+          ? `<span class="tbl-stock-low-badge" title="Estoque baixo (crítico)">${estoqueLojaVal} un</span>`
+          : `<span class="tbl-stock-val">${estoqueLojaVal} un</span>`;
+
+        let lotesBadgeHtml = '';
+        if (lotesCount === 0) {
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">event</span>
+              Informar Validade
+            </button>
+          `;
+        } else if (totalLotesQty === itemQtde) {
+          const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">verified</span>
+              Validade OK (${loteText})
+            </button>
+          `;
+        } else {
+          lotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons">warning_amber</span>
+              Divergente (${totalLotesQty}/${itemQtde} un)
+            </button>
+          `;
+        }
 
         let qtyCellHtml = '';
         if (isEditMode && !isReadOnly) {
@@ -535,11 +596,12 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
+        const highlightClass = item._justAdded ? 'item-row-highlight' : '';
+
         return `
-          <tr data-index="${index}">
+          <tr data-index="${index}" class="${highlightClass}">
             <td style="text-align: center; color: #757575; font-size: 0.8rem; font-weight: 500;">${index + 1}</td>
             
-            <!-- Coluna de Produto Unificada: Foto + Nome + EAN + Categoria -->
             <td>
               <div class="table-prod-unified-cell">
                 <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="table-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
@@ -553,54 +615,40 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </td>
 
-            <!-- Coluna Estoque Loja -->
             <td class="col-estoque-loja" style="text-align: center; ${visibleColumns.estoqueLoja ? '' : 'display: none;'}">
-              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${estoqueLojaVal} un</span>
+              ${stockLojaHtml}
             </td>
 
-            <!-- Coluna Estoque Origem (CD) -->
             <td class="col-estoque-origem" style="text-align: center; ${visibleColumns.estoqueOrigem ? '' : 'display: none;'}">
-              <span class="stock-pill-loja" style="background-color: #ede7f6; color: #6530b5; border: 1px solid #d1c4e9;">
-                ${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un
-              </span>
+              <span class="tbl-stock-origem-val">${estoqueOrigemVal} un</span>
             </td>
 
-            <!-- Coluna Estoque Ideal -->
-            <td class="col-estoque-ideal" style="text-align: center; color: #495057; font-weight: 600; ${visibleColumns.estoqueIdeal ? '' : 'display: none;'}">
-              ${estoqueIdealVal} un
+            <td class="col-estoque-ideal" style="text-align: center; ${showIdealMinCol ? '' : 'display: none;'}">
+              ${idealMinHtml}
             </td>
 
-            <!-- Coluna Mínimo Crítico -->
-            <td class="col-min-critico" style="text-align: center; color: #d32f2f; font-weight: 600; ${visibleColumns.minimoCritico ? '' : 'display: none;'}">
-              ${item.minimoCritico !== undefined ? item.minimoCritico : 3} un
-            </td>
-
-            <!-- Coluna Sugestão de Abastecimento (Ideal - Loja) -->
             <td class="col-sugestao" style="text-align: center; ${visibleColumns.sugestao ? '' : 'display: none;'}">
-              <span class="badge-sugestao">${sugestaoVal} un</span>
+              <button type="button" class="tbl-sugestao-btn btn-apply-sugestao" data-index="${index}" title="Clique para aplicar sugestão de ${sugestaoVal} un ao pedido">
+                ${sugestaoVal} un
+              </button>
             </td>
 
-            <!-- Coluna Quantidade Pedido -->
             <td class="col-qtde" style="text-align: center;">
               ${qtyCellHtml}
             </td>
 
-            <!-- Coluna Preço Unitário -->
-            <td class="col-preco-un" style="text-align: right; font-weight: 500; color: #495057; ${visibleColumns.precos ? '' : 'display: none;'}">
-              R$ ${itemPreco.toFixed(2).replace('.', ',')}
+            <td class="col-preco-un" style="text-align: right; ${visibleColumns.precos ? '' : 'display: none;'}">
+              <span class="tbl-preco-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
             </td>
 
-            <!-- Coluna Subtotal -->
-            <td class="col-subtotal" style="text-align: right; font-weight: 700; color: #2e7d32; ${visibleColumns.precos ? '' : 'display: none;'}">
-              R$ ${subtotal.toFixed(2).replace('.', ',')}
+            <td class="col-subtotal" style="text-align: right; ${visibleColumns.precos ? '' : 'display: none;'}">
+              <span class="tbl-subtotal-val">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
             </td>
 
-            <!-- Coluna Lotes e Validades -->
             <td class="col-lotes" style="text-align: center;">
               ${lotesBadgeHtml}
             </td>
 
-            <!-- Coluna de Ações -->
             ${actionCellHtml}
           </tr>
         `;
@@ -614,83 +662,161 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemQtde = Number(item.quantidade) || 0;
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
+        const totalLotesQty = item.lotes ? item.lotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0) : 0;
 
         const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
         const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
         const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
 
-        return `
-          <div class="order-mobile-product-card" data-index="${index}">
-            <div class="mobile-card-top-row">
-              <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
-              <div class="mobile-card-info">
-                <h4 class="mobile-card-title">${item.nome}</h4>
-                <div class="mobile-card-ean">EAN: ${item.ean} • <span style="color: #757575;">${item.categoria || 'Geral'}</span></div>
-              </div>
-            </div>
+        let mobileLotesBadgeHtml = '';
+        if (lotesCount === 0) {
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">event</span>
+              Informar Validade
+            </button>
+          `;
+        } else if (totalLotesQty === itemQtde) {
+          const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">verified</span>
+              Validade OK (${loteText})
+            </button>
+          `;
+        } else {
+          mobileLotesBadgeHtml = `
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+              <span class="material-icons" style="font-size: 15px;">warning_amber</span>
+              Divergente (${totalLotesQty}/${itemQtde} un)
+            </button>
+          `;
+        }
 
-            <div class="mobile-card-metrics-row">
+        const highlightCardClass = item._justAdded ? 'item-card-highlight' : '';
+
+        const isStockCritical = (estoqueLojaVal <= (item.minimoCritico !== undefined ? item.minimoCritico : 3));
+
+        const activeMetricsCount = (visibleColumns.estoqueLoja ? 1 : 0) +
+          (visibleColumns.estoqueOrigem ? 1 : 0) +
+          (visibleColumns.estoqueIdeal ? 1 : 0) +
+          (visibleColumns.minimoCritico ? 1 : 0) +
+          (visibleColumns.sugestao ? 1 : 0);
+
+        let metricsPanelHtml = '';
+        if (activeMetricsCount === 1) {
+          let singleLabel = '';
+          let singleVal = '';
+          let isClickableSugestao = false;
+          if (visibleColumns.estoqueLoja) {
+            singleLabel = 'Estoque na Loja:';
+            singleVal = `${estoqueLojaVal} un`;
+          } else if (visibleColumns.estoqueOrigem) {
+            singleLabel = 'Estoque no CD Origem:';
+            singleVal = `${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un`;
+          } else if (visibleColumns.estoqueIdeal) {
+            singleLabel = 'Estoque Ideal:';
+            singleVal = `${estoqueIdealVal} un`;
+          } else if (visibleColumns.minimoCritico) {
+            singleLabel = 'Mínimo Crítico:';
+            singleVal = `${item.minimoCritico !== undefined ? item.minimoCritico : 3} un`;
+          } else if (visibleColumns.sugestao) {
+            singleLabel = 'Sugestão de Reposição:';
+            singleVal = `${sugestaoVal} un`;
+            isClickableSugestao = true;
+          }
+
+          metricsPanelHtml = `
+            <div class="card-metrics-panel is-single-metric ${isClickableSugestao ? 'is-clickable btn-apply-sugestao' : ''}" data-index="${index}" title="${isClickableSugestao ? `Clique para aplicar sugestão de ${sugestaoVal} un ao pedido` : ''}">
+              <span class="single-metric-label">${singleLabel}</span>
+              <strong class="single-metric-val ${isStockCritical && visibleColumns.estoqueLoja ? 'val-warning' : ''}">${singleVal}</strong>
+            </div>
+          `;
+        } else if (activeMetricsCount > 1) {
+          const bothIdealAndMin = visibleColumns.estoqueIdeal && visibleColumns.minimoCritico;
+
+          metricsPanelHtml = `
+            <div class="card-metrics-panel">
               ${visibleColumns.estoqueLoja ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Estoque Loja</span>
-                  <span class="mobile-metric-val">${estoqueLojaVal} un</span>
+                <div class="metric-col metric-col-loja">
+                  <span class="metric-label">Est. Loja</span>
+                  <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${estoqueLojaVal} un</span>
                 </div>
               ` : ''}
 
               ${visibleColumns.estoqueOrigem ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Estoque Origem</span>
-                  <span class="mobile-metric-val" style="color: #6530b5;">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
+                <div class="metric-col">
+                  <span class="metric-label">CD Origem</span>
+                  <span class="metric-val">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
                 </div>
               ` : ''}
 
-              ${visibleColumns.estoqueIdeal ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Ideal</span>
-                  <span class="mobile-metric-val">${estoqueIdealVal} un</span>
+              ${bothIdealAndMin ? `
+                <div class="metric-col">
+                  <span class="metric-label">Ideal</span>
+                  <span class="metric-val">${estoqueIdealVal} <small style="font-size: 0.72rem; color: #64748b; font-weight: 500;">(Mín ${item.minimoCritico !== undefined ? item.minimoCritico : 3})</small></span>
                 </div>
-              ` : ''}
+              ` : `
+                ${visibleColumns.estoqueIdeal ? `
+                  <div class="metric-col">
+                    <span class="metric-label">Ideal</span>
+                    <span class="metric-val">${estoqueIdealVal} un</span>
+                  </div>
+                ` : ''}
 
-              ${visibleColumns.minimoCritico ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Mín. Crítico</span>
-                  <span class="mobile-metric-val" style="color: #d32f2f;">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
-                </div>
-              ` : ''}
+                ${visibleColumns.minimoCritico ? `
+                  <div class="metric-col">
+                    <span class="metric-label">Mín. Crítico</span>
+                    <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
+                  </div>
+                ` : ''}
+              `}
 
               ${visibleColumns.sugestao ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Sugestão</span>
-                  <span class="mobile-metric-val" style="color: #6530b5;">${sugestaoVal} un</span>
-                </div>
-              ` : ''}
-
-              ${visibleColumns.precos ? `
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Preço Un.</span>
-                  <span class="mobile-metric-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
-                </div>
-                <div class="mobile-metric-item">
-                  <span class="mobile-metric-label">Subtotal</span>
-                  <span class="mobile-metric-val" style="color: #2e7d32;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                <div class="metric-col metric-col-sugestao metric-col-clickable btn-apply-sugestao" data-index="${index}" title="Clique para aplicar sugestão de ${sugestaoVal} un ao pedido">
+                  <span class="metric-label">Sugestão</span>
+                  <span class="metric-val metric-val-sugestao">${sugestaoVal} un</span>
                 </div>
               ` : ''}
             </div>
+          `;
+        }
+
+        let financialBarHtml = '';
+        if (visibleColumns.precos) {
+          financialBarHtml = `
+            <div class="card-finance-row">
+              <span class="finance-price-item">Preço Un.: <strong>R$ ${itemPreco.toFixed(2).replace('.', ',')}</strong></span>
+              <span class="finance-subtotal-item">Subtotal: <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></span>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="order-mobile-product-card ${highlightCardClass}" data-index="${index}">
+            <div class="mobile-card-top-row">
+              <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
+              <div class="mobile-card-info">
+                <h4 class="mobile-card-title">${item.nome}</h4>
+                <div class="mobile-card-ean">EAN: ${item.ean} • <span class="mobile-card-category">${item.categoria || 'Geral'}</span></div>
+              </div>
+            </div>
+
+            ${metricsPanelHtml}
+
+            ${financialBarHtml}
 
             <div class="mobile-card-bottom-actions">
-              <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
-                <span class="material-icons" style="font-size: 15px;">calendar_today</span>
-                ${lotesCount > 0 ? `${lotesCount} Lote(s)` : 'Validade'}
-              </button>
+              ${mobileLotesBadgeHtml}
 
-              <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="mobile-card-stepper-group">
                 ${(isEditMode && !isReadOnly) ? `
                   <div class="order-stepper-wrapper">
                     <button type="button" class="order-stepper-btn btn-minus" data-index="${index}">−</button>
-                    <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1">
+                    <input type="number" class="order-stepper-input input-qty" data-index="${index}" value="${itemQtde}" min="1" max="999">
                     <button type="button" class="order-stepper-btn btn-plus" data-index="${index}">+</button>
                   </div>
-                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}">
+                  <button type="button" class="btn-delete-item-row btn-remove-item" data-index="${index}" title="Remover item">
                     <span class="material-icons">delete</span>
                   </button>
                 ` : `
@@ -705,11 +831,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bindProductRowEvents();
     updateTotals();
+
+    setTimeout(() => {
+      cartItems.forEach(i => { delete i._justAdded; });
+    }, 2000);
   }
 
   // 10. Eventos Interativos da Lista de Produtos
   function bindProductRowEvents() {
-    // Steppers Menos (-)
     const minusBtns = document.querySelectorAll('.btn-minus');
     minusBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -722,7 +851,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Steppers Mais (+)
     const plusBtns = document.querySelectorAll('.btn-plus');
     plusBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -735,7 +863,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Inputs Diretos de Quantidade
     const qtyInputs = document.querySelectorAll('.input-qty');
     qtyInputs.forEach(inp => {
       inp.addEventListener('change', () => {
@@ -748,7 +875,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Botões de Remover Produto
     const removeBtns = document.querySelectorAll('.btn-remove-item');
     removeBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -773,6 +899,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const idx = parseInt(btn.getAttribute('data-index'), 10);
         if (cartItems[idx]) {
           openLotesModal(cartItems[idx]);
+        }
+      });
+    });
+
+    // Ação Rápida: Aplicar Sugestão de Reposição ao Clicar (Tabela e Cards)
+    const applySugestaoBtns = document.querySelectorAll('.btn-apply-sugestao');
+    applySugestaoBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isEditMode || isReadOnly) {
+          if (typeof Toast !== 'undefined') {
+            Toast.info('Ative o modo de edição para alterar as quantidades do pedido.');
+          }
+          return;
+        }
+
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        const item = cartItems[idx];
+        if (item) {
+          const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
+          const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+          const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
+
+          if (sugestaoVal <= 0) {
+            if (typeof Toast !== 'undefined') {
+              Toast.warning(`O estoque atual (${estoqueLojaVal} un) já atinge ou supera a meta ideal (${estoqueIdealVal} un).`);
+            }
+            return;
+          }
+
+          item.quantidade = sugestaoVal;
+          if (typeof Toast !== 'undefined') {
+            Toast.success(`Sugestão de ${sugestaoVal} un aplicada para "${item.nome.substring(0, 22)}...".`);
+          }
+          renderProducts();
         }
       });
     });
@@ -810,10 +971,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = omnibarInput.value.trim();
         if (!query) return;
 
-        // 1. Procura se já está no carrinho
-        const existing = cartItems.find(p => p.ean === query || p.nome.toLowerCase() === query.toLowerCase());
-        if (existing) {
+        // 1. Procura se já está no carrinho (move para o topo e incrementa)
+        const existingIndex = cartItems.findIndex(p => p.ean === query || p.nome.toLowerCase() === query.toLowerCase());
+        if (existingIndex !== -1) {
+          const existing = cartItems.splice(existingIndex, 1)[0];
           existing.quantidade += 1;
+          existing._justAdded = true;
+          cartItems.unshift(existing);
           if (typeof Toast !== 'undefined') {
             Toast.success(`+1 un: ${existing.nome.substring(0, 26)}...`);
           }
@@ -822,7 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // 2. Procura no catálogo mestre
+        // 2. Procura no catálogo mestre (insere no topo)
         const foundInCatalog = rawCatalog.find(p => p.ean === query || p.nome.toLowerCase().includes(query.toLowerCase()));
         if (foundInCatalog) {
           const newItem = {
@@ -834,6 +998,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueLoja: foundInCatalog.estoqueLoja !== undefined ? foundInCatalog.estoqueLoja : 0,
             preco: foundInCatalog.precoVenda || foundInCatalog.preco || 5.00,
             quantidade: 1,
+            _justAdded: true,
             lotes: []
           };
           cartItems.unshift(newItem);
@@ -924,9 +1089,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const prod = rawCatalog.find(p => p.ean === ean);
         if (!prod) return;
 
-        const existing = cartItems.find(item => item.ean === ean);
-        if (existing) {
+        const existingIndex = cartItems.findIndex(item => item.ean === ean);
+        if (existingIndex !== -1) {
+          const existing = cartItems.splice(existingIndex, 1)[0];
           existing.quantidade += 1;
+          existing._justAdded = true;
+          cartItems.unshift(existing);
           if (typeof Toast !== 'undefined') Toast.success(`+1 un: ${prod.nome.substring(0, 24)}...`);
         } else {
           cartItems.unshift({
@@ -938,6 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 6,
             preco: prod.precoVenda || prod.preco || 6.50,
             quantidade: 1,
+            _justAdded: true,
             lotes: []
           });
           if (typeof Toast !== 'undefined') Toast.success(`Produto adicionado: ${prod.nome.substring(0, 24)}...`);
@@ -975,19 +1144,115 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Controle do Menu Suspenso "Mais Ações"
-  if (btnMoreActions && moreActionsDropdown) {
-    btnMoreActions.addEventListener('click', (e) => {
-      e.stopPropagation();
-      moreActionsDropdown.classList.toggle('show');
-    });
+  // 11. Controle do Menu Suspenso "Mais Ações" e Dropdown de Colunas
+  const btnToggleColumns = document.getElementById('btnToggleColumns');
+  const columnsVisibilityDropdown = document.getElementById('columnsVisibilityDropdown');
+  const columnsVisibilityContainer = document.getElementById('columnsVisibilityContainer');
+  const btnResetColumnsDropdown = document.getElementById('btnResetColumnsDropdown');
+  const colVisToggleInputs = document.querySelectorAll('.col-vis-toggle-input');
 
-    document.addEventListener('click', (e) => {
-      if (!moreActionsWrapper || !moreActionsWrapper.contains(e.target)) {
-        moreActionsDropdown.classList.remove('show');
+  function syncColumnsDropdownInputs() {
+    colVisToggleInputs.forEach(input => {
+      const colKey = input.getAttribute('data-col');
+      if (colKey && visibleColumns[colKey] !== undefined) {
+        input.checked = !!visibleColumns[colKey];
       }
     });
   }
+
+  // Abertura/Fechamento do Menu Mais Ações
+  if (btnMoreActions && moreActionsDropdown) {
+    btnMoreActions.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (columnsVisibilityDropdown) columnsVisibilityDropdown.classList.remove('show');
+      moreActionsDropdown.classList.toggle('show');
+      btnMoreActions.setAttribute('aria-expanded', moreActionsDropdown.classList.contains('show'));
+    });
+  }
+
+  // Abertura/Fechamento do Dropdown Direto de Colunas
+  if (btnToggleColumns && columnsVisibilityDropdown) {
+    btnToggleColumns.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      syncColumnsDropdownInputs();
+      columnsVisibilityDropdown.classList.toggle('show');
+      btnToggleColumns.classList.toggle('active', columnsVisibilityDropdown.classList.contains('show'));
+      btnToggleColumns.setAttribute('aria-expanded', columnsVisibilityDropdown.classList.contains('show'));
+    });
+
+    // Checkboxes de Visibilidade de Colunas (Atualização Imediata em Tempo Real)
+    colVisToggleInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        const colKey = input.getAttribute('data-col');
+        if (colKey && visibleColumns[colKey] !== undefined) {
+          visibleColumns[colKey] = input.checked;
+
+          if (colKey === 'precos' && !input.checked) {
+            activePriceTable = 'NONE';
+            if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+          } else if (colKey === 'precos' && input.checked && activePriceTable === 'NONE') {
+            activePriceTable = 'VENDA';
+            if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Tabela Padrão de Venda';
+          }
+
+          // Sincroniza também com o modal se estiver aberto
+          if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+          if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+          if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+          if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+          if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
+          if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+
+          renderProducts();
+        }
+      });
+    });
+
+    // Botão Restaurar Padrão no Dropdown
+    if (btnResetColumnsDropdown) {
+      btnResetColumnsDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        visibleColumns.estoqueLoja = true;
+        visibleColumns.estoqueOrigem = true;
+        visibleColumns.estoqueIdeal = true;
+        visibleColumns.minimoCritico = true;
+        visibleColumns.sugestao = true;
+        visibleColumns.precos = false;
+        activePriceTable = 'NONE';
+        if (currentPriceTableLabel) currentPriceTableLabel.textContent = 'Sem Preços (Apenas Físico)';
+
+        syncColumnsDropdownInputs();
+        renderProducts();
+        if (typeof Toast !== 'undefined') Toast.success('Visualização padrão de colunas restaurada.');
+      });
+    }
+  }
+
+  // Fechamento de Dropdowns ao Clicar Fora ou com ESC
+  document.addEventListener('click', (e) => {
+    if (moreActionsWrapper && !moreActionsWrapper.contains(e.target)) {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (btnMoreActions) btnMoreActions.setAttribute('aria-expanded', 'false');
+    }
+    if (columnsVisibilityContainer && !columnsVisibilityContainer.contains(e.target)) {
+      if (columnsVisibilityDropdown) columnsVisibilityDropdown.classList.remove('show');
+      if (btnToggleColumns) {
+        btnToggleColumns.classList.remove('active');
+        btnToggleColumns.setAttribute('aria-expanded', 'false');
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      if (columnsVisibilityDropdown) {
+        columnsVisibilityDropdown.classList.remove('show');
+        if (btnToggleColumns) btnToggleColumns.classList.remove('active');
+      }
+    }
+  });
 
   // Ação 1: Abrir Modal de Quantidade em Lote
   if (actionBatchQty) {
@@ -1027,17 +1292,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ação 2: Abrir Modal de Colunas e Campos Visíveis
+  // Ação 2: Abrir Dropdown/Modal de Colunas e Campos Visíveis
   if (actionManageCols) {
-    actionManageCols.addEventListener('click', () => {
+    actionManageCols.addEventListener('click', (e) => {
+      e.stopPropagation();
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
-      if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
-      if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
-      if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
-      if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
-      if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
-      if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
-      if (modalManageColumns) modalManageColumns.classList.add('show', 'active');
+      if (btnMoreActions) btnMoreActions.setAttribute('aria-expanded', 'false');
+
+      setTimeout(() => {
+        if (columnsVisibilityDropdown && btnToggleColumns) {
+          syncColumnsDropdownInputs();
+          columnsVisibilityDropdown.classList.add('show');
+          btnToggleColumns.classList.add('active');
+          btnToggleColumns.setAttribute('aria-expanded', 'true');
+        } else if (modalManageColumns) {
+          if (chkColEstoqueLoja) chkColEstoqueLoja.checked = visibleColumns.estoqueLoja;
+          if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
+          if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
+          if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+          if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
+          if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
+          modalManageColumns.classList.add('show', 'active');
+        }
+      }, 50);
     });
   }
 
@@ -1141,10 +1418,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ação 4: Excluir Todos os Itens
+  // Ação 4: Incluir por Categoria (Modal com Filtros por Grupo, Subgrupo, Fornecedor e Saldo)
+  const actionAddByCategory = document.getElementById('actionAddByCategory');
+  if (actionAddByCategory) {
+    actionAddByCategory.addEventListener('click', () => {
+      if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      openAddByCategoryModal();
+    });
+  }
+
+  // Ação 5: Excluir Todos os Itens (Menu Mais Ações)
   if (actionClearAll) {
     actionClearAll.addEventListener('click', () => {
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
+      openClearAllModal();
+    });
+  }
+
+  // Botão de Lixeira no Cabeçalho da Tabela (Excluir Todos os Itens)
+  const btnClearAllHeader = document.getElementById('btnClearAllHeader');
+  if (btnClearAllHeader) {
+    btnClearAllHeader.addEventListener('click', () => {
+      if (isReadOnly || !isEditMode) return;
+      if (cartItems.length === 0) {
+        if (typeof Toast !== 'undefined') Toast.info('O pedido já está vazio.');
+        return;
+      }
       openClearAllModal();
     });
   }
@@ -1180,6 +1479,586 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalConfirmClearAll) {
     modalConfirmClearAll.addEventListener('click', (e) => {
       if (e.target === modalConfirmClearAll) closeClearAllModal();
+    });
+  }
+
+  // ==========================================================================
+  // 12.1 MODAL: ADICIONAR PRODUTOS DO CATÁLOGO (FILTRAGEM POR CATEGORIA / SUBGRUPO)
+  // ==========================================================================
+  const modalAddByCategory = document.getElementById('modalAddByCategory');
+  const btnCloseAddByCategoryModal = document.getElementById('btnCloseAddByCategoryModal');
+  const btnDiscardAddByCategory = document.getElementById('btnDiscardAddByCategory');
+  const btnConfirmAddByCategory = document.getElementById('btnConfirmAddByCategory');
+
+  const comboboxCategoryGrupo = document.getElementById('comboboxCategoryGrupo');
+  const inputCategoryGrupo = document.getElementById('inputCategoryGrupo');
+  const btnClearCategoryGrupo = document.getElementById('btnClearCategoryGrupo');
+  const btnToggleCategoryGrupo = document.getElementById('btnToggleCategoryGrupo');
+  const dropdownCategoryGrupo = document.getElementById('dropdownCategoryGrupo');
+
+  const comboboxCategorySubgrupo = document.getElementById('comboboxCategorySubgrupo');
+  const inputCategorySubgrupo = document.getElementById('inputCategorySubgrupo');
+  const btnClearCategorySubgrupo = document.getElementById('btnClearCategorySubgrupo');
+  const btnToggleCategorySubgrupo = document.getElementById('btnToggleCategorySubgrupo');
+  const dropdownCategorySubgrupo = document.getElementById('dropdownCategorySubgrupo');
+
+  const comboboxCategoryFornecedor = document.getElementById('comboboxCategoryFornecedor');
+  const inputCategoryFornecedor = document.getElementById('inputCategoryFornecedor');
+  const btnClearCategoryFornecedor = document.getElementById('btnClearCategoryFornecedor');
+  const btnToggleCategoryFornecedor = document.getElementById('btnToggleCategoryFornecedor');
+  const dropdownCategoryFornecedor = document.getElementById('dropdownCategoryFornecedor');
+
+  const inputCategorySearchText = document.getElementById('inputCategorySearchText');
+  const btnClearCategorySearchText = document.getElementById('btnClearCategorySearchText');
+  const chkCategoryOnlyAvailableCd = document.getElementById('chkCategoryOnlyAvailableCd');
+  const badgeCategoryCdOrigemName = document.getElementById('badgeCategoryCdOrigemName');
+  const categoryMatchesCount = document.getElementById('categoryMatchesCount');
+
+  // Mapeamento Oficial de Grupos para Subgrupos
+  const GROUP_SUBGROUPS_MAP = {
+    'Bebidas e Refrigerantes': ['Energéticos', 'Refrigerantes', 'Sucos e Chás', 'Águas e Isotônicos', 'Cervejas e Alcoólicos'],
+    'Alimentos e Snacks': ['Salgadinhos e Snacks', 'Biscoitos e Bolachas', 'Sanduíches e Prontos', 'Massas e Molhos'],
+    'Doces e Chocolates': ['Chocolates', 'Balas e Gomas', 'Sobremesas', 'Barras de Cereal'],
+    'Higiene e Limpeza': ['Higiene Pessoal', 'Limpeza Geral', 'Descartáveis'],
+    'Tabacaria': ['Cigarros', 'Palheiros', 'Acessórios']
+  };
+
+  function inferSubgroup(prod) {
+    if (prod.subgrupo) return prod.subgrupo;
+    const name = (prod.nome || '').toLowerCase();
+    const cat = prod.categoria || 'Geral';
+    if (cat === 'Bebidas e Refrigerantes') {
+      if (name.includes('energ') || name.includes('monster') || name.includes('red bull')) return 'Energéticos';
+      if (name.includes('suco') || name.includes('chá') || name.includes('cha')) return 'Sucos e Chás';
+      if (name.includes('cerveja') || name.includes('heineken') || name.includes('amstel')) return 'Cervejas e Alcoólicos';
+      if (name.includes('água') || name.includes('agua') || name.includes('gatorade')) return 'Águas e Isotônicos';
+      return 'Refrigerantes';
+    }
+    if (cat === 'Alimentos e Snacks') {
+      if (name.includes('biscoito') || name.includes('bolacha') || name.includes('oreo')) return 'Biscoitos e Bolachas';
+      if (name.includes('sandu') || name.includes('pronto')) return 'Sanduíches e Prontos';
+      return 'Salgadinhos e Snacks';
+    }
+    if (cat === 'Doces e Chocolates') {
+      if (name.includes('bala') || name.includes('goma') || name.includes('trident')) return 'Balas e Gomas';
+      return 'Chocolates';
+    }
+    if (cat === 'Higiene e Limpeza') {
+      if (name.includes('detergente') || name.includes('limpeza')) return 'Limpeza Geral';
+      return 'Higiene Pessoal';
+    }
+    return 'Geral';
+  }
+
+  function inferFornecedor(prod) {
+    if (prod.fornecedor) return prod.fornecedor;
+    const name = (prod.nome || '').toLowerCase();
+    if (name.includes('monster')) return 'Monster Energy Brasil';
+    if (name.includes('coca') || name.includes('fanta') || name.includes('sprite')) return 'Coca-Cola FEMSA';
+    if (name.includes('ambev') || name.includes('pepsi') || name.includes('guaraná')) return 'Ambev Brasil';
+    if (name.includes('nestle') || name.includes('nestlé') || name.includes('garoto')) return 'Nestlé Alimentos';
+    if (name.includes('doritos') || name.includes('lays') || name.includes('cheetos') || name.includes('fandangos')) return 'PepsiCo do Brasil';
+    return 'Distribuidora Central B2U';
+  }
+
+  function openAddByCategoryModal() {
+    if (!modalAddByCategory) return;
+
+    // Detecta se é Entrada Direta (Sem Origem) ou Abastecimento com CD
+    const origSelect = document.getElementById('heroOrigemSelect');
+    const origVal = origSelect ? (origSelect.value || '').trim() : '';
+    const origText = (origSelect && origSelect.options[origSelect.selectedIndex]) 
+      ? origSelect.options[origSelect.selectedIndex].text 
+      : '';
+    const isEntradaDireta = !origVal || origVal === 'none' || origText.toLowerCase().includes('entrada direta') || origText.toLowerCase().includes('sem origem');
+
+    const containerCd = document.getElementById('containerCategoryStockCd');
+    if (containerCd) {
+      if (isEntradaDireta) {
+        containerCd.style.display = 'none';
+        if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = false;
+      } else {
+        containerCd.style.display = 'block';
+        if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = true;
+        if (badgeCategoryCdOrigemName) {
+          badgeCategoryCdOrigemName.textContent = `CD: ${origText.replace('--', '').trim()}`;
+        }
+      }
+    }
+
+    // Reset filtros
+    if (inputCategoryGrupo) inputCategoryGrupo.value = '';
+    if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = 'none';
+    
+    if (inputCategorySubgrupo) {
+      inputCategorySubgrupo.value = '';
+      inputCategorySubgrupo.disabled = false;
+      inputCategorySubgrupo.placeholder = 'Digite para pesquisar ou clique para ver todos...';
+    }
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
+
+    if (inputCategoryFornecedor) inputCategoryFornecedor.value = '';
+    if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = 'none';
+
+    if (inputCategorySearchText) inputCategorySearchText.value = '';
+    if (btnClearCategorySearchText) btnClearCategorySearchText.style.display = 'none';
+
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+
+    modalAddByCategory.style.display = 'flex';
+    modalAddByCategory.classList.add('show', 'active');
+  }
+
+  function closeAddByCategoryModal() {
+    if (modalAddByCategory) {
+      modalAddByCategory.style.display = 'none';
+      modalAddByCategory.classList.remove('show', 'active');
+    }
+    closeAllCategoryComboboxes();
+  }
+
+  function closeAllCategoryComboboxes() {
+    if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'none';
+    if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.remove('open');
+
+    if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('open');
+
+    if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'none';
+    if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.remove('open');
+  }
+
+  // 1. População de Grupos (Com opção "Todos os Grupos")
+  function populateGruposDropdown(filterText = '') {
+    if (!dropdownCategoryGrupo) return;
+    const grupos = Object.keys(GROUP_SUBGROUPS_MAP);
+    const filtered = filterText ? grupos.filter(g => g.toLowerCase().includes(filterText.toLowerCase())) : grupos;
+
+    let html = '';
+    
+    // Opção "Todos os Grupos" no topo
+    if (!filterText || 'todos os grupos'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategoryGrupo || !inputCategoryGrupo.value || inputCategoryGrupo.value === 'Todos os Grupos';
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Grupos (Catálogo Completo)</span>
+          <span class="combobox-option-count">${rawCatalog.length}</span>
+        </div>
+      `;
+    }
+
+    html += filtered.map(grupo => {
+      const count = rawCatalog.filter(p => p.categoria === grupo).length;
+      const isSelected = inputCategoryGrupo && inputCategoryGrupo.value === grupo;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${grupo}">
+          <span class="combobox-option-text">${grupo}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum grupo encontrado</div>';
+    }
+
+    dropdownCategoryGrupo.innerHTML = html;
+
+    dropdownCategoryGrupo.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectGrupo(val);
+      });
+    });
+  }
+
+  function selectGrupo(grupo) {
+    if (inputCategoryGrupo) inputCategoryGrupo.value = grupo || 'Todos os Grupos';
+    if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = grupo ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+
+    // Habilita e reseta o subgrupo
+    if (inputCategorySubgrupo) {
+      inputCategorySubgrupo.value = '';
+      inputCategorySubgrupo.disabled = false;
+      inputCategorySubgrupo.placeholder = grupo ? `Subgrupos de ${grupo}...` : 'Digite para pesquisar ou clique para ver todos...';
+    }
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
+
+    updateCategoryMatchesCount();
+  }
+
+  // 2. População de Subgrupos (Com opção "Todos os Subgrupos")
+  function populateSubgruposDropdown(filterText = '') {
+    if (!dropdownCategorySubgrupo) return;
+    const selectedGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
+    
+    let subgrupos = [];
+    if (selectedGrupo && selectedGrupo !== 'Todos os Grupos' && GROUP_SUBGROUPS_MAP[selectedGrupo]) {
+      subgrupos = GROUP_SUBGROUPS_MAP[selectedGrupo] || [];
+    } else {
+      // Se "Todos os Grupos" estiver selecionado, traz todos os subgrupos existentes
+      const allSubsSet = new Set();
+      Object.values(GROUP_SUBGROUPS_MAP).forEach(list => list.forEach(s => allSubsSet.add(s)));
+      subgrupos = Array.from(allSubsSet).sort();
+    }
+
+    const filtered = filterText ? subgrupos.filter(s => s.toLowerCase().includes(filterText.toLowerCase())) : subgrupos;
+
+    let html = '';
+
+    // Opção "Todos os Subgrupos" no topo
+    if (!filterText || 'todos os subgrupos'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategorySubgrupo || !inputCategorySubgrupo.value || inputCategorySubgrupo.value === 'Todos os Subgrupos';
+      const countTotal = (selectedGrupo && selectedGrupo !== 'Todos os Grupos')
+        ? rawCatalog.filter(p => p.categoria === selectedGrupo).length
+        : rawCatalog.length;
+
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Subgrupos</span>
+          <span class="combobox-option-count">${countTotal}</span>
+        </div>
+      `;
+    }
+
+    html += filtered.map(sub => {
+      const count = rawCatalog.filter(p => {
+        if (selectedGrupo && selectedGrupo !== 'Todos os Grupos' && p.categoria !== selectedGrupo) return false;
+        return (p.subgrupo || inferSubgroup(p)) === sub;
+      }).length;
+
+      const isSelected = inputCategorySubgrupo && inputCategorySubgrupo.value === sub;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${sub}">
+          <span class="combobox-option-text">${sub}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum subgrupo encontrado</div>';
+    }
+
+    dropdownCategorySubgrupo.innerHTML = html;
+
+    dropdownCategorySubgrupo.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectSubgrupo(val);
+      });
+    });
+  }
+
+  function selectSubgrupo(subgrupo) {
+    if (inputCategorySubgrupo) inputCategorySubgrupo.value = subgrupo || 'Todos os Subgrupos';
+    if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = subgrupo ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+  }
+
+  // 3. População de Fornecedores (Com opção "Todos os Fornecedores")
+  function populateFornecedoresDropdown(filterText = '') {
+    if (!dropdownCategoryFornecedor) return;
+    const fornecedoresSet = new Set();
+    rawCatalog.forEach(p => fornecedoresSet.add(p.fornecedor || inferFornecedor(p)));
+    const fornecedores = Array.from(fornecedoresSet).sort();
+
+    const filtered = filterText ? fornecedores.filter(f => f.toLowerCase().includes(filterText.toLowerCase())) : fornecedores;
+
+    let html = '';
+
+    // Opção "Todos os Fornecedores" no topo
+    if (!filterText || 'todos os fornecedores'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategoryFornecedor || !inputCategoryFornecedor.value || inputCategoryFornecedor.value === 'Todos os Fornecedores';
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Fornecedores</span>
+          <span class="combobox-option-count">${rawCatalog.length}</span>
+        </div>
+      `;
+    }
+
+    html += filtered.map(forn => {
+      const count = rawCatalog.filter(p => (p.fornecedor || inferFornecedor(p)) === forn).length;
+      const isSelected = inputCategoryFornecedor && inputCategoryFornecedor.value === forn;
+      return `
+        <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${forn}">
+          <span class="combobox-option-text">${forn}</span>
+          <span class="combobox-option-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum fornecedor encontrado</div>';
+    }
+
+    dropdownCategoryFornecedor.innerHTML = html;
+
+    dropdownCategoryFornecedor.querySelectorAll('.combobox-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const val = opt.getAttribute('data-val');
+        selectFornecedor(val);
+      });
+    });
+  }
+
+  function selectFornecedor(forn) {
+    if (inputCategoryFornecedor) inputCategoryFornecedor.value = forn || 'Todos os Fornecedores';
+    if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = forn ? 'flex' : 'none';
+    closeAllCategoryComboboxes();
+    updateCategoryMatchesCount();
+  }
+
+  // Listeners Combobox Grupo
+  if (btnToggleCategoryGrupo) {
+    btnToggleCategoryGrupo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = comboboxCategoryGrupo && comboboxCategoryGrupo.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategoryGrupo) {
+        populateGruposDropdown();
+        dropdownCategoryGrupo.style.display = 'block';
+        if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategoryGrupo) {
+    inputCategoryGrupo.addEventListener('input', () => {
+      if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = inputCategoryGrupo.value ? 'flex' : 'none';
+      populateGruposDropdown(inputCategoryGrupo.value);
+      if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'block';
+      if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategoryGrupo.addEventListener('focus', () => {
+      populateGruposDropdown(inputCategoryGrupo.value);
+      if (dropdownCategoryGrupo) dropdownCategoryGrupo.style.display = 'block';
+      if (comboboxCategoryGrupo) comboboxCategoryGrupo.classList.add('open');
+    });
+  }
+
+  if (btnClearCategoryGrupo) {
+    btnClearCategoryGrupo.addEventListener('click', () => {
+      if (inputCategoryGrupo) inputCategoryGrupo.value = '';
+      btnClearCategoryGrupo.style.display = 'none';
+
+      // Reseta também o subgrupo
+      if (inputCategorySubgrupo) {
+        inputCategorySubgrupo.value = '';
+        inputCategorySubgrupo.disabled = false;
+        inputCategorySubgrupo.placeholder = 'Digite para pesquisar ou clique para ver todos...';
+      }
+      if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
+
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Listeners Combobox Subgrupo
+  if (btnToggleCategorySubgrupo) {
+    btnToggleCategorySubgrupo.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (inputCategorySubgrupo && inputCategorySubgrupo.disabled) return;
+      const isOpen = comboboxCategorySubgrupo && comboboxCategorySubgrupo.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategorySubgrupo) {
+        populateSubgruposDropdown();
+        dropdownCategorySubgrupo.style.display = 'block';
+        if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategorySubgrupo) {
+    inputCategorySubgrupo.addEventListener('input', () => {
+      if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = inputCategorySubgrupo.value ? 'flex' : 'none';
+      populateSubgruposDropdown(inputCategorySubgrupo.value);
+      if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'block';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategorySubgrupo.addEventListener('focus', () => {
+      if (inputCategorySubgrupo.disabled) return;
+      populateSubgruposDropdown(inputCategorySubgrupo.value);
+      if (dropdownCategorySubgrupo) dropdownCategorySubgrupo.style.display = 'block';
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('open');
+    });
+  }
+
+  if (btnClearCategorySubgrupo) {
+    btnClearCategorySubgrupo.addEventListener('click', () => {
+      if (inputCategorySubgrupo) inputCategorySubgrupo.value = '';
+      btnClearCategorySubgrupo.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Listeners Combobox Fornecedor
+  if (btnToggleCategoryFornecedor) {
+    btnToggleCategoryFornecedor.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = comboboxCategoryFornecedor && comboboxCategoryFornecedor.classList.contains('open');
+      closeAllCategoryComboboxes();
+      if (!isOpen && dropdownCategoryFornecedor) {
+        populateFornecedoresDropdown();
+        dropdownCategoryFornecedor.style.display = 'block';
+        if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+      }
+    });
+  }
+
+  if (inputCategoryFornecedor) {
+    inputCategoryFornecedor.addEventListener('input', () => {
+      if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = inputCategoryFornecedor.value ? 'flex' : 'none';
+      populateFornecedoresDropdown(inputCategoryFornecedor.value);
+      if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'block';
+      if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+      updateCategoryMatchesCount();
+    });
+
+    inputCategoryFornecedor.addEventListener('focus', () => {
+      populateFornecedoresDropdown(inputCategoryFornecedor.value);
+      if (dropdownCategoryFornecedor) dropdownCategoryFornecedor.style.display = 'block';
+      if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.add('open');
+    });
+  }
+
+  if (btnClearCategoryFornecedor) {
+    btnClearCategoryFornecedor.addEventListener('click', () => {
+      if (inputCategoryFornecedor) inputCategoryFornecedor.value = '';
+      btnClearCategoryFornecedor.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  // Busca Textual & Saldo CD
+  if (inputCategorySearchText) {
+    inputCategorySearchText.addEventListener('input', () => {
+      if (btnClearCategorySearchText) btnClearCategorySearchText.style.display = inputCategorySearchText.value ? 'flex' : 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  if (btnClearCategorySearchText) {
+    btnClearCategorySearchText.addEventListener('click', () => {
+      if (inputCategorySearchText) inputCategorySearchText.value = '';
+      btnClearCategorySearchText.style.display = 'none';
+      updateCategoryMatchesCount();
+    });
+  }
+
+  if (chkCategoryOnlyAvailableCd) {
+    chkCategoryOnlyAvailableCd.addEventListener('change', updateCategoryMatchesCount);
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-combobox')) {
+      closeAllCategoryComboboxes();
+    }
+  });
+
+  function getFilteredCategoryProducts() {
+    const rawGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
+    const selGrupo = (rawGrupo && !rawGrupo.toLowerCase().includes('todos os grupos') && !rawGrupo.startsWith('●')) ? rawGrupo : '';
+
+    const rawSub = (inputCategorySubgrupo ? inputCategorySubgrupo.value : '').trim();
+    const selSubgrupo = (rawSub && !rawSub.toLowerCase().includes('todos os subgrupos') && !rawSub.startsWith('●')) ? rawSub : '';
+
+    const rawForn = (inputCategoryFornecedor ? inputCategoryFornecedor.value : '').trim();
+    const selFornecedor = (rawForn && !rawForn.toLowerCase().includes('todos os fornecedores') && !rawForn.startsWith('●')) ? rawForn : '';
+
+    const searchTxt = (inputCategorySearchText ? inputCategorySearchText.value : '').trim().toLowerCase();
+
+    const origSelect = document.getElementById('heroOrigemSelect');
+    const origVal = origSelect ? (origSelect.value || '').trim() : '';
+    const origText = (origSelect && origSelect.options[origSelect.selectedIndex]) 
+      ? origSelect.options[origSelect.selectedIndex].text 
+      : '';
+    const isEntradaDireta = !origVal || origVal === 'none' || origText.toLowerCase().includes('entrada direta') || origText.toLowerCase().includes('sem origem');
+
+    const onlyCd = (!isEntradaDireta && chkCategoryOnlyAvailableCd) ? chkCategoryOnlyAvailableCd.checked : false;
+
+    return rawCatalog.filter(prod => {
+      if (selGrupo && prod.categoria !== selGrupo) return false;
+      if (selSubgrupo && (prod.subgrupo || inferSubgroup(prod)) !== selSubgrupo) return false;
+      if (selFornecedor && (prod.fornecedor || inferFornecedor(prod)) !== selFornecedor) return false;
+      if (searchTxt) {
+        const matchName = (prod.nome || '').toLowerCase().includes(searchTxt);
+        const matchEan = (prod.ean || '').toLowerCase().includes(searchTxt);
+        if (!matchName && !matchEan) return false;
+      }
+      if (onlyCd) {
+        const cdStock = prod.estoqueOrigem !== undefined ? prod.estoqueOrigem : 24;
+        if (cdStock <= 0) return false;
+      }
+      return true;
+    });
+  }
+
+  function updateCategoryMatchesCount() {
+    const matches = getFilteredCategoryProducts();
+    if (categoryMatchesCount) categoryMatchesCount.textContent = matches.length;
+  }
+
+  if (btnCloseAddByCategoryModal) btnCloseAddByCategoryModal.addEventListener('click', closeAddByCategoryModal);
+  if (btnDiscardAddByCategory) btnDiscardAddByCategory.addEventListener('click', closeAddByCategoryModal);
+
+  if (btnConfirmAddByCategory) {
+    btnConfirmAddByCategory.addEventListener('click', () => {
+      const matches = getFilteredCategoryProducts();
+      if (matches.length === 0) {
+        if (typeof Toast !== 'undefined') Toast.warning('Nenhum produto correspondente encontrado para incluir.');
+        return;
+      }
+
+      const newItems = [];
+      matches.forEach(prod => {
+        const existing = cartItems.find(item => item.ean === prod.ean);
+        if (!existing) {
+          newItems.push({
+            id: prod.id || Date.now() + Math.random(),
+            nome: prod.nome,
+            ean: prod.ean,
+            foto: prod.foto,
+            categoria: prod.categoria || 'Geral',
+            subgrupo: prod.subgrupo || inferSubgroup(prod),
+            quantidade: prod.quantidade || 1,
+            preco: Number(prod.precoVenda || prod.preco || 6.90),
+            estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 4,
+            estoqueOrigem: prod.estoqueOrigem !== undefined ? prod.estoqueOrigem : 36,
+            estoqueIdeal: prod.estoqueIdeal !== undefined ? prod.estoqueIdeal : 12,
+            minimoCritico: prod.minimoCritico !== undefined ? prod.minimoCritico : 3,
+            _justAdded: true,
+            lotes: []
+          });
+        }
+      });
+
+      if (newItems.length > 0) {
+        // Insere todos os novos itens no topo da lista
+        cartItems.unshift(...newItems);
+      }
+
+      renderProducts();
+      updateTotals();
+      closeAddByCategoryModal();
+
+      // Ajusta scroll suave para o topo da tabela
+      if (tableWrapper) tableWrapper.scrollTop = 0;
+
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`${newItems.length > 0 ? newItems.length : 'Produtos'} produto(s) incluído(s) no topo do pedido!`);
+      }
     });
   }
 

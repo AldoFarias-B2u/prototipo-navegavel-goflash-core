@@ -208,8 +208,8 @@
       <!-- PAINEL 1: PRODUTOS -->
       <div class="order-tab-pane active" id="paneProdutos">
         
-        <!-- Barra Integrada de Ferramentas de Inserção (Bipe EAN + Botão Adicionar - Visível em Modo Edição) -->
-        <div class="order-insertion-toolbar" id="orderInsertionToolbar" style="display: none;">
+        <!-- LINHA 1: BARRA DE FERRAMENTAS SUPERIOR (Inserção à esquerda / Ações à direita) -->
+        <div class="order-top-toolbar" id="orderTopToolbar">
           <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
           <div class="order-omnibar-box" id="orderOmnibarBox">
             <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
@@ -217,7 +217,7 @@
               type="text" 
               id="omnibarInput" 
               class="order-omnibar-input" 
-              placeholder="Bipar código EAN ou pesquisar produto..." 
+              placeholder="Escanear ou digitar código EAN (Enter)..." 
               autocomplete="off"
             >
             <span class="order-omnibar-hint">Enter</span>
@@ -228,16 +228,122 @@
             </div>
           </div>
 
-          <!-- Botão Adicionar do Catálogo -->
-          <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
-            <span class="material-icons">add_circle</span>
-            <span class="btn-add-txt-desktop">+ ADICIONAR PRODUTOS</span>
-            <span class="btn-add-txt-mobile">+ Adicionar</span>
-          </button>
+          <!-- Linha de Ações e Controles (Direita no Desktop / Linha 2 no Mobile) -->
+          <div class="order-toolbar-actions-row" id="orderToolbarActionsRow">
+            <!-- Botão Adicionar do Catálogo -->
+            <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
+              <span class="material-icons">add_circle</span>
+              <span class="btn-add-txt-desktop">ADICIONAR DO CATÁLOGO</span>
+              <span class="btn-add-txt-mobile">Adicionar</span>
+            </button>
+
+            <!-- Controles de Seção (Mais Ações, Colunas, View Switcher - Sempre à Direita) -->
+            <div class="order-section-controls" id="orderSectionControls">
+              <!-- Botão Mais Ações (Dropdown) -->
+              <div class="more-actions-wrapper" id="moreActionsWrapper">
+                <button type="button" class="btn-section-control btn-more-actions" id="btnMoreActions" aria-expanded="false" title="Mais opções para os itens do pedido">
+                  <span class="material-icons">more_vert</span>
+                  <span class="btn-more-actions-text">Mais Ações</span>
+                </button>
+                <div class="more-actions-dropdown" id="moreActionsDropdown">
+                  <button type="button" class="dropdown-action-item" id="actionAddByCategory">
+                    <span class="material-icons">category</span>
+                    <div class="action-item-text">
+                      <span class="action-item-title">Incluir por Categoria</span>
+                      <span class="action-item-desc">Filtrar por grupo, subgrupo ou fornecedor</span>
+                    </div>
+                  </button>
+                  <button type="button" class="dropdown-action-item" id="actionBatchQty">
+                    <span class="material-icons">tune</span>
+                    <div class="action-item-text">
+                      <span class="action-item-title">Definir Qtde em Lote</span>
+                      <span class="action-item-desc">Ajustar quantidades de todos os itens</span>
+                    </div>
+                  </button>
+                  <button type="button" class="dropdown-action-item" id="actionManageCols">
+                    <span class="material-icons">view_column</span>
+                    <div class="action-item-text">
+                      <span class="action-item-title">Colunas e Campos Visíveis</span>
+                      <span class="action-item-desc">Escolher quais colunas exibir</span>
+                    </div>
+                  </button>
+                  <button type="button" class="dropdown-action-item" id="actionPriceTable">
+                    <span class="material-icons">sell</span>
+                    <div class="action-item-text">
+                      <span class="action-item-title">Definir Tabela de Preços</span>
+                      <span class="action-item-desc" id="currentPriceTableLabel">Sem Preços (Apenas Físico)</span>
+                    </div>
+                  </button>
+                  <div class="dropdown-item-divider"></div>
+                  <button type="button" class="dropdown-action-item text-danger" id="actionClearAll">
+                    <span class="material-icons">delete_sweep</span>
+                    <div class="action-item-text">
+                      <span class="action-item-title">Excluir Todos os Itens</span>
+                      <span class="action-item-desc">Remover todos os produtos do pedido</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dropdown de Visibilidade de Colunas (Direto e Rápido) -->
+              <div class="more-actions-wrapper" id="columnsVisibilityContainer">
+                <button type="button" class="btn-section-control btn-toggle-columns" id="btnToggleColumns" aria-expanded="false" title="Escolher colunas e campos visíveis" aria-label="Escolher colunas e campos visíveis">
+                  <span class="material-icons">view_column</span>
+                  <span class="btn-columns-text">Colunas</span>
+                </button>
+                <div class="columns-visibility-dropdown" id="columnsVisibilityDropdown">
+                  <div class="dropdown-header-title">
+                    <span class="material-icons" style="font-size: 16px; color: #6530b5;">tune</span>
+                    <span>Campos Visíveis</span>
+                  </div>
+                  <div class="dropdown-divider-sutil"></div>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueLoja" id="colVisLoja" checked>
+                    <span>Estoque Loja</span>
+                  </label>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueOrigem" id="colVisOrigem" checked>
+                    <span>Estoque Origem (CD)</span>
+                  </label>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="estoqueIdeal" id="colVisIdeal" checked>
+                    <span>Estoque Ideal</span>
+                  </label>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="minimoCritico" id="colVisCritico" checked>
+                    <span>Mínimo Crítico</span>
+                  </label>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="sugestao" id="colVisSugestao" checked>
+                    <span>Sugestão de Reposição</span>
+                  </label>
+                  <label class="dropdown-check-item">
+                    <input type="checkbox" class="table-custom-checkbox col-vis-toggle-input" data-col="precos" id="colVisPrecos">
+                    <span>Tabela de Preços (Valores R$)</span>
+                  </label>
+                  <div class="dropdown-divider-sutil"></div>
+                  <button type="button" class="btn-reset-columns" id="btnResetColumnsDropdown">
+                    <span class="material-icons" style="font-size: 15px;">restart_alt</span>
+                    Restaurar Padrão
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
+              <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
+                <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
+                  <span class="material-icons">reorder</span>
+                </button>
+                <button type="button" class="view-segment-btn" id="btnViewCards" title="Visualizar em Cards">
+                  <span class="material-icons">grid_view</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Topo da Seção de Produtos (Divisor, Título, Modo, Alternador de View e Mais Ações) -->
-        <div class="order-section-topbar">
+        <!-- LINHA 2: CABEÇALHO DA SEÇÃO DE ITENS (Logo acima da tabela) -->
+        <div class="order-section-topbar" id="orderSectionTopbar">
           <div class="order-section-title-group">
             <h2 class="order-section-title">
               Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
@@ -246,58 +352,6 @@
               <span class="material-icons" style="font-size: 13px;">visibility</span>
               Visualização
             </span>
-          </div>
-
-          <!-- Controles de Visualização e Ações Rápidas -->
-          <div class="order-section-controls">
-            <!-- Botão Mais Ações (Dropdown) -->
-            <div class="more-actions-wrapper" id="moreActionsWrapper">
-              <button type="button" class="btn-section-control btn-more-actions" id="btnMoreActions" aria-expanded="false" title="Mais opções para os itens do pedido">
-                <span class="material-icons">more_vert</span>
-                <span class="btn-more-actions-text">Mais Ações</span>
-              </button>
-              <div class="more-actions-dropdown" id="moreActionsDropdown">
-                <button type="button" class="dropdown-action-item" id="actionBatchQty">
-                  <span class="material-icons">tune</span>
-                  <div class="action-item-text">
-                    <span class="action-item-title">Definir Qtde em Lote</span>
-                    <span class="action-item-desc">Ajustar quantidades de todos os itens</span>
-                  </div>
-                </button>
-                <button type="button" class="dropdown-action-item" id="actionManageCols">
-                  <span class="material-icons">view_column</span>
-                  <div class="action-item-text">
-                    <span class="action-item-title">Colunas e Campos Visíveis</span>
-                    <span class="action-item-desc">Escolher quais colunas exibir</span>
-                  </div>
-                </button>
-                <button type="button" class="dropdown-action-item" id="actionPriceTable">
-                  <span class="material-icons">sell</span>
-                  <div class="action-item-text">
-                    <span class="action-item-title">Definir Tabela de Preços</span>
-                    <span class="action-item-desc" id="currentPriceTableLabel">Sem Preços (Apenas Físico)</span>
-                  </div>
-                </button>
-                <div class="dropdown-item-divider"></div>
-                <button type="button" class="dropdown-action-item text-danger" id="actionClearAll">
-                  <span class="material-icons">delete_sweep</span>
-                  <div class="action-item-text">
-                    <span class="action-item-title">Excluir Todos os Itens</span>
-                    <span class="action-item-desc">Remover todos os produtos do pedido</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
-            <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
-              <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
-                <span class="material-icons">reorder</span>
-              </button>
-              <button type="button" class="view-segment-btn" id="btnViewCards" title="Visualizar em Cards">
-                <span class="material-icons">grid_view</span>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -308,16 +362,19 @@
               <tr>
                 <th style="width: 36px; text-align: center;">#</th>
                 <th style="min-width: 250px;">Produto</th>
-                <th class="col-estoque-loja" style="width: 100px; text-align: center;">Estoque Loja</th>
-                <th class="col-estoque-origem" style="width: 110px; text-align: center;">Estoque Origem</th>
-                <th class="col-estoque-ideal" style="width: 100px; text-align: center;">Estoque Ideal</th>
-                <th class="col-min-critico" style="width: 100px; text-align: center;">Mín. Crítico</th>
-                <th class="col-sugestao" style="width: 95px; text-align: center;">Sugestão</th>
+                <th class="col-estoque-loja" style="width: 90px; text-align: center;">Est. Loja</th>
+                <th class="col-estoque-origem" style="width: 100px; text-align: center;">Est. Origem</th>
+                <th class="col-estoque-ideal" id="thColIdealMin" style="width: 110px; text-align: center;">Ideal / Mínimo</th>
+                <th class="col-sugestao" style="width: 90px; text-align: center;">Sugestão</th>
                 <th class="col-qtde" style="width: 130px; text-align: center;">Qtde Pedido</th>
                 <th class="col-preco-un" style="width: 105px; text-align: right;">Preço Un.</th>
                 <th class="col-subtotal" style="width: 110px; text-align: right;">Subtotal</th>
-                <th class="col-lotes" style="width: 150px; text-align: center;">Validade / Lotes</th>
-                <th class="col-actions-header" style="width: 50px; text-align: center;">Ações</th>
+                <th class="col-lotes" style="width: 160px; text-align: center;">Validade / Lotes</th>
+                <th class="col-actions-header" style="width: 50px; text-align: center;">
+                  <button type="button" class="btn-clear-all-table-header" id="btnClearAllHeader" title="Excluir todos os produtos do pedido">
+                    <span class="material-icons">delete_sweep</span>
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody id="orderTableBody">
@@ -718,7 +775,7 @@
           <label class="column-check-item">
             <input type="checkbox" id="chkColEstoqueLoja" checked>
             <div class="column-check-info">
-              <span class="column-check-name">Estoque Loja (Destino)</span>
+              <span class="column-check-name">Est. Loja (Destino)</span>
               <span class="column-check-desc">Exibe o saldo atual de estoque na loja de destino</span>
             </div>
           </label>
@@ -726,7 +783,7 @@
           <label class="column-check-item">
             <input type="checkbox" id="chkColEstoqueOrigem">
             <div class="column-check-info">
-              <span class="column-check-name">Estoque Origem (CD / Matriz)</span>
+              <span class="column-check-name">Est. Origem (CD / Matriz)</span>
               <span class="column-check-desc">Exibe o saldo disponível na filial de origem selecionada</span>
             </div>
           </label>
@@ -734,7 +791,7 @@
           <label class="column-check-item">
             <input type="checkbox" id="chkColEstoqueIdeal">
             <div class="column-check-info">
-              <span class="column-check-name">Estoque Ideal</span>
+              <span class="column-check-name">Ideal (Meta do Plano)</span>
               <span class="column-check-desc">Meta planejada de abastecimento cadastrada no plano</span>
             </div>
           </label>
@@ -836,6 +893,159 @@
           Confirmar Tabela
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 5: ADICIONAR PRODUTOS DO CATÁLOGO (FILTRAGEM POR CATEGORIA / SUBGRUPO)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalAddByCategory" role="dialog" aria-modal="true" style="display: none;">
+    <div class="official-modal-box modal-catalog-box" style="max-width: 580px; width: 95%;">
+      
+      <div class="official-modal-header" style="background-color: #6530b5;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">inventory_2</span>
+          <h2 class="official-modal-title" style="color: #ffffff; font-size: 1rem; font-weight: 700; letter-spacing: 0.3px;">ADICIONAR PRODUTOS DO CATÁLOGO</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseAddByCategoryModal" aria-label="Fechar" style="color: #ffffff;">&times;</button>
+      </div>
+
+      <div class="official-modal-body modal-catalog-body" style="padding: 1.5rem;">
+        
+        <p class="modal-catalog-intro" style="font-size: 0.88rem; color: #495057; line-height: 1.45; margin-bottom: 1.25rem;">
+          Defina os critérios abaixo para localizar e carregar os produtos do catálogo na sua consulta de reposição:
+        </p>
+
+        <!-- 1. Combobox de Grupo (Categoria) -->
+        <div class="modal-field-group" style="margin-bottom: 1.1rem;">
+          <label class="modal-field-label" for="inputCategoryGrupo" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: #212529; margin-bottom: 6px;">
+            <span class="material-icons" style="color: #6530b5; font-size: 18px;">category</span>
+            Grupo (Categoria):
+          </label>
+          <div class="custom-combobox" id="comboboxCategoryGrupo">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputCategoryGrupo" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver todos..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearCategoryGrupo" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleCategoryGrupo" title="Ver todas as categorias">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownCategoryGrupo" style="display: none;">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Combobox de Subgrupo (Condicionado ao Grupo) -->
+        <div class="modal-field-group" style="margin-bottom: 1.1rem;">
+          <label class="modal-field-label" for="inputCategorySubgrupo" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: #212529; margin-bottom: 6px;">
+            <span class="material-icons" style="color: #6530b5; font-size: 18px;">account_tree</span>
+            Subgrupo (Subcategoria):
+          </label>
+          <div class="custom-combobox" id="comboboxCategorySubgrupo">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputCategorySubgrupo" 
+                class="combobox-input" 
+                placeholder="Selecione um Grupo primeiro..." 
+                autocomplete="off"
+                disabled
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearCategorySubgrupo" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleCategorySubgrupo" title="Ver subgrupos">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownCategorySubgrupo" style="display: none;">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Combobox de Fornecedor / Fabricante -->
+        <div class="modal-field-group" style="margin-bottom: 1.1rem;">
+          <label class="modal-field-label" for="inputCategoryFornecedor" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: #212529; margin-bottom: 6px;">
+            <span class="material-icons" style="color: #6530b5; font-size: 18px;">store</span>
+            Fornecedor / Fabricante:
+          </label>
+          <div class="custom-combobox" id="comboboxCategoryFornecedor">
+            <div class="combobox-input-wrapper">
+              <input 
+                type="text" 
+                id="inputCategoryFornecedor" 
+                class="combobox-input" 
+                placeholder="Digite para pesquisar ou clique para ver todos..." 
+                autocomplete="off"
+              >
+              <button type="button" class="btn-combobox-clear" id="btnClearCategoryFornecedor" title="Limpar seleção" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+              <button type="button" class="btn-combobox-toggle" id="btnToggleCategoryFornecedor" title="Ver todos os fornecedores">
+                <span class="material-icons">arrow_drop_down</span>
+              </button>
+            </div>
+            <div class="combobox-dropdown" id="dropdownCategoryFornecedor" style="display: none;">
+              <!-- Renderizado dinamicamente via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Campo de Pesquisa Geral (Código EAN, Nome ou Marca) -->
+        <div class="modal-field-group" style="margin-bottom: 1.1rem;">
+          <label class="modal-field-label" for="inputCategorySearchText" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: 700; color: #212529; margin-bottom: 6px;">
+            <span class="material-icons" style="color: #6530b5; font-size: 18px;">search</span>
+            Código EAN, Nome do Produto ou Marca:
+          </label>
+          <div class="modal-input-wrapper">
+            <input 
+              type="text" 
+              id="inputCategorySearchText" 
+              class="modal-filter-input" 
+              placeholder="Digite o código, nome ou marca..." 
+              autocomplete="off"
+            >
+            <button type="button" class="btn-input-clear" id="btnClearCategorySearchText" title="Limpar busca" style="display: none;">
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Filtro: Saldo Disponível no Estoque de Origem -->
+        <div id="containerCategoryStockCd" class="cd-stock-condition-box">
+          <label class="cd-stock-checkbox-label">
+            <input type="checkbox" id="chkCategoryOnlyAvailableCd" class="table-custom-checkbox" checked>
+            <div class="cd-stock-label-content">
+              <span class="cd-stock-title">Apenas produtos com saldo disponível no Estoque de Origem</span>
+              <span class="cd-stock-badge" id="badgeCategoryCdOrigemName">CD: Estoque Central</span>
+            </div>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="official-modal-footer catalog-modal-footer">
+        <div class="catalog-footer-summary">
+          <span class="catalog-summary-text" id="categoryMatchesSummary">
+            <strong id="categoryMatchesCount">0</strong> produto(s) correspondente(s)
+          </span>
+        </div>
+        <div class="catalog-footer-buttons">
+          <button type="button" class="btn-modal-discard" id="btnDiscardAddByCategory">CANCELAR</button>
+          <button type="button" class="btn-modal-finalize" id="btnConfirmAddByCategory" style="background-color: #6530b5;">INCLUIR PRODUTOS</button>
+        </div>
+      </div>
+
     </div>
   </div>
 

@@ -413,20 +413,25 @@
 }
 
 /* ==========================================================================
-   6. FERRAMENTAS DE INSERÇÃO & TOPO DA SEÇÃO DE PRODUTOS
+   6. FERRAMENTAS DE INSERÇÃO & CABEÇALHO DE ITENS (2 NÍVEIS DISTRIBUÍDOS)
    ========================================================================== */
-.order-insertion-toolbar {
+
+/* LINHA 1: Barra de Ferramentas Superior (Inserção à esquerda / Ações à direita) */
+.order-top-toolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.15rem;
+  padding-top: 0.15rem;
+  width: 100%;
 }
 
-@media (max-width: 768px) {
-  .order-insertion-toolbar {
-    gap: 8px;
-    margin-bottom: 0.75rem;
-  }
+.order-toolbar-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Barra de Bipe e Busca Inteligente (Omnibar) */
@@ -435,38 +440,25 @@
   display: flex;
   align-items: center;
   background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   padding: 0 1rem;
-  height: 48px;
-  flex: 1;
+  height: 40px;
+  width: clamp(280px, 32vw, 420px);
+  box-sizing: border-box;
   transition: all var(--transition-fast, 0.2s ease);
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-box {
-    height: 40px;
-    padding: 0 0.65rem;
-  }
 }
 
 .order-omnibar-box:focus-within {
   background-color: #ffffff;
   border-color: #6530b5;
-  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15);
 }
 
 .order-omnibar-icon {
   color: #6530b5;
-  font-size: 22px;
-  margin-right: 10px;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-icon {
-    font-size: 18px;
-    margin-right: 6px;
-  }
+  font-size: 20px;
+  margin-right: 8px;
 }
 
 .order-omnibar-input {
@@ -475,14 +467,9 @@
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 0.92rem;
-  color: #212529;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-input {
-    font-size: 0.82rem;
-  }
+  font-size: 0.88rem;
+  color: #333333;
+  min-width: 0;
 }
 
 .order-omnibar-input::placeholder {
@@ -490,19 +477,13 @@
 }
 
 .order-omnibar-hint {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #8e959e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6c757d;
   background-color: #e9ecef;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
   white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .order-omnibar-hint {
-    display: none; /* Oculta tecla hint no mobile */
-  }
 }
 
 /* Botão Adicionar do Catálogo */
@@ -511,12 +492,12 @@
   color: #ffffff;
   border: none;
   padding: 0 18px;
-  height: 48px;
+  height: 40px;
   border-radius: 6px;
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -526,12 +507,17 @@
   transition: all var(--transition-fast, 0.2s ease);
   white-space: nowrap;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .btn-add-catalog-v2:hover {
-  background-color: #522396;
-  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.35);
+  background-color: #532499;
+  box-shadow: 0 4px 10px rgba(101, 48, 181, 0.35);
   transform: translateY(-1px);
+}
+
+.btn-add-catalog-v2 .material-icons {
+  font-size: 20px;
 }
 
 .btn-add-txt-desktop {
@@ -541,40 +527,23 @@
   display: none;
 }
 
-@media (max-width: 768px) {
-  .btn-add-catalog-v2 {
-    height: 40px;
-    padding: 0 10px;
-    font-size: 0.78rem;
-    gap: 4px;
-    border-radius: 6px;
-  }
-  .btn-add-catalog-v2 .material-icons {
-    font-size: 16px;
-  }
-  .btn-add-txt-desktop {
-    display: none;
-  }
-  .btn-add-txt-mobile {
-    display: inline;
-  }
+/* Grupo Direito: Controles de Seção (Mais Ações + Switcher) */
+.order-section-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
-/* Topo da Seção de Produtos (Divisor e Título antes dos cards/tabela) */
+/* LINHA 2: Topo da Seção de Produtos (Logo acima da Tabela) */
 .order-section-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-top: 0.25rem;
-}
-
-@media (max-width: 768px) {
-  .order-section-topbar {
-    gap: 8px;
-    margin-bottom: 0.75rem;
-  }
+  gap: 12px;
+  margin-bottom: 0.85rem;
+  padding-top: 0.15rem;
 }
 
 .order-section-title-group {
@@ -582,6 +551,7 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .order-section-title {
@@ -600,16 +570,6 @@
   font-size: 0.95rem;
   font-weight: 500;
   color: #6530b5;
-}
-
-@media (max-width: 768px) {
-  .order-section-title {
-    font-size: 1.05rem;
-    white-space: nowrap;
-  }
-  .order-items-count-inline {
-    font-size: 0.9rem;
-  }
 }
 
 .order-mode-pill {
@@ -640,9 +600,88 @@
   box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
 }
 
-@media (max-width: 768px) {
-  .order-mode-pill {
-    display: none; /* No mobile, o modo já é evidenciado pela omnibar de bipagem e pelo FAB */
+/* Layout Responsivo no Mobile e Tablet (≤ 991px) */
+@media (max-width: 991px) {
+  .order-top-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+    width: 100%;
+  }
+
+  .order-omnibar-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 40px;
+    padding: 0 0.75rem;
+    border-radius: 6px;
+    box-sizing: border-box;
+    flex: none;
+  }
+
+  .order-omnibar-icon {
+    font-size: 19px;
+    margin-right: 6px;
+  }
+
+  .order-omnibar-hint {
+    display: none;
+  }
+
+  .order-toolbar-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .btn-add-catalog-v2 {
+    flex: 1;
+    min-width: 0;
+    width: auto !important;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 0.82rem;
+    gap: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .btn-add-txt-desktop {
+    display: none;
+  }
+
+  .btn-add-txt-mobile {
+    display: inline;
+  }
+
+  .order-section-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .order-section-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
+  }
+
+  .order-section-title {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .order-items-count-inline {
+    font-size: 0.9rem;
   }
 }
 
@@ -729,11 +768,11 @@
 
 .order-items-table thead th {
   background-color: #f8f9fa;
-  color: #5f6368;
-  font-size: 0.78rem;
-  font-weight: 700;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   padding: 12px 14px;
   border-bottom: 1px solid #dee2e6;
   white-space: nowrap;
@@ -773,9 +812,9 @@
 }
 
 .table-prod-name {
-  font-weight: 600;
+  font-weight: 500;
   color: #212529;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.35;
 }
 
@@ -793,22 +832,87 @@
   font-weight: 500;
 }
 
-/* Pílula de Estoque em Loja */
-.stock-pill-loja {
+/* Células de Dados Tipográficos Minimalistas da Tabela */
+.tbl-stock-val {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.tbl-stock-low-badge {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+}
+
+.tbl-stock-origem-val {
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.tbl-ideal-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.tbl-ideal-val {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.tbl-min-hint {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.tbl-sugestao-btn {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  background-color: #f1f3f6;
-  color: #495057;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
 }
 
-.stock-pill-loja.is-low {
-  background-color: #fee2e2;
-  color: #dc2626;
+.tbl-sugestao-btn:hover {
+  background-color: #ede5f8;
+  border-color: #d8c7f5;
+  color: #6530b5;
+  transform: scale(1.05);
+  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
+}
+
+.tbl-sugestao-btn:active {
+  transform: scale(0.97);
+}
+
+.tbl-preco-val {
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.tbl-subtotal-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 /* Stepper de Quantidade Tátil */
@@ -876,32 +980,95 @@
   border: 1px solid #e5d9fa;
 }
 
-/* Botão de Validades / Lotes */
+/* Botão de Validades / Lotes (3 Estados Dinâmicos) */
 .btn-manage-lotes-table {
-  background-color: #ffffff;
-  border: 1px solid #ced4da;
-  color: #495057;
-  padding: 6px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 4px 10px;
   border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  transition: all var(--transition-fast, 0.15s ease);
+  height: 30px;
+  box-sizing: border-box;
 }
 
-.btn-manage-lotes-table:hover {
-  border-color: #6530b5;
-  color: #6530b5;
-  background-color: #fbf9fe;
+.btn-manage-lotes-table:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
 }
 
-.btn-manage-lotes-table.has-lotes {
-  background-color: #edf7ed;
-  border-color: #a5d6a7;
+.btn-manage-lotes-table .material-icons {
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* Estado 2: Validade OK (Verde Sóbrio) */
+.btn-manage-lotes-table.status-ok {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #15803d;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-ok .material-icons {
+  color: #16a34a;
+}
+
+.btn-manage-lotes-table.status-ok:hover:not(:disabled) {
+  background-color: #dcfce7;
+  border-color: #86efac;
+}
+
+/* Estado 3: Divergente (Âmbar Suave) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-divergent .material-icons {
+  color: #d97706;
+}
+
+.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.btn-manage-lotes-table.status-ok .material-icons {
   color: #2e7d32;
+}
+
+/* Estado 3: Divergente (Amarelo / Âmbar) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fff8e1;
+  border-color: #fed7aa;
+  color: #e65100;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.btn-manage-lotes-table.status-divergent .material-icons {
+  color: #e65100;
+}
+
+.btn-manage-lotes-table:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
 }
 
 /* Botão de Excluir Linha */
@@ -1008,26 +1175,35 @@
 
 .order-mobile-product-card {
   background-color: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.order-mobile-product-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
 }
 
 .mobile-card-top-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 0.75rem;
 }
 
 .mobile-card-thumb {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border-radius: 6px;
   object-fit: cover;
   background-color: #f1f3f6;
   border: 1px solid #e2e8f0;
+  flex-shrink: 0;
 }
 
 .mobile-card-info {
@@ -1036,55 +1212,186 @@
 }
 
 .mobile-card-title {
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: #212529;
-  margin: 0 0 3px 0;
-  line-height: 1.3;
+  margin: 0 0 4px 0;
+  line-height: 1.35;
 }
 
 .mobile-card-ean {
   font-family: 'Roboto Mono', monospace;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
+  color: #6530b5;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mobile-card-category {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.7rem;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-family: var(--font-primary, inherit);
+}
+
+/* Bloco 1: Mini-Grade de Métricas Neutra & Coesa (Opção 1) */
+.card-metrics-panel {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background-color: #f8fafc;
+  padding: 6px 4px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Variante de Painel quando apenas 1 métrica está ativa */
+.card-metrics-panel.is-single-metric {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
+  color: #475569;
+}
+
+.single-metric-label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.single-metric-val {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.88rem;
+}
+
+.metric-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  padding: 2px 4px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.metric-col:last-child {
+  border-right: none;
+}
+
+.metric-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.metric-val {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+/* Destaque sutil puramente tipográfico para o Estoque da Loja */
+.metric-col.metric-col-loja .metric-label {
+  color: #334155;
+  font-weight: 500;
+}
+
+.metric-col.metric-col-loja .metric-val {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.metric-val.val-warning {
+  color: #b91c1c !important;
+}
+
+/* Destaque sutil para a Sugestão do Plano */
+.metric-col.metric-col-sugestao .metric-label {
   color: #6530b5;
   font-weight: 500;
 }
 
-.mobile-card-metrics-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 8px;
-  background-color: #f8f9fa;
-  padding: 8px 10px;
+.metric-col.metric-col-sugestao .metric-val {
+  color: #6530b5;
+  font-weight: 600;
+}
+
+/* Interatividade e Feedback ao Clicar na Sugestão dos Cards */
+.metric-col-clickable {
+  cursor: pointer;
   border-radius: 4px;
-  margin-bottom: 0.75rem;
-  font-size: 0.8rem;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
 }
 
-.mobile-metric-item {
+.metric-col-clickable:hover {
+  background-color: #ede5f8;
+}
+
+.metric-col-clickable:active {
+  transform: scale(0.94);
+}
+
+.card-metrics-panel.is-clickable {
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+  user-select: none;
+}
+
+.card-metrics-panel.is-clickable:hover {
+  background-color: #ede5f8;
+  border-color: #d8c7f5;
+}
+
+.card-metrics-panel.is-clickable:active {
+  transform: scale(0.98);
+}
+
+/* Bloco 2: Linha Financeira Discreta e Elegante (sem fundos chamativos) */
+.card-finance-row {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px;
+  font-size: 0.82rem;
+  color: #5f6368;
 }
 
-.mobile-metric-label {
-  font-size: 0.68rem;
-  color: #757575;
-  text-transform: uppercase;
+.card-finance-row strong {
+  color: #333333;
+  font-weight: 600;
 }
 
-.mobile-metric-val {
-  font-weight: 700;
-  color: #212529;
+.finance-subtotal-item strong {
+  color: #1e293b;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
+/* Bloco 3: Rodapé de Ações */
 .mobile-card-bottom-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding-top: 6px;
-  border-top: 1px solid #f1f3f6;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* ==========================================================================
@@ -1607,7 +1914,7 @@
 
 .table-prod-name {
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #212529;
   line-height: 1.3;
   white-space: nowrap;
@@ -1654,16 +1961,18 @@
   background-color: #f1f3f6;
   border: 1px solid #dee2e6;
   border-radius: 6px;
-  padding: 2px;
-  gap: 2px;
+  padding: 3px;
+  gap: 3px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .view-segment-btn {
   background: transparent;
   border: none;
   border-radius: 4px;
-  width: 32px;
-  height: 30px;
+  width: 34px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1702,12 +2011,14 @@
 
 .btn-section-control {
   background-color: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  color: #495057;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 6px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  color: #4b5563;
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 0 14px;
+  height: 40px;
+  box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -1716,20 +2027,97 @@
 }
 
 .btn-section-control:hover {
-  background-color: #f8f9fa;
-  border-color: #ced4da;
-  color: #212529;
-}
-
-.btn-section-control.active {
-  background-color: #ede7f6;
-  border-color: #d1c4e9;
+  background-color: #f4f0fa;
+  border-color: #b79be3;
   color: #6530b5;
 }
 
-.btn-section-control .material-icons {
-  font-size: 18px;
+.btn-section-control.active,
+.btn-section-control[aria-expanded="true"] {
+  background-color: #ede5f8;
+  border-color: #6530b5;
   color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+/* Botão e Dropdown de Visibilidade de Colunas */
+.columns-visibility-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 8px 6px;
+  z-index: 1050;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.columns-visibility-dropdown.show {
+  display: flex;
+  animation: dropdownFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.columns-visibility-dropdown .dropdown-header-title {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-divider-sutil {
+  height: 1px;
+  background-color: #f1f3f6;
+  margin: 4px 0;
+}
+
+.columns-visibility-dropdown .dropdown-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast, 0.2s ease);
+}
+
+.columns-visibility-dropdown .dropdown-check-item:hover {
+  background-color: #f5f3fa;
+  color: #6530b5;
+}
+
+.columns-visibility-dropdown .btn-reset-columns {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #6530b5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.2s ease);
+}
+
+.columns-visibility-dropdown .btn-reset-columns:hover {
+  background-color: #ede5f8;
 }
 
 @media (max-width: 768px) {
@@ -1737,29 +2125,63 @@
     gap: 6px;
     flex-shrink: 0;
   }
-  .btn-more-actions-text {
+  .btn-more-actions-text,
+  .btn-columns-text {
     display: none;
   }
-  .btn-more-actions {
-    width: 34px;
-    height: 34px;
+  .btn-more-actions,
+  .btn-toggle-columns {
+    width: 36px;
+    height: 36px;
     padding: 0 !important;
     justify-content: center;
     border-radius: 6px;
   }
-  .btn-more-actions .material-icons {
+  .btn-more-actions .material-icons,
+  .btn-toggle-columns .material-icons {
     font-size: 20px;
     margin: 0;
   }
   .view-segmented-switcher {
-    height: 34px;
+    height: 36px;
   }
   .view-segment-btn {
-    width: 30px;
-    height: 28px;
+    width: 32px;
+    height: 30px;
   }
   .view-segment-btn .material-icons {
-    font-size: 17px;
+    font-size: 18px;
+  }
+
+  /* Posicionamento Inteligente de Dropdowns no Mobile */
+  .more-actions-dropdown {
+    right: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 245px !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+
+  .more-actions-dropdown.show {
+    animation: dropdownFadeInCentered 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+  }
+
+  .columns-visibility-dropdown {
+    right: 0 !important;
+    left: auto !important;
+    width: 245px !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+
+@keyframes dropdownFadeInCentered {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -2002,4 +2424,391 @@
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
   gap: 14px !important;
+}
+
+/* Botão de Excluir Todos os Itens no Cabeçalho da Tabela */
+.btn-clear-all-table-header {
+  background: transparent;
+  border: none;
+  color: #9e9e9e;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-clear-all-table-header:hover {
+  color: #d32f2f;
+  background-color: #fee2e2;
+}
+
+.btn-clear-all-table-header .material-icons {
+  font-size: 19px;
+}
+
+/* ==========================================================================
+   MODAL DE INCLUSÃO POR CATEGORIA / SUBGRUPO (DESIGN SYSTEM OFICIAL)
+   ========================================================================== */
+.modal-catalog-box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.modal-catalog-body {
+  padding: 1.5rem;
+}
+
+.modal-catalog-intro {
+  font-size: 0.88rem;
+  color: #495057;
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+}
+
+.modal-field-group {
+  margin-bottom: 1.1rem;
+}
+
+.modal-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 6px;
+}
+
+.field-label-icon {
+  color: #6530b5;
+  font-size: 18px;
+}
+
+/* Combobox Pesquisável */
+.custom-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.combobox-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1.5px solid #dcdfe4;
+  border-radius: 6px;
+  height: 42px;
+  padding: 0 6px 0 12px;
+  transition: all var(--transition-fast, 0.2s ease);
+  cursor: text;
+}
+
+.combobox-input-wrapper:focus-within,
+.custom-combobox.open .combobox-input-wrapper {
+  border-color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.combobox-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  color: #212529;
+  min-width: 0;
+}
+
+.combobox-input:disabled {
+  background-color: transparent;
+  color: #8e959e;
+  cursor: not-allowed;
+}
+
+.custom-combobox.is-disabled .combobox-input-wrapper {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.btn-combobox-clear,
+.btn-combobox-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #757575;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-combobox-clear:hover,
+.btn-combobox-toggle:hover {
+  background-color: #f1f3f4;
+  color: #6530b5;
+}
+
+.btn-combobox-toggle .material-icons {
+  font-size: 20px;
+  transition: transform var(--transition-fast, 0.2s ease);
+}
+
+.custom-combobox.open .btn-combobox-toggle .material-icons {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Flutuante do Combobox */
+.combobox-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #dcdfe4;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-height: 210px;
+  overflow-y: auto;
+  z-index: 1050;
+  padding: 4px 0;
+}
+
+.combobox-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+.combobox-option:hover,
+.combobox-option.highlighted {
+  background-color: #f5f0fb;
+  color: #6530b5;
+}
+
+.combobox-option.selected {
+  background-color: #ede3fa;
+  color: #6530b5;
+  font-weight: 600;
+}
+
+.combobox-option-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.combobox-option-count {
+  font-size: 0.72rem;
+  background-color: #f1f3f6;
+  color: #616161;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+.combobox-option.selected .combobox-option-count {
+  background-color: #dfcefc;
+  color: #4a148c;
+}
+
+.combobox-empty-msg {
+  padding: 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: #888888;
+}
+
+/* Input Geral de Filtro */
+.modal-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1.5px solid #dcdfe4;
+  border-radius: 6px;
+  height: 42px;
+  padding: 0 10px 0 12px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.modal-input-wrapper:focus-within {
+  border-color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.modal-filter-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  color: #212529;
+}
+
+.btn-input-clear {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9e9e9e;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-input-clear:hover {
+  background-color: #f1f3f4;
+  color: #424242;
+}
+
+.btn-input-clear .material-icons {
+  font-size: 16px;
+}
+
+/* Card de Saldo no CD */
+.cd-stock-condition-box {
+  background-color: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 6px;
+}
+
+.cd-stock-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.cd-stock-label-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+}
+
+.cd-stock-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.cd-stock-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+/* Footer do Modal */
+.catalog-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.catalog-summary-text {
+  font-size: 0.88rem;
+  color: #495057;
+}
+
+.catalog-summary-text strong {
+  color: #6530b5;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.catalog-footer-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-modal-discard {
+  background: transparent;
+  border: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #5f6368;
+  cursor: pointer;
+  padding: 8px 14px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-modal-discard:hover {
+  background-color: #f1f3f4;
+  color: #212529;
+}
+
+.btn-modal-finalize {
+  background-color: #6530b5;
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.3);
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-modal-finalize:hover {
+  background-color: #522396;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Animação e Destaque Suave para Novos Produtos Inseridos no Topo */
+@keyframes rowInsertHighlight {
+  0% {
+    background-color: #ede7f6;
+  }
+  60% {
+    background-color: #f3e8ff;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.order-items-table tr.item-row-highlight {
+  animation: rowInsertHighlight 1.8s ease-out;
+}
+
+.order-item-card.item-card-highlight {
+  animation: rowInsertHighlight 1.8s ease-out;
+  border-color: #6530b5 !important;
 }
