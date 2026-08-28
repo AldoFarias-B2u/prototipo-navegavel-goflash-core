@@ -832,22 +832,70 @@
   font-weight: 500;
 }
 
-/* Pílula de Estoque em Loja */
-.stock-pill-loja {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  background-color: #f1f3f6;
-  color: #495057;
+/* Células de Dados Tipográficos Minimalistas da Tabela */
+.tbl-stock-val {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e293b;
 }
 
-.stock-pill-loja.is-low {
-  background-color: #fee2e2;
-  color: #dc2626;
+.tbl-stock-low-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+}
+
+.tbl-stock-origem-val {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.tbl-ideal-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.tbl-ideal-val {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.tbl-min-hint {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.tbl-sugestao-val {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+.tbl-preco-val {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.tbl-subtotal-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 /* Stepper de Quantidade Tátil */
@@ -918,8 +966,8 @@
 /* Botão de Validades / Lotes (3 Estados Dinâmicos) */
 .btn-manage-lotes-table {
   background-color: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
   padding: 4px 10px;
   border-radius: 4px;
   font-size: 0.78rem;
@@ -937,26 +985,47 @@
 
 .btn-manage-lotes-table:hover:not(:disabled) {
   background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0f172a;
+  border-color: #cbd5e1;
+  color: #334155;
 }
 
 .btn-manage-lotes-table .material-icons {
   font-size: 16px;
-  color: #475569;
+  color: #64748b;
 }
 
-/* Estado 2: Validade OK (Verde) */
+/* Estado 2: Validade OK (Verde Sóbrio) */
 .btn-manage-lotes-table.status-ok {
-  background-color: #e8f5e9;
-  border-color: #a5d6a7;
-  color: #2e7d32;
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #15803d;
   font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-ok .material-icons {
+  color: #16a34a;
 }
 
 .btn-manage-lotes-table.status-ok:hover:not(:disabled) {
   background-color: #dcfce7;
   border-color: #86efac;
+}
+
+/* Estado 3: Divergente (Âmbar Suave) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-divergent .material-icons {
+  color: #d97706;
+}
+
+.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
 }
 
 .btn-manage-lotes-table.status-ok .material-icons {

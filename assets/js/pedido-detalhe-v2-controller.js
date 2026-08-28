@@ -487,6 +487,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mainContainer) mainContainer.classList.remove('is-empty-cart');
     if (emptyState) emptyState.style.display = 'none';
+    
+    // Atualiza cabeçalho dinâmico de Ideal / Mínimo
+    const thColIdealMin = document.getElementById('thColIdealMin');
+    if (thColIdealMin) {
+      if (visibleColumns.estoqueIdeal && visibleColumns.minimoCritico) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Ideal / Mínimo';
+      } else if (visibleColumns.estoqueIdeal) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Ideal';
+      } else if (visibleColumns.minimoCritico) {
+        thColIdealMin.style.display = '';
+        thColIdealMin.textContent = 'Mín. Crítico';
+      } else {
+        thColIdealMin.style.display = 'none';
+      }
+    }
+
     applyViewMode();
 
     // 9.1 Render Tabela Desktop
@@ -501,11 +519,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
         const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+        const estoqueOrigemVal = item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48;
+        const minCriticoVal = item.minimoCritico !== undefined ? item.minimoCritico : 3;
         const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
+
+        const isIdealVisible = !!visibleColumns.estoqueIdeal;
+        const isMinVisible = !!visibleColumns.minimoCritico;
+        const showIdealMinCol = isIdealVisible || isMinVisible;
+
+        let idealMinHtml = '';
+        if (isIdealVisible && isMinVisible) {
+          idealMinHtml = `
+            <div class="tbl-ideal-cell">
+              <span class="tbl-ideal-val">${estoqueIdealVal} un</span>
+              <span class="tbl-min-hint">Mín: ${minCriticoVal} un</span>
+            </div>
+          `;
+        } else if (isIdealVisible) {
+          idealMinHtml = `<span class="tbl-ideal-val">${estoqueIdealVal} un</span>`;
+        } else if (isMinVisible) {
+          idealMinHtml = `<span class="tbl-min-hint">Mín: ${minCriticoVal} un</span>`;
+        }
+
+        const stockLojaHtml = isStockLow 
+          ? `<span class="tbl-stock-low-badge" title="Estoque baixo (crítico)">${estoqueLojaVal} un</span>`
+          : `<span class="tbl-stock-val">${estoqueLojaVal} un</span>`;
 
         let lotesBadgeHtml = '';
         if (lotesCount === 0) {
-          // Estado 1: Sem Lote Informado (Cinza Suave)
           lotesBadgeHtml = `
             <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
               <span class="material-icons">event</span>
@@ -513,7 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
           `;
         } else if (totalLotesQty === itemQtde) {
-          // Estado 2: Validade OK (Verde)
           const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
           lotesBadgeHtml = `
             <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
@@ -522,7 +562,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
           `;
         } else {
-          // Estado 3: Divergente (Amarelo/Laranja)
           lotesBadgeHtml = `
             <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
               <span class="material-icons">warning_amber</span>
@@ -563,7 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr data-index="${index}" class="${highlightClass}">
             <td style="text-align: center; color: #757575; font-size: 0.8rem; font-weight: 500;">${index + 1}</td>
             
-            <!-- Coluna de Produto Unificada: Foto + Nome + EAN + Categoria -->
             <td>
               <div class="table-prod-unified-cell">
                 <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="table-prod-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
@@ -577,54 +615,38 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </td>
 
-            <!-- Coluna Est. Loja -->
             <td class="col-estoque-loja" style="text-align: center; ${visibleColumns.estoqueLoja ? '' : 'display: none;'}">
-              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${estoqueLojaVal} un</span>
+              ${stockLojaHtml}
             </td>
 
-            <!-- Coluna Est. Origem (CD) -->
             <td class="col-estoque-origem" style="text-align: center; ${visibleColumns.estoqueOrigem ? '' : 'display: none;'}">
-              <span class="stock-pill-loja" style="background-color: #ede7f6; color: #6530b5; border: 1px solid #d1c4e9;">
-                ${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un
-              </span>
+              <span class="tbl-stock-origem-val">${estoqueOrigemVal} un</span>
             </td>
 
-            <!-- Coluna Ideal -->
-            <td class="col-estoque-ideal" style="text-align: center; color: #495057; font-weight: 600; ${visibleColumns.estoqueIdeal ? '' : 'display: none;'}">
-              ${estoqueIdealVal} un
+            <td class="col-estoque-ideal" style="text-align: center; ${showIdealMinCol ? '' : 'display: none;'}">
+              ${idealMinHtml}
             </td>
 
-            <!-- Coluna Mínimo Crítico -->
-            <td class="col-min-critico" style="text-align: center; color: #d32f2f; font-weight: 600; ${visibleColumns.minimoCritico ? '' : 'display: none;'}">
-              ${item.minimoCritico !== undefined ? item.minimoCritico : 3} un
-            </td>
-
-            <!-- Coluna Sugestão de Abastecimento (Ideal - Loja) -->
             <td class="col-sugestao" style="text-align: center; ${visibleColumns.sugestao ? '' : 'display: none;'}">
-              <span class="badge-sugestao">${sugestaoVal} un</span>
+              <span class="tbl-sugestao-val">${sugestaoVal} un</span>
             </td>
 
-            <!-- Coluna Quantidade Pedido -->
             <td class="col-qtde" style="text-align: center;">
               ${qtyCellHtml}
             </td>
 
-            <!-- Coluna Preço Unitário -->
-            <td class="col-preco-un" style="text-align: right; font-weight: 500; color: #495057; ${visibleColumns.precos ? '' : 'display: none;'}">
-              R$ ${itemPreco.toFixed(2).replace('.', ',')}
+            <td class="col-preco-un" style="text-align: right; ${visibleColumns.precos ? '' : 'display: none;'}">
+              <span class="tbl-preco-val">R$ ${itemPreco.toFixed(2).replace('.', ',')}</span>
             </td>
 
-            <!-- Coluna Subtotal -->
-            <td class="col-subtotal" style="text-align: right; font-weight: 700; color: #2e7d32; ${visibleColumns.precos ? '' : 'display: none;'}">
-              R$ ${subtotal.toFixed(2).replace('.', ',')}
+            <td class="col-subtotal" style="text-align: right; ${visibleColumns.precos ? '' : 'display: none;'}">
+              <span class="tbl-subtotal-val">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
             </td>
 
-            <!-- Coluna Lotes e Validades -->
             <td class="col-lotes" style="text-align: center;">
               ${lotesBadgeHtml}
             </td>
 
-            <!-- Coluna de Ações -->
             ${actionCellHtml}
           </tr>
         `;
