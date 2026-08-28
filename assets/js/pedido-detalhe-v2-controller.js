@@ -1332,13 +1332,26 @@ document.addEventListener('DOMContentLoaded', () => {
   function openAddByCategoryModal() {
     if (!modalAddByCategory) return;
 
-    // Atualiza nome do CD no badge
+    // Detecta se é Entrada Direta (Sem Origem) ou Abastecimento com CD
     const origSelect = document.getElementById('heroOrigemSelect');
-    const origName = (origSelect && origSelect.options[origSelect.selectedIndex]) 
+    const origVal = origSelect ? (origSelect.value || '').trim() : '';
+    const origText = (origSelect && origSelect.options[origSelect.selectedIndex]) 
       ? origSelect.options[origSelect.selectedIndex].text 
-      : 'CD: Estoque Central';
-    if (badgeCategoryCdOrigemName) {
-      badgeCategoryCdOrigemName.textContent = origName.replace('--', '').trim() || 'CD: Estoque Central';
+      : '';
+    const isEntradaDireta = !origVal || origVal === 'none' || origText.toLowerCase().includes('entrada direta') || origText.toLowerCase().includes('sem origem');
+
+    const containerCd = document.getElementById('containerCategoryStockCd');
+    if (containerCd) {
+      if (isEntradaDireta) {
+        containerCd.style.display = 'none';
+        if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = false;
+      } else {
+        containerCd.style.display = 'block';
+        if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = true;
+        if (badgeCategoryCdOrigemName) {
+          badgeCategoryCdOrigemName.textContent = `CD: ${origText.replace('--', '').trim()}`;
+        }
+      }
     }
 
     // Reset filtros
@@ -1347,19 +1360,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (inputCategorySubgrupo) {
       inputCategorySubgrupo.value = '';
-      inputCategorySubgrupo.disabled = true;
-      inputCategorySubgrupo.placeholder = 'Selecione um Grupo primeiro...';
+      inputCategorySubgrupo.disabled = false;
+      inputCategorySubgrupo.placeholder = 'Digite para pesquisar ou clique para ver todos...';
     }
     if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
-    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('is-disabled');
+    if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
 
     if (inputCategoryFornecedor) inputCategoryFornecedor.value = '';
     if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = 'none';
 
     if (inputCategorySearchText) inputCategorySearchText.value = '';
     if (btnClearCategorySearchText) btnClearCategorySearchText.style.display = 'none';
-
-    if (chkCategoryOnlyAvailableCd) chkCategoryOnlyAvailableCd.checked = true;
 
     closeAllCategoryComboboxes();
     updateCategoryMatchesCount();
@@ -1387,18 +1398,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (comboboxCategoryFornecedor) comboboxCategoryFornecedor.classList.remove('open');
   }
 
-  // 1. População de Grupos
+  // 1. População de Grupos (Com opção "Todos os Grupos")
   function populateGruposDropdown(filterText = '') {
     if (!dropdownCategoryGrupo) return;
     const grupos = Object.keys(GROUP_SUBGROUPS_MAP);
     const filtered = filterText ? grupos.filter(g => g.toLowerCase().includes(filterText.toLowerCase())) : grupos;
 
-    if (filtered.length === 0) {
-      dropdownCategoryGrupo.innerHTML = '<div class="combobox-empty-msg">Nenhum grupo encontrado</div>';
-      return;
+    let html = '';
+    
+    // Opção "Todos os Grupos" no topo
+    if (!filterText || 'todos os grupos'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategoryGrupo || !inputCategoryGrupo.value || inputCategoryGrupo.value === 'Todos os Grupos';
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Grupos (Catálogo Completo)</span>
+          <span class="combobox-option-count">${rawCatalog.length}</span>
+        </div>
+      `;
     }
 
-    dropdownCategoryGrupo.innerHTML = filtered.map(grupo => {
+    html += filtered.map(grupo => {
       const count = rawCatalog.filter(p => p.categoria === grupo).length;
       const isSelected = inputCategoryGrupo && inputCategoryGrupo.value === grupo;
       return `
@@ -1409,6 +1428,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
 
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum grupo encontrado</div>';
+    }
+
+    dropdownCategoryGrupo.innerHTML = html;
+
     dropdownCategoryGrupo.querySelectorAll('.combobox-option').forEach(opt => {
       opt.addEventListener('click', () => {
         const val = opt.getAttribute('data-val');
@@ -1418,15 +1443,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function selectGrupo(grupo) {
-    if (inputCategoryGrupo) inputCategoryGrupo.value = grupo;
+    if (inputCategoryGrupo) inputCategoryGrupo.value = grupo || 'Todos os Grupos';
     if (btnClearCategoryGrupo) btnClearCategoryGrupo.style.display = grupo ? 'flex' : 'none';
     closeAllCategoryComboboxes();
 
-    // Habilita e carrega os Subgrupos vinculados
+    // Habilita e reseta o subgrupo
     if (inputCategorySubgrupo) {
       inputCategorySubgrupo.value = '';
       inputCategorySubgrupo.disabled = false;
-      inputCategorySubgrupo.placeholder = 'Digite ou clique para escolher o subgrupo...';
+      inputCategorySubgrupo.placeholder = grupo ? `Subgrupos de ${grupo}...` : 'Digite para pesquisar ou clique para ver todos...';
     }
     if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
     if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
@@ -1434,25 +1459,46 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCategoryMatchesCount();
   }
 
-  // 2. População de Subgrupos (Condicionado ao Grupo)
+  // 2. População de Subgrupos (Com opção "Todos os Subgrupos")
   function populateSubgruposDropdown(filterText = '') {
     if (!dropdownCategorySubgrupo) return;
     const selectedGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
-    if (!selectedGrupo || !GROUP_SUBGROUPS_MAP[selectedGrupo]) {
-      dropdownCategorySubgrupo.innerHTML = '<div class="combobox-empty-msg">Selecione um Grupo primeiro</div>';
-      return;
+    
+    let subgrupos = [];
+    if (selectedGrupo && selectedGrupo !== 'Todos os Grupos' && GROUP_SUBGROUPS_MAP[selectedGrupo]) {
+      subgrupos = GROUP_SUBGROUPS_MAP[selectedGrupo] || [];
+    } else {
+      // Se "Todos os Grupos" estiver selecionado, traz todos os subgrupos existentes
+      const allSubsSet = new Set();
+      Object.values(GROUP_SUBGROUPS_MAP).forEach(list => list.forEach(s => allSubsSet.add(s)));
+      subgrupos = Array.from(allSubsSet).sort();
     }
 
-    const subgrupos = GROUP_SUBGROUPS_MAP[selectedGrupo] || [];
     const filtered = filterText ? subgrupos.filter(s => s.toLowerCase().includes(filterText.toLowerCase())) : subgrupos;
 
-    if (filtered.length === 0) {
-      dropdownCategorySubgrupo.innerHTML = '<div class="combobox-empty-msg">Nenhum subgrupo encontrado</div>';
-      return;
+    let html = '';
+
+    // Opção "Todos os Subgrupos" no topo
+    if (!filterText || 'todos os subgrupos'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategorySubgrupo || !inputCategorySubgrupo.value || inputCategorySubgrupo.value === 'Todos os Subgrupos';
+      const countTotal = (selectedGrupo && selectedGrupo !== 'Todos os Grupos')
+        ? rawCatalog.filter(p => p.categoria === selectedGrupo).length
+        : rawCatalog.length;
+
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Subgrupos</span>
+          <span class="combobox-option-count">${countTotal}</span>
+        </div>
+      `;
     }
 
-    dropdownCategorySubgrupo.innerHTML = filtered.map(sub => {
-      const count = rawCatalog.filter(p => p.categoria === selectedGrupo && (p.subgrupo || inferSubgroup(p)) === sub).length;
+    html += filtered.map(sub => {
+      const count = rawCatalog.filter(p => {
+        if (selectedGrupo && selectedGrupo !== 'Todos os Grupos' && p.categoria !== selectedGrupo) return false;
+        return (p.subgrupo || inferSubgroup(p)) === sub;
+      }).length;
+
       const isSelected = inputCategorySubgrupo && inputCategorySubgrupo.value === sub;
       return `
         <div class="combobox-option ${isSelected ? 'selected' : ''}" data-val="${sub}">
@@ -1461,6 +1507,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
+
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum subgrupo encontrado</div>';
+    }
+
+    dropdownCategorySubgrupo.innerHTML = html;
 
     dropdownCategorySubgrupo.querySelectorAll('.combobox-option').forEach(opt => {
       opt.addEventListener('click', () => {
@@ -1471,13 +1523,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function selectSubgrupo(subgrupo) {
-    if (inputCategorySubgrupo) inputCategorySubgrupo.value = subgrupo;
+    if (inputCategorySubgrupo) inputCategorySubgrupo.value = subgrupo || 'Todos os Subgrupos';
     if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = subgrupo ? 'flex' : 'none';
     closeAllCategoryComboboxes();
     updateCategoryMatchesCount();
   }
 
-  // 3. População de Fornecedores
+  // 3. População de Fornecedores (Com opção "Todos os Fornecedores")
   function populateFornecedoresDropdown(filterText = '') {
     if (!dropdownCategoryFornecedor) return;
     const fornecedoresSet = new Set();
@@ -1486,12 +1538,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filtered = filterText ? fornecedores.filter(f => f.toLowerCase().includes(filterText.toLowerCase())) : fornecedores;
 
-    if (filtered.length === 0) {
-      dropdownCategoryFornecedor.innerHTML = '<div class="combobox-empty-msg">Nenhum fornecedor encontrado</div>';
-      return;
+    let html = '';
+
+    // Opção "Todos os Fornecedores" no topo
+    if (!filterText || 'todos os fornecedores'.includes(filterText.toLowerCase())) {
+      const isAllSelected = !inputCategoryFornecedor || !inputCategoryFornecedor.value || inputCategoryFornecedor.value === 'Todos os Fornecedores';
+      html += `
+        <div class="combobox-option ${isAllSelected ? 'selected' : ''}" data-val="">
+          <span class="combobox-option-text">● Todos os Fornecedores</span>
+          <span class="combobox-option-count">${rawCatalog.length}</span>
+        </div>
+      `;
     }
 
-    dropdownCategoryFornecedor.innerHTML = filtered.map(forn => {
+    html += filtered.map(forn => {
       const count = rawCatalog.filter(p => (p.fornecedor || inferFornecedor(p)) === forn).length;
       const isSelected = inputCategoryFornecedor && inputCategoryFornecedor.value === forn;
       return `
@@ -1502,6 +1562,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
 
+    if (!html) {
+      html = '<div class="combobox-empty-msg">Nenhum fornecedor encontrado</div>';
+    }
+
+    dropdownCategoryFornecedor.innerHTML = html;
+
     dropdownCategoryFornecedor.querySelectorAll('.combobox-option').forEach(opt => {
       opt.addEventListener('click', () => {
         const val = opt.getAttribute('data-val');
@@ -1511,7 +1577,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function selectFornecedor(forn) {
-    if (inputCategoryFornecedor) inputCategoryFornecedor.value = forn;
+    if (inputCategoryFornecedor) inputCategoryFornecedor.value = forn || 'Todos os Fornecedores';
     if (btnClearCategoryFornecedor) btnClearCategoryFornecedor.style.display = forn ? 'flex' : 'none';
     closeAllCategoryComboboxes();
     updateCategoryMatchesCount();
@@ -1555,11 +1621,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // Reseta também o subgrupo
       if (inputCategorySubgrupo) {
         inputCategorySubgrupo.value = '';
-        inputCategorySubgrupo.disabled = true;
-        inputCategorySubgrupo.placeholder = 'Selecione um Grupo primeiro...';
+        inputCategorySubgrupo.disabled = false;
+        inputCategorySubgrupo.placeholder = 'Digite para pesquisar ou clique para ver todos...';
       }
       if (btnClearCategorySubgrupo) btnClearCategorySubgrupo.style.display = 'none';
-      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.add('is-disabled');
+      if (comboboxCategorySubgrupo) comboboxCategorySubgrupo.classList.remove('is-disabled');
 
       updateCategoryMatchesCount();
     });
@@ -1670,11 +1736,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function getFilteredCategoryProducts() {
-    const selGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
-    const selSubgrupo = (inputCategorySubgrupo ? inputCategorySubgrupo.value : '').trim();
-    const selFornecedor = (inputCategoryFornecedor ? inputCategoryFornecedor.value : '').trim();
+    const rawGrupo = (inputCategoryGrupo ? inputCategoryGrupo.value : '').trim();
+    const selGrupo = (rawGrupo && !rawGrupo.toLowerCase().includes('todos os grupos') && !rawGrupo.startsWith('●')) ? rawGrupo : '';
+
+    const rawSub = (inputCategorySubgrupo ? inputCategorySubgrupo.value : '').trim();
+    const selSubgrupo = (rawSub && !rawSub.toLowerCase().includes('todos os subgrupos') && !rawSub.startsWith('●')) ? rawSub : '';
+
+    const rawForn = (inputCategoryFornecedor ? inputCategoryFornecedor.value : '').trim();
+    const selFornecedor = (rawForn && !rawForn.toLowerCase().includes('todos os fornecedores') && !rawForn.startsWith('●')) ? rawForn : '';
+
     const searchTxt = (inputCategorySearchText ? inputCategorySearchText.value : '').trim().toLowerCase();
-    const onlyCd = chkCategoryOnlyAvailableCd ? chkCategoryOnlyAvailableCd.checked : false;
+
+    const origSelect = document.getElementById('heroOrigemSelect');
+    const origVal = origSelect ? (origSelect.value || '').trim() : '';
+    const origText = (origSelect && origSelect.options[origSelect.selectedIndex]) 
+      ? origSelect.options[origSelect.selectedIndex].text 
+      : '';
+    const isEntradaDireta = !origVal || origVal === 'none' || origText.toLowerCase().includes('entrada direta') || origText.toLowerCase().includes('sem origem');
+
+    const onlyCd = (!isEntradaDireta && chkCategoryOnlyAvailableCd) ? chkCategoryOnlyAvailableCd.checked : false;
 
     return rawCatalog.filter(prod => {
       if (selGrupo && prod.categoria !== selGrupo) return false;
