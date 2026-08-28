@@ -250,11 +250,15 @@
 
           <!-- Controles de Visualização e Ações Rápidas -->
           <div class="order-section-controls">
-            <!-- Botão Alternar Tabela / Cards -->
-            <button type="button" class="btn-section-control" id="btnToggleView" title="Alternar entre visualização em Tabela e Cards">
-              <span class="material-icons" id="toggleViewIcon">grid_view</span>
-              <span id="toggleViewText">Ver em Cards</span>
-            </button>
+            <!-- Alternador Segmentado de Visualização (Tabela vs. Cards) -->
+            <div class="view-segmented-switcher" role="group" aria-label="Modo de Visualização">
+              <button type="button" class="view-segment-btn active" id="btnViewTable" title="Visualizar em Tabela">
+                <span class="material-icons">reorder</span>
+              </button>
+              <button type="button" class="view-segment-btn" id="btnViewCards" title="Visualizar em Cards">
+                <span class="material-icons">grid_view</span>
+              </button>
+            </div>
 
             <!-- Botão Mais Ações (Dropdown) -->
             <div class="more-actions-wrapper" id="moreActionsWrapper">
@@ -308,8 +312,9 @@
                 <th class="col-estoque-origem" style="width: 110px; text-align: center;">Estoque Origem</th>
                 <th class="col-estoque-ideal" style="width: 100px; text-align: center;">Estoque Ideal</th>
                 <th class="col-min-critico" style="width: 100px; text-align: center;">Mín. Crítico</th>
-                <th class="col-preco-un" style="width: 105px; text-align: right;">Preço Un.</th>
+                <th class="col-sugestao" style="width: 95px; text-align: center;">Sugestão</th>
                 <th class="col-qtde" style="width: 130px; text-align: center;">Qtde Pedido</th>
+                <th class="col-preco-un" style="width: 105px; text-align: right;">Preço Un.</th>
                 <th class="col-subtotal" style="width: 110px; text-align: right;">Subtotal</th>
                 <th class="col-lotes" style="width: 150px; text-align: center;">Validade / Lotes</th>
                 <th class="col-actions-header" style="width: 50px; text-align: center;">Ações</th>
@@ -739,6 +744,14 @@
             <div class="column-check-info">
               <span class="column-check-name">Mínimo Crítico</span>
               <span class="column-check-desc">Ponto de ruptura mínimo definido no plano</span>
+            </div>
+          </label>
+
+          <label class="column-check-item">
+            <input type="checkbox" id="chkColSugestao">
+            <div class="column-check-info">
+              <span class="column-check-name">Sugestão de Abastecimento</span>
+              <span class="column-check-desc">Calcula a quantidade necessária para atingir o Estoque Ideal (Ideal − Loja)</span>
             </div>
           </label>
 

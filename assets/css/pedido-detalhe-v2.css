@@ -1648,6 +1648,59 @@
   gap: 8px;
 }
 
+/* Alternador Segmentado de Visualização (Tabela vs. Cards) */
+.view-segmented-switcher {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f1f3f6;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.view-segment-btn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #757575;
+  transition: all var(--transition-fast, 0.15s ease);
+  padding: 0;
+}
+
+.view-segment-btn:hover {
+  color: #212529;
+}
+
+.view-segment-btn.active {
+  background-color: #ffffff;
+  color: #6530b5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.view-segment-btn .material-icons {
+  font-size: 19px;
+}
+
+/* Badge de Sugestão de Abastecimento */
+.badge-sugestao {
+  background-color: #ede7f6;
+  color: #6530b5;
+  border: 1px solid #d1c4e9;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .btn-section-control {
   background-color: #ffffff;
   border: 1px solid #dee2e6;

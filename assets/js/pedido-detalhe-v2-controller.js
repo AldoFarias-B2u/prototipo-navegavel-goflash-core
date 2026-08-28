@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     estoqueOrigem: false,
     estoqueIdeal: false,
     minimoCritico: false,
+    sugestao: false,
     precos: false
   };
 
@@ -56,10 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const omnibarInput = document.getElementById('omnibarInput');
   const omnibarDropdown = document.getElementById('omnibarDropdown');
 
-  // Controles de Seção (Alternar View e Mais Ações)
-  const btnToggleView = document.getElementById('btnToggleView');
-  const toggleViewIcon = document.getElementById('toggleViewIcon');
-  const toggleViewText = document.getElementById('toggleViewText');
+  // Alternador Segmentado (Tabela vs. Cards) e Mais Ações
+  const btnViewTable = document.getElementById('btnViewTable');
+  const btnViewCards = document.getElementById('btnViewCards');
 
   const moreActionsWrapper = document.getElementById('moreActionsWrapper');
   const btnMoreActions = document.getElementById('btnMoreActions');
@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const chkColEstoqueOrigem = document.getElementById('chkColEstoqueOrigem');
   const chkColEstoqueIdeal = document.getElementById('chkColEstoqueIdeal');
   const chkColMinCritico = document.getElementById('chkColMinCritico');
+  const chkColSugestao = document.getElementById('chkColSugestao');
   const chkColPrecos = document.getElementById('chkColPrecos');
 
   // Modal 7: Tabela de Preços
@@ -225,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (hasPlano) {
     visibleColumns.estoqueIdeal = true;
     visibleColumns.minimoCritico = true;
+    visibleColumns.sugestao = true;
   }
 
   // Sincronizar checkboxes do modal de colunas
@@ -232,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
   if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
   if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+  if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
   if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
 
   if (heroOrderCodeTxt) heroOrderCodeTxt.textContent = currentOrderCode;
@@ -412,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const thOrigem = document.querySelector('.col-estoque-origem');
     const thIdeal = document.querySelector('.col-estoque-ideal');
     const thCritico = document.querySelector('.col-min-critico');
+    const thSugestao = document.querySelector('.col-sugestao');
     const thPreco = document.querySelector('.col-preco-un');
     const thSubtotal = document.querySelector('.col-subtotal');
     const thAcoes = document.querySelector('.col-actions-header');
@@ -420,12 +424,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (thOrigem) thOrigem.style.display = visibleColumns.estoqueOrigem ? 'table-cell' : 'none';
     if (thIdeal) thIdeal.style.display = visibleColumns.estoqueIdeal ? 'table-cell' : 'none';
     if (thCritico) thCritico.style.display = visibleColumns.minimoCritico ? 'table-cell' : 'none';
+    if (thSugestao) thSugestao.style.display = visibleColumns.sugestao ? 'table-cell' : 'none';
     if (thPreco) thPreco.style.display = visibleColumns.precos ? 'table-cell' : 'none';
     if (thSubtotal) thSubtotal.style.display = visibleColumns.precos ? 'table-cell' : 'none';
     if (thAcoes) thAcoes.style.display = (isEditMode && !isReadOnly) ? 'table-cell' : 'none';
   }
 
-  // 8. Alternador de Visualização (Tabela vs. Cards)
+  // 8. Alternador Segmentado de Visualização (Tabela vs. Cards)
   function applyViewMode() {
     if (isCardsView) {
       if (tableWrapper) tableWrapper.style.display = 'none';
@@ -433,28 +438,32 @@ document.addEventListener('DOMContentLoaded', () => {
         cardsGrid.style.display = 'grid';
         cardsGrid.classList.add('desktop-grid-mode');
       }
-      if (toggleViewIcon) toggleViewIcon.textContent = 'view_list';
-      if (toggleViewText) toggleViewText.textContent = 'Ver em Tabela';
-      if (btnToggleView) btnToggleView.classList.add('active');
+      if (btnViewTable) btnViewTable.classList.remove('active');
+      if (btnViewCards) btnViewCards.classList.add('active');
     } else {
       if (tableWrapper) tableWrapper.style.display = 'block';
       if (cardsGrid) {
         cardsGrid.style.display = 'none';
         cardsGrid.classList.remove('desktop-grid-mode');
       }
-      if (toggleViewIcon) toggleViewIcon.textContent = 'grid_view';
-      if (toggleViewText) toggleViewText.textContent = 'Ver em Cards';
-      if (btnToggleView) btnToggleView.classList.remove('active');
+      if (btnViewTable) btnViewTable.classList.add('active');
+      if (btnViewCards) btnViewCards.classList.remove('active');
     }
   }
 
-  if (btnToggleView) {
-    btnToggleView.addEventListener('click', () => {
-      isCardsView = !isCardsView;
+  if (btnViewTable) {
+    btnViewTable.addEventListener('click', () => {
+      isCardsView = false;
       applyViewMode();
-      if (typeof Toast !== 'undefined') {
-        Toast.info(isCardsView ? 'Visualização em Cards ativada.' : 'Visualização em Tabela ativada.');
-      }
+      if (typeof Toast !== 'undefined') Toast.info('Visualização em Tabela ativada.');
+    });
+  }
+
+  if (btnViewCards) {
+    btnViewCards.addEventListener('click', () => {
+      isCardsView = true;
+      applyViewMode();
+      if (typeof Toast !== 'undefined') Toast.info('Visualização em Cards ativada.');
     });
   }
 
@@ -488,6 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
         const isStockLow = (item.estoqueLoja !== undefined && item.estoqueLoja <= 2);
+
+        const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
+        const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+        const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
 
         const lotesBadgeHtml = `
           <button type="button" class="btn-manage-lotes-table ${lotesCount > 0 ? 'has-lotes' : ''}" data-index="${index}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
@@ -542,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Coluna Estoque Loja -->
             <td class="col-estoque-loja" style="text-align: center; ${visibleColumns.estoqueLoja ? '' : 'display: none;'}">
-              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0} un</span>
+              <span class="stock-pill-loja ${isStockLow ? 'is-low' : ''}">${estoqueLojaVal} un</span>
             </td>
 
             <!-- Coluna Estoque Origem (CD) -->
@@ -554,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Coluna Estoque Ideal -->
             <td class="col-estoque-ideal" style="text-align: center; color: #495057; font-weight: 600; ${visibleColumns.estoqueIdeal ? '' : 'display: none;'}">
-              ${item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12} un
+              ${estoqueIdealVal} un
             </td>
 
             <!-- Coluna Mínimo Crítico -->
@@ -562,14 +575,19 @@ document.addEventListener('DOMContentLoaded', () => {
               ${item.minimoCritico !== undefined ? item.minimoCritico : 3} un
             </td>
 
-            <!-- Coluna Preço Unitário -->
-            <td class="col-preco-un" style="text-align: right; font-weight: 500; color: #495057; ${visibleColumns.precos ? '' : 'display: none;'}">
-              R$ ${itemPreco.toFixed(2).replace('.', ',')}
+            <!-- Coluna Sugestão de Abastecimento (Ideal - Loja) -->
+            <td class="col-sugestao" style="text-align: center; ${visibleColumns.sugestao ? '' : 'display: none;'}">
+              <span class="badge-sugestao">${sugestaoVal} un</span>
             </td>
 
             <!-- Coluna Quantidade Pedido -->
             <td class="col-qtde" style="text-align: center;">
               ${qtyCellHtml}
+            </td>
+
+            <!-- Coluna Preço Unitário -->
+            <td class="col-preco-un" style="text-align: right; font-weight: 500; color: #495057; ${visibleColumns.precos ? '' : 'display: none;'}">
+              R$ ${itemPreco.toFixed(2).replace('.', ',')}
             </td>
 
             <!-- Coluna Subtotal -->
@@ -597,6 +615,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const subtotal = itemPreco * itemQtde;
         const lotesCount = item.lotes ? item.lotes.length : 0;
 
+        const estoqueIdealVal = item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12;
+        const estoqueLojaVal = item.estoqueLoja !== undefined ? item.estoqueLoja : 0;
+        const sugestaoVal = Math.max(0, estoqueIdealVal - estoqueLojaVal);
+
         return `
           <div class="order-mobile-product-card" data-index="${index}">
             <div class="mobile-card-top-row">
@@ -611,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${visibleColumns.estoqueLoja ? `
                 <div class="mobile-metric-item">
                   <span class="mobile-metric-label">Estoque Loja</span>
-                  <span class="mobile-metric-val">${item.estoqueLoja !== undefined ? item.estoqueLoja : 0} un</span>
+                  <span class="mobile-metric-val">${estoqueLojaVal} un</span>
                 </div>
               ` : ''}
 
@@ -625,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${visibleColumns.estoqueIdeal ? `
                 <div class="mobile-metric-item">
                   <span class="mobile-metric-label">Ideal</span>
-                  <span class="mobile-metric-val">${item.estoqueIdeal !== undefined ? item.estoqueIdeal : 12} un</span>
+                  <span class="mobile-metric-val">${estoqueIdealVal} un</span>
                 </div>
               ` : ''}
 
@@ -633,6 +655,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="mobile-metric-item">
                   <span class="mobile-metric-label">Mín. Crítico</span>
                   <span class="mobile-metric-val" style="color: #d32f2f;">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
+                </div>
+              ` : ''}
+
+              ${visibleColumns.sugestao ? `
+                <div class="mobile-metric-item">
+                  <span class="mobile-metric-label">Sugestão</span>
+                  <span class="mobile-metric-val" style="color: #6530b5;">${sugestaoVal} un</span>
                 </div>
               ` : ''}
 
@@ -1006,6 +1035,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (chkColEstoqueOrigem) chkColEstoqueOrigem.checked = visibleColumns.estoqueOrigem;
       if (chkColEstoqueIdeal) chkColEstoqueIdeal.checked = visibleColumns.estoqueIdeal;
       if (chkColMinCritico) chkColMinCritico.checked = visibleColumns.minimoCritico;
+      if (chkColSugestao) chkColSugestao.checked = visibleColumns.sugestao;
       if (chkColPrecos) chkColPrecos.checked = visibleColumns.precos;
       if (modalManageColumns) modalManageColumns.classList.add('show', 'active');
     });
@@ -1024,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
       visibleColumns.estoqueOrigem = !!(chkColEstoqueOrigem && chkColEstoqueOrigem.checked);
       visibleColumns.estoqueIdeal = !!(chkColEstoqueIdeal && chkColEstoqueIdeal.checked);
       visibleColumns.minimoCritico = !!(chkColMinCritico && chkColMinCritico.checked);
+      visibleColumns.sugestao = !!(chkColSugestao && chkColSugestao.checked);
       visibleColumns.precos = !!(chkColPrecos && chkColPrecos.checked);
 
       if (!visibleColumns.precos) {
