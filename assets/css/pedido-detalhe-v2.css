@@ -441,10 +441,10 @@
   display: flex;
   align-items: center;
   background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 0 0.85rem;
-  height: 36px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0 1rem;
+  height: 40px;
   width: clamp(280px, 32vw, 420px);
   box-sizing: border-box;
   transition: all var(--transition-fast, 0.2s ease);
@@ -453,12 +453,12 @@
 .order-omnibar-box:focus-within {
   background-color: #ffffff;
   border-color: #6530b5;
-  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15);
 }
 
 .order-omnibar-icon {
   color: #6530b5;
-  font-size: 19px;
+  font-size: 20px;
   margin-right: 8px;
 }
 
@@ -468,8 +468,8 @@
   background: transparent;
   outline: none;
   font-family: inherit;
-  font-size: 0.84rem;
-  color: #212529;
+  font-size: 0.88rem;
+  color: #333333;
   min-width: 0;
 }
 
@@ -478,12 +478,12 @@
 }
 
 .order-omnibar-hint {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: #6c757d;
   background-color: #e9ecef;
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: 2px 7px;
+  border-radius: 4px;
   white-space: nowrap;
 }
 
@@ -492,19 +492,19 @@
   background-color: #6530b5;
   color: #ffffff;
   border: none;
-  padding: 0 16px;
-  height: 36px;
-  border-radius: 4px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding: 0 18px;
+  height: 40px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.2);
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
   transition: all var(--transition-fast, 0.2s ease);
   white-space: nowrap;
   flex-shrink: 0;
@@ -512,13 +512,13 @@
 }
 
 .btn-add-catalog-v2:hover {
-  background-color: #522396;
-  box-shadow: 0 3px 8px rgba(101, 48, 181, 0.3);
+  background-color: #532499;
+  box-shadow: 0 4px 10px rgba(101, 48, 181, 0.35);
   transform: translateY(-1px);
 }
 
 .btn-add-catalog-v2 .material-icons {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .btn-add-txt-desktop {
@@ -1724,16 +1724,18 @@
   background-color: #f1f3f6;
   border: 1px solid #dee2e6;
   border-radius: 6px;
-  padding: 2px;
-  gap: 2px;
+  padding: 3px;
+  gap: 3px;
+  height: 40px;
+  box-sizing: border-box;
 }
 
 .view-segment-btn {
   background: transparent;
   border: none;
   border-radius: 4px;
-  width: 32px;
-  height: 30px;
+  width: 34px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1772,13 +1774,13 @@
 
 .btn-section-control {
   background-color: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  color: #495057;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0 12px;
-  height: 34px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  color: #4b5563;
+  font-size: 0.84rem;
+  font-weight: 500;
+  padding: 0 14px;
+  height: 40px;
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
@@ -1788,19 +1790,21 @@
 }
 
 .btn-section-control:hover {
-  background-color: #f8f9fa;
-  border-color: #ced4da;
-  color: #212529;
-}
-
-.btn-section-control.active {
-  background-color: #ede7f6;
-  border-color: #d1c4e9;
+  background-color: #f4f0fa;
+  border-color: #b79be3;
   color: #6530b5;
 }
 
+.btn-section-control.active,
+.btn-section-control[aria-expanded="true"] {
+  background-color: #ede5f8;
+  border-color: #6530b5;
+  color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
 .btn-section-control .material-icons {
-  font-size: 18px;
+  font-size: 19px;
   color: #6530b5;
 }
 
