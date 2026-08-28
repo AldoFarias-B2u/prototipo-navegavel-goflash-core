@@ -1143,11 +1143,10 @@
   font-family: var(--font-primary, inherit);
 }
 
-/* Bloco 1: Chips de Estoque & Plano */
-.mobile-card-stock-chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+/* Bloco 1: Mini-Grade de Métricas Neutra & Coesa (Opção 1) */
+.card-metrics-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
   gap: 6px;
   background-color: #f8fafc;
   padding: 8px 10px;
@@ -1155,110 +1154,92 @@
   border: 1px solid #e2e8f0;
 }
 
-.stock-chip {
-  display: inline-flex;
+.metric-col {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  font-size: 0.76rem;
-  padding: 3px 8px;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  padding: 4px 2px;
   border-radius: 4px;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+}
+
+.metric-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
   white-space: nowrap;
 }
 
-.stock-chip .chip-label {
-  color: #64748b;
-  font-weight: 500;
+.metric-val {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
 }
 
-.stock-chip strong {
-  font-weight: 700;
+/* Destaque sutil e limpo para o Estoque da Loja */
+.metric-col.metric-col-loja {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.metric-col.metric-col-loja .metric-label {
+  color: #475569;
+}
+
+.metric-col.metric-col-loja .metric-val {
   color: #0f172a;
+  font-weight: 800;
 }
 
-.stock-chip.stock-chip-loja.is-critical {
-  background-color: #fee2e2;
+/* Alerta sutil quando em nível crítico */
+.metric-col.metric-col-loja.is-critical {
   border-color: #fca5a5;
+  background-color: #fffafb;
+}
+
+.metric-col.metric-col-loja.is-critical .metric-label,
+.metric-col.metric-col-loja.is-critical .metric-val {
   color: #b91c1c;
 }
 
-.stock-chip.stock-chip-loja.is-critical .chip-label,
-.stock-chip.stock-chip-loja.is-critical strong {
+.metric-val.val-warning {
   color: #b91c1c;
 }
 
-.stock-chip.stock-chip-origem {
-  background-color: #ede7f6;
-  border-color: #d1c4e9;
-  color: #5b21b6;
+/* Destaque sutil para a Sugestão do Plano */
+.metric-col.metric-col-sugestao .metric-label {
+  color: #6530b5;
 }
 
-.stock-chip.stock-chip-origem .chip-label {
-  color: #7c3aed;
+.metric-col.metric-col-sugestao .metric-val {
+  color: #6530b5;
+  font-weight: 800;
 }
 
-.stock-chip.stock-chip-origem strong {
-  color: #5b21b6;
-}
-
-.stock-chip.stock-chip-min {
-  background-color: #fff1f2;
-  border-color: #fecdd3;
-  color: #be123c;
-}
-
-.stock-chip.stock-chip-min .chip-label,
-.stock-chip.stock-chip-min strong {
-  color: #be123c;
-}
-
-.stock-chip.stock-chip-sugestao {
-  background-color: #e8eaf6;
-  border-color: #c5cae9;
-  color: #1a237e;
-  font-weight: 700;
-  padding: 3px 9px;
-}
-
-.stock-chip.stock-chip-sugestao .material-icons {
-  color: #3949ab;
-}
-
-.stock-chip.stock-chip-sugestao strong {
-  color: #1a237e;
-}
-
-/* Bloco 2: Resumo Financeiro (Separado e Limpo) */
-.mobile-card-financial-bar {
+/* Bloco 2: Linha Financeira Discreta e Elegante (sem fundos chamativos) */
+.card-finance-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 6px;
+  padding: 4px 2px;
   font-size: 0.82rem;
+  color: #64748b;
 }
 
-.mobile-card-financial-bar .fin-price {
-  color: #4b5563;
-}
-
-.mobile-card-financial-bar .fin-price strong {
-  color: #1f2937;
+.card-finance-row strong {
+  color: #1e293b;
   font-weight: 700;
 }
 
-.mobile-card-financial-bar .fin-subtotal {
-  color: #15803d;
-  font-size: 0.88rem;
-}
-
-.mobile-card-financial-bar .fin-subtotal strong {
-  color: #15803d;
-  font-size: 0.95rem;
+.finance-subtotal-item strong {
+  color: #0f172a;
+  font-size: 0.9rem;
   font-weight: 800;
 }
 
@@ -1268,7 +1249,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* ==========================================================================

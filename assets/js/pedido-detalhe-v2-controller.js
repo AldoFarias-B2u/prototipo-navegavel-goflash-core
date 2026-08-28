@@ -673,59 +673,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isStockCritical = (estoqueLojaVal <= (item.minimoCritico !== undefined ? item.minimoCritico : 3));
 
-        // Bloco 1: Chips de Estoque & Plano
+        // Bloco 1: Painel de Métricas Neutro & Coeso (Opção 1 Recomendada)
         const hasStockMetrics = visibleColumns.estoqueLoja || visibleColumns.estoqueOrigem || visibleColumns.estoqueIdeal || visibleColumns.minimoCritico || visibleColumns.sugestao;
         
-        let stockChipsHtml = '';
+        let metricsPanelHtml = '';
         if (hasStockMetrics) {
-          stockChipsHtml = `
-            <div class="mobile-card-stock-chips">
+          metricsPanelHtml = `
+            <div class="card-metrics-panel">
               ${visibleColumns.estoqueLoja ? `
-                <span class="stock-chip stock-chip-loja ${isStockCritical ? 'is-critical' : ''}" title="Estoque atual na loja de destino">
-                  <span class="chip-label">Loja:</span>
-                  <strong>${estoqueLojaVal} un</strong>
-                </span>
+                <div class="metric-col metric-col-loja ${isStockCritical ? 'is-critical' : ''}">
+                  <span class="metric-label">Est. Loja</span>
+                  <span class="metric-val">${estoqueLojaVal} un</span>
+                </div>
               ` : ''}
 
               ${visibleColumns.estoqueOrigem ? `
-                <span class="stock-chip stock-chip-origem" title="Estoque disponível no CD / Origem">
-                  <span class="chip-label">Origem:</span>
-                  <strong>${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</strong>
-                </span>
+                <div class="metric-col">
+                  <span class="metric-label">CD Origem</span>
+                  <span class="metric-val">${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un</span>
+                </div>
               ` : ''}
 
               ${visibleColumns.estoqueIdeal ? `
-                <span class="stock-chip stock-chip-ideal" title="Estoque ideal / meta">
-                  <span class="chip-label">Ideal:</span>
-                  <strong>${estoqueIdealVal} un</strong>
-                </span>
+                <div class="metric-col">
+                  <span class="metric-label">Ideal</span>
+                  <span class="metric-val">${estoqueIdealVal} un</span>
+                </div>
               ` : ''}
 
               ${visibleColumns.minimoCritico ? `
-                <span class="stock-chip stock-chip-min" title="Estoque mínimo crítico">
-                  <span class="chip-label">Mín:</span>
-                  <strong>${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</strong>
-                </span>
+                <div class="metric-col">
+                  <span class="metric-label">Mín. Crítico</span>
+                  <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
+                </div>
               ` : ''}
 
               ${visibleColumns.sugestao ? `
-                <span class="stock-chip-sugestao" title="Quantidade sugerida pelo plano de reposição">
-                  <span class="material-icons" style="font-size: 14px;">lightbulb</span>
-                  <span>Sugestão:</span>
-                  <strong>${sugestaoVal} un</strong>
-                </span>
+                <div class="metric-col metric-col-sugestao">
+                  <span class="metric-label">Sugestão</span>
+                  <span class="metric-val">${sugestaoVal} un</span>
+                </div>
               ` : ''}
             </div>
           `;
         }
 
-        // Bloco 2: Resumo Financeiro (Separado e limpo)
+        // Bloco 2: Linha Financeira Discreta e Elegante (sem fundos chamativos)
         let financialBarHtml = '';
         if (visibleColumns.precos) {
           financialBarHtml = `
-            <div class="mobile-card-financial-bar">
-              <span class="fin-price">Preço Un.: <strong>R$ ${itemPreco.toFixed(2).replace('.', ',')}</strong></span>
-              <span class="fin-subtotal">Subtotal: <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></span>
+            <div class="card-finance-row">
+              <span class="finance-price-item">Preço Un.: <strong>R$ ${itemPreco.toFixed(2).replace('.', ',')}</strong></span>
+              <span class="finance-subtotal-item">Subtotal: <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></span>
             </div>
           `;
         }
@@ -740,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            ${stockChipsHtml}
+            ${metricsPanelHtml}
 
             ${financialBarHtml}
 
