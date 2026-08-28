@@ -208,21 +208,10 @@
       <!-- PAINEL 1: PRODUTOS -->
       <div class="order-tab-pane active" id="paneProdutos">
         
-        <!-- Topo da Seção de Produtos (Integrado: Título + Inserção + Ações em linha única no Desktop) -->
-        <div class="order-section-topbar" id="orderSectionTopbar">
-          <!-- Grupo 1: Título e Status da Seção -->
-          <div class="order-section-title-group">
-            <h2 class="order-section-title">
-              Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
-            </h2>
-            <span class="order-mode-pill pill-view" id="orderModePill">
-              <span class="material-icons" style="font-size: 13px;">visibility</span>
-              Visualização
-            </span>
-          </div>
-
-          <!-- Grupo 2: Inserção de Produtos (Bipe EAN + Botão Catálogo - Visível no Modo Edição) -->
-          <div class="order-insertion-toolbar" id="orderInsertionToolbar" style="display: none;">
+        <!-- LINHA 1: BARRA DE FERRAMENTAS SUPERIOR (Inserção à esquerda / Ações à direita) -->
+        <div class="order-top-toolbar" id="orderTopToolbar">
+          <!-- Esquerda: Ferramentas de Inserção (Bipe EAN + Adicionar Catálogo - Visível no Modo Edição) -->
+          <div class="order-insertion-left-group" id="orderInsertionToolbar" style="display: none;">
             <!-- Barra de Bipe e Busca Rápida (Omnibar) -->
             <div class="order-omnibar-box" id="orderOmnibarBox">
               <span class="material-icons order-omnibar-icon">qr_code_scanner</span>
@@ -241,7 +230,7 @@
               </div>
             </div>
 
-            <!-- Botão Adicionar do Catálogo (Sem o sinal '+' duplicado) -->
+            <!-- Botão Adicionar do Catálogo -->
             <button type="button" class="btn-add-catalog-v2" id="btnOpenCatalogModal" title="Adicionar Produtos do Catálogo">
               <span class="material-icons">add_circle</span>
               <span class="btn-add-txt-desktop">ADICIONAR PRODUTOS</span>
@@ -249,7 +238,7 @@
             </button>
           </div>
 
-          <!-- Grupo 3: Controles de Visualização e Ações Rápidas -->
+          <!-- Direita: Controles de Visualização e Ações Rápidas -->
           <div class="order-section-controls">
             <!-- Botão Mais Ações (Dropdown) -->
             <div class="more-actions-wrapper" id="moreActionsWrapper">
@@ -299,6 +288,19 @@
                 <span class="material-icons">grid_view</span>
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- LINHA 2: CABEÇALHO DA SEÇÃO DE ITENS (Logo acima da tabela) -->
+        <div class="order-section-topbar" id="orderSectionTopbar">
+          <div class="order-section-title-group">
+            <h2 class="order-section-title">
+              Itens do Pedido <span class="order-items-count-inline" id="sectionProductsCount">(5)</span>
+            </h2>
+            <span class="order-mode-pill pill-view" id="orderModePill">
+              <span class="material-icons" style="font-size: 13px;">visibility</span>
+              Visualização
+            </span>
           </div>
         </div>
 

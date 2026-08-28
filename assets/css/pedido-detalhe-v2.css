@@ -413,17 +413,138 @@
 }
 
 /* ==========================================================================
-   6. FERRAMENTAS DE INSERÇÃO & TOPO DA SEÇÃO DE PRODUTOS
+   6. FERRAMENTAS DE INSERÇÃO & CABEÇALHO DE ITENS (2 NÍVEIS DISTRIBUÍDOS)
    ========================================================================== */
 
-/* Topo da Seção de Produtos (Integrado: Título + Inserção + Ações em linha única no Desktop) */
+/* LINHA 1: Barra de Ferramentas Superior (Inserção à esquerda / Ações à direita) */
+.order-top-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 1.15rem;
+  padding-top: 0.15rem;
+}
+
+/* Grupo Esquerdo: Inserção de Produtos */
+.order-insertion-left-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Barra de Bipe e Busca Inteligente (Omnibar) */
+.order-omnibar-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0 0.85rem;
+  height: 36px;
+  width: clamp(280px, 32vw, 420px);
+  box-sizing: border-box;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.order-omnibar-box:focus-within {
+  background-color: #ffffff;
+  border-color: #6530b5;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.order-omnibar-icon {
+  color: #6530b5;
+  font-size: 19px;
+  margin-right: 8px;
+}
+
+.order-omnibar-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.84rem;
+  color: #212529;
+  min-width: 0;
+}
+
+.order-omnibar-input::placeholder {
+  color: #8e959e;
+}
+
+.order-omnibar-hint {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #6c757d;
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* Botão Adicionar do Catálogo */
+.btn-add-catalog-v2 {
+  background-color: #6530b5;
+  color: #ffffff;
+  border: none;
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.2);
+  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.btn-add-catalog-v2:hover {
+  background-color: #522396;
+  box-shadow: 0 3px 8px rgba(101, 48, 181, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-add-catalog-v2 .material-icons {
+  font-size: 18px;
+}
+
+.btn-add-txt-desktop {
+  display: inline;
+}
+.btn-add-txt-mobile {
+  display: none;
+}
+
+/* Grupo Direito: Controles de Seção (Mais Ações + Switcher) */
+.order-section-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* LINHA 2: Topo da Seção de Produtos (Logo acima da Tabela) */
 .order-section-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 1.15rem;
-  padding-top: 0.25rem;
+  margin-bottom: 0.85rem;
+  padding-top: 0.15rem;
 }
 
 .order-section-title-group {
@@ -480,122 +601,17 @@
   box-shadow: 0 1px 4px rgba(101, 48, 181, 0.15);
 }
 
-/* Barra Integrada de Ferramentas de Inserção */
-.order-insertion-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto; /* Empurra para a direita junto com as ações no desktop */
-}
-
-/* Barra de Bipe e Busca Inteligente (Omnibar Compacto Desktop) */
-.order-omnibar-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  padding: 0 0.75rem;
-  height: 34px;
-  width: 280px;
-  box-sizing: border-box;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.order-omnibar-box:focus-within {
-  background-color: #ffffff;
-  border-color: #6530b5;
-  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
-}
-
-.order-omnibar-icon {
-  color: #6530b5;
-  font-size: 18px;
-  margin-right: 6px;
-}
-
-.order-omnibar-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-family: inherit;
-  font-size: 0.82rem;
-  color: #212529;
-  min-width: 0;
-}
-
-.order-omnibar-input::placeholder {
-  color: #8e959e;
-}
-
-.order-omnibar-hint {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #6c757d;
-  background-color: #e9ecef;
-  padding: 1px 5px;
-  border-radius: 3px;
-  white-space: nowrap;
-}
-
-/* Botão Adicionar do Catálogo */
-.btn-add-catalog-v2 {
-  background-color: #6530b5;
-  color: #ffffff;
-  border: none;
-  padding: 0 14px;
-  height: 34px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  box-shadow: 0 1px 4px rgba(101, 48, 181, 0.2);
-  transition: all var(--transition-fast, 0.2s ease);
-  white-space: nowrap;
-  flex-shrink: 0;
-  box-sizing: border-box;
-}
-
-.btn-add-catalog-v2:hover {
-  background-color: #522396;
-  box-shadow: 0 3px 8px rgba(101, 48, 181, 0.3);
-  transform: translateY(-1px);
-}
-
-.btn-add-catalog-v2 .material-icons {
-  font-size: 17px;
-}
-
-.btn-add-txt-desktop {
-  display: inline;
-}
-.btn-add-txt-mobile {
-  display: none;
-}
-
 /* Layout Responsivo no Mobile e Tablet (≤ 991px) */
 @media (max-width: 991px) {
-  .order-section-topbar {
+  .order-top-toolbar {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
     margin-bottom: 0.75rem;
   }
 
-  .order-insertion-toolbar {
-    order: 1;
+  .order-insertion-left-group {
     width: 100%;
-    margin-left: 0;
     display: flex;
     gap: 8px;
   }
@@ -633,8 +649,11 @@
     display: inline;
   }
 
-  .order-section-title-group {
-    order: 2;
+  .order-section-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
   }
 
   .order-section-title {
@@ -651,7 +670,6 @@
   }
 
   .order-section-controls {
-    order: 3;
     gap: 6px;
   }
 }
