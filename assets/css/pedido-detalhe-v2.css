@@ -2444,3 +2444,25 @@
   box-shadow: 0 4px 12px rgba(101, 48, 181, 0.4);
   transform: translateY(-1px);
 }
+
+/* Animação e Destaque Suave para Novos Produtos Inseridos no Topo */
+@keyframes rowInsertHighlight {
+  0% {
+    background-color: #ede7f6;
+  }
+  60% {
+    background-color: #f3e8ff;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.order-items-table tr.item-row-highlight {
+  animation: rowInsertHighlight 1.8s ease-out;
+}
+
+.order-item-card.item-card-highlight {
+  animation: rowInsertHighlight 1.8s ease-out;
+  border-color: #6530b5 !important;
+}

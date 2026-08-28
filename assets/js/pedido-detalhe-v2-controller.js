@@ -557,8 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
+        const highlightClass = item._justAdded ? 'item-row-highlight' : '';
+
         return `
-          <tr data-index="${index}">
+          <tr data-index="${index}" class="${highlightClass}">
             <td style="text-align: center; color: #757575; font-size: 0.8rem; font-weight: 500;">${index + 1}</td>
             
             <!-- Coluna de Produto Unificada: Foto + Nome + EAN + Categoria -->
@@ -667,8 +669,10 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
+        const highlightCardClass = item._justAdded ? 'item-card-highlight' : '';
+
         return `
-          <div class="order-mobile-product-card" data-index="${index}">
+          <div class="order-mobile-product-card ${highlightCardClass}" data-index="${index}">
             <div class="mobile-card-top-row">
               <img src="${item.foto || '../assets/images/logo-homepage.png'}" alt="${item.nome}" class="mobile-card-thumb" onerror="this.src='../assets/images/logo-homepage.png'">
               <div class="mobile-card-info">
@@ -750,6 +754,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bindProductRowEvents();
     updateTotals();
+
+    // Limpa a flag temporária de highlight após a animação CSS terminar
+    setTimeout(() => {
+      cartItems.forEach(i => { delete i._justAdded; });
+    }, 2000);
   }
 
   // 10. Eventos Interativos da Lista de Produtos
@@ -855,10 +864,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = omnibarInput.value.trim();
         if (!query) return;
 
-        // 1. Procura se já está no carrinho
-        const existing = cartItems.find(p => p.ean === query || p.nome.toLowerCase() === query.toLowerCase());
-        if (existing) {
+        // 1. Procura se já está no carrinho (move para o topo e incrementa)
+        const existingIndex = cartItems.findIndex(p => p.ean === query || p.nome.toLowerCase() === query.toLowerCase());
+        if (existingIndex !== -1) {
+          const existing = cartItems.splice(existingIndex, 1)[0];
           existing.quantidade += 1;
+          existing._justAdded = true;
+          cartItems.unshift(existing);
           if (typeof Toast !== 'undefined') {
             Toast.success(`+1 un: ${existing.nome.substring(0, 26)}...`);
           }
@@ -867,7 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // 2. Procura no catálogo mestre
+        // 2. Procura no catálogo mestre (insere no topo)
         const foundInCatalog = rawCatalog.find(p => p.ean === query || p.nome.toLowerCase().includes(query.toLowerCase()));
         if (foundInCatalog) {
           const newItem = {
@@ -879,6 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueLoja: foundInCatalog.estoqueLoja !== undefined ? foundInCatalog.estoqueLoja : 0,
             preco: foundInCatalog.precoVenda || foundInCatalog.preco || 5.00,
             quantidade: 1,
+            _justAdded: true,
             lotes: []
           };
           cartItems.unshift(newItem);
@@ -969,9 +982,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const prod = rawCatalog.find(p => p.ean === ean);
         if (!prod) return;
 
-        const existing = cartItems.find(item => item.ean === ean);
-        if (existing) {
+        const existingIndex = cartItems.findIndex(item => item.ean === ean);
+        if (existingIndex !== -1) {
+          const existing = cartItems.splice(existingIndex, 1)[0];
           existing.quantidade += 1;
+          existing._justAdded = true;
+          cartItems.unshift(existing);
           if (typeof Toast !== 'undefined') Toast.success(`+1 un: ${prod.nome.substring(0, 24)}...`);
         } else {
           cartItems.unshift({
@@ -983,6 +999,7 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueLoja: prod.estoqueLoja !== undefined ? prod.estoqueLoja : 6,
             preco: prod.precoVenda || prod.preco || 6.50,
             quantidade: 1,
+            _justAdded: true,
             lotes: []
           });
           if (typeof Toast !== 'undefined') Toast.success(`Produto adicionado: ${prod.nome.substring(0, 24)}...`);
@@ -1789,11 +1806,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      let addedCount = 0;
+      const newItems = [];
       matches.forEach(prod => {
         const existing = cartItems.find(item => item.ean === prod.ean);
         if (!existing) {
-          cartItems.push({
+          newItems.push({
             id: prod.id || Date.now() + Math.random(),
             nome: prod.nome,
             ean: prod.ean,
@@ -1806,17 +1823,26 @@ document.addEventListener('DOMContentLoaded', () => {
             estoqueOrigem: prod.estoqueOrigem !== undefined ? prod.estoqueOrigem : 36,
             estoqueIdeal: prod.estoqueIdeal !== undefined ? prod.estoqueIdeal : 12,
             minimoCritico: prod.minimoCritico !== undefined ? prod.minimoCritico : 3,
+            _justAdded: true,
             lotes: []
           });
-          addedCount++;
         }
       });
+
+      if (newItems.length > 0) {
+        // Insere todos os novos itens no topo da lista
+        cartItems.unshift(...newItems);
+      }
 
       renderProducts();
       updateTotals();
       closeAddByCategoryModal();
+
+      // Ajusta scroll suave para o topo da tabela
+      if (tableWrapper) tableWrapper.scrollTop = 0;
+
       if (typeof Toast !== 'undefined') {
-        Toast.success(`${addedCount > 0 ? addedCount : 'Produtos'} produto(s) incluído(s) no pedido com sucesso!`);
+        Toast.success(`${newItems.length > 0 ? newItems.length : 'Produtos'} produto(s) incluído(s) no topo do pedido!`);
       }
     });
   }
