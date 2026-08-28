@@ -673,17 +673,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isStockCritical = (estoqueLojaVal <= (item.minimoCritico !== undefined ? item.minimoCritico : 3));
 
-        // Bloco 1: Painel de Métricas Neutro & Coeso (Opção 1 Recomendada)
-        const hasStockMetrics = visibleColumns.estoqueLoja || visibleColumns.estoqueOrigem || visibleColumns.estoqueIdeal || visibleColumns.minimoCritico || visibleColumns.sugestao;
-        
+        // Bloco 1: Painel de Métricas Neutro & Coeso com Divisores Finos
+        const activeMetricsCount = (visibleColumns.estoqueLoja ? 1 : 0) +
+          (visibleColumns.estoqueOrigem ? 1 : 0) +
+          (visibleColumns.estoqueIdeal ? 1 : 0) +
+          (visibleColumns.minimoCritico ? 1 : 0) +
+          (visibleColumns.sugestao ? 1 : 0);
+
         let metricsPanelHtml = '';
-        if (hasStockMetrics) {
+        if (activeMetricsCount === 1) {
+          // Cenário com apenas 1 campo ativo (ex: apenas Estoque da Loja)
+          let singleLabel = '';
+          let singleVal = '';
+          if (visibleColumns.estoqueLoja) {
+            singleLabel = 'Estoque na Loja:';
+            singleVal = `${estoqueLojaVal} un`;
+          } else if (visibleColumns.estoqueOrigem) {
+            singleLabel = 'Estoque no CD Origem:';
+            singleVal = `${item.estoqueOrigem !== undefined ? item.estoqueOrigem : 48} un`;
+          } else if (visibleColumns.estoqueIdeal) {
+            singleLabel = 'Estoque Ideal:';
+            singleVal = `${estoqueIdealVal} un`;
+          } else if (visibleColumns.minimoCritico) {
+            singleLabel = 'Mínimo Crítico:';
+            singleVal = `${item.minimoCritico !== undefined ? item.minimoCritico : 3} un`;
+          } else if (visibleColumns.sugestao) {
+            singleLabel = 'Sugestão de Reposição:';
+            singleVal = `${sugestaoVal} un`;
+          }
+
+          metricsPanelHtml = `
+            <div class="card-metrics-panel is-single-metric">
+              <span class="single-metric-label">${singleLabel}</span>
+              <strong class="single-metric-val ${isStockCritical && visibleColumns.estoqueLoja ? 'val-warning' : ''}">${singleVal}</strong>
+            </div>
+          `;
+        } else if (activeMetricsCount > 1) {
+          // Cenário com múltiplos campos (distribuídos com divisores verticais)
+          const bothIdealAndMin = visibleColumns.estoqueIdeal && visibleColumns.minimoCritico;
+
           metricsPanelHtml = `
             <div class="card-metrics-panel">
               ${visibleColumns.estoqueLoja ? `
-                <div class="metric-col metric-col-loja ${isStockCritical ? 'is-critical' : ''}">
+                <div class="metric-col metric-col-loja">
                   <span class="metric-label">Est. Loja</span>
-                  <span class="metric-val">${estoqueLojaVal} un</span>
+                  <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${estoqueLojaVal} un</span>
                 </div>
               ` : ''}
 
@@ -694,19 +728,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               ` : ''}
 
-              ${visibleColumns.estoqueIdeal ? `
+              ${bothIdealAndMin ? `
                 <div class="metric-col">
-                  <span class="metric-label">Ideal</span>
-                  <span class="metric-val">${estoqueIdealVal} un</span>
+                  <span class="metric-label">Meta Ideal</span>
+                  <span class="metric-val">${estoqueIdealVal} <small style="font-size: 0.72rem; color: #64748b; font-weight: 500;">(Mín ${item.minimoCritico !== undefined ? item.minimoCritico : 3})</small></span>
                 </div>
-              ` : ''}
+              ` : `
+                ${visibleColumns.estoqueIdeal ? `
+                  <div class="metric-col">
+                    <span class="metric-label">Ideal</span>
+                    <span class="metric-val">${estoqueIdealVal} un</span>
+                  </div>
+                ` : ''}
 
-              ${visibleColumns.minimoCritico ? `
-                <div class="metric-col">
-                  <span class="metric-label">Mín. Crítico</span>
-                  <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
-                </div>
-              ` : ''}
+                ${visibleColumns.minimoCritico ? `
+                  <div class="metric-col">
+                    <span class="metric-label">Mín. Crítico</span>
+                    <span class="metric-val ${isStockCritical ? 'val-warning' : ''}">${item.minimoCritico !== undefined ? item.minimoCritico : 3} un</span>
+                  </div>
+                ` : ''}
+              `}
 
               ${visibleColumns.sugestao ? `
                 <div class="metric-col metric-col-sugestao">

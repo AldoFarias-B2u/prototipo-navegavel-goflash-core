@@ -1145,24 +1145,52 @@
 
 /* Bloco 1: Mini-Grade de Métricas Neutra & Coesa (Opção 1) */
 .card-metrics-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
-  gap: 6px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
   background-color: #f8fafc;
-  padding: 8px 10px;
+  padding: 6px 4px;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
 }
 
+/* Variante de Painel quando apenas 1 métrica está ativa */
+.card-metrics-panel.is-single-metric {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
+  color: #475569;
+}
+
+.single-metric-label {
+  font-weight: 500;
+  color: #64748b;
+}
+
+.single-metric-val {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.88rem;
+}
+
 .metric-col {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
   text-align: center;
-  padding: 4px 2px;
-  border-radius: 4px;
+  padding: 2px 4px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.metric-col:last-child {
+  border-right: none;
 }
 
 .metric-label {
@@ -1181,15 +1209,10 @@
   white-space: nowrap;
 }
 
-/* Destaque sutil e limpo para o Estoque da Loja */
-.metric-col.metric-col-loja {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-}
-
+/* Destaque sutil puramente tipográfico para o Estoque da Loja */
 .metric-col.metric-col-loja .metric-label {
-  color: #475569;
+  color: #334155;
+  font-weight: 700;
 }
 
 .metric-col.metric-col-loja .metric-val {
@@ -1197,24 +1220,14 @@
   font-weight: 800;
 }
 
-/* Alerta sutil quando em nível crítico */
-.metric-col.metric-col-loja.is-critical {
-  border-color: #fca5a5;
-  background-color: #fffafb;
-}
-
-.metric-col.metric-col-loja.is-critical .metric-label,
-.metric-col.metric-col-loja.is-critical .metric-val {
-  color: #b91c1c;
-}
-
 .metric-val.val-warning {
-  color: #b91c1c;
+  color: #b91c1c !important;
 }
 
 /* Destaque sutil para a Sugestão do Plano */
 .metric-col.metric-col-sugestao .metric-label {
   color: #6530b5;
+  font-weight: 700;
 }
 
 .metric-col.metric-col-sugestao .metric-val {
