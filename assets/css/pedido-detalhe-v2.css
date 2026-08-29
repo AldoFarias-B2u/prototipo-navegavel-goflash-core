@@ -633,12 +633,13 @@
   .order-toolbar-actions-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     width: 100%;
   }
 
   .btn-add-catalog-v2 {
+    order: 2;
     flex: 1;
     min-width: 0;
     width: auto !important;
@@ -662,10 +663,11 @@
   }
 
   .order-section-controls {
+    order: 1;
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-left: auto;
+    margin-left: 0;
     flex-shrink: 0;
   }
 
