@@ -2842,6 +2842,7 @@
   gap: 12px;
   min-width: 0;
   flex: 1;
+  overflow: hidden;
 }
 
 .lotes-product-img {
@@ -2854,6 +2855,12 @@
   flex-shrink: 0;
 }
 
+.lotes-product-text-box {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
 .lotes-product-title {
   font-size: 0.92rem;
   font-weight: 600;
@@ -2862,7 +2869,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 360px;
+  width: 100%;
+  display: block;
 }
 
 .lotes-product-code {
@@ -2873,6 +2881,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  display: block;
 }
 
 .btn-lotes-new-top {
@@ -3131,6 +3141,8 @@
     padding: 10px 14px;
     gap: 10px;
     align-items: center;
+    display: flex;
+    justify-content: space-between;
   }
 
   .lotes-product-details {
@@ -3139,6 +3151,7 @@
     gap: 10px;
     min-width: 0;
     flex: 1;
+    overflow: hidden;
   }
 
   .lotes-product-img {
@@ -3147,20 +3160,28 @@
     flex-shrink: 0;
   }
 
+  .lotes-product-text-box {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
   .lotes-product-title {
-    max-width: 100%;
     font-size: 0.86rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
+    display: block;
   }
 
   .lotes-product-code {
-    font-size: 0.74rem;
+    font-size: 0.73rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
     display: block;
     margin-top: 2px;
   }
@@ -3169,12 +3190,14 @@
   .btn-lotes-new-top {
     width: 32px;
     height: 32px;
+    min-width: 32px;
     padding: 0;
     border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    margin-left: 6px;
   }
 
   .btn-lotes-new-top-txt {
