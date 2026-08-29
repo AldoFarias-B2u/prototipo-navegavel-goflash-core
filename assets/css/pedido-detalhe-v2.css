@@ -1378,6 +1378,8 @@
 .finance-subtotal-item strong {
   color: #1e293b;
   font-size: 0.86rem;
+  font-weight: 600;
+}
 /* Bloco 3: Rodapé de Ações */
 .mobile-card-bottom-actions {
   display: flex;
