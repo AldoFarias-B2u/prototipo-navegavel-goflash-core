@@ -2062,10 +2062,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 12. Modal de Gerenciamento de Lotes e Validades
+  // 12. Modal de Gerenciamento de Lotes e Validades (Shelf-Life)
   function openLotesModal(item) {
     currentEditingItemForLotes = item;
-    temporaryLotes = item.lotes ? JSON.parse(JSON.stringify(item.lotes)) : [];
+    const targetQtd = Number(item.quantidade) || 0;
+
+    if (item.lotes && item.lotes.length > 0) {
+      temporaryLotes = JSON.parse(JSON.stringify(item.lotes));
+    } else {
+      temporaryLotes = [
+        {
+          codigo: '001',
+          quantidade: targetQtd,
+          fabricacao: '',
+          validade: ''
+        }
+      ];
+    }
 
     const lotesModalProdImg = document.getElementById('lotesModalProdImg');
     const lotesModalProdName = document.getElementById('lotesModalProdName');
@@ -2073,16 +2086,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (lotesModalProdImg) lotesModalProdImg.src = item.foto || '../assets/images/logo-homepage.png';
     if (lotesModalProdName) lotesModalProdName.textContent = item.nome;
-    if (lotesModalProdEan) lotesModalProdEan.textContent = `EAN: ${item.ean}`;
-
-    if (temporaryLotes.length === 0) {
-      temporaryLotes.push({
-        codigo: `LOTE-${new Date().getFullYear()}-01`,
-        quantidade: item.quantidade,
-        fabricacao: '',
-        validade: ''
-      });
-    }
+    if (lotesModalProdEan) lotesModalProdEan.textContent = `EAN: ${item.ean} | Pedido: ${targetQtd} un`;
 
     renderLotesRows();
     if (modalGerenciarLotes) modalGerenciarLotes.classList.add('show', 'active');
@@ -2090,28 +2094,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeLotesModal() {
     if (modalGerenciarLotes) modalGerenciarLotes.classList.remove('show', 'active');
+    currentEditingItemForLotes = null;
+    temporaryLotes = [];
   }
 
   function renderLotesRows() {
     if (!lotesTableBody || !currentEditingItemForLotes) return;
 
+    if (temporaryLotes.length === 0) {
+      lotesTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="lotes-empty-cell">
+            <div class="lotes-empty-box">
+              <span class="material-icons">inventory_2</span>
+              <p>Nenhum lote adicionado para este produto.</p>
+              <small>Clique no botão <strong>+ NOVO LOTE</strong> ou <strong>+ Adicionar Outro Lote / Validade</strong> para registrar.</small>
+            </div>
+          </td>
+        </tr>
+      `;
+      updateLotesAllocationProgress();
+      return;
+    }
+
     lotesTableBody.innerHTML = temporaryLotes.map((lote, idx) => `
-      <tr>
+      <tr data-idx="${idx}">
         <td>
-          <input type="text" class="input-field input-lote-cod" data-idx="${idx}" value="${lote.codigo || ''}" placeholder="Ex: LOT-102">
+          <input type="text" class="lote-input input-lote-cod" data-idx="${idx}" value="${lote.codigo || lote.lote || ''}" placeholder="Ex: 001">
         </td>
         <td>
-          <input type="number" class="input-field input-lote-qty" data-idx="${idx}" value="${lote.quantidade || 0}" min="1">
+          <input type="number" class="lote-input input-lote-qty" data-idx="${idx}" value="${lote.quantidade !== undefined ? lote.quantidade : ''}" min="1" placeholder="Qtd">
         </td>
         <td>
-          <input type="date" class="input-field input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}">
+          <input type="date" class="lote-input input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}">
         </td>
         <td>
-          <input type="date" class="input-field input-lote-val" data-idx="${idx}" value="${lote.validade || ''}">
+          <input type="date" class="lote-input input-lote-val" data-idx="${idx}" value="${lote.validade || ''}" required>
         </td>
         <td style="text-align: center;">
-          <button type="button" class="btn-delete-item-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
-            <span class="material-icons" style="font-size: 16px;">close</span>
+          <button type="button" class="btn-del-lote-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
+            <span class="material-icons">delete_outline</span>
           </button>
         </td>
       </tr>
@@ -2131,9 +2153,18 @@ document.addEventListener('DOMContentLoaded', () => {
       inp.addEventListener('input', () => {
         const idx = parseInt(inp.getAttribute('data-idx'), 10);
         if (temporaryLotes[idx]) {
+          inp.classList.remove('is-invalid');
           temporaryLotes[idx].quantidade = parseInt(inp.value, 10) || 0;
           updateLotesAllocationProgress();
         }
+      });
+    });
+
+    const fabInputs = lotesTableBody.querySelectorAll('.input-lote-fab');
+    fabInputs.forEach(inp => {
+      inp.addEventListener('change', () => {
+        const idx = parseInt(inp.getAttribute('data-idx'), 10);
+        if (temporaryLotes[idx]) temporaryLotes[idx].fabricacao = inp.value;
       });
     });
 
@@ -2141,7 +2172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     valInputs.forEach(inp => {
       inp.addEventListener('change', () => {
         const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) temporaryLotes[idx].validade = inp.value;
+        if (temporaryLotes[idx]) {
+          inp.classList.remove('is-invalid');
+          temporaryLotes[idx].validade = inp.value;
+        }
       });
     });
 
@@ -2162,29 +2196,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = Number(currentEditingItemForLotes.quantidade) || 0;
     const allocated = temporaryLotes.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
 
-    if (lotesCounterText) lotesCounterText.textContent = `${allocated} / ${required}`;
+    if (lotesCounterText) lotesCounterText.textContent = `${allocated} / ${required} un`;
 
-    const percent = Math.min(100, Math.round((allocated / (required || 1)) * 100));
-    if (lotesBarFill) lotesBarFill.style.width = `${percent}%`;
+    const percent = required > 0 ? Math.min(100, Math.round((allocated / required) * 100)) : 0;
+
+    if (lotesBarFill) {
+      if (allocated === required) {
+        lotesBarFill.style.width = '100%';
+        lotesBarFill.className = 'allocation-bar-fill complete';
+      } else if (allocated > required) {
+        lotesBarFill.style.width = '100%';
+        lotesBarFill.className = 'allocation-bar-fill exceeded';
+      } else {
+        lotesBarFill.style.width = `${percent}%`;
+        lotesBarFill.className = 'allocation-bar-fill';
+      }
+    }
 
     if (lotesAllocationBadge) {
       if (allocated === required) {
         lotesAllocationBadge.className = 'allocation-badge complete';
-        lotesAllocationBadge.textContent = 'Alocado Completo ✓';
+        lotesAllocationBadge.textContent = 'COMPLETO (100%)';
       } else if (allocated > required) {
-        lotesAllocationBadge.className = 'allocation-badge warning';
-        lotesAllocationBadge.textContent = `Excedente (+${allocated - required})`;
+        const diff = allocated - required;
+        lotesAllocationBadge.className = 'allocation-badge exceeded';
+        lotesAllocationBadge.textContent = `EXCEDENTE (+${diff} UN)`;
       } else {
+        const diff = required - allocated;
         lotesAllocationBadge.className = 'allocation-badge pending';
-        lotesAllocationBadge.textContent = `Pendente (${required - allocated} un)`;
+        lotesAllocationBadge.textContent = `PENDENTE (${diff} UN)`;
       }
     }
   }
 
   function addEmptyLoteRow() {
+    if (!currentEditingItemForLotes) return;
+    const targetQtd = Number(currentEditingItemForLotes.quantidade) || 0;
+    const currentAllocated = temporaryLotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0);
+    const remainder = Math.max(1, targetQtd - currentAllocated);
+    const nextCode = String(temporaryLotes.length + 1).padStart(3, '0');
+
     temporaryLotes.push({
-      codigo: `LOTE-${new Date().getFullYear()}-${String(temporaryLotes.length + 1).padStart(2, '0')}`,
-      quantidade: 1,
+      codigo: nextCode,
+      quantidade: remainder,
       fabricacao: '',
       validade: ''
     });
@@ -2196,13 +2250,74 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseLotesModal) btnCloseLotesModal.addEventListener('click', closeLotesModal);
   if (btnCancelLotes) btnCancelLotes.addEventListener('click', closeLotesModal);
 
+  if (modalGerenciarLotes) {
+    modalGerenciarLotes.addEventListener('click', (e) => {
+      if (e.target === modalGerenciarLotes) closeLotesModal();
+    });
+  }
+
   if (btnSaveLotes) {
     btnSaveLotes.addEventListener('click', () => {
       if (!currentEditingItemForLotes) return;
+
+      if (temporaryLotes.length === 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Nenhum lote adicionado. Adicione ao menos um lote ou clique em Cancelar.');
+        }
+        return;
+      }
+
+      // Validação 1: Quantidade e Validade de cada lote
+      for (let i = 0; i < temporaryLotes.length; i++) {
+        const lote = temporaryLotes[i];
+        const rowEl = lotesTableBody.querySelector(`tr[data-idx="${i}"]`);
+
+        if (!lote.quantidade || lote.quantidade <= 0) {
+          if (rowEl) {
+            const qtyInp = rowEl.querySelector('.input-lote-qty');
+            if (qtyInp) { qtyInp.classList.add('is-invalid'); qtyInp.focus(); }
+          }
+          if (typeof Toast !== 'undefined') {
+            Toast.warning(`Informe uma quantidade válida para o lote ${lote.codigo || i + 1}.`);
+          }
+          return;
+        }
+
+        if (!lote.validade || lote.validade.trim() === '') {
+          if (rowEl) {
+            const valInp = rowEl.querySelector('.input-lote-val');
+            if (valInp) { valInp.classList.add('is-invalid'); valInp.focus(); }
+          }
+          if (typeof Toast !== 'undefined') {
+            Toast.warning(`A data de validade é obrigatória para o lote ${lote.codigo || i + 1}. Preencha ou clique em Cancelar.`);
+          }
+          return;
+        }
+      }
+
+      // Validação 2: Total alocado deve bater exatamente com a quantidade do pedido
+      const required = Number(currentEditingItemForLotes.quantidade) || 0;
+      const allocated = temporaryLotes.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
+
+      if (allocated < required) {
+        if (typeof Toast !== 'undefined') {
+          Toast.error(`Quantidade total alocada (${allocated} un) é menor que o pedido (${required} un). Aloque as ${required - allocated} un restantes para confirmar.`);
+        }
+        return;
+      }
+
+      if (allocated > required) {
+        if (typeof Toast !== 'undefined') {
+          Toast.error(`Quantidade total alocada (${allocated} un) excede o pedido (${required} un). Ajuste as quantidades para coincidir com o pedido.`);
+        }
+        return;
+      }
+
+      // Sucesso: Grava os lotes no produto
       currentEditingItemForLotes.lotes = JSON.parse(JSON.stringify(temporaryLotes));
       closeLotesModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success(`Validades e lotes atualizados para "${currentEditingItemForLotes.nome.substring(0, 24)}...".`);
+        Toast.success(`Lotes e validades confirmados com sucesso para "${currentEditingItemForLotes.nome.substring(0, 24)}..."!`);
       }
       renderProducts();
     });
