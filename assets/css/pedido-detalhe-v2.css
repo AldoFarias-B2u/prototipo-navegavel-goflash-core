@@ -980,15 +980,15 @@
   border: 1px solid #e5d9fa;
 }
 
-/* Botão de Validades / Lotes (3 Estados Dinâmicos) */
+/* Botão de Validades / Lotes (3 Estados Dinâmicos com Alto Contraste) */
 .btn-manage-lotes-table {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.78rem;
-  font-weight: 500;
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -996,79 +996,75 @@
   gap: 6px;
   white-space: nowrap;
   transition: all var(--transition-fast, 0.15s ease);
-  height: 30px;
+  height: 32px;
   box-sizing: border-box;
+  user-select: none;
+  opacity: 1 !important;
 }
 
-.btn-manage-lotes-table:hover:not(:disabled) {
+.btn-manage-lotes-table:hover {
   background-color: #f1f5f9;
-  border-color: #cbd5e1;
-  color: #334155;
+  border-color: #94a3b8;
+  color: #0f172a;
 }
 
 .btn-manage-lotes-table .material-icons {
   font-size: 16px;
+  color: #475569;
+}
+
+/* Estado 1: Sem Lote Informado (Status Empty - Destaque Neutro Nítido) */
+.btn-manage-lotes-table.status-empty {
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-empty .material-icons {
   color: #64748b;
 }
 
-/* Estado 2: Validade OK (Verde Sóbrio) */
+.btn-manage-lotes-table.status-empty:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* Estado 2: Validade OK (Verde Sólido & Nítido) */
 .btn-manage-lotes-table.status-ok {
-  background-color: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #15803d;
-  font-weight: 600;
-}
-
-.btn-manage-lotes-table.status-ok .material-icons {
-  color: #16a34a;
-}
-
-.btn-manage-lotes-table.status-ok:hover:not(:disabled) {
-  background-color: #dcfce7;
-  border-color: #86efac;
-}
-
-/* Estado 3: Divergente (Âmbar Suave) */
-.btn-manage-lotes-table.status-divergent {
-  background-color: #fffbeb;
-  border-color: #fde68a;
-  color: #b45309;
-  font-weight: 600;
-}
-
-.btn-manage-lotes-table.status-divergent .material-icons {
-  color: #d97706;
-}
-
-.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
-  background-color: #fef3c7;
-  border-color: #fcd34d;
+  background-color: #e8f5e9;
+  border: 1.5px solid #81c784;
+  color: #1b5e20;
+  font-weight: 700;
 }
 
 .btn-manage-lotes-table.status-ok .material-icons {
   color: #2e7d32;
 }
 
-/* Estado 3: Divergente (Amarelo / Âmbar) */
-.btn-manage-lotes-table.status-divergent {
-  background-color: #fff8e1;
-  border-color: #fed7aa;
-  color: #e65100;
-  font-weight: 600;
+.btn-manage-lotes-table.status-ok:hover {
+  background-color: #dcfce7;
+  border-color: #4ade80;
+  color: #14532d;
 }
 
-.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
-  background-color: #fef3c7;
-  border-color: #fcd34d;
+/* Estado 3: Divergente (Âmbar / Laranja Nítido) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fff8e1;
+  border: 1.5px solid #ffb74d;
+  color: #b45309;
+  font-weight: 700;
 }
 
 .btn-manage-lotes-table.status-divergent .material-icons {
-  color: #e65100;
+  color: #d97706;
 }
 
-.btn-manage-lotes-table:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
+.btn-manage-lotes-table.status-divergent:hover {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
 }
 
 /* Botão de Excluir Linha */

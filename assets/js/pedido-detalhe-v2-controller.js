@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let lotesBadgeHtml = '';
         if (lotesCount === 0) {
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes">
               <span class="material-icons">event</span>
               Informar Validade
             </button>
@@ -556,14 +556,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (totalLotesQty === itemQtde) {
           const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}">
               <span class="material-icons">verified</span>
               Validade OK (${loteText})
             </button>
           `;
         } else {
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido">
               <span class="material-icons">warning_amber</span>
               Divergente (${totalLotesQty}/${itemQtde} un)
             </button>
@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let mobileLotesBadgeHtml = '';
         if (lotesCount === 0) {
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes">
               <span class="material-icons" style="font-size: 15px;">event</span>
               Informar Validade
             </button>
@@ -679,14 +679,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (totalLotesQty === itemQtde) {
           const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}">
               <span class="material-icons" style="font-size: 15px;">verified</span>
               Validade OK (${loteText})
             </button>
           `;
         } else {
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido">
               <span class="material-icons" style="font-size: 15px;">warning_amber</span>
               Divergente (${totalLotesQty}/${itemQtde} un)
             </button>
@@ -2066,11 +2066,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function openLotesModal(item) {
     currentEditingItemForLotes = item;
     const targetQtd = Number(item.quantidade) || 0;
+    const isReadOnlyMode = (!isEditMode || isReadOnly);
 
     if (item.lotes && item.lotes.length > 0) {
       temporaryLotes = JSON.parse(JSON.stringify(item.lotes));
     } else {
-      temporaryLotes = [
+      temporaryLotes = isReadOnlyMode ? [] : [
         {
           codigo: '001',
           quantidade: targetQtd,
@@ -2088,6 +2089,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lotesModalProdName) lotesModalProdName.textContent = item.nome;
     if (lotesModalProdEan) lotesModalProdEan.textContent = `EAN: ${item.ean} | Pedido: ${targetQtd} un`;
 
+    if (isReadOnlyMode) {
+      if (btnModalAddLote) btnModalAddLote.style.display = 'none';
+      if (btnTableAddLote) btnTableAddLote.style.display = 'none';
+      if (btnCancelLotes) btnCancelLotes.style.display = 'none';
+      if (btnSaveLotes) {
+        btnSaveLotes.textContent = 'FECHAR';
+        btnSaveLotes.style.backgroundColor = '#64748b';
+      }
+    } else {
+      if (btnModalAddLote) btnModalAddLote.style.display = 'inline-flex';
+      if (btnTableAddLote) btnTableAddLote.style.display = 'inline-flex';
+      if (btnCancelLotes) btnCancelLotes.style.display = 'inline-block';
+      if (btnSaveLotes) {
+        btnSaveLotes.textContent = 'CONFIRMAR LOTES';
+        btnSaveLotes.style.backgroundColor = 'var(--primary-color, #6530b5)';
+      }
+    }
+
     renderLotesRows();
     if (modalGerenciarLotes) modalGerenciarLotes.classList.add('show', 'active');
   }
@@ -2100,6 +2119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderLotesRows() {
     if (!lotesTableBody || !currentEditingItemForLotes) return;
+    const isReadOnlyMode = (!isEditMode || isReadOnly);
 
     if (temporaryLotes.length === 0) {
       lotesTableBody.innerHTML = `
@@ -2107,8 +2127,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td colspan="5" class="lotes-empty-cell">
             <div class="lotes-empty-box">
               <span class="material-icons">inventory_2</span>
-              <p>Nenhum lote adicionado para este produto.</p>
-              <small>Clique no botão <strong>+ NOVO LOTE</strong> ou <strong>+ Adicionar Outro Lote / Validade</strong> para registrar.</small>
+              <p>${isReadOnlyMode ? 'Nenhum lote informado para este produto.' : 'Nenhum lote adicionado para este produto.'}</p>
+              <small>${isReadOnlyMode ? 'Para cadastrar a validade, ative o Modo de Edição.' : 'Clique no botão <strong>+ NOVO LOTE</strong> ou <strong>+ Adicionar Outro Lote / Validade</strong> para registrar.'}</small>
             </div>
           </td>
         </tr>
@@ -2117,76 +2137,84 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    lotesTableBody.innerHTML = temporaryLotes.map((lote, idx) => `
-      <tr data-idx="${idx}">
-        <td>
-          <input type="text" class="lote-input input-lote-cod" data-idx="${idx}" value="${lote.codigo || lote.lote || ''}" placeholder="Ex: 001">
-        </td>
-        <td>
-          <input type="number" class="lote-input input-lote-qty" data-idx="${idx}" value="${lote.quantidade !== undefined ? lote.quantidade : ''}" min="1" placeholder="Qtd">
-        </td>
-        <td>
-          <input type="date" class="lote-input input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}">
-        </td>
-        <td>
-          <input type="date" class="lote-input input-lote-val" data-idx="${idx}" value="${lote.validade || ''}" required>
-        </td>
-        <td style="text-align: center;">
-          <button type="button" class="btn-del-lote-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
-            <span class="material-icons">delete_outline</span>
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    lotesTableBody.innerHTML = temporaryLotes.map((lote, idx) => {
+      const deleteActionHtml = isReadOnlyMode ? '' : `
+        <button type="button" class="btn-del-lote-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
+          <span class="material-icons">delete_outline</span>
+        </button>
+      `;
 
-    // Eventos dos inputs da tabela de lotes
-    const codInputs = lotesTableBody.querySelectorAll('.input-lote-cod');
-    codInputs.forEach(inp => {
-      inp.addEventListener('input', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) temporaryLotes[idx].codigo = inp.value;
-      });
-    });
+      return `
+        <tr data-idx="${idx}">
+          <td>
+            <input type="text" class="lote-input input-lote-cod" data-idx="${idx}" value="${lote.codigo || lote.lote || ''}" placeholder="Ex: 001" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="number" class="lote-input input-lote-qty" data-idx="${idx}" value="${lote.quantidade !== undefined ? lote.quantidade : ''}" min="1" placeholder="Qtd" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="date" class="lote-input input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="date" class="lote-input input-lote-val" data-idx="${idx}" value="${lote.validade || ''}" required ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td style="text-align: center;">
+            ${deleteActionHtml}
+          </td>
+        </tr>
+      `;
+    }).join('');
 
-    const qtyInputs = lotesTableBody.querySelectorAll('.input-lote-qty');
-    qtyInputs.forEach(inp => {
-      inp.addEventListener('input', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) {
-          inp.classList.remove('is-invalid');
-          temporaryLotes[idx].quantidade = parseInt(inp.value, 10) || 0;
-          updateLotesAllocationProgress();
-        }
+    if (!isReadOnlyMode) {
+      // Eventos dos inputs da tabela de lotes
+      const codInputs = lotesTableBody.querySelectorAll('.input-lote-cod');
+      codInputs.forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) temporaryLotes[idx].codigo = inp.value;
+        });
       });
-    });
 
-    const fabInputs = lotesTableBody.querySelectorAll('.input-lote-fab');
-    fabInputs.forEach(inp => {
-      inp.addEventListener('change', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) temporaryLotes[idx].fabricacao = inp.value;
+      const qtyInputs = lotesTableBody.querySelectorAll('.input-lote-qty');
+      qtyInputs.forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) {
+            inp.classList.remove('is-invalid');
+            temporaryLotes[idx].quantidade = parseInt(inp.value, 10) || 0;
+            updateLotesAllocationProgress();
+          }
+        });
       });
-    });
 
-    const valInputs = lotesTableBody.querySelectorAll('.input-lote-val');
-    valInputs.forEach(inp => {
-      inp.addEventListener('change', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) {
-          inp.classList.remove('is-invalid');
-          temporaryLotes[idx].validade = inp.value;
-        }
+      const fabInputs = lotesTableBody.querySelectorAll('.input-lote-fab');
+      fabInputs.forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) temporaryLotes[idx].fabricacao = inp.value;
+        });
       });
-    });
 
-    const removeLoteBtns = lotesTableBody.querySelectorAll('.btn-remove-lote-row');
-    removeLoteBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.getAttribute('data-idx'), 10);
-        temporaryLotes.splice(idx, 1);
-        renderLotesRows();
+      const valInputs = lotesTableBody.querySelectorAll('.input-lote-val');
+      valInputs.forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) {
+            inp.classList.remove('is-invalid');
+            temporaryLotes[idx].validade = inp.value;
+          }
+        });
       });
-    });
+
+      const removeLoteBtns = lotesTableBody.querySelectorAll('.btn-remove-lote-row');
+      removeLoteBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'), 10);
+          temporaryLotes.splice(idx, 1);
+          renderLotesRows();
+        });
+      });
+    }
 
     updateLotesAllocationProgress();
   }
@@ -2259,6 +2287,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnSaveLotes) {
     btnSaveLotes.addEventListener('click', () => {
       if (!currentEditingItemForLotes) return;
+      const isReadOnlyMode = (!isEditMode || isReadOnly);
+
+      if (isReadOnlyMode) {
+        closeLotesModal();
+        return;
+      }
 
       if (temporaryLotes.length === 0) {
         if (typeof Toast !== 'undefined') {
