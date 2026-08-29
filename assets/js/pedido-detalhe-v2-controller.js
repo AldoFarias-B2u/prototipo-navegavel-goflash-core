@@ -2347,11 +2347,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Sucesso: Grava os lotes no produto
-      currentEditingItemForLotes.lotes = JSON.parse(JSON.stringify(temporaryLotes));
+      // Sucesso: Grava os lotes no produto garantindo tipos corretos
+      const sanitizedLotes = temporaryLotes.map(l => ({
+        codigo: String(l.codigo || '').trim(),
+        quantidade: Number(l.quantidade) || 0,
+        fabricacao: l.fabricacao || '',
+        validade: l.validade || ''
+      }));
+
+      currentEditingItemForLotes.lotes = sanitizedLotes;
+
+      const targetInCart = cartItems.find(it => (it.id && it.id === currentEditingItemForLotes.id) || (it.ean && it.ean === currentEditingItemForLotes.ean));
+      if (targetInCart) {
+        targetInCart.lotes = JSON.parse(JSON.stringify(sanitizedLotes));
+      }
+
+      const savedProdName = currentEditingItemForLotes.nome || 'Produto';
       closeLotesModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success(`Lotes e validades confirmados com sucesso para "${currentEditingItemForLotes.nome.substring(0, 24)}..."!`);
+        Toast.success(`Lotes e validades confirmados com sucesso para "${savedProdName.substring(0, 24)}..."!`);
       }
       renderProducts();
     });

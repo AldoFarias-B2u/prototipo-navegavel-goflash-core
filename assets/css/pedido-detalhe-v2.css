@@ -982,9 +982,9 @@
 
 /* Botão de Validades / Lotes (3 Estados Dinâmicos com Alto Contraste) */
 .btn-manage-lotes-table {
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background-color: #f1f3f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
   padding: 4px 12px;
   border-radius: 5px;
   font-size: 0.8rem;
@@ -1003,38 +1003,38 @@
 }
 
 .btn-manage-lotes-table:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
 }
 
 .btn-manage-lotes-table .material-icons {
   font-size: 16px;
-  color: #475569;
+  color: #4b5563;
 }
 
-/* Estado 1: Sem Lote Informado (Status Empty - Destaque Neutro Nítido) */
+/* Estado 1: Sem Lote Informado (Status Empty - Fundo Cinza Clarinho Sutil) */
 .btn-manage-lotes-table.status-empty {
-  background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  color: #334155;
+  background-color: #f1f3f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
   font-weight: 600;
 }
 
 .btn-manage-lotes-table.status-empty .material-icons {
-  color: #64748b;
+  color: #4b5563;
 }
 
 .btn-manage-lotes-table.status-empty:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
-  color: #0f172a;
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
 }
 
 /* Estado 2: Validade OK (Verde Sólido & Nítido) */
 .btn-manage-lotes-table.status-ok {
   background-color: #e8f5e9;
-  border: 1.5px solid #81c784;
+  border: 1px solid #81c784;
   color: #1b5e20;
   font-weight: 700;
 }
@@ -1044,15 +1044,15 @@
 }
 
 .btn-manage-lotes-table.status-ok:hover {
-  background-color: #dcfce7;
-  border-color: #4ade80;
-  color: #14532d;
+  background-color: #c8e6c9;
+  border-color: #4caf50;
+  color: #0d3811;
 }
 
 /* Estado 3: Divergente (Âmbar / Laranja Nítido) */
 .btn-manage-lotes-table.status-divergent {
   background-color: #fff8e1;
-  border: 1.5px solid #ffb74d;
+  border: 1px solid #ffb74d;
   color: #b45309;
   font-weight: 700;
 }
@@ -1062,9 +1062,9 @@
 }
 
 .btn-manage-lotes-table.status-divergent:hover {
-  background-color: #fef3c7;
-  border-color: #f59e0b;
-  color: #92400e;
+  background-color: #ffe082;
+  border-color: #f57c00;
+  color: #7c2d12;
 }
 
 /* Botão de Excluir Linha */
