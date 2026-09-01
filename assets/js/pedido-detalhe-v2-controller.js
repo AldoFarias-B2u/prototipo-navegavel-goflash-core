@@ -2426,11 +2426,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnFooterConfirm) {
     btnFooterConfirm.addEventListener('click', () => {
-      if (!isEditMode && !isReadOnly) {
-        // Se estiver em modo de visualização, o botão abre o modo de edição
-        toggleEditMode();
-      } else {
-        openConcluirModal();
+      openConcluirModal();
+    });
+  }
+
+  if (btnFooterCancelEdit) {
+    btnFooterCancelEdit.addEventListener('click', () => {
+      isEditMode = false;
+      applyModeUI();
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Modo de edição cancelado.');
       }
     });
   }
