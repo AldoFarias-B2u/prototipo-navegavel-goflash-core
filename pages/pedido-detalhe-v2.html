@@ -44,6 +44,41 @@
 
     <!-- Ações do Topo Direito -->
     <div class="module-topbar-right">
+      <!-- Menu de Mais Ações do Pedido (Finalizar, Imprimir, Cancelar) -->
+      <div class="header-more-actions-wrapper" style="position: relative;">
+        <button class="topbar-btn" id="headerMoreActionsBtn" title="Mais Ações do Pedido" aria-label="Mais Ações do Pedido">
+          <span class="material-icons">more_vert</span>
+        </button>
+
+        <div class="header-actions-popover" id="headerMoreActionsPopover" role="menu">
+          <button type="button" class="header-action-menu-item" id="menuActionFinalizar">
+            <span class="material-icons" style="color: #6530b5;">check_circle</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Finalizar Pedido</span>
+              <span class="action-menu-desc">Escolher status e concluir</span>
+            </div>
+          </button>
+
+          <button type="button" class="header-action-menu-item" id="menuActionImprimir">
+            <span class="material-icons" style="color: #475569;">print</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Imprimir Pedido</span>
+              <span class="action-menu-desc">Gerar comprovante / PDF</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider"></div>
+
+          <button type="button" class="header-action-menu-item text-danger" id="menuActionCancelar">
+            <span class="material-icons" style="color: #d32f2f;">block</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title" style="color: #d32f2f;">Cancelar Pedido</span>
+              <span class="action-menu-desc">Bloquear e arquivar</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
       <button class="topbar-btn" id="btnHeaderSave" title="Concluir e Salvar Pedido" aria-label="Salvar Pedido" style="display: none;">
         <span class="material-icons">check</span>
       </button>
@@ -175,7 +210,10 @@
           <div class="order-hero-field-group" style="align-self: center;">
             <span class="order-hero-field-label">Status</span>
             <div style="padding-top: 4px;">
-              <span class="order-status-badge status-aberto" id="heroStatusBadge">Aberto</span>
+              <span class="order-status-badge status-aberto" id="heroStatusBadge">
+                <span class="txt-short">Aberto</span>
+                <span class="txt-long">Aberto</span>
+              </span>
             </div>
           </div>
 
@@ -205,6 +243,15 @@
     <!-- 2. CARD DE CONTEÚDO BRANCO FLUTUANTE -->
     <div class="order-content-surface">
       
+      <!-- Banner Informativo para Modo Somente Leitura (Pendente, Recebido, Cancelado) -->
+      <div id="readonlyBannerAlert" class="readonly-banner-alert" style="display: none;">
+        <span class="material-icons readonly-banner-icon" id="readonlyBannerIcon">info</span>
+        <div class="readonly-banner-content">
+          <div class="readonly-banner-title" id="readonlyBannerTitle">Visualização de Pedido</div>
+          <div class="readonly-banner-desc" id="readonlyBannerDesc">Este pedido está em modo de somente leitura.</div>
+        </div>
+      </div>
+
       <!-- PAINEL 1: PRODUTOS -->
       <div class="order-tab-pane active" id="paneProdutos">
         
@@ -393,13 +440,17 @@
           <div class="order-empty-icon-box">
             <span class="material-icons">add_shopping_cart</span>
           </div>
-          <h3 class="order-empty-title">Nenhum produto adicionado ao pedido</h3>
-          <p class="order-empty-desc">
-            Clique no botão <strong>+ ADICIONAR PRODUTOS</strong> ou escaneie o código de barras EAN na barra superior.
+          <h3 class="order-empty-title" id="orderEmptyTitle">Nenhum produto adicionado ao pedido</h3>
+          <p class="order-empty-desc" id="orderEmptyDesc">
+            Este pedido está vazio no momento. Para adicionar produtos e quantidades, ative o Modo de Edição.
           </p>
-          <button type="button" class="btn-add-catalog-v2" id="btnEmptyAdd">
+          <button type="button" class="btn-add-catalog-v2" id="btnEmptyAdd" style="display: none;">
             <span class="material-icons">add_circle</span>
             Selecionar Produtos do Catálogo
+          </button>
+          <button type="button" class="btn-footer-edit" id="btnEmptyEdit" style="display: none; height: 38px; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; align-items: center; gap: 8px;">
+            <span class="material-icons" style="font-size: 18px; color: #6530b5;">edit</span>
+            <span>Editar Pedido para Inserir Itens</span>
           </button>
         </div>
 
@@ -413,6 +464,7 @@
         </h3>
 
         <div class="order-details-grid">
+          <!-- 1. Responsável pelo Pedido / Abastecedor -->
           <div class="input-group">
             <label class="input-label" for="inputResponsavel">Responsável pelo Pedido / Abastecedor</label>
             <div class="input-wrapper">
@@ -421,6 +473,7 @@
             </div>
           </div>
 
+          <!-- 2. Previsão de Entrega / Abastecimento -->
           <div class="input-group">
             <label class="input-label" for="inputPrevisao">Previsão de Entrega / Abastecimento</label>
             <div class="input-wrapper">
@@ -429,6 +482,25 @@
             </div>
           </div>
 
+          <!-- 3. Plano de Abastecimento Base (Informativo / Somente Leitura) -->
+          <div class="input-group">
+            <label class="input-label" for="inputPlanoBase">Plano de Abastecimento Base</label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">assignment</span>
+              <input 
+                type="text" 
+                id="inputPlanoBase" 
+                class="input-field" 
+                placeholder="Nenhum plano vinculado (Inserção Manual)" 
+                value="Plano MiniMercado 03" 
+                readonly 
+                disabled
+                style="background-color: #f8fafc; color: #334155; font-weight: 500; cursor: not-allowed;"
+              >
+            </div>
+          </div>
+
+          <!-- 4. Observações Gerais e Instruções de Reposição -->
           <div class="order-details-full input-group">
             <label class="input-label" for="textareaObservacoes">Observações Gerais e Instruções de Reposição</label>
             <textarea id="textareaObservacoes" class="custom-textarea" placeholder="Ex: Reposição prioritária para o final de semana. Conferir Shelf-life na gôndola." disabled></textarea>
@@ -464,6 +536,17 @@
     </div>
 
     <div class="footer-actions-container">
+      <button type="button" class="btn-footer-secondary" id="btnFooterBackToList" style="display: inline-flex;">
+        <span class="material-icons">arrow_back</span>
+        <span>Voltar</span>
+      </button>
+      <button type="button" class="btn-footer-secondary btn-footer-edit" id="btnFooterStartEdit" style="display: inline-flex;">
+        <span class="material-icons btn-action-icon" style="color: #6530b5;">edit</span>
+        <span class="btn-footer-edit-txt">
+          <span class="txt-short">Editar</span>
+          <span class="txt-long">Editar Pedido</span>
+        </span>
+      </button>
       <button type="button" class="btn-footer-secondary" id="btnFooterCancelEdit" style="display: none;">
         <span class="material-icons btn-action-icon">close</span>
         <span>Cancelar</span>
@@ -474,11 +557,10 @@
       </button>
       <button type="button" class="btn-footer-primary" id="btnFooterConfirm">
         <span class="material-icons">check_circle</span>
-        <span id="btnFooterConfirmTxt">CONFIRMAR</span>
-      </button>
-      <button type="button" class="btn-footer-secondary" id="btnFooterBackToList" style="display: inline-flex;">
-        <span class="material-icons">arrow_back</span>
-        <span>Voltar</span>
+        <span id="btnFooterConfirmTxt">
+          <span class="txt-short">Finalizar</span>
+          <span class="txt-long">FINALIZAR PEDIDO</span>
+        </span>
       </button>
     </div>
   </footer>
@@ -545,15 +627,15 @@
       <div class="lotes-product-info-bar">
         <div class="lotes-product-details">
           <img id="lotesModalProdImg" src="../assets/images/logo-homepage.png" alt="Produto" class="lotes-product-img">
-          <div>
+          <div class="lotes-product-text-box">
             <div class="lotes-product-title" id="lotesModalProdName">Produto</div>
             <div class="lotes-product-code" id="lotesModalProdEan">EAN: 0000000000000</div>
           </div>
         </div>
 
-        <button type="button" class="btn-add-catalog-v2" id="btnModalAddLote" style="padding: 6px 12px; font-size: 0.8rem;">
+        <button type="button" class="btn-lotes-new-top" id="btnModalAddLote" title="Adicionar Lote">
           <span class="material-icons" style="font-size: 16px;">add</span>
-          NOVO LOTE
+          <span class="btn-lotes-new-top-txt">NOVO LOTE</span>
         </button>
       </div>
 
@@ -701,6 +783,41 @@
         <button type="button" class="btn-danger-confirm" id="btnConfirmClearAll">
           <span class="material-icons" style="font-size: 16px;">delete</span>
           Sim, Limpar Todos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONFIRMAÇÃO DE CANCELAMENTO DO PEDIDO
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmarCancelamento" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 480px;">
+      <div class="official-modal-header" style="background-color: #b71c1c;">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">warning</span>
+          CANCELAR PEDIDO DE ABASTECIMENTO
+        </h2>
+        <button type="button" class="official-modal-close" id="btnCloseCancelModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem; text-align: center;">
+        <div class="modal-confirm-icon-box danger">
+          <span class="material-icons">block</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #212529; margin: 0 0 0.5rem 0;">
+          Deseja realmente cancelar este pedido?
+        </h3>
+        <p style="color: #616161; font-size: 0.9rem; line-height: 1.45; margin: 0 0 1.25rem 0;">
+          O Pedido <strong id="cancelModalOrderCode">000000</strong> será marcado como <strong>Cancelado</strong> no sistema e arquivado para histórico operacional.
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnDismissCancelModal">Não, Manter Pedido</button>
+        <button type="button" class="btn-danger-confirm" id="btnConfirmCancelOrder">
+          <span class="material-icons" style="font-size: 16px;">block</span>
+          Sim, Cancelar Pedido
         </button>
       </div>
     </div>

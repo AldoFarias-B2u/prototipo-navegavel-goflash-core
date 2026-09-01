@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Toast.info(`Abrindo Pedido ${item.codigo} (${item.status})...`);
     }
     setTimeout(() => {
-      window.location.href = `./pedido-manual.html?id=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.codigo)}`;
+      window.location.href = `./pedido-detalhe-v2.html?id=${encodeURIComponent(item.id)}&codigo=${encodeURIComponent(item.codigo)}`;
     }, 200);
   }
 
@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Toast.info('Iniciando Pedido em Branco...');
       }
 
-      let url = `./pedido-manual.html?destino=${encodeURIComponent(destinoVal)}`;
+      let url = `./pedido-detalhe-v2.html?tipo=manual&destino=${encodeURIComponent(destinoVal)}`;
       if (origemVal) {
         url += `&origem=${encodeURIComponent(origemVal)}`;
       }

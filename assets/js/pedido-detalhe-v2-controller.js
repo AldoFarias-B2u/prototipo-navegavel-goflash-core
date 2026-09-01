@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderModePill = document.getElementById('orderModePill');
   const btnHeaderSave = document.getElementById('btnHeaderSave');
 
+  // Banner de Alerta Informativo (Modo Somente Leitura)
+  const readonlyBanner = document.getElementById('readonlyBannerAlert');
+  const readonlyBannerIcon = document.getElementById('readonlyBannerIcon');
+  const readonlyBannerTitle = document.getElementById('readonlyBannerTitle');
+  const readonlyBannerDesc = document.getElementById('readonlyBannerDesc');
+
   // Ações de Produtos & Ferramentas de Inserção
   const orderInsertionToolbar = document.getElementById('orderInsertionToolbar');
   const sectionProductsCount = document.getElementById('sectionProductsCount');
@@ -64,10 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const moreActionsWrapper = document.getElementById('moreActionsWrapper');
   const btnMoreActions = document.getElementById('btnMoreActions');
   const moreActionsDropdown = document.getElementById('moreActionsDropdown');
+  const actionAddByCategory = document.getElementById('actionAddByCategory');
   const actionBatchQty = document.getElementById('actionBatchQty');
   const actionManageCols = document.getElementById('actionManageCols');
   const actionPriceTable = document.getElementById('actionPriceTable');
   const actionClearAll = document.getElementById('actionClearAll');
+  const moreActionsDivider = document.querySelector('#moreActionsDropdown .dropdown-item-divider');
   const currentPriceTableLabel = document.getElementById('currentPriceTableLabel');
 
   // Tabela e Cards
@@ -76,17 +84,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const emptyState = document.getElementById('orderEmptyState');
   const tableWrapper = document.getElementById('orderTableWrapper');
 
+  // Menu de Mais Ações do Header (Topbar)
+  const headerMoreActionsBtn = document.getElementById('headerMoreActionsBtn');
+  const headerMoreActionsPopover = document.getElementById('headerMoreActionsPopover');
+  const menuActionFinalizar = document.getElementById('menuActionFinalizar');
+  const menuActionImprimir = document.getElementById('menuActionImprimir');
+  const menuActionCancelar = document.getElementById('menuActionCancelar');
+
   // Sticky Footer
   const footerSkusCount = document.getElementById('footerSkusCount');
   const footerUnitsCount = document.getElementById('footerUnitsCount');
   const footerTotalValue = document.getElementById('footerTotalValue');
   const footerMetricValorBox = document.getElementById('footerMetricValorBox');
   const footerPriceTableBadge = document.getElementById('footerPriceTableBadge');
+  const btnFooterStartEdit = document.getElementById('btnFooterStartEdit');
   const btnFooterCancelEdit = document.getElementById('btnFooterCancelEdit');
   const btnFooterDraft = document.getElementById('btnFooterDraft');
   const btnFooterConfirm = document.getElementById('btnFooterConfirm');
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
+
+  // Modal Cancelar Pedido
+  const modalConfirmarCancelamento = document.getElementById('modalConfirmarCancelamento');
+  const cancelModalOrderCode = document.getElementById('cancelModalOrderCode');
+  const btnCloseCancelModal = document.getElementById('btnCloseCancelModal');
+  const btnDismissCancelModal = document.getElementById('btnDismissCancelModal');
+  const btnConfirmCancelOrder = document.getElementById('btnConfirmCancelOrder');
 
   // Modais
   const modalCatalog = document.getElementById('modalCatalog');
@@ -184,8 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detalhes
     const inputResp = document.getElementById('inputResponsavel');
     const txtObs = document.getElementById('textareaObservacoes');
+    const inputPlanoBase = document.getElementById('inputPlanoBase');
     if (inputResp && currentLoadedOrder.responsavel) inputResp.value = currentLoadedOrder.responsavel;
     if (txtObs && currentLoadedOrder.observacoes) txtObs.value = currentLoadedOrder.observacoes;
+    if (inputPlanoBase) {
+      inputPlanoBase.value = currentLoadedOrder.planoBase || (currentLoadedOrder.tipo === 'manual' ? 'Inserção Manual (Sem plano associado)' : 'Sem plano associado');
+    }
 
   } else {
     // Novo Pedido em Elaboração
@@ -199,21 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (heroDestinoSelect && paramDestino) setSelectValue(heroDestinoSelect, paramDestino);
     if (heroOrigemSelect && paramOrigem) setSelectValue(heroOrigemSelect, paramOrigem);
 
-    // Carrega itens de demonstração se for o código 000042 ou se não houver itens
-    if (rawCatalog.length > 0) {
-      const demoItems = rawCatalog.slice(0, 5).map((p, idx) => ({
-        id: p.id || (Date.now() + idx),
-        nome: p.nome,
-        ean: p.ean,
-        foto: p.foto,
-        categoria: p.categoria || p.grupo || 'Geral',
-        estoqueLoja: p.estoqueLoja !== undefined ? p.estoqueLoja : 6,
-        preco: p.precoVenda || p.preco || 6.90,
-        quantidade: (idx % 2 === 0) ? 2 : 1,
-        lotes: []
-      }));
-      cartItems = demoItems;
-    }
+    const inputPlanoBase = document.getElementById('inputPlanoBase');
+    const paramPlano = urlParams.get('plano') || 'Inserção Manual (Sem plano associado)';
+    if (inputPlanoBase) inputPlanoBase.value = paramPlano;
+
+    // Inicializa o carrinho 100% vazio para inserção manual de itens pelo usuário
+    cartItems = [];
   }
 
   // Verificação inteligente de colunas iniciais baseada em Origem e Plano
@@ -221,8 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (hasOrigem) {
     visibleColumns.estoqueOrigem = true;
   }
-  const inputDetalhesPlano = document.getElementById('inputDetalhesPlano');
-  const hasPlano = (inputDetalhesPlano && inputDetalhesPlano.value && inputDetalhesPlano.value.trim() !== '' && inputDetalhesPlano.value !== '--');
+  const inputPlanoBaseEl = document.getElementById('inputPlanoBase');
+  const hasPlano = (inputPlanoBaseEl && inputPlanoBaseEl.value && !inputPlanoBaseEl.value.includes('Manual') && !inputPlanoBaseEl.value.includes('Sem plano') && inputPlanoBaseEl.value.trim() !== '');
   if (hasPlano) {
     visibleColumns.estoqueIdeal = true;
     visibleColumns.minimoCritico = true;
@@ -268,7 +286,14 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) badgeClass = 'status-pendente';
 
       heroStatusBadge.className = `order-status-badge ${badgeClass}`;
-      heroStatusBadge.textContent = statusName;
+      
+      let shortStatus = statusName;
+      if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) shortStatus = 'Pendente';
+      else if (statusLower.includes('cancelado')) shortStatus = 'Cancelado';
+      else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido')) shortStatus = 'Recebido';
+      else if (statusLower.includes('aberto')) shortStatus = 'Aberto';
+
+      heroStatusBadge.innerHTML = `<span class="txt-short">${shortStatus}</span><span class="txt-long">${statusName}</span>`;
     }
 
     // 4.2 Pedido Bloqueado (Read-Only Permanente)
@@ -293,13 +318,51 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">lock</span> Somente Leitura';
       }
 
+      if (readonlyBanner) {
+        readonlyBanner.style.display = 'flex';
+        readonlyBanner.className = 'readonly-banner-alert';
+
+        if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
+          readonlyBanner.classList.add('status-pendente');
+          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'local_shipping';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚚 Pedido em Trânsito (Pendente de Abastecimento)';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi despachado para a filial de destino. Alterações de itens e quantidades estão bloqueadas.';
+        } else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
+          readonlyBanner.classList.add('status-recebido');
+          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'task_alt';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '📦 Pedido Recebido';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido finalizado em modo de consulta.';
+        } else if (statusLower.includes('cancelado')) {
+          readonlyBanner.classList.add('status-cancelado');
+          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'block';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚫 Pedido Cancelado';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi cancelado e está arquivado para histórico operacional.';
+        }
+      }
+
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
 
+      if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+      if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+
+      // Itens de Mais Ações da Toolbar (Somente Leitura: apenas Colunas)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'none';
+      if (actionBatchQty) actionBatchQty.style.display = 'none';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'none';
+      if (actionClearAll) actionClearAll.style.display = 'none';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'none';
+
       renderProducts();
       return;
+    } else {
+      if (readonlyBanner) readonlyBanner.style.display = 'none';
+      if (menuActionFinalizar) menuActionFinalizar.style.display = 'flex';
+      if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
     }
 
     // 4.3 Pedido em Aberto: Alternância Visualização vs. Edição
@@ -331,11 +394,20 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">edit</span> Modo de Edição';
       }
 
+      // Itens de Mais Ações da Toolbar (Modo Edição: Todos os recursos disponíveis)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'flex';
+      if (actionBatchQty) actionBatchQty.style.display = 'flex';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'flex';
+      if (actionClearAll) actionClearAll.style.display = 'flex';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'block';
+
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
       if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'CONFIRMAR';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Confirmar</span><span class="txt-long">CONFIRMAR</span>';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
 
@@ -367,11 +439,20 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">visibility</span> Visualização';
       }
 
+      // Itens de Mais Ações da Toolbar (Modo Visualização: Apenas Colunas e Campos Visíveis)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'none';
+      if (actionBatchQty) actionBatchQty.style.display = 'none';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'none';
+      if (actionClearAll) actionClearAll.style.display = 'none';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'none';
+
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'inline-flex';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'FINALIZAR PEDIDO';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Finalizar</span><span class="txt-long">FINALIZAR PEDIDO</span>';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
     }
@@ -379,15 +460,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
   }
 
-  // 5. FAB de Lápis / Conclusão de Edição
+  // 5. Alternância do Modo de Edição vs. Visualização
+  function toggleEditMode() {
+    if (isReadOnly) return;
+    isEditMode = !isEditMode;
+    applyModeUI();
+    if (typeof Toast !== 'undefined') {
+      Toast.info(isEditMode ? 'Modo de Edição ativado.' : 'Modo de Visualização ativado.');
+    }
+  }
+
+  // FAB de Lápis / Conclusão de Edição
   if (fabEditOrder) {
     fabEditOrder.addEventListener('click', () => {
-      if (isReadOnly) return;
-      isEditMode = !isEditMode;
-      applyModeUI();
-      if (typeof Toast !== 'undefined') {
-        Toast.info(isEditMode ? 'Modo de Edição ativado.' : 'Modo de Visualização ativado.');
-      }
+      toggleEditMode();
     });
   }
 
@@ -481,6 +567,31 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cardsGrid) cardsGrid.style.display = 'none';
       if (emptyState) emptyState.style.display = 'flex';
       if (mainContainer) mainContainer.classList.add('is-empty-cart');
+
+      const emptyDesc = document.getElementById('orderEmptyDesc');
+      const emptyBtnAdd = document.getElementById('btnEmptyAdd');
+      const emptyBtnEdit = document.getElementById('btnEmptyEdit');
+
+      if (isEditMode && !isReadOnly) {
+        if (emptyDesc) {
+          emptyDesc.innerHTML = 'Clique no botão <strong>+ ADICIONAR PRODUTOS</strong> abaixo ou escaneie o código de barras EAN na barra superior.';
+        }
+        if (emptyBtnAdd) emptyBtnAdd.style.display = 'inline-flex';
+        if (emptyBtnEdit) emptyBtnEdit.style.display = 'none';
+      } else {
+        if (isReadOnly) {
+          if (emptyDesc) emptyDesc.textContent = 'Nenhum produto foi registrado neste pedido.';
+          if (emptyBtnAdd) emptyBtnAdd.style.display = 'none';
+          if (emptyBtnEdit) emptyBtnEdit.style.display = 'none';
+        } else {
+          if (emptyDesc) {
+            emptyDesc.innerHTML = 'Este pedido está vazio no momento. Para adicionar produtos e quantidades, ative o <strong>Modo de Edição</strong> clicando no botão <strong>Editar</strong> abaixo.';
+          }
+          if (emptyBtnAdd) emptyBtnAdd.style.display = 'none';
+          if (emptyBtnEdit) emptyBtnEdit.style.display = 'inline-flex';
+        }
+      }
+
       updateTotals();
       return;
     }
@@ -548,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let lotesBadgeHtml = '';
         if (lotesCount === 0) {
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes">
               <span class="material-icons">event</span>
               Informar Validade
             </button>
@@ -556,14 +667,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (totalLotesQty === itemQtde) {
           const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}">
               <span class="material-icons">verified</span>
               Validade OK (${loteText})
             </button>
           `;
         } else {
           lotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido">
               <span class="material-icons">warning_amber</span>
               Divergente (${totalLotesQty}/${itemQtde} un)
             </button>
@@ -671,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let mobileLotesBadgeHtml = '';
         if (lotesCount === 0) {
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-empty" data-index="${index}" title="Informar validade e lotes">
               <span class="material-icons" style="font-size: 15px;">event</span>
               Informar Validade
             </button>
@@ -679,14 +790,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (totalLotesQty === itemQtde) {
           const loteText = lotesCount === 1 ? '1 lote' : `${lotesCount} lotes`;
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-ok" data-index="${index}" title="Validade OK: ${totalLotesQty}/${itemQtde} un alocadas em ${loteText}">
               <span class="material-icons" style="font-size: 15px;">verified</span>
               Validade OK (${loteText})
             </button>
           `;
         } else {
           mobileLotesBadgeHtml = `
-            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido" ${(!isEditMode || isReadOnly) ? 'disabled' : ''}>
+            <button type="button" class="btn-manage-lotes-table status-divergent" data-index="${index}" title="Divergente: ${totalLotesQty} un nos lotes vs ${itemQtde} un no pedido">
               <span class="material-icons" style="font-size: 15px;">warning_amber</span>
               Divergente (${totalLotesQty}/${itemQtde} un)
             </button>
@@ -1120,9 +1231,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnOpenCatalogModal) btnOpenCatalogModal.addEventListener('click', openCatalogModal);
+  if (btnOpenCatalogModal) {
+    btnOpenCatalogModal.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
+      openCatalogModal();
+    });
+  }
+
   const btnEmptyAdd = document.getElementById('btnEmptyAdd');
-  if (btnEmptyAdd) btnEmptyAdd.addEventListener('click', openCatalogModal);
+  if (btnEmptyAdd) {
+    btnEmptyAdd.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
+      openCatalogModal();
+    });
+  }
+
+  const btnEmptyEdit = document.getElementById('btnEmptyEdit');
+  if (btnEmptyEdit) {
+    btnEmptyEdit.addEventListener('click', () => {
+      if (isReadOnly) return;
+      toggleEditMode();
+    });
+  }
 
   if (btnCloseCatalogModal) btnCloseCatalogModal.addEventListener('click', closeCatalogModal);
   if (btnCloseCatalogBtn) btnCloseCatalogBtn.addEventListener('click', closeCatalogModal);
@@ -1257,6 +1387,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 1: Abrir Modal de Quantidade em Lote
   if (actionBatchQty) {
     actionBatchQty.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       if (modalBatchQuantity) modalBatchQuantity.classList.add('show', 'active');
     });
@@ -1350,6 +1481,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 3: Abrir Modal de Tabela de Preços
   if (actionPriceTable) {
     actionPriceTable.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       priceOptionCards.forEach(card => {
         const val = card.getAttribute('data-value');
@@ -1419,9 +1551,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Ação 4: Incluir por Categoria (Modal com Filtros por Grupo, Subgrupo, Fornecedor e Saldo)
-  const actionAddByCategory = document.getElementById('actionAddByCategory');
   if (actionAddByCategory) {
     actionAddByCategory.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       openAddByCategoryModal();
     });
@@ -1430,6 +1562,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 5: Excluir Todos os Itens (Menu Mais Ações)
   if (actionClearAll) {
     actionClearAll.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       openClearAllModal();
     });
@@ -2062,10 +2195,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 12. Modal de Gerenciamento de Lotes e Validades
+  // 12. Modal de Gerenciamento de Lotes e Validades (Shelf-Life)
   function openLotesModal(item) {
     currentEditingItemForLotes = item;
-    temporaryLotes = item.lotes ? JSON.parse(JSON.stringify(item.lotes)) : [];
+    const targetQtd = Number(item.quantidade) || 0;
+    const isReadOnlyMode = (!isEditMode || isReadOnly);
+
+    if (item.lotes && item.lotes.length > 0) {
+      temporaryLotes = JSON.parse(JSON.stringify(item.lotes));
+    } else {
+      temporaryLotes = isReadOnlyMode ? [] : [
+        {
+          codigo: '001',
+          quantidade: targetQtd,
+          fabricacao: '',
+          validade: ''
+        }
+      ];
+    }
 
     const lotesModalProdImg = document.getElementById('lotesModalProdImg');
     const lotesModalProdName = document.getElementById('lotesModalProdName');
@@ -2073,15 +2220,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (lotesModalProdImg) lotesModalProdImg.src = item.foto || '../assets/images/logo-homepage.png';
     if (lotesModalProdName) lotesModalProdName.textContent = item.nome;
-    if (lotesModalProdEan) lotesModalProdEan.textContent = `EAN: ${item.ean}`;
+    if (lotesModalProdEan) lotesModalProdEan.textContent = `EAN: ${item.ean} | Pedido: ${targetQtd} un`;
 
-    if (temporaryLotes.length === 0) {
-      temporaryLotes.push({
-        codigo: `LOTE-${new Date().getFullYear()}-01`,
-        quantidade: item.quantidade,
-        fabricacao: '',
-        validade: ''
-      });
+    if (isReadOnlyMode) {
+      if (btnModalAddLote) btnModalAddLote.style.display = 'none';
+      if (btnTableAddLote) btnTableAddLote.style.display = 'none';
+      if (btnCancelLotes) btnCancelLotes.style.display = 'none';
+      if (btnSaveLotes) {
+        btnSaveLotes.textContent = 'FECHAR';
+        btnSaveLotes.style.backgroundColor = '#64748b';
+      }
+    } else {
+      if (btnModalAddLote) btnModalAddLote.style.display = 'inline-flex';
+      if (btnTableAddLote) btnTableAddLote.style.display = 'inline-flex';
+      if (btnCancelLotes) btnCancelLotes.style.display = 'inline-block';
+      if (btnSaveLotes) {
+        btnSaveLotes.textContent = 'CONFIRMAR LOTES';
+        btnSaveLotes.style.backgroundColor = 'var(--primary-color, #6530b5)';
+      }
     }
 
     renderLotesRows();
@@ -2090,69 +2246,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function closeLotesModal() {
     if (modalGerenciarLotes) modalGerenciarLotes.classList.remove('show', 'active');
+    currentEditingItemForLotes = null;
+    temporaryLotes = [];
   }
 
   function renderLotesRows() {
     if (!lotesTableBody || !currentEditingItemForLotes) return;
+    const isReadOnlyMode = (!isEditMode || isReadOnly);
 
-    lotesTableBody.innerHTML = temporaryLotes.map((lote, idx) => `
-      <tr>
-        <td>
-          <input type="text" class="input-field input-lote-cod" data-idx="${idx}" value="${lote.codigo || ''}" placeholder="Ex: LOT-102">
-        </td>
-        <td>
-          <input type="number" class="input-field input-lote-qty" data-idx="${idx}" value="${lote.quantidade || 0}" min="1">
-        </td>
-        <td>
-          <input type="date" class="input-field input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}">
-        </td>
-        <td>
-          <input type="date" class="input-field input-lote-val" data-idx="${idx}" value="${lote.validade || ''}">
-        </td>
-        <td style="text-align: center;">
-          <button type="button" class="btn-delete-item-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
-            <span class="material-icons" style="font-size: 16px;">close</span>
-          </button>
-        </td>
-      </tr>
-    `).join('');
+    if (temporaryLotes.length === 0) {
+      lotesTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="lotes-empty-cell">
+            <div class="lotes-empty-box">
+              <span class="material-icons">inventory_2</span>
+              <p>${isReadOnlyMode ? 'Nenhum lote informado para este produto.' : 'Nenhum lote adicionado para este produto.'}</p>
+              <small>${isReadOnlyMode ? 'Para cadastrar a validade, ative o Modo de Edição.' : 'Clique no botão <strong>+ NOVO LOTE</strong> ou <strong>+ Adicionar Outro Lote / Validade</strong> para registrar.'}</small>
+            </div>
+          </td>
+        </tr>
+      `;
+      updateLotesAllocationProgress();
+      return;
+    }
 
-    // Eventos dos inputs da tabela de lotes
-    const codInputs = lotesTableBody.querySelectorAll('.input-lote-cod');
-    codInputs.forEach(inp => {
-      inp.addEventListener('input', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) temporaryLotes[idx].codigo = inp.value;
+    lotesTableBody.innerHTML = temporaryLotes.map((lote, idx) => {
+      const deleteActionHtml = isReadOnlyMode ? '' : `
+        <button type="button" class="btn-del-lote-row btn-remove-lote-row" data-idx="${idx}" title="Excluir lote">
+          <span class="material-icons">delete_outline</span>
+        </button>
+      `;
+
+      return `
+        <tr data-idx="${idx}">
+          <td>
+            <input type="text" class="lote-input input-lote-cod" data-idx="${idx}" value="${lote.codigo || lote.lote || ''}" placeholder="Ex: 001" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="number" class="lote-input input-lote-qty" data-idx="${idx}" value="${lote.quantidade !== undefined ? lote.quantidade : ''}" min="1" placeholder="Qtd" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="date" class="lote-input input-lote-fab" data-idx="${idx}" value="${lote.fabricacao || ''}" ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td>
+            <input type="date" class="lote-input input-lote-val" data-idx="${idx}" value="${lote.validade || ''}" required ${isReadOnlyMode ? 'disabled' : ''}>
+          </td>
+          <td style="text-align: center;">
+            ${deleteActionHtml}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    if (!isReadOnlyMode) {
+      // Eventos dos inputs da tabela de lotes
+      const codInputs = lotesTableBody.querySelectorAll('.input-lote-cod');
+      codInputs.forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) temporaryLotes[idx].codigo = inp.value;
+        });
       });
-    });
 
-    const qtyInputs = lotesTableBody.querySelectorAll('.input-lote-qty');
-    qtyInputs.forEach(inp => {
-      inp.addEventListener('input', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) {
-          temporaryLotes[idx].quantidade = parseInt(inp.value, 10) || 0;
-          updateLotesAllocationProgress();
-        }
+      const qtyInputs = lotesTableBody.querySelectorAll('.input-lote-qty');
+      qtyInputs.forEach(inp => {
+        inp.addEventListener('input', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) {
+            inp.classList.remove('is-invalid');
+            temporaryLotes[idx].quantidade = parseInt(inp.value, 10) || 0;
+            updateLotesAllocationProgress();
+          }
+        });
       });
-    });
 
-    const valInputs = lotesTableBody.querySelectorAll('.input-lote-val');
-    valInputs.forEach(inp => {
-      inp.addEventListener('change', () => {
-        const idx = parseInt(inp.getAttribute('data-idx'), 10);
-        if (temporaryLotes[idx]) temporaryLotes[idx].validade = inp.value;
+      const fabInputs = lotesTableBody.querySelectorAll('.input-lote-fab');
+      fabInputs.forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) temporaryLotes[idx].fabricacao = inp.value;
+        });
       });
-    });
 
-    const removeLoteBtns = lotesTableBody.querySelectorAll('.btn-remove-lote-row');
-    removeLoteBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.getAttribute('data-idx'), 10);
-        temporaryLotes.splice(idx, 1);
-        renderLotesRows();
+      const valInputs = lotesTableBody.querySelectorAll('.input-lote-val');
+      valInputs.forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = parseInt(inp.getAttribute('data-idx'), 10);
+          if (temporaryLotes[idx]) {
+            inp.classList.remove('is-invalid');
+            temporaryLotes[idx].validade = inp.value;
+          }
+        });
       });
-    });
+
+      const removeLoteBtns = lotesTableBody.querySelectorAll('.btn-remove-lote-row');
+      removeLoteBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'), 10);
+          temporaryLotes.splice(idx, 1);
+          renderLotesRows();
+        });
+      });
+    }
 
     updateLotesAllocationProgress();
   }
@@ -2162,29 +2357,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = Number(currentEditingItemForLotes.quantidade) || 0;
     const allocated = temporaryLotes.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
 
-    if (lotesCounterText) lotesCounterText.textContent = `${allocated} / ${required}`;
+    if (lotesCounterText) lotesCounterText.textContent = `${allocated} / ${required} un`;
 
-    const percent = Math.min(100, Math.round((allocated / (required || 1)) * 100));
-    if (lotesBarFill) lotesBarFill.style.width = `${percent}%`;
+    const percent = required > 0 ? Math.min(100, Math.round((allocated / required) * 100)) : 0;
+
+    if (lotesBarFill) {
+      if (allocated === required) {
+        lotesBarFill.style.width = '100%';
+        lotesBarFill.className = 'allocation-bar-fill complete';
+      } else if (allocated > required) {
+        lotesBarFill.style.width = '100%';
+        lotesBarFill.className = 'allocation-bar-fill exceeded';
+      } else {
+        lotesBarFill.style.width = `${percent}%`;
+        lotesBarFill.className = 'allocation-bar-fill';
+      }
+    }
 
     if (lotesAllocationBadge) {
       if (allocated === required) {
         lotesAllocationBadge.className = 'allocation-badge complete';
-        lotesAllocationBadge.textContent = 'Alocado Completo ✓';
+        lotesAllocationBadge.textContent = 'COMPLETO (100%)';
       } else if (allocated > required) {
-        lotesAllocationBadge.className = 'allocation-badge warning';
-        lotesAllocationBadge.textContent = `Excedente (+${allocated - required})`;
+        const diff = allocated - required;
+        lotesAllocationBadge.className = 'allocation-badge exceeded';
+        lotesAllocationBadge.textContent = `EXCEDENTE (+${diff} UN)`;
       } else {
+        const diff = required - allocated;
         lotesAllocationBadge.className = 'allocation-badge pending';
-        lotesAllocationBadge.textContent = `Pendente (${required - allocated} un)`;
+        lotesAllocationBadge.textContent = `PENDENTE (${diff} UN)`;
       }
     }
   }
 
   function addEmptyLoteRow() {
+    if (!currentEditingItemForLotes) return;
+    const targetQtd = Number(currentEditingItemForLotes.quantidade) || 0;
+    const currentAllocated = temporaryLotes.reduce((acc, l) => acc + (Number(l.quantidade) || 0), 0);
+    const remainder = Math.max(1, targetQtd - currentAllocated);
+    const nextCode = String(temporaryLotes.length + 1).padStart(3, '0');
+
     temporaryLotes.push({
-      codigo: `LOTE-${new Date().getFullYear()}-${String(temporaryLotes.length + 1).padStart(2, '0')}`,
-      quantidade: 1,
+      codigo: nextCode,
+      quantidade: remainder,
       fabricacao: '',
       validade: ''
     });
@@ -2196,13 +2411,94 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseLotesModal) btnCloseLotesModal.addEventListener('click', closeLotesModal);
   if (btnCancelLotes) btnCancelLotes.addEventListener('click', closeLotesModal);
 
+  if (modalGerenciarLotes) {
+    modalGerenciarLotes.addEventListener('click', (e) => {
+      if (e.target === modalGerenciarLotes) closeLotesModal();
+    });
+  }
+
   if (btnSaveLotes) {
     btnSaveLotes.addEventListener('click', () => {
       if (!currentEditingItemForLotes) return;
-      currentEditingItemForLotes.lotes = JSON.parse(JSON.stringify(temporaryLotes));
+      const isReadOnlyMode = (!isEditMode || isReadOnly);
+
+      if (isReadOnlyMode) {
+        closeLotesModal();
+        return;
+      }
+
+      if (temporaryLotes.length === 0) {
+        if (typeof Toast !== 'undefined') {
+          Toast.warning('Nenhum lote adicionado. Adicione ao menos um lote ou clique em Cancelar.');
+        }
+        return;
+      }
+
+      // Validação 1: Quantidade e Validade de cada lote
+      for (let i = 0; i < temporaryLotes.length; i++) {
+        const lote = temporaryLotes[i];
+        const rowEl = lotesTableBody.querySelector(`tr[data-idx="${i}"]`);
+
+        if (!lote.quantidade || lote.quantidade <= 0) {
+          if (rowEl) {
+            const qtyInp = rowEl.querySelector('.input-lote-qty');
+            if (qtyInp) { qtyInp.classList.add('is-invalid'); qtyInp.focus(); }
+          }
+          if (typeof Toast !== 'undefined') {
+            Toast.warning(`Informe uma quantidade válida para o lote ${lote.codigo || i + 1}.`);
+          }
+          return;
+        }
+
+        if (!lote.validade || lote.validade.trim() === '') {
+          if (rowEl) {
+            const valInp = rowEl.querySelector('.input-lote-val');
+            if (valInp) { valInp.classList.add('is-invalid'); valInp.focus(); }
+          }
+          if (typeof Toast !== 'undefined') {
+            Toast.warning(`A data de validade é obrigatória para o lote ${lote.codigo || i + 1}. Preencha ou clique em Cancelar.`);
+          }
+          return;
+        }
+      }
+
+      // Validação 2: Total alocado deve bater exatamente com a quantidade do pedido
+      const required = Number(currentEditingItemForLotes.quantidade) || 0;
+      const allocated = temporaryLotes.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
+
+      if (allocated < required) {
+        if (typeof Toast !== 'undefined') {
+          Toast.error(`Quantidade total alocada (${allocated} un) é menor que o pedido (${required} un). Aloque as ${required - allocated} un restantes para confirmar.`);
+        }
+        return;
+      }
+
+      if (allocated > required) {
+        if (typeof Toast !== 'undefined') {
+          Toast.error(`Quantidade total alocada (${allocated} un) excede o pedido (${required} un). Ajuste as quantidades para coincidir com o pedido.`);
+        }
+        return;
+      }
+
+      // Sucesso: Grava os lotes no produto garantindo tipos corretos
+      const sanitizedLotes = temporaryLotes.map(l => ({
+        codigo: String(l.codigo || '').trim(),
+        quantidade: Number(l.quantidade) || 0,
+        fabricacao: l.fabricacao || '',
+        validade: l.validade || ''
+      }));
+
+      currentEditingItemForLotes.lotes = sanitizedLotes;
+
+      const targetInCart = cartItems.find(it => (it.id && it.id === currentEditingItemForLotes.id) || (it.ean && it.ean === currentEditingItemForLotes.ean));
+      if (targetInCart) {
+        targetInCart.lotes = JSON.parse(JSON.stringify(sanitizedLotes));
+      }
+
+      const savedProdName = currentEditingItemForLotes.nome || 'Produto';
       closeLotesModal();
       if (typeof Toast !== 'undefined') {
-        Toast.success(`Validades e lotes atualizados para "${currentEditingItemForLotes.nome.substring(0, 24)}...".`);
+        Toast.success(`Lotes e validades confirmados com sucesso para "${savedProdName.substring(0, 24)}..."!`);
       }
       renderProducts();
     });
@@ -2233,11 +2529,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnFooterConfirm) {
     btnFooterConfirm.addEventListener('click', () => {
-      if (!isEditMode && !isReadOnly) {
-        // Se estiver em modo de visualização, o botão abre o modo de edição
-        toggleEditMode();
-      } else {
-        openConcluirModal();
+      openConcluirModal();
+    });
+  }
+
+  if (btnFooterCancelEdit) {
+    btnFooterCancelEdit.addEventListener('click', () => {
+      isEditMode = false;
+      applyModeUI();
+      if (typeof Toast !== 'undefined') {
+        Toast.info('Modo de edição cancelado.');
       }
     });
   }
@@ -2292,13 +2593,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const orig = heroOrigemSelect ? heroOrigemSelect.value : '';
     const inputResp = document.getElementById('inputResponsavel');
     const txtObs = document.getElementById('textareaObservacoes');
+    const inputPlano = document.getElementById('inputPlanoBase');
 
     const orderObj = {
       id: currentLoadedOrder ? currentLoadedOrder.id : Date.now(),
       codigo: currentOrderCode,
       filial: dest,
       filialOrigem: orig,
-      planoBase: currentLoadedOrder ? currentLoadedOrder.planoBase : 'Inserção Manual',
+      planoBase: currentLoadedOrder ? (currentLoadedOrder.planoBase || (inputPlano ? inputPlano.value : 'Inserção Manual')) : (inputPlano ? inputPlano.value : 'Inserção Manual'),
       qtdeItens: totalUnits,
       dataCriacao: currentLoadedOrder ? currentLoadedOrder.dataCriacao : new Date().toLocaleDateString('pt-BR'),
       status: status,
@@ -2312,6 +2614,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 14. Inicialização da Interface
+  // 14. Menu de Mais Ações do Header (Popover)
+  if (headerMoreActionsBtn && headerMoreActionsPopover) {
+    headerMoreActionsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      headerMoreActionsPopover.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!headerMoreActionsPopover.contains(e.target) && e.target !== headerMoreActionsBtn) {
+        headerMoreActionsPopover.classList.remove('show');
+      }
+    });
+  }
+
+  if (menuActionFinalizar) {
+    menuActionFinalizar.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openConcluirModal();
+    });
+  }
+
+  if (menuActionImprimir) {
+    menuActionImprimir.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      window.print();
+    });
+  }
+
+  if (menuActionCancelar) {
+    menuActionCancelar.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openCancelModal();
+    });
+  }
+
+  // 15. Botão "Editar Pedido" no Rodapé
+  if (btnFooterStartEdit) {
+    btnFooterStartEdit.addEventListener('click', () => {
+      if (isReadOnly) return;
+      toggleEditMode();
+    });
+  }
+
+  // 16. Modal de Cancelamento de Pedido
+  function openCancelModal() {
+    if (cancelModalOrderCode) cancelModalOrderCode.textContent = currentOrderCode;
+    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.add('show', 'active');
+  }
+
+  function closeCancelModal() {
+    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.remove('show', 'active');
+  }
+
+  if (btnCloseCancelModal) btnCloseCancelModal.addEventListener('click', closeCancelModal);
+  if (btnDismissCancelModal) btnDismissCancelModal.addEventListener('click', closeCancelModal);
+
+  if (btnConfirmCancelOrder) {
+    btnConfirmCancelOrder.addEventListener('click', () => {
+      saveOrderToStorage('Cancelado');
+      closeCancelModal();
+      isReadOnly = true;
+      isEditMode = false;
+      if (currentLoadedOrder) currentLoadedOrder.status = 'Cancelado';
+      applyModeUI();
+      if (typeof Toast !== 'undefined') {
+        Toast.error(`Pedido ${currentOrderCode} cancelado com sucesso.`);
+      }
+    });
+  }
+
+  // 17. Inicialização da Interface
   applyModeUI();
 });

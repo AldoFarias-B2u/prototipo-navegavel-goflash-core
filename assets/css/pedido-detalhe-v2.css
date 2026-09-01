@@ -69,7 +69,7 @@
   border-radius: 4px 4px 0 0;
   color: #ffffff;
   padding: 1.5rem 1.75rem 0 1.75rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(101, 48, 181, 0.3);
+  box-shadow: 0 3px 12px rgba(101, 48, 181, 0.12), 0 1px 4px rgba(0, 0, 0, 0.05);
   z-index: 10;
 }
 
@@ -77,7 +77,7 @@
   .order-hero-card {
     padding: 0.75rem 0.85rem 0 0.85rem;
     border-radius: 4px 4px 0 0;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -233,6 +233,7 @@
 .order-status-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   padding: 4px 12px;
   border-radius: 12px;
@@ -242,6 +243,16 @@
   letter-spacing: 0.5px;
   white-space: nowrap;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .order-status-badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.3px;
+  }
 }
 
 .order-status-badge.status-aberto {
@@ -407,8 +418,80 @@
 
 @media (max-width: 768px) {
   .order-content-surface {
-    padding: 0.85rem 0.75rem 1.5rem 0.75rem;
+    padding: 1.65rem 0.75rem 1.5rem 0.75rem;
     border-radius: 0 0 4px 4px;
+  }
+}
+
+/* ==========================================================================
+   5.1 BANNERS INFORMATIVOS DE STATUS (MODO SOMENTE LEITURA)
+   ========================================================================== */
+.readonly-banner-alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.readonly-banner-alert.status-pendente {
+  background-color: #fff8e1;
+  border: 1px solid #ffe082;
+  color: #b45309;
+}
+
+.readonly-banner-alert.status-recebido {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #1b5e20;
+}
+
+.readonly-banner-alert.status-cancelado {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #b71c1c;
+}
+
+.readonly-banner-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.readonly-banner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.readonly-banner-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+}
+
+.readonly-banner-desc {
+  font-size: 0.82rem;
+  opacity: 0.92;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .readonly-banner-alert {
+    padding: 10px 14px;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .readonly-banner-icon {
+    font-size: 22px;
+  }
+  .readonly-banner-title {
+    font-size: 0.86rem;
+  }
+  .readonly-banner-desc {
+    font-size: 0.78rem;
   }
 }
 
@@ -605,8 +688,9 @@
   .order-top-toolbar {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 0.75rem;
+    gap: 10px;
+    margin-top: 4px;
+    margin-bottom: 1.35rem;
     width: 100%;
   }
 
@@ -632,12 +716,13 @@
   .order-toolbar-actions-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     width: 100%;
   }
 
   .btn-add-catalog-v2 {
+    order: 2;
     flex: 1;
     min-width: 0;
     width: auto !important;
@@ -661,6 +746,7 @@
   }
 
   .order-section-controls {
+    order: 1;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -980,15 +1066,15 @@
   border: 1px solid #e5d9fa;
 }
 
-/* Botão de Validades / Lotes (3 Estados Dinâmicos) */
+/* Botão de Validades / Lotes (3 Estados Dinâmicos com Alto Contraste) */
 .btn-manage-lotes-table {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.78rem;
-  font-weight: 500;
+  background-color: #f1f3f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -996,79 +1082,75 @@
   gap: 6px;
   white-space: nowrap;
   transition: all var(--transition-fast, 0.15s ease);
-  height: 30px;
+  height: 32px;
   box-sizing: border-box;
+  user-select: none;
+  opacity: 1 !important;
 }
 
-.btn-manage-lotes-table:hover:not(:disabled) {
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
-  color: #334155;
+.btn-manage-lotes-table:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
 }
 
 .btn-manage-lotes-table .material-icons {
   font-size: 16px;
-  color: #64748b;
+  color: #4b5563;
 }
 
-/* Estado 2: Validade OK (Verde Sóbrio) */
+/* Estado 1: Sem Lote Informado (Status Empty - Fundo Cinza Clarinho Sutil) */
+.btn-manage-lotes-table.status-empty {
+  background-color: #f1f3f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-weight: 600;
+}
+
+.btn-manage-lotes-table.status-empty .material-icons {
+  color: #4b5563;
+}
+
+.btn-manage-lotes-table.status-empty:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+/* Estado 2: Validade OK (Verde Sólido & Nítido) */
 .btn-manage-lotes-table.status-ok {
-  background-color: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #15803d;
-  font-weight: 600;
-}
-
-.btn-manage-lotes-table.status-ok .material-icons {
-  color: #16a34a;
-}
-
-.btn-manage-lotes-table.status-ok:hover:not(:disabled) {
-  background-color: #dcfce7;
-  border-color: #86efac;
-}
-
-/* Estado 3: Divergente (Âmbar Suave) */
-.btn-manage-lotes-table.status-divergent {
-  background-color: #fffbeb;
-  border-color: #fde68a;
-  color: #b45309;
-  font-weight: 600;
-}
-
-.btn-manage-lotes-table.status-divergent .material-icons {
-  color: #d97706;
-}
-
-.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
-  background-color: #fef3c7;
-  border-color: #fcd34d;
+  background-color: #e8f5e9;
+  border: 1px solid #81c784;
+  color: #1b5e20;
+  font-weight: 700;
 }
 
 .btn-manage-lotes-table.status-ok .material-icons {
   color: #2e7d32;
 }
 
-/* Estado 3: Divergente (Amarelo / Âmbar) */
-.btn-manage-lotes-table.status-divergent {
-  background-color: #fff8e1;
-  border-color: #fed7aa;
-  color: #e65100;
-  font-weight: 600;
+.btn-manage-lotes-table.status-ok:hover {
+  background-color: #c8e6c9;
+  border-color: #4caf50;
+  color: #0d3811;
 }
 
-.btn-manage-lotes-table.status-divergent:hover:not(:disabled) {
-  background-color: #fef3c7;
-  border-color: #fcd34d;
+/* Estado 3: Divergente (Âmbar / Laranja Nítido) */
+.btn-manage-lotes-table.status-divergent {
+  background-color: #fff8e1;
+  border: 1px solid #ffb74d;
+  color: #b45309;
+  font-weight: 700;
 }
 
 .btn-manage-lotes-table.status-divergent .material-icons {
-  color: #e65100;
+  color: #d97706;
 }
 
-.btn-manage-lotes-table:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
+.btn-manage-lotes-table.status-divergent:hover {
+  background-color: #ffe082;
+  border-color: #f57c00;
+  color: #7c2d12;
 }
 
 /* Botão de Excluir Linha */
@@ -1383,15 +1465,63 @@
   font-size: 0.86rem;
   font-weight: 600;
 }
-
 /* Bloco 3: Rodapé de Ações */
 .mobile-card-bottom-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid #f1f5f9;
+}
+
+.mobile-card-bottom-actions .btn-manage-lotes-table {
+  flex: 1;
+  min-width: 0;
+  max-width: fit-content;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  height: 34px;
+  box-sizing: border-box;
+}
+
+.mobile-card-stepper-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.mobile-card-stepper-group .order-stepper-wrapper {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mobile-card-stepper-group .btn-delete-item-row {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 0;
+  color: #9e9e9e;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.mobile-card-stepper-group .btn-delete-item-row:hover {
+  color: #d32f2f;
+  background-color: #fee2e2;
+  border-color: #fecaca;
+}
+
+.mobile-card-stepper-group .btn-delete-item-row .material-icons {
+  font-size: 20px;
 }
 
 /* ==========================================================================
@@ -1417,7 +1547,7 @@
   .order-sticky-footer {
     height: auto;
     min-height: 56px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.5rem;
     flex-direction: column;
     gap: 6px;
   }
@@ -1481,48 +1611,39 @@
   gap: 10px;
 }
 
-@media (max-width: 768px) {
-  .footer-actions-container {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    justify-content: space-between;
-  }
+/* Base Unificada para TODOS os botões do Rodapé */
+.btn-footer-secondary,
+.btn-footer-primary,
+.btn-footer-edit {
+  height: 38px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 16px;
+  gap: 6px;
+  line-height: 1;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-footer-secondary .material-icons,
+.btn-footer-primary .material-icons,
+.btn-footer-edit .material-icons {
+  font-size: 18px !important;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-footer-secondary {
   background-color: #f1f3f6;
   color: #495057;
   border: 1px solid #ced4da;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.btn-footer-secondary .btn-action-icon {
-  font-size: 16px;
-}
-
-@media (max-width: 768px) {
-  .btn-footer-secondary {
-    flex: 1;
-    min-width: 0;
-    padding: 7px 4px;
-    font-size: 0.78rem;
-    gap: 3px;
-    white-space: nowrap;
-  }
-  .btn-footer-secondary .btn-action-icon {
-    font-size: 14px;
-  }
 }
 
 .btn-footer-secondary:hover {
@@ -1530,43 +1651,92 @@
   color: #212529;
 }
 
+.btn-footer-edit {
+  background-color: #f5f3fa;
+  color: #6530b5;
+  border: 1px solid #d8c7f5;
+}
+
+.btn-footer-edit:hover {
+  background-color: #ece6f8;
+  color: #522396;
+  border-color: #bfa5eb;
+}
+
 .btn-footer-primary {
   background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
   color: #ffffff;
-  border: none;
-  padding: 9px 20px;
-  border-radius: 4px;
-  font-size: 0.88rem;
+  border: 1px solid transparent;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  letter-spacing: 0.4px;
   box-shadow: 0 3px 10px rgba(101, 48, 181, 0.35);
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-@media (max-width: 768px) {
-  .btn-footer-primary {
-    flex: 1.4;
-    min-width: 0;
-    padding: 7px 6px;
-    font-size: 0.8rem;
-    gap: 4px;
-    white-space: nowrap;
-  }
-  .btn-footer-primary .material-icons {
-    font-size: 16px;
-  }
 }
 
 .btn-footer-primary:hover {
   background: linear-gradient(135deg, #743ec2 0%, #5e28a8 100%);
   box-shadow: 0 5px 14px rgba(101, 48, 181, 0.45);
   transform: translateY(-1px);
+}
+
+/* Alternância Adaptativa de Rótulos Curtos/Longos (Hero Header & Rodapé) */
+@media (max-width: 480px) {
+  .txt-long {
+    display: none !important;
+  }
+  .txt-short {
+    display: inline !important;
+  }
+}
+
+@media (min-width: 481px) {
+  .txt-short {
+    display: none !important;
+  }
+  .txt-long {
+    display: inline !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-actions-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
+  }
+
+  .btn-footer-secondary,
+  .btn-footer-primary,
+  .btn-footer-edit {
+    height: 36px;
+    padding: 0 5px;
+    font-size: 0.78rem;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .btn-footer-secondary .material-icons,
+  .btn-footer-primary .material-icons,
+  .btn-footer-edit .material-icons {
+    font-size: 16px !important;
+  }
+
+  .btn-footer-secondary {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .btn-footer-edit {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .btn-footer-primary {
+    flex: 1.15;
+    min-width: 0;
+  }
 }
 
 /* ==========================================================================
@@ -2153,24 +2323,29 @@
     font-size: 18px;
   }
 
-  /* Posicionamento Inteligente de Dropdowns no Mobile */
+  /* Posicionamento Inteligente de Dropdowns no Mobile (Abertura a partir da esquerda) */
   .more-actions-dropdown {
+    left: 0 !important;
     right: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 245px !important;
-    max-width: calc(100vw - 20px) !important;
+    transform: none !important;
+    width: 260px !important;
+    max-width: calc(100vw - 24px) !important;
   }
 
   .more-actions-dropdown.show {
-    animation: dropdownFadeInCentered 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+    animation: dropdownFadeIn 0.18s cubic-bezier(0.2, 0, 0.2, 1);
   }
 
   .columns-visibility-dropdown {
-    right: 0 !important;
-    left: auto !important;
-    width: 245px !important;
-    max-width: calc(100vw - 20px) !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    width: 260px !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  .columns-visibility-dropdown.show {
+    animation: dropdownFadeIn 0.18s cubic-bezier(0.2, 0, 0.2, 1);
   }
 }
 
@@ -2811,4 +2986,661 @@
 .order-item-card.item-card-highlight {
   animation: rowInsertHighlight 1.8s ease-out;
   border-color: #6530b5 !important;
+}
+
+/* ==========================================================================
+   MODAL DE GERENCIAMENTO DE LOTES E VALIDADES (SHELF-LIFE)
+   ========================================================================== */
+.lotes-modal-box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  max-width: 680px;
+  width: 95%;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: modalFadeIn 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.lotes-product-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background-color: #fbf9fe;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.lotes-product-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.lotes-product-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  flex-shrink: 0;
+}
+
+.lotes-product-text-box {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.lotes-product-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+}
+
+.lotes-product-code {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-family: 'Roboto Mono', monospace;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
+}
+
+.btn-lotes-new-top {
+  background-color: #6530b5;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  transition: all var(--transition-fast, 0.15s ease);
+  box-shadow: 0 1px 3px rgba(101, 48, 181, 0.2);
+}
+
+.btn-lotes-new-top:hover {
+  background-color: #522396;
+}
+
+/* Barra de Progresso de Alocação de Lotes */
+.allocation-progress-card {
+  padding: 12px 18px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+
+.allocation-metrics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.allocation-label {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.allocation-counter-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.allocation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.allocation-badge.complete {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.allocation-badge.pending {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffe0b2;
+}
+
+.allocation-badge.exceeded,
+.allocation-badge.warning {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.allocation-bar-track {
+  height: 8px;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.allocation-bar-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #6530b5;
+  border-radius: 4px;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.allocation-bar-fill.complete {
+  background-color: #2e7d32;
+}
+
+.allocation-bar-fill.exceeded {
+  background-color: #dc2626;
+}
+
+/* Tabela de Lotes no Modal */
+.lotes-table-container {
+  padding: 14px 18px;
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.lotes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lotes-table th {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 8px 6px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.lotes-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.lote-input {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  outline: none;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: border-color var(--transition-fast, 0.15s ease), box-shadow var(--transition-fast, 0.15s ease);
+}
+
+.lote-input:focus {
+  border-color: #6530b5;
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15);
+}
+
+.lote-input.is-invalid {
+  border-color: #dc2626 !important;
+  background-color: #fffafb;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15) !important;
+}
+
+.btn-add-lote-row {
+  background: transparent;
+  border: 1px dashed #6530b5;
+  border-radius: 6px;
+  color: #6530b5;
+  font-weight: 600;
+  font-size: 0.84rem;
+  padding: 9px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  transition: all var(--transition-fast, 0.2s ease);
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-add-lote-row:hover {
+  background-color: #f7f3fd;
+  border-color: #522396;
+}
+
+.btn-del-lote-row {
+  background: transparent;
+  border: none;
+  color: #9e9e9e;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.btn-del-lote-row:hover {
+  color: #d32f2f;
+  background-color: #fee2e2;
+}
+
+.btn-del-lote-row .material-icons {
+  font-size: 18px;
+}
+
+/* Empty State na Tabela de Lotes */
+.lotes-empty-cell {
+  text-align: center;
+  padding: 2rem 1rem !important;
+  border-bottom: none !important;
+}
+
+.lotes-empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #64748b;
+}
+
+.lotes-empty-box .material-icons {
+  font-size: 36px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.lotes-empty-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lotes-empty-box small {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE DO MODAL DE LOTES (MOBILE <= 600px)
+   ========================================================================== */
+@media (max-width: 600px) {
+  .lotes-modal-box {
+    width: 95%;
+    max-width: 400px;
+    margin: 12px auto;
+    border-radius: 8px;
+    max-height: 92vh;
+  }
+
+  .lotes-product-info-bar {
+    padding: 10px 14px;
+    gap: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .lotes-product-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .lotes-product-img {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .lotes-product-text-box {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .lotes-product-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: block;
+  }
+
+  .lotes-product-code {
+    font-size: 0.73rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Botão Novo Lote compacto no Mobile (32x32px com ícone +) */
+  .btn-lotes-new-top {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 0;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 6px;
+  }
+
+  .btn-lotes-new-top-txt {
+    display: none;
+  }
+
+  .btn-lotes-new-top .material-icons {
+    font-size: 18px !important;
+    margin: 0 !important;
+  }
+
+  .allocation-progress-card {
+    padding: 10px 14px;
+  }
+
+  .allocation-metrics-row {
+    margin-bottom: 6px;
+  }
+
+  .allocation-label {
+    font-size: 0.78rem;
+  }
+
+  .allocation-counter-text {
+    font-size: 0.95rem;
+  }
+
+  .allocation-badge {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+  }
+
+  /* Transformação da Tabela em Cards de Lote no Mobile */
+  .lotes-table-container {
+    padding: 10px 14px;
+    max-height: 340px;
+  }
+
+  .lotes-table thead {
+    display: none;
+  }
+
+  .lotes-table,
+  .lotes-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .lotes-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr 34px;
+    gap: 8px 10px;
+    background-color: #fcfbfe;
+    border: 1px solid #e9dff7;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  .lotes-table tbody tr td {
+    padding: 0 !important;
+    border-bottom: none !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lotes-table tbody tr td:nth-child(1) {
+    grid-column: 1 / 2;
+  }
+
+  .lotes-table tbody tr td:nth-child(2) {
+    grid-column: 2 / 3;
+  }
+
+  .lotes-table tbody tr td:nth-child(5) {
+    grid-column: 3 / 4;
+    align-items: center;
+    justify-content: center;
+    padding-top: 14px !important;
+  }
+
+  .lotes-table tbody tr td:nth-child(3) {
+    grid-column: 1 / 2;
+  }
+
+  .lotes-table tbody tr td:nth-child(4) {
+    grid-column: 2 / 4;
+  }
+
+  .lotes-table tbody tr td:nth-child(1)::before {
+    content: 'Lote (Código)';
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .lotes-table tbody tr td:nth-child(2)::before {
+    content: 'Quantidade *';
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .lotes-table tbody tr td:nth-child(3)::before {
+    content: 'Fabricação';
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .lotes-table tbody tr td:nth-child(4)::before {
+    content: 'Validade *';
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #6530b5;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .lotes-table tbody tr td.lotes-empty-cell {
+    grid-column: 1 / 4;
+    display: block;
+  }
+
+  .lotes-table tbody tr td.lotes-empty-cell::before {
+    display: none !important;
+  }
+
+  .lote-input {
+    padding: 6px 8px;
+    font-size: 0.82rem;
+    height: 34px;
+  }
+
+  .btn-add-lote-row {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+  }
+}
+
+/* ==========================================================================
+   POPOVER DE MAIS AÇÕES DO HEADER (TOPBAR)
+   ========================================================================== */
+.header-more-actions-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.header-actions-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  padding: 6px 0;
+  z-index: 1050;
+  display: none;
+}
+
+.header-actions-popover.show {
+  display: block;
+}
+
+.header-action-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color var(--transition-fast, 0.15s ease);
+}
+
+.header-action-menu-item:hover {
+  background-color: #f8fafc;
+}
+
+.header-action-menu-item .material-icons {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.action-menu-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-menu-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.action-menu-desc {
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.header-action-menu-item.text-danger:hover {
+  background-color: #fef2f2;
+}
+
+.header-action-menu-item.text-danger .action-menu-title {
+  color: #d32f2f;
+}
+
+.dropdown-item-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 4px 0;
+}
+
+/* ==========================================================================
+   IMPRESSÃO LIMPA DO PEDIDO (@media print)
+   ========================================================================== */
+@media print {
+  .module-topbar,
+  .order-sticky-footer,
+  .fab-edit-order,
+  .official-modal-overlay,
+  .order-top-toolbar,
+  .btn-delete-item-row,
+  .order-stepper-wrapper,
+  .btn-add-lote-row,
+  .btn-delete-lote-row {
+    display: none !important;
+  }
+
+  body,
+  .order-content-surface,
+  .order-hero-card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .order-hero-card {
+    border: 1px solid #cccccc !important;
+    color: #000000 !important;
+    page-break-inside: avoid;
+  }
+
+  .order-hero-card * {
+    color: #000000 !important;
+  }
 }
