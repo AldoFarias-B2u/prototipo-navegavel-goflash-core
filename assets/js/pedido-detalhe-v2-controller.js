@@ -82,17 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const emptyState = document.getElementById('orderEmptyState');
   const tableWrapper = document.getElementById('orderTableWrapper');
 
+  // Menu de Mais Ações do Header (Topbar)
+  const headerMoreActionsBtn = document.getElementById('headerMoreActionsBtn');
+  const headerMoreActionsPopover = document.getElementById('headerMoreActionsPopover');
+  const menuActionFinalizar = document.getElementById('menuActionFinalizar');
+  const menuActionImprimir = document.getElementById('menuActionImprimir');
+  const menuActionCancelar = document.getElementById('menuActionCancelar');
+
   // Sticky Footer
   const footerSkusCount = document.getElementById('footerSkusCount');
   const footerUnitsCount = document.getElementById('footerUnitsCount');
   const footerTotalValue = document.getElementById('footerTotalValue');
   const footerMetricValorBox = document.getElementById('footerMetricValorBox');
   const footerPriceTableBadge = document.getElementById('footerPriceTableBadge');
+  const btnFooterStartEdit = document.getElementById('btnFooterStartEdit');
   const btnFooterCancelEdit = document.getElementById('btnFooterCancelEdit');
   const btnFooterDraft = document.getElementById('btnFooterDraft');
   const btnFooterConfirm = document.getElementById('btnFooterConfirm');
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
+
+  // Modal Cancelar Pedido
+  const modalConfirmarCancelamento = document.getElementById('modalConfirmarCancelamento');
+  const cancelModalOrderCode = document.getElementById('cancelModalOrderCode');
+  const btnCloseCancelModal = document.getElementById('btnCloseCancelModal');
+  const btnDismissCancelModal = document.getElementById('btnDismissCancelModal');
+  const btnConfirmCancelOrder = document.getElementById('btnConfirmCancelOrder');
 
   // Modais
   const modalCatalog = document.getElementById('modalCatalog');
@@ -321,15 +336,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
 
+      if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+      if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+
       renderProducts();
       return;
     } else {
       if (readonlyBanner) readonlyBanner.style.display = 'none';
+      if (menuActionFinalizar) menuActionFinalizar.style.display = 'flex';
+      if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
     }
 
     // 4.3 Pedido em Aberto: Alternância Visualização vs. Edição
@@ -361,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">edit</span> Modo de Edição';
       }
 
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
       if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
       if (btnFooterConfirm) {
@@ -397,6 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">visibility</span> Visualização';
       }
 
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'inline-flex';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) {
@@ -2510,6 +2533,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 14. Inicialização da Interface
+  // 14. Menu de Mais Ações do Header (Popover)
+  if (headerMoreActionsBtn && headerMoreActionsPopover) {
+    headerMoreActionsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      headerMoreActionsPopover.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!headerMoreActionsPopover.contains(e.target) && e.target !== headerMoreActionsBtn) {
+        headerMoreActionsPopover.classList.remove('show');
+      }
+    });
+  }
+
+  if (menuActionFinalizar) {
+    menuActionFinalizar.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openConcluirModal();
+    });
+  }
+
+  if (menuActionImprimir) {
+    menuActionImprimir.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      window.print();
+    });
+  }
+
+  if (menuActionCancelar) {
+    menuActionCancelar.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openCancelModal();
+    });
+  }
+
+  // 15. Botão "Editar Pedido" no Rodapé
+  if (btnFooterStartEdit) {
+    btnFooterStartEdit.addEventListener('click', () => {
+      if (isReadOnly) return;
+      toggleEditMode();
+    });
+  }
+
+  // 16. Modal de Cancelamento de Pedido
+  function openCancelModal() {
+    if (cancelModalOrderCode) cancelModalOrderCode.textContent = currentOrderCode;
+    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.add('show', 'active');
+  }
+
+  function closeCancelModal() {
+    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.remove('show', 'active');
+  }
+
+  if (btnCloseCancelModal) btnCloseCancelModal.addEventListener('click', closeCancelModal);
+  if (btnDismissCancelModal) btnDismissCancelModal.addEventListener('click', closeCancelModal);
+
+  if (btnConfirmCancelOrder) {
+    btnConfirmCancelOrder.addEventListener('click', () => {
+      saveOrderToStorage('Cancelado');
+      closeCancelModal();
+      isReadOnly = true;
+      isEditMode = false;
+      if (currentLoadedOrder) currentLoadedOrder.status = 'Cancelado';
+      applyModeUI();
+      if (typeof Toast !== 'undefined') {
+        Toast.error(`Pedido ${currentOrderCode} cancelado com sucesso.`);
+      }
+    });
+  }
+
+  // 17. Inicialização da Interface
   applyModeUI();
 });

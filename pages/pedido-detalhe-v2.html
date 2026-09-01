@@ -44,6 +44,41 @@
 
     <!-- Ações do Topo Direito -->
     <div class="module-topbar-right">
+      <!-- Menu de Mais Ações do Pedido (Finalizar, Imprimir, Cancelar) -->
+      <div class="header-more-actions-wrapper" style="position: relative;">
+        <button class="topbar-btn" id="headerMoreActionsBtn" title="Mais Ações do Pedido" aria-label="Mais Ações do Pedido">
+          <span class="material-icons">more_vert</span>
+        </button>
+
+        <div class="header-actions-popover" id="headerMoreActionsPopover" role="menu">
+          <button type="button" class="header-action-menu-item" id="menuActionFinalizar">
+            <span class="material-icons" style="color: #6530b5;">check_circle</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Finalizar Pedido</span>
+              <span class="action-menu-desc">Escolher status e concluir</span>
+            </div>
+          </button>
+
+          <button type="button" class="header-action-menu-item" id="menuActionImprimir">
+            <span class="material-icons" style="color: #475569;">print</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Imprimir Pedido</span>
+              <span class="action-menu-desc">Gerar comprovante / PDF</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider"></div>
+
+          <button type="button" class="header-action-menu-item text-danger" id="menuActionCancelar">
+            <span class="material-icons" style="color: #d32f2f;">block</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title" style="color: #d32f2f;">Cancelar Pedido</span>
+              <span class="action-menu-desc">Bloquear e arquivar</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
       <button class="topbar-btn" id="btnHeaderSave" title="Concluir e Salvar Pedido" aria-label="Salvar Pedido" style="display: none;">
         <span class="material-icons">check</span>
       </button>
@@ -477,6 +512,10 @@
         <span class="material-icons">arrow_back</span>
         <span>Voltar</span>
       </button>
+      <button type="button" class="btn-footer-secondary btn-footer-edit" id="btnFooterStartEdit" style="display: inline-flex;">
+        <span class="material-icons btn-action-icon" style="color: #6530b5;">edit</span>
+        <span class="btn-footer-edit-txt">Editar Pedido</span>
+      </button>
       <button type="button" class="btn-footer-secondary" id="btnFooterCancelEdit" style="display: none;">
         <span class="material-icons btn-action-icon">close</span>
         <span>Cancelar</span>
@@ -710,6 +749,41 @@
         <button type="button" class="btn-danger-confirm" id="btnConfirmClearAll">
           <span class="material-icons" style="font-size: 16px;">delete</span>
           Sim, Limpar Todos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONFIRMAÇÃO DE CANCELAMENTO DO PEDIDO
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmarCancelamento" role="dialog" aria-modal="true">
+    <div class="official-modal-box" style="max-width: 480px;">
+      <div class="official-modal-header" style="background-color: #b71c1c;">
+        <h2 class="official-modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons">warning</span>
+          CANCELAR PEDIDO DE ABASTECIMENTO
+        </h2>
+        <button type="button" class="official-modal-close" id="btnCloseCancelModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem; text-align: center;">
+        <div class="modal-confirm-icon-box danger">
+          <span class="material-icons">block</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #212529; margin: 0 0 0.5rem 0;">
+          Deseja realmente cancelar este pedido?
+        </h3>
+        <p style="color: #616161; font-size: 0.9rem; line-height: 1.45; margin: 0 0 1.25rem 0;">
+          O Pedido <strong id="cancelModalOrderCode">000000</strong> será marcado como <strong>Cancelado</strong> no sistema e arquivado para histórico operacional.
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-footer-secondary" id="btnDismissCancelModal">Não, Manter Pedido</button>
+        <button type="button" class="btn-danger-confirm" id="btnConfirmCancelOrder">
+          <span class="material-icons" style="font-size: 16px;">block</span>
+          Sim, Cancelar Pedido
         </button>
       </div>
     </div>
