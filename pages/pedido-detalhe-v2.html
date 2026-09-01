@@ -440,13 +440,17 @@
           <div class="order-empty-icon-box">
             <span class="material-icons">add_shopping_cart</span>
           </div>
-          <h3 class="order-empty-title">Nenhum produto adicionado ao pedido</h3>
-          <p class="order-empty-desc">
-            Clique no botão <strong>+ ADICIONAR PRODUTOS</strong> ou escaneie o código de barras EAN na barra superior.
+          <h3 class="order-empty-title" id="orderEmptyTitle">Nenhum produto adicionado ao pedido</h3>
+          <p class="order-empty-desc" id="orderEmptyDesc">
+            Este pedido está vazio no momento. Para adicionar produtos e quantidades, ative o Modo de Edição.
           </p>
-          <button type="button" class="btn-add-catalog-v2" id="btnEmptyAdd">
+          <button type="button" class="btn-add-catalog-v2" id="btnEmptyAdd" style="display: none;">
             <span class="material-icons">add_circle</span>
             Selecionar Produtos do Catálogo
+          </button>
+          <button type="button" class="btn-footer-edit" id="btnEmptyEdit" style="display: none; height: 38px; padding: 0 18px; border-radius: 4px; font-weight: 600; cursor: pointer; align-items: center; gap: 8px;">
+            <span class="material-icons" style="font-size: 18px; color: #6530b5;">edit</span>
+            <span>Editar Pedido para Inserir Itens</span>
           </button>
         </div>
 

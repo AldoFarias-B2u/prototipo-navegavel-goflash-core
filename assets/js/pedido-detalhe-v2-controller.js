@@ -580,6 +580,31 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cardsGrid) cardsGrid.style.display = 'none';
       if (emptyState) emptyState.style.display = 'flex';
       if (mainContainer) mainContainer.classList.add('is-empty-cart');
+
+      const emptyDesc = document.getElementById('orderEmptyDesc');
+      const emptyBtnAdd = document.getElementById('btnEmptyAdd');
+      const emptyBtnEdit = document.getElementById('btnEmptyEdit');
+
+      if (isEditMode && !isReadOnly) {
+        if (emptyDesc) {
+          emptyDesc.innerHTML = 'Clique no botão <strong>+ ADICIONAR PRODUTOS</strong> abaixo ou escaneie o código de barras EAN na barra superior.';
+        }
+        if (emptyBtnAdd) emptyBtnAdd.style.display = 'inline-flex';
+        if (emptyBtnEdit) emptyBtnEdit.style.display = 'none';
+      } else {
+        if (isReadOnly) {
+          if (emptyDesc) emptyDesc.textContent = 'Nenhum produto foi registrado neste pedido.';
+          if (emptyBtnAdd) emptyBtnAdd.style.display = 'none';
+          if (emptyBtnEdit) emptyBtnEdit.style.display = 'none';
+        } else {
+          if (emptyDesc) {
+            emptyDesc.innerHTML = 'Este pedido está vazio no momento. Para adicionar produtos e quantidades, ative o <strong>Modo de Edição</strong> clicando no botão <strong>Editar</strong> abaixo.';
+          }
+          if (emptyBtnAdd) emptyBtnAdd.style.display = 'none';
+          if (emptyBtnEdit) emptyBtnEdit.style.display = 'inline-flex';
+        }
+      }
+
       updateTotals();
       return;
     }
@@ -1219,9 +1244,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnOpenCatalogModal) btnOpenCatalogModal.addEventListener('click', openCatalogModal);
+  if (btnOpenCatalogModal) {
+    btnOpenCatalogModal.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
+      openCatalogModal();
+    });
+  }
+
   const btnEmptyAdd = document.getElementById('btnEmptyAdd');
-  if (btnEmptyAdd) btnEmptyAdd.addEventListener('click', openCatalogModal);
+  if (btnEmptyAdd) {
+    btnEmptyAdd.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
+      openCatalogModal();
+    });
+  }
+
+  const btnEmptyEdit = document.getElementById('btnEmptyEdit');
+  if (btnEmptyEdit) {
+    btnEmptyEdit.addEventListener('click', () => {
+      if (isReadOnly) return;
+      toggleEditMode();
+    });
+  }
 
   if (btnCloseCatalogModal) btnCloseCatalogModal.addEventListener('click', closeCatalogModal);
   if (btnCloseCatalogBtn) btnCloseCatalogBtn.addEventListener('click', closeCatalogModal);
