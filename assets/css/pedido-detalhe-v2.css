@@ -413,6 +413,78 @@
 }
 
 /* ==========================================================================
+   5.1 BANNERS INFORMATIVOS DE STATUS (MODO SOMENTE LEITURA)
+   ========================================================================== */
+.readonly-banner-alert {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.readonly-banner-alert.status-pendente {
+  background-color: #fff8e1;
+  border: 1px solid #ffe082;
+  color: #b45309;
+}
+
+.readonly-banner-alert.status-recebido {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #1b5e20;
+}
+
+.readonly-banner-alert.status-cancelado {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #b71c1c;
+}
+
+.readonly-banner-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.readonly-banner-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.readonly-banner-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 2px;
+}
+
+.readonly-banner-desc {
+  font-size: 0.82rem;
+  opacity: 0.92;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .readonly-banner-alert {
+    padding: 10px 14px;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .readonly-banner-icon {
+    font-size: 22px;
+  }
+  .readonly-banner-title {
+    font-size: 0.86rem;
+  }
+  .readonly-banner-desc {
+    font-size: 0.78rem;
+  }
+}
+
+/* ==========================================================================
    6. FERRAMENTAS DE INSERÇÃO & CABEÇALHO DE ITENS (2 NÍVEIS DISTRIBUÍDOS)
    ========================================================================== */
 
