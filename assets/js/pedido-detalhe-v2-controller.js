@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'CONFIRMAR';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Confirmar</span><span class="txt-long">CONFIRMAR</span>';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
 
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) {
         btnFooterConfirm.style.display = 'inline-flex';
-        if (btnFooterConfirmTxt) btnFooterConfirmTxt.textContent = 'FINALIZAR PEDIDO';
+        if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Finalizar</span><span class="txt-long">FINALIZAR PEDIDO</span>';
       }
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
     }

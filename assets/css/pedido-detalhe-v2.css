@@ -1536,7 +1536,7 @@
   .order-sticky-footer {
     height: auto;
     min-height: 56px;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.5rem;
     flex-direction: column;
     gap: 6px;
   }
@@ -1668,12 +1668,31 @@
   transform: translateY(-1px);
 }
 
+/* Alternância Adaptativa de Rótulos Curtos/Longos no Rodapé */
+@media (max-width: 480px) {
+  .order-sticky-footer .txt-long {
+    display: none !important;
+  }
+  .order-sticky-footer .txt-short {
+    display: inline !important;
+  }
+}
+
+@media (min-width: 481px) {
+  .order-sticky-footer .txt-short {
+    display: none !important;
+  }
+  .order-sticky-footer .txt-long {
+    display: inline !important;
+  }
+}
+
 @media (max-width: 768px) {
   .footer-actions-container {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     justify-content: space-between;
   }
 
@@ -1681,7 +1700,7 @@
   .btn-footer-primary,
   .btn-footer-edit {
     height: 36px;
-    padding: 0 6px;
+    padding: 0 5px;
     font-size: 0.78rem;
     gap: 4px;
     white-space: nowrap;
@@ -1699,12 +1718,12 @@
   }
 
   .btn-footer-edit {
-    flex: 1.1;
+    flex: 1;
     min-width: 0;
   }
 
   .btn-footer-primary {
-    flex: 1.35;
+    flex: 1.15;
     min-width: 0;
   }
 }
