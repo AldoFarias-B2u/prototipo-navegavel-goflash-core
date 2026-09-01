@@ -432,15 +432,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
   }
 
-  // 5. FAB de Lápis / Conclusão de Edição
+  // 5. Alternância do Modo de Edição vs. Visualização
+  function toggleEditMode() {
+    if (isReadOnly) return;
+    isEditMode = !isEditMode;
+    applyModeUI();
+    if (typeof Toast !== 'undefined') {
+      Toast.info(isEditMode ? 'Modo de Edição ativado.' : 'Modo de Visualização ativado.');
+    }
+  }
+
+  // FAB de Lápis / Conclusão de Edição
   if (fabEditOrder) {
     fabEditOrder.addEventListener('click', () => {
-      if (isReadOnly) return;
-      isEditMode = !isEditMode;
-      applyModeUI();
-      if (typeof Toast !== 'undefined') {
-        Toast.info(isEditMode ? 'Modo de Edição ativado.' : 'Modo de Visualização ativado.');
-      }
+      toggleEditMode();
     });
   }
 

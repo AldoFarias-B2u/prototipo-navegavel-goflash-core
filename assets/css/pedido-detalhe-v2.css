@@ -1600,6 +1600,74 @@
   gap: 10px;
 }
 
+/* Base Unificada para TODOS os botões do Rodapé */
+.btn-footer-secondary,
+.btn-footer-primary,
+.btn-footer-edit {
+  height: 38px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 16px;
+  gap: 6px;
+  line-height: 1;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.btn-footer-secondary .material-icons,
+.btn-footer-primary .material-icons,
+.btn-footer-edit .material-icons {
+  font-size: 18px !important;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-footer-secondary {
+  background-color: #f1f3f6;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.btn-footer-secondary:hover {
+  background-color: #e2e8f0;
+  color: #212529;
+}
+
+.btn-footer-edit {
+  background-color: #f5f3fa;
+  color: #6530b5;
+  border: 1px solid #d8c7f5;
+}
+
+.btn-footer-edit:hover {
+  background-color: #ece6f8;
+  color: #522396;
+  border-color: #bfa5eb;
+}
+
+.btn-footer-primary {
+  background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
+  color: #ffffff;
+  border: 1px solid transparent;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  box-shadow: 0 3px 10px rgba(101, 48, 181, 0.35);
+}
+
+.btn-footer-primary:hover {
+  background: linear-gradient(135deg, #743ec2 0%, #5e28a8 100%);
+  box-shadow: 0 5px 14px rgba(101, 48, 181, 0.45);
+  transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
   .footer-actions-container {
     width: 100%;
@@ -1608,84 +1676,37 @@
     gap: 6px;
     justify-content: space-between;
   }
-}
 
-.btn-footer-secondary {
-  background-color: #f1f3f6;
-  color: #495057;
-  border: 1px solid #ced4da;
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-.btn-footer-secondary .btn-action-icon {
-  font-size: 16px;
-}
-
-@media (max-width: 768px) {
-  .btn-footer-secondary {
-    flex: 1;
-    min-width: 0;
-    padding: 7px 4px;
+  .btn-footer-secondary,
+  .btn-footer-primary,
+  .btn-footer-edit {
+    height: 36px;
+    padding: 0 6px;
     font-size: 0.78rem;
-    gap: 3px;
-    white-space: nowrap;
-  }
-  .btn-footer-secondary .btn-action-icon {
-    font-size: 14px;
-  }
-}
-
-.btn-footer-secondary:hover {
-  background-color: #e2e8f0;
-  color: #212529;
-}
-
-.btn-footer-primary {
-  background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
-  color: #ffffff;
-  border: none;
-  padding: 9px 20px;
-  border-radius: 4px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 3px 10px rgba(101, 48, 181, 0.35);
-  transition: all var(--transition-fast, 0.2s ease);
-}
-
-@media (max-width: 768px) {
-  .btn-footer-primary {
-    flex: 1.4;
-    min-width: 0;
-    padding: 7px 6px;
-    font-size: 0.8rem;
     gap: 4px;
     white-space: nowrap;
   }
-  .btn-footer-primary .material-icons {
-    font-size: 16px;
-  }
-}
 
-.btn-footer-primary:hover {
-  background: linear-gradient(135deg, #743ec2 0%, #5e28a8 100%);
-  box-shadow: 0 5px 14px rgba(101, 48, 181, 0.45);
-  transform: translateY(-1px);
+  .btn-footer-secondary .material-icons,
+  .btn-footer-primary .material-icons,
+  .btn-footer-edit .material-icons {
+    font-size: 16px !important;
+  }
+
+  .btn-footer-secondary {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .btn-footer-edit {
+    flex: 1.1;
+    min-width: 0;
+  }
+
+  .btn-footer-primary {
+    flex: 1.35;
+    min-width: 0;
+  }
 }
 
 /* ==========================================================================
@@ -3556,33 +3577,6 @@
   height: 1px;
   background-color: #e2e8f0;
   margin: 4px 0;
-}
-
-/* ==========================================================================
-   BOTÃO EDITAR PEDIDO NO RODAPÉ
-   ========================================================================== */
-.btn-footer-edit {
-  background-color: #f5f3fa;
-  color: #6530b5;
-  border: 1px solid #d8c7f5;
-  font-weight: 600;
-}
-
-.btn-footer-edit:hover {
-  background-color: #ece6f8;
-  color: #522396;
-  border-color: #bfa5eb;
-}
-
-@media (max-width: 768px) {
-  .btn-footer-edit {
-    flex: 1;
-    min-width: 0;
-    padding: 7px 4px;
-    font-size: 0.76rem;
-    gap: 3px;
-    white-space: nowrap;
-  }
 }
 
 /* ==========================================================================
