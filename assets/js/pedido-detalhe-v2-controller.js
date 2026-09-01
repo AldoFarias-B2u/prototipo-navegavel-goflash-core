@@ -70,10 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const moreActionsWrapper = document.getElementById('moreActionsWrapper');
   const btnMoreActions = document.getElementById('btnMoreActions');
   const moreActionsDropdown = document.getElementById('moreActionsDropdown');
+  const actionAddByCategory = document.getElementById('actionAddByCategory');
   const actionBatchQty = document.getElementById('actionBatchQty');
   const actionManageCols = document.getElementById('actionManageCols');
   const actionPriceTable = document.getElementById('actionPriceTable');
   const actionClearAll = document.getElementById('actionClearAll');
+  const moreActionsDivider = document.querySelector('#moreActionsDropdown .dropdown-item-divider');
   const currentPriceTableLabel = document.getElementById('currentPriceTableLabel');
 
   // Tabela e Cards
@@ -345,6 +347,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
       if (menuActionCancelar) menuActionCancelar.style.display = 'none';
 
+      // Itens de Mais Ações da Toolbar (Somente Leitura: apenas Colunas)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'none';
+      if (actionBatchQty) actionBatchQty.style.display = 'none';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'none';
+      if (actionClearAll) actionClearAll.style.display = 'none';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'none';
+
       renderProducts();
       return;
     } else {
@@ -382,6 +392,14 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">edit</span> Modo de Edição';
       }
 
+      // Itens de Mais Ações da Toolbar (Modo Edição: Todos os recursos disponíveis)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'flex';
+      if (actionBatchQty) actionBatchQty.style.display = 'flex';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'flex';
+      if (actionClearAll) actionClearAll.style.display = 'flex';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'block';
+
       if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
       if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
@@ -418,6 +436,14 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.className = 'order-mode-pill pill-view';
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">visibility</span> Visualização';
       }
+
+      // Itens de Mais Ações da Toolbar (Modo Visualização: Apenas Colunas e Campos Visíveis)
+      if (actionAddByCategory) actionAddByCategory.style.display = 'none';
+      if (actionBatchQty) actionBatchQty.style.display = 'none';
+      if (actionManageCols) actionManageCols.style.display = 'flex';
+      if (actionPriceTable) actionPriceTable.style.display = 'none';
+      if (actionClearAll) actionClearAll.style.display = 'none';
+      if (moreActionsDivider) moreActionsDivider.style.display = 'none';
 
       if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'inline-flex';
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
@@ -1315,6 +1341,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 1: Abrir Modal de Quantidade em Lote
   if (actionBatchQty) {
     actionBatchQty.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       if (modalBatchQuantity) modalBatchQuantity.classList.add('show', 'active');
     });
@@ -1408,6 +1435,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 3: Abrir Modal de Tabela de Preços
   if (actionPriceTable) {
     actionPriceTable.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       priceOptionCards.forEach(card => {
         const val = card.getAttribute('data-value');
@@ -1477,9 +1505,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Ação 4: Incluir por Categoria (Modal com Filtros por Grupo, Subgrupo, Fornecedor e Saldo)
-  const actionAddByCategory = document.getElementById('actionAddByCategory');
   if (actionAddByCategory) {
     actionAddByCategory.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       openAddByCategoryModal();
     });
@@ -1488,6 +1516,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ação 5: Excluir Todos os Itens (Menu Mais Ações)
   if (actionClearAll) {
     actionClearAll.addEventListener('click', () => {
+      if (!isEditMode || isReadOnly) return;
       if (moreActionsDropdown) moreActionsDropdown.classList.remove('show');
       openClearAllModal();
     });
