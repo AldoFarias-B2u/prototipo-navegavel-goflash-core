@@ -2,6 +2,27 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.15] - 2026-09-01
+### ✨ Redesign Oficial de Detalhes do Pedido & Refinamentos Mobile
+- **Oficialização da Tela de Detalhes do Pedido** ([`pages/pedido-detalhe-v2.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-detalhe-v2.html), [`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js)):
+  - Redirecionamento unificado de consultas, cards e tabela para a nova interface oficial com suporte a visualização, edição, bipe EAN e catálogo de produtos.
+- **Tratamento Integral de Status & Banners Informativos** ([`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Gestão de permissões por status: pedidos *Abertos* permitem alternar para edição; pedidos *Pendentes / Em Trânsito*, *Recebidos* e *Cancelados* operam em modo Somente Leitura permanente com banners temáticos.
+- **Menu de Mais Ações no Topbar & Cancelamento Seguro**:
+  - Inclusão do menu suspenso de 3 pontos no cabeçalho com ações de *Finalizar Pedido*, *Imprimir* (`@media print`) e *Cancelar Pedido* com modal de confirmação.
+- **Rótulos Adaptativos e Equalização dos Botões do Rodapé**:
+  - Equalização com altura de 36px e alternância automática de rótulos (`[ ← Voltar ]`, `[ ✏ Editar ]`, `[ ✔ Finalizar ]` no mobile / `[ ← Voltar ]`, `[ ✏ Editar Pedido ]`, `[ ✔ FINALIZAR PEDIDO ]` no desktop), eliminando transbordamentos em telas ≤ 375px.
+- **Campo Informativo "Plano de Abastecimento Base" na Aba Detalhes**:
+  - Novo campo bloqueado e somente leitura (`#inputPlanoBase`) exibindo o plano vinculado ao pedido com integridade no salvamento.
+- **Restrição de Recursos no Menu de Mais Ações**:
+  - Restrição de *Incluir por Categoria*, *Definir Qtde em Lote*, *Tabela de Preços* e *Excluir Todos os Itens* exclusivamente ao Modo de Edição, mantendo apenas *Colunas e Campos Visíveis* em Modo de Visualização.
+- **Badge de Status Hero Responsiva (< 470px)**:
+  - Rótulo adaptativo no hero roxo (`[ PENDENTE ]` no mobile / `[ PENDENTE DE ABASTECIMENTO ]` no desktop).
+- **Abertura de Pedido em Branco sem Itens Pré-carregados**:
+  - Inicialização com carrinho 100% limpo (`cartItems = []`) e Empty State contextual com orientação ao usuário.
+
+---
+
 ## [1.9.14] - 2026-08-26
 ### ✨ Condicionamento Estrito de Produtos e Colunas aos Parâmetros da Consulta
 - **Carga Condicional de Produtos por Plano** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
