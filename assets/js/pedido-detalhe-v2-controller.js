@@ -2609,7 +2609,9 @@ document.addEventListener('DOMContentLoaded', () => {
       itens: JSON.parse(JSON.stringify(cartItems))
     };
 
-    if (typeof window.salvarNovoPedidoNoStorage === 'function') {
+    if (typeof window.atualizarPedidoNoStorage === 'function') {
+      window.atualizarPedidoNoStorage(orderObj);
+    } else if (typeof window.salvarNovoPedidoNoStorage === 'function') {
       window.salvarNovoPedidoNoStorage(orderObj);
     }
   }

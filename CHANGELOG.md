@@ -2,6 +2,17 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.16] - 2026-09-01
+### ✨ Geração Fiel de Pedidos a partir da Consulta Dinâmica de Abastecimento
+- **Persistência Integral de Produtos e Quantidades da Consulta** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):
+  - Geração de pedidos preservando exatamente os produtos marcados pelo operador, com suas respectivas quantidades a repor (`aRepor`), estoques de loja, estoques de origem (CD), estoque ideal, mínimo crítico, sugestão e preço.
+- **Transmissão Contextual de Metadados e Plano de Abastecimento** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js), [`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Sincronização automática das filiais de destino e origem, vinculação do plano na aba *Detalhes* (`#inputPlanoBase`) e ativação inteligente das colunas correspondentes (`Ideal`, `Mín. Crítico`, `Sugestão`, `Estoque CD`).
+- **Navegação Direta para o Pedido Gerado**:
+  - Redirecionamento fluido para a tela oficial de detalhes (`pedido-detalhe-v2.html?id=...&codigo=...`) imediatamente após a confirmação de criação.
+
+---
+
 ## [1.9.15] - 2026-09-01
 ### ✨ Redesign Oficial de Detalhes do Pedido & Refinamentos Mobile
 - **Oficialização da Tela de Detalhes do Pedido** ([`pages/pedido-detalhe-v2.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-detalhe-v2.html), [`assets/js/pedidos-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedidos-abastecimento-controller.js)):
