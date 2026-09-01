@@ -2070,7 +2070,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const totalUnidades = selectedItems.reduce((acc, curr) => acc + curr.aRepor, 0);
+      const totalUnidades = selectedItems.reduce((acc, curr) => acc + (Number(curr.aRepor) || 0), 0);
       const totalItens = selectedItems.length;
 
       // Gera novo código baseado no tamanho da lista
@@ -2081,14 +2081,36 @@ document.addEventListener('DOMContentLoaded', () => {
       const hoje = new Date();
       const dataFormatada = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
 
+      // Mapeamento fiel dos itens selecionados com quantidades a repor e estoques da consulta
+      const itensDoPedido = selectedItems.map((p, idx) => ({
+        id: p.id || (Date.now() + idx),
+        nome: p.nome,
+        ean: p.ean,
+        foto: p.foto || '',
+        categoria: p.categoria || p.grupo || 'Geral',
+        estoqueLoja: p.estoqueLoja !== undefined ? Number(p.estoqueLoja) : 0,
+        estoqueOrigem: (p.estoqueOrigem !== undefined ? Number(p.estoqueOrigem) : (p.estoqueCd !== undefined ? Number(p.estoqueCd) : 0)),
+        estoqueIdeal: p.estoqueIdeal !== undefined ? Number(p.estoqueIdeal) : 0,
+        minimoCritico: p.minimoCritico !== undefined ? Number(p.minimoCritico) : 0,
+        sugestao: p.sugestao !== undefined ? Number(p.sugestao) : (Number(p.aRepor) || 0),
+        preco: Number(p.precoVenda || p.preco || 6.90),
+        quantidade: Number(p.aRepor) || 1,
+        lotes: []
+      }));
+
       const novoPedido = {
         id: Date.now(),
         codigo: nextCodigo,
-        filial: currentParams.destino,
-        planoBase: currentParams.plano,
+        filial: currentParams.destino || 'Mini Mercado 03 Simples Nacional',
+        filialOrigem: currentParams.origem || '',
+        planoBase: currentParams.plano || '',
+        tipo: currentParams.plano ? 'consulta_plano' : 'consulta_livre',
         qtdeItens: totalUnidades,
         dataCriacao: dataFormatada,
-        status: 'Aberto'
+        status: 'Aberto',
+        responsavel: 'B2U Operações',
+        observacoes: '',
+        itens: itensDoPedido
       };
 
       if (typeof window.salvarNovoPedidoNoStorage === 'function') {
@@ -2102,8 +2124,16 @@ document.addEventListener('DOMContentLoaded', () => {
       btnGenerateOrder.disabled = true;
       btnGenerateOrder.textContent = 'GERANDO PEDIDO...';
 
+      let redirectUrl = `./pedido-detalhe-v2.html?id=${novoPedido.id}&codigo=${novoPedido.codigo}`;
+      if (currentParams.origem) {
+        redirectUrl += `&origem=${encodeURIComponent(currentParams.origem)}`;
+      }
+      if (currentParams.plano) {
+        redirectUrl += `&plano=${encodeURIComponent(currentParams.plano)}`;
+      }
+
       setTimeout(() => {
-        window.location.href = './pedidos-abastecimento.html';
+        window.location.href = redirectUrl;
       }, 700);
     });
   }
