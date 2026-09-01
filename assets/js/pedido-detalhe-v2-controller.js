@@ -207,8 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detalhes
     const inputResp = document.getElementById('inputResponsavel');
     const txtObs = document.getElementById('textareaObservacoes');
+    const inputPlanoBase = document.getElementById('inputPlanoBase');
     if (inputResp && currentLoadedOrder.responsavel) inputResp.value = currentLoadedOrder.responsavel;
     if (txtObs && currentLoadedOrder.observacoes) txtObs.value = currentLoadedOrder.observacoes;
+    if (inputPlanoBase) {
+      inputPlanoBase.value = currentLoadedOrder.planoBase || (currentLoadedOrder.tipo === 'manual' ? 'Inserção Manual (Sem plano associado)' : 'Sem plano associado');
+    }
 
   } else {
     // Novo Pedido em Elaboração
@@ -221,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (heroDestinoSelect && paramDestino) setSelectValue(heroDestinoSelect, paramDestino);
     if (heroOrigemSelect && paramOrigem) setSelectValue(heroOrigemSelect, paramOrigem);
+
+    const inputPlanoBase = document.getElementById('inputPlanoBase');
+    const paramPlano = urlParams.get('plano') || 'Inserção Manual (Sem plano associado)';
+    if (inputPlanoBase) inputPlanoBase.value = paramPlano;
 
     // Carrega itens de demonstração se for o código 000042 ou se não houver itens
     if (rawCatalog.length > 0) {
@@ -244,8 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (hasOrigem) {
     visibleColumns.estoqueOrigem = true;
   }
-  const inputDetalhesPlano = document.getElementById('inputDetalhesPlano');
-  const hasPlano = (inputDetalhesPlano && inputDetalhesPlano.value && inputDetalhesPlano.value.trim() !== '' && inputDetalhesPlano.value !== '--');
+  const inputPlanoBaseEl = document.getElementById('inputPlanoBase');
+  const hasPlano = (inputPlanoBaseEl && inputPlanoBaseEl.value && !inputPlanoBaseEl.value.includes('Manual') && !inputPlanoBaseEl.value.includes('Sem plano') && inputPlanoBaseEl.value.trim() !== '');
   if (hasPlano) {
     visibleColumns.estoqueIdeal = true;
     visibleColumns.minimoCritico = true;
@@ -2547,13 +2555,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const orig = heroOrigemSelect ? heroOrigemSelect.value : '';
     const inputResp = document.getElementById('inputResponsavel');
     const txtObs = document.getElementById('textareaObservacoes');
+    const inputPlano = document.getElementById('inputPlanoBase');
 
     const orderObj = {
       id: currentLoadedOrder ? currentLoadedOrder.id : Date.now(),
       codigo: currentOrderCode,
       filial: dest,
       filialOrigem: orig,
-      planoBase: currentLoadedOrder ? currentLoadedOrder.planoBase : 'Inserção Manual',
+      planoBase: currentLoadedOrder ? (currentLoadedOrder.planoBase || (inputPlano ? inputPlano.value : 'Inserção Manual')) : (inputPlano ? inputPlano.value : 'Inserção Manual'),
       qtdeItens: totalUnits,
       dataCriacao: currentLoadedOrder ? currentLoadedOrder.dataCriacao : new Date().toLocaleDateString('pt-BR'),
       status: status,
