@@ -299,7 +299,14 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) badgeClass = 'status-pendente';
 
       heroStatusBadge.className = `order-status-badge ${badgeClass}`;
-      heroStatusBadge.textContent = statusName;
+      
+      let shortStatus = statusName;
+      if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) shortStatus = 'Pendente';
+      else if (statusLower.includes('cancelado')) shortStatus = 'Cancelado';
+      else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido')) shortStatus = 'Recebido';
+      else if (statusLower.includes('aberto')) shortStatus = 'Aberto';
+
+      heroStatusBadge.innerHTML = `<span class="txt-short">${shortStatus}</span><span class="txt-long">${statusName}</span>`;
     }
 
     // 4.2 Pedido Bloqueado (Read-Only Permanente)

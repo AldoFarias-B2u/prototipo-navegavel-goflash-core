@@ -233,6 +233,7 @@
 .order-status-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   padding: 4px 12px;
   border-radius: 12px;
@@ -242,6 +243,16 @@
   letter-spacing: 0.5px;
   white-space: nowrap;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .order-status-badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.3px;
+  }
 }
 
 .order-status-badge.status-aberto {
@@ -1668,21 +1679,21 @@
   transform: translateY(-1px);
 }
 
-/* Alternância Adaptativa de Rótulos Curtos/Longos no Rodapé */
+/* Alternância Adaptativa de Rótulos Curtos/Longos (Hero Header & Rodapé) */
 @media (max-width: 480px) {
-  .order-sticky-footer .txt-long {
+  .txt-long {
     display: none !important;
   }
-  .order-sticky-footer .txt-short {
+  .txt-short {
     display: inline !important;
   }
 }
 
 @media (min-width: 481px) {
-  .order-sticky-footer .txt-short {
+  .txt-short {
     display: none !important;
   }
-  .order-sticky-footer .txt-long {
+  .txt-long {
     display: inline !important;
   }
 }
