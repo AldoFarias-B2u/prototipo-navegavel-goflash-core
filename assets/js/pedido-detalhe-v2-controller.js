@@ -230,21 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const paramPlano = urlParams.get('plano') || 'Inserção Manual (Sem plano associado)';
     if (inputPlanoBase) inputPlanoBase.value = paramPlano;
 
-    // Carrega itens de demonstração se for o código 000042 ou se não houver itens
-    if (rawCatalog.length > 0) {
-      const demoItems = rawCatalog.slice(0, 5).map((p, idx) => ({
-        id: p.id || (Date.now() + idx),
-        nome: p.nome,
-        ean: p.ean,
-        foto: p.foto,
-        categoria: p.categoria || p.grupo || 'Geral',
-        estoqueLoja: p.estoqueLoja !== undefined ? p.estoqueLoja : 6,
-        preco: p.precoVenda || p.preco || 6.90,
-        quantidade: (idx % 2 === 0) ? 2 : 1,
-        lotes: []
-      }));
-      cartItems = demoItems;
-    }
+    // Inicializa o carrinho 100% vazio para inserção manual de itens pelo usuário
+    cartItems = [];
   }
 
   // Verificação inteligente de colunas iniciais baseada em Origem e Plano

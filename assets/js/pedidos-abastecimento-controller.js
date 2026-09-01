@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Toast.info('Iniciando Pedido em Branco...');
       }
 
-      let url = `./pedido-detalhe-v2.html?destino=${encodeURIComponent(destinoVal)}`;
+      let url = `./pedido-detalhe-v2.html?tipo=manual&destino=${encodeURIComponent(destinoVal)}`;
       if (origemVal) {
         url += `&origem=${encodeURIComponent(origemVal)}`;
       }
