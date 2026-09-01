@@ -457,7 +457,25 @@
         </h3>
 
         <div class="order-details-grid">
-          <!-- Plano de Abastecimento Base (Informativo / Somente Leitura) -->
+          <!-- 1. Responsável pelo Pedido / Abastecedor -->
+          <div class="input-group">
+            <label class="input-label" for="inputResponsavel">Responsável pelo Pedido / Abastecedor</label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">person</span>
+              <input type="text" id="inputResponsavel" class="input-field" placeholder="Nome do operador responsável" value="B2U Operações" disabled>
+            </div>
+          </div>
+
+          <!-- 2. Previsão de Entrega / Abastecimento -->
+          <div class="input-group">
+            <label class="input-label" for="inputPrevisao">Previsão de Entrega / Abastecimento</label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">event</span>
+              <input type="date" id="inputPrevisao" class="input-field" disabled>
+            </div>
+          </div>
+
+          <!-- 3. Plano de Abastecimento Base (Informativo / Somente Leitura) -->
           <div class="input-group">
             <label class="input-label" for="inputPlanoBase">Plano de Abastecimento Base</label>
             <div class="input-wrapper">
@@ -475,22 +493,7 @@
             </div>
           </div>
 
-          <div class="input-group">
-            <label class="input-label" for="inputResponsavel">Responsável pelo Pedido / Abastecedor</label>
-            <div class="input-wrapper">
-              <span class="material-icons input-icon">person</span>
-              <input type="text" id="inputResponsavel" class="input-field" placeholder="Nome do operador responsável" value="B2U Operações" disabled>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label class="input-label" for="inputPrevisao">Previsão de Entrega / Abastecimento</label>
-            <div class="input-wrapper">
-              <span class="material-icons input-icon">event</span>
-              <input type="date" id="inputPrevisao" class="input-field" disabled>
-            </div>
-          </div>
-
+          <!-- 4. Observações Gerais e Instruções de Reposição -->
           <div class="order-details-full input-group">
             <label class="input-label" for="textareaObservacoes">Observações Gerais e Instruções de Reposição</label>
             <textarea id="textareaObservacoes" class="custom-textarea" placeholder="Ex: Reposição prioritária para o final de semana. Conferir Shelf-life na gôndola." disabled></textarea>
