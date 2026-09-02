@@ -452,6 +452,122 @@ window.CatalogoCompletoProdutos = [
 // 5. Lista Base de Pedidos
 const defaultPedidosData = [
   {
+    id: 71,
+    codigo: '000071',
+    filial: 'Mini Mercado 03 Simples Nacional',
+    filialOrigem: 'Estoque central',
+    planoBase: 'Plano MiniMercado 03',
+    qtdeItens: 36,
+    dataCriacao: '02/09/2026',
+    status: 'Pendente de Abastecimento',
+    responsavel: 'B2U Operações',
+    observacoes: '',
+    itens: [
+      {
+        id: 101,
+        ean: '9002490100070',
+        nome: 'Energético Tradicional 250ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/redbull-tradicional.jpg',
+        estoqueLoja: 6,
+        estoqueOrigem: 24,
+        estoqueIdeal: 12,
+        minimoCritico: 3,
+        sugestao: 6,
+        preco: 9.90,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      },
+      {
+        id: 102,
+        ean: '70847022305',
+        nome: 'Energético Diet Monster Absolutely Zero Lata 473ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/monster-zero.jpg',
+        estoqueLoja: 4,
+        estoqueOrigem: 18,
+        estoqueIdeal: 10,
+        minimoCritico: 2,
+        sugestao: 6,
+        preco: 10.90,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      },
+      {
+        id: 103,
+        ean: '611269101713',
+        nome: 'Energético Red Bull Sem Açúcar 250ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/redbull-sugarfree.jpg',
+        estoqueLoja: 2,
+        estoqueOrigem: 12,
+        estoqueIdeal: 8,
+        minimoCritico: 2,
+        sugestao: 6,
+        preco: 9.90,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      },
+      {
+        id: 104,
+        ean: '7891000000011',
+        nome: 'Água Mineral 500ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/agua-mineral.jpg',
+        estoqueLoja: 10,
+        estoqueOrigem: 48,
+        estoqueIdeal: 16,
+        minimoCritico: 4,
+        sugestao: 6,
+        preco: 3.50,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      },
+      {
+        id: 105,
+        ean: '7898938890113',
+        nome: 'Energético Ultra Fiesta Mango Zero Açúcar Monster Lata 473ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/monster-mango.jpg',
+        estoqueLoja: 3,
+        estoqueOrigem: 24,
+        estoqueIdeal: 9,
+        minimoCritico: 2,
+        sugestao: 6,
+        preco: 10.90,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      },
+      {
+        id: 106,
+        ean: '7898938890090',
+        nome: 'Energético Ultra Peachy Keen Zero Açúcar Monster Lata 473ml',
+        categoria: 'Bebidas e Refrigerantes',
+        foto: '../assets/images/products/monster-peachy.jpg',
+        estoqueLoja: 5,
+        estoqueOrigem: 18,
+        estoqueIdeal: 11,
+        minimoCritico: 3,
+        sugestao: 6,
+        preco: 10.90,
+        quantidade: 6,
+        conferido: 0,
+        cancelado: 0,
+        lotes: []
+      }
+    ]
+  },
+  {
     id: 1,
     codigo: '000032',
     filial: 'Mini Mercado 03 Simples Nacional',
@@ -746,7 +862,14 @@ function getStoredPedidos() {
   try {
     const raw = localStorage.getItem('goflash_pedidos_list');
     if (raw) {
-      return JSON.parse(raw);
+      const stored = JSON.parse(raw);
+      // Garante que o pedido 000071 de demonstração da conferência esteja presente
+      const demo71 = defaultPedidosData.find(p => p.codigo === '000071');
+      if (demo71 && !stored.some(p => p.codigo === '000071')) {
+        stored.unshift(demo71);
+        try { localStorage.setItem('goflash_pedidos_list', JSON.stringify(stored)); } catch (e) {}
+      }
+      return stored;
     }
   } catch (e) {
     console.error('Erro ao ler storage de pedidos:', e);

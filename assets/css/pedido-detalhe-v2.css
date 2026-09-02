@@ -3644,3 +3644,761 @@
     color: #000000 !important;
   }
 }
+
+/* ==========================================================================
+   MÓDULO DE CONFERÊNCIA DE ABASTECIMENTO NA LOJA
+   ========================================================================== */
+
+.conf-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.conf-pane-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conf-pane-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* 1. Banner Pré-Conferência */
+.conf-pre-start-banner {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  border: 1px solid #ddd6fe;
+  border-left: 4px solid var(--primary-color, #6530b5);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(101, 48, 181, 0.06);
+}
+
+.conf-pre-start-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-color, #6530b5);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.conf-pre-start-icon-box .material-icons {
+  font-size: 26px;
+}
+
+.conf-pre-start-info {
+  flex: 1;
+}
+
+.conf-pre-start-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3b0764;
+  margin-bottom: 4px;
+}
+
+.conf-pre-start-desc {
+  font-size: 0.86rem;
+  color: #581c87;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.btn-start-conference-hero {
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.25);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-start-conference-hero:hover {
+  background-color: #542599;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(101, 48, 181, 0.35);
+}
+
+/* 2. Card de Progresso Dinâmico */
+.conf-progress-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.conf-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.conf-progress-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.conf-progress-label .material-icons {
+  font-size: 18px;
+  color: var(--primary-color, #6530b5);
+}
+
+.conf-progress-metric {
+  font-size: 0.95rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.conf-unit-tag {
+  font-size: 0.80rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.conf-progress-pct-badge {
+  background-color: #f1f5f9;
+  color: var(--primary-color, #6530b5);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.conf-progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.conf-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #6530b5 0%, #10b981 100%);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* 3. Sub-Abas Táteis: À Conferir / Conferidos */
+.conf-subtabs-row {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 1.25rem;
+}
+
+.conf-subtab-btn {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  transition: all var(--transition-fast);
+  border-radius: 6px 6px 0 0;
+}
+
+.conf-subtab-btn .material-icons {
+  font-size: 18px;
+}
+
+.conf-subtab-btn:hover {
+  color: var(--primary-color, #6530b5);
+  background-color: #f8fafc;
+}
+
+.conf-subtab-btn.active {
+  color: var(--primary-color, #6530b5);
+  font-weight: 700;
+}
+
+.conf-subtab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-color, #6530b5);
+  border-radius: 3px 3px 0 0;
+}
+
+.conf-subtab-badge {
+  background-color: #6530b5;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.conf-badge-success {
+  background-color: #10b981;
+}
+
+/* 4. Busca Rápida na Conferência */
+.conf-search-bar-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.conf-search-box {
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0 12px;
+  height: 42px;
+  transition: border-color var(--transition-fast);
+}
+
+.conf-search-box:focus-within {
+  border-color: var(--primary-color, #6530b5);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12);
+}
+
+.conf-search-box .material-icons {
+  font-size: 20px;
+  color: #94a3b8;
+  margin-right: 8px;
+}
+
+.conf-search-input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #1e293b;
+  outline: none;
+}
+
+.btn-clear-conf-search {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+/* 5. Grid de Cards Operacionais de Conferência */
+.conf-items-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.conf-item-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.conf-item-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.conf-card-photo-box {
+  width: 80px;
+  height: 100px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #f1f5f9;
+}
+
+.conf-card-photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.conf-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.conf-card-top-info {
+  margin-bottom: 8px;
+}
+
+.conf-card-ean {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--primary-color, #6530b5);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.conf-card-name {
+  font-size: 0.90rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.35;
+  margin: 0;
+  word-break: break-word;
+}
+
+.conf-card-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.conf-badge-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.conf-pill-solicitado {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.conf-pill-conferido {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.conf-pill-divergente {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Stepper de Conferência Tátil */
+.conf-stepper-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0;
+  background-color: #f8fafc;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.conf-stepper-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+}
+
+.conf-stepper-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.conf-stepper-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.conf-stepper-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.conf-stepper-input {
+  width: 50px;
+  height: 34px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.conf-stepper-input:focus {
+  border-color: var(--primary-color, #6530b5);
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15);
+}
+
+/* Botões de Ação por Card */
+.btn-conf-action-confirm {
+  width: 100%;
+  height: 38px;
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-conf-action-confirm:hover {
+  background-color: #542599;
+}
+
+.btn-conf-action-revert {
+  width: 100%;
+  height: 36px;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 0.80rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-conf-action-revert:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* 6. Rodapé da Aba Conferidos */
+.conf-footer-action-bar {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-conf-pause {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 10px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-conf-pause:hover {
+  background-color: #f8fafc;
+  color: #334155;
+  border-color: #94a3b8;
+}
+
+.btn-conf-finalize-main {
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.btn-conf-finalize-main:hover {
+  background-color: #542599;
+  transform: translateY(-1px);
+}
+
+/* 7. Empty State da Conferência */
+.conf-empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.conf-empty-icon {
+  font-size: 48px;
+  color: #10b981;
+}
+
+.conf-empty-state h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.conf-empty-state p {
+  font-size: 0.88rem;
+  color: #64748b;
+  max-width: 420px;
+  margin: 0 0 8px 0;
+}
+
+.btn-go-to-conferidos {
+  background-color: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-go-to-conferidos:hover {
+  background-color: #059669;
+}
+
+/* 8. Fase Concluída / Histórico */
+.conf-completed-banner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+.conf-completed-icon {
+  font-size: 32px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.conf-completed-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #065f46;
+}
+
+.conf-completed-text p {
+  font-size: 0.84rem;
+  color: #047857;
+  margin: 0;
+}
+
+/* 9. Modal de Resumo */
+.conf-modal-summary-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.conf-modal-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.conf-diff-row {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 6px;
+}
+
+.highlight-cancel {
+  color: #dc2626 !important;
+}
+
+/* 10. Tabelas Desktop de Conferência */
+.conf-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.conf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.conf-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.conf-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.conf-table tbody tr:hover {
+  background-color: #faf5ff;
+}
+
+.conf-table-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.conf-table-thumb {
+  width: 40px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: contain;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+/* Responsividade Mobile para Conferência */
+@media (max-width: 600px) {
+  .conf-pre-start-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    gap: 10px;
+  }
+
+  .btn-start-conference-hero {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .conf-items-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .conf-footer-action-bar {
+    flex-direction: column-reverse;
+  }
+
+  .conf-footer-action-bar button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
