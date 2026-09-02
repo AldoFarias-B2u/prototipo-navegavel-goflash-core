@@ -3336,6 +3336,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnConfPause) {
     btnConfPause.addEventListener('click', () => {
+      // Sincroniza valores digitados nos inputs de itens pendentes
+      document.querySelectorAll('.input-conf-qty').forEach(input => {
+        const id = input.getAttribute('data-id');
+        const item = conferenceItems.find(p => String(p.id) === String(id));
+        if (item && item.statusConferencia === 'pendente') {
+          let val = parseInt(input.value, 10);
+          if (!isNaN(val) && val >= 0) {
+            item.qtdeConferida = Math.min(item.qtdePedido, val);
+            item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+          }
+        }
+      });
+
       if (currentLoadedOrder) {
         currentLoadedOrder.conferencia = { isConferenceActive: true, itens: conferenceItems };
         if (typeof window.atualizarPedidoNoStorage === 'function') {
@@ -3343,16 +3356,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       if (typeof Toast !== 'undefined') {
-        Toast.info('Progresso da conferência salvo. Você pode retomar a qualquer momento.');
+        Toast.success('Progresso da conferência salvo com sucesso! Você pode retomar a qualquer momento.');
       }
     });
   }
 
   // 17.8 Finalização da Conferência e Modal
   function openConfirmFinalizeConfModal() {
+    // Sincroniza valores digitados nos inputs de itens pendentes antes de calcular
+    document.querySelectorAll('.input-conf-qty').forEach(input => {
+      const id = input.getAttribute('data-id');
+      const item = conferenceItems.find(p => String(p.id) === String(id));
+      if (item && item.statusConferencia === 'pendente') {
+        let val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          item.qtdeConferida = Math.min(item.qtdePedido, val);
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+        }
+      }
+    });
+
     const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
-    const conferidosList = conferenceItems.filter(p => p.statusConferencia === 'conferido');
-    const totalConferido = conferidosList.reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+    const totalConferido = conferenceItems.reduce((acc, p) => {
+      if (p.statusConferencia === 'conferido') {
+        return acc + (Number(p.qtdeConferida) || 0);
+      } else {
+        // Se ainda pendente, considera a qtdeConferida digitada ou a qtdePedido
+        const qConf = p.qtdeConferida !== undefined && p.qtdeConferida !== null ? Number(p.qtdeConferida) : Number(p.qtdePedido);
+        return acc + qConf;
+      }
+    }, 0);
     const totalCancelado = Math.max(0, totalSolicitado - totalConferido);
 
     if (modalConfTotalSolicitado) modalConfTotalSolicitado.textContent = `${totalSolicitado} un`;
@@ -3363,27 +3396,44 @@ document.addEventListener('DOMContentLoaded', () => {
       modalConfDiffRow.style.display = totalCancelado > 0 ? 'flex' : 'none';
     }
 
-    if (modalConfirmarConferencia) modalConfirmarConferencia.classList.add('show', 'active');
+    if (modalConfirmarConferencia) {
+      modalConfirmarConferencia.style.display = 'flex';
+      modalConfirmarConferencia.classList.add('show', 'active');
+    }
   }
 
   function closeConfirmFinalizeConfModal() {
-    if (modalConfirmarConferencia) modalConfirmarConferencia.classList.remove('show', 'active');
+    if (modalConfirmarConferencia) {
+      modalConfirmarConferencia.style.display = 'none';
+      modalConfirmarConferencia.classList.remove('show', 'active');
+    }
   }
 
   if (btnConfFinalizeMain) btnConfFinalizeMain.addEventListener('click', openConfirmFinalizeConfModal);
   if (btnCloseConfirmConfModal) btnCloseConfirmConfModal.addEventListener('click', closeConfirmFinalizeConfModal);
   if (btnCancelFinalizeConf) btnCancelFinalizeConf.addEventListener('click', closeConfirmFinalizeConfModal);
 
+  // Fechar modal ao clicar fora
+  if (modalConfirmarConferencia) {
+    modalConfirmarConferencia.addEventListener('click', (e) => {
+      if (e.target === modalConfirmarConferencia) {
+        closeConfirmFinalizeConfModal();
+      }
+    });
+  }
+
   if (btnConfirmFinalizeConf) {
     btnConfirmFinalizeConf.addEventListener('click', () => {
       closeConfirmFinalizeConfModal();
 
-      // Finaliza todos os itens pendentes como conferidos na quantidade digitada ou 0
+      // Finaliza todos os itens pendentes como conferidos
       conferenceItems.forEach(item => {
         if (item.statusConferencia !== 'conferido') {
           item.statusConferencia = 'conferido';
-          item.qtdeConferida = item.qtdePedido;
-          item.qtdeCancelada = 0;
+          if (item.qtdeConferida === undefined || item.qtdeConferida === null) {
+            item.qtdeConferida = item.qtdePedido;
+          }
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
         }
       });
 

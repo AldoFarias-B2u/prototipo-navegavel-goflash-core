@@ -650,18 +650,18 @@
               <h4>Nenhum item conferido ainda</h4>
               <p>Confirme os produtos na aba <strong>À CONFERIR</strong> para que apareçam aqui.</p>
             </div>
+          </div>
 
-            <!-- Botões de Ação no Rodapé da Aba Conferidos -->
-            <div class="conf-footer-action-bar">
-              <button type="button" class="btn-conf-pause" id="btnConfPause">
-                <span class="material-icons">pause_circle_outline</span>
-                <span>CONTINUAR DEPOIS</span>
-              </button>
-              <button type="button" class="btn-conf-finalize-main" id="btnConfFinalizeMain">
-                <span class="material-icons">check_circle</span>
-                <span>FINALIZAR CONFERÊNCIA</span>
-              </button>
-            </div>
+          <!-- Botões de Ação no Rodapé da Conferência Ativa (Visíveis em À Conferir e Conferidos) -->
+          <div class="conf-footer-action-bar" id="confFooterActionBar">
+            <button type="button" class="btn-conf-pause" id="btnConfPause">
+              <span class="material-icons">pause_circle_outline</span>
+              <span>CONTINUAR DEPOIS</span>
+            </button>
+            <button type="button" class="btn-conf-finalize-main" id="btnConfFinalizeMain">
+              <span class="material-icons">check_circle</span>
+              <span>FINALIZAR CONFERÊNCIA</span>
+            </button>
           </div>
 
         </div>
@@ -1336,6 +1336,9 @@
           <button type="button" class="btn-modal-finalize" id="btnConfirmAddByCategory" style="background-color: #6530b5;">INCLUIR PRODUTOS</button>
         </div>
       </div>
+
+    </div>
+  </div>
 
   <!-- ========================================================================
        MODAL: CONFIRMAÇÃO DE FINALIZAÇÃO DA CONFERÊNCIA
