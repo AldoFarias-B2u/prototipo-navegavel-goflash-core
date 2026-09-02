@@ -671,18 +671,6 @@
             </div>
           </div>
 
-          <!-- Botões de Ação no Rodapé da Conferência Ativa (Visíveis em À Conferir e Conferidos) -->
-          <div class="conf-footer-action-bar" id="confFooterActionBar">
-            <button type="button" class="btn-conf-pause" id="btnConfPause">
-              <span class="material-icons">pause_circle_outline</span>
-              <span>CONTINUAR DEPOIS</span>
-            </button>
-            <button type="button" class="btn-conf-finalize-main" id="btnConfFinalizeMain">
-              <span class="material-icons">check_circle</span>
-              <span>FINALIZAR CONFERÊNCIA</span>
-            </button>
-          </div>
-
         </div>
 
         <!-- 3. FASE CONCLUÍDA / HISTÓRICO DA CONFERÊNCIA -->
@@ -733,6 +721,17 @@
         <span class="material-icons">arrow_back</span>
         <span>Voltar</span>
       </button>
+
+      <!-- Ações Específicas da Conferência no Sticky Footer -->
+      <button type="button" class="btn-footer-secondary btn-footer-conf-pause" id="btnFooterConfPause" style="display: none;">
+        <span class="material-icons">pause_circle_outline</span>
+        <span>Continuar Depois</span>
+      </button>
+      <button type="button" class="btn-footer-primary btn-footer-conf-finalize" id="btnFooterConfFinalize" style="display: none; background-color: var(--primary-color, #6530b5);">
+        <span class="material-icons">check_circle</span>
+        <span>FINALIZAR CONFERÊNCIA</span>
+      </button>
+
       <button type="button" class="btn-footer-secondary btn-footer-edit" id="btnFooterStartEdit" style="display: inline-flex;">
         <span class="material-icons btn-action-icon" style="color: #6530b5;">edit</span>
         <span class="btn-footer-edit-txt">

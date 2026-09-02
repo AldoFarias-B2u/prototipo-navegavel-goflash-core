@@ -1648,7 +1648,9 @@
 /* Base Unificada para TODOS os botões do Rodapé */
 .btn-footer-secondary,
 .btn-footer-primary,
-.btn-footer-edit {
+.btn-footer-edit,
+.btn-footer-conf-pause,
+.btn-footer-conf-finalize {
   height: 38px;
   box-sizing: border-box;
   display: inline-flex;
@@ -1667,22 +1669,32 @@
 
 .btn-footer-secondary .material-icons,
 .btn-footer-primary .material-icons,
-.btn-footer-edit .material-icons {
+.btn-footer-edit .material-icons,
+.btn-footer-conf-pause .material-icons,
+.btn-footer-conf-finalize .material-icons {
   font-size: 18px !important;
   line-height: 1;
   display: inline-flex;
   align-items: center;
 }
 
-.btn-footer-secondary {
+.btn-footer-secondary,
+.btn-footer-conf-pause {
   background-color: #f1f3f6;
   color: #495057;
   border: 1px solid #ced4da;
 }
 
-.btn-footer-secondary:hover {
+.btn-footer-secondary:hover,
+.btn-footer-conf-pause:hover {
   background-color: #e2e8f0;
   color: #212529;
+}
+
+.btn-footer-conf-pause {
+  background-color: #f8fafc;
+  color: #475569;
+  border: 1px solid #cbd5e1;
 }
 
 .btn-footer-edit {
@@ -1697,7 +1709,8 @@
   border-color: #bfa5eb;
 }
 
-.btn-footer-primary {
+.btn-footer-primary,
+.btn-footer-conf-finalize {
   background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
   color: #ffffff;
   border: 1px solid transparent;
@@ -1707,7 +1720,8 @@
   box-shadow: 0 3px 10px rgba(101, 48, 181, 0.35);
 }
 
-.btn-footer-primary:hover {
+.btn-footer-primary:hover,
+.btn-footer-conf-finalize:hover {
   background: linear-gradient(135deg, #743ec2 0%, #5e28a8 100%);
   box-shadow: 0 5px 14px rgba(101, 48, 181, 0.45);
   transform: translateY(-1px);
@@ -1743,9 +1757,11 @@
 
   .btn-footer-secondary,
   .btn-footer-primary,
-  .btn-footer-edit {
-    height: 36px;
-    padding: 0 5px;
+  .btn-footer-edit,
+  .btn-footer-conf-pause,
+  .btn-footer-conf-finalize {
+    height: 38px;
+    padding: 0 8px;
     font-size: 0.78rem;
     gap: 4px;
     white-space: nowrap;
@@ -1753,11 +1769,14 @@
 
   .btn-footer-secondary .material-icons,
   .btn-footer-primary .material-icons,
-  .btn-footer-edit .material-icons {
+  .btn-footer-edit .material-icons,
+  .btn-footer-conf-pause .material-icons,
+  .btn-footer-conf-finalize .material-icons {
     font-size: 16px !important;
   }
 
-  .btn-footer-secondary {
+  .btn-footer-secondary,
+  .btn-footer-conf-pause {
     flex: 1;
     min-width: 0;
   }
@@ -1767,8 +1786,9 @@
     min-width: 0;
   }
 
-  .btn-footer-primary {
-    flex: 1.15;
+  .btn-footer-primary,
+  .btn-footer-conf-finalize {
+    flex: 1.25;
     min-width: 0;
   }
 }

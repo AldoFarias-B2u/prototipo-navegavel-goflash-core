@@ -166,6 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnFooterConfirm = document.getElementById('btnFooterConfirm');
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
+  const btnFooterConfPause = document.getElementById('btnFooterConfPause');
+  const btnFooterConfFinalize = document.getElementById('btnFooterConfFinalize');
 
   // Modal Cancelar Pedido
   const modalConfirmarCancelamento = document.getElementById('modalConfirmarCancelamento');
@@ -547,6 +549,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 5.5 Sincronização do Sticky Footer para a Conferência
+  function syncFooterForConference() {
+    const isConferenciaTab = (tabBtnConferencia && tabBtnConferencia.classList.contains('active')) ||
+                             (paneConferencia && paneConferencia.style.display === 'block');
+
+    if (isConferenciaTab && isConferenceActive) {
+      // Conferência Ativa: Exibe os botões de continuar depois e finalizar conferência fixos no footer
+      if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+      if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+      if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+      if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+      if (btnFooterConfPause) btnFooterConfPause.style.display = 'inline-flex';
+      if (btnFooterConfFinalize) btnFooterConfFinalize.style.display = 'inline-flex';
+    } else {
+      // Não é conferência ativa: Oculta botões de conferência do rodapé
+      if (btnFooterConfPause) btnFooterConfPause.style.display = 'none';
+      if (btnFooterConfFinalize) btnFooterConfFinalize.style.display = 'none';
+
+      if (isConferenciaTab) {
+        // Pré-conferência ou Concluída: Exibe apenas o botão Voltar
+        if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
+        if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+        if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+        if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+        if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+      } else {
+        // Abas Produtos ou Detalhes: Restaura botões padrão conforme o modo
+        if (isReadOnly) {
+          if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+        } else if (isEditMode) {
+          if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'inline-flex';
+        } else {
+          if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'inline-flex';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'inline-flex';
+        }
+      }
+    }
+  }
+
   // 6. Controle de Abas (Produtos vs. Detalhes vs. Conferência)
   function switchTab(tabName) {
     if (tabName === 'produtos') {
@@ -557,6 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneDetalhes) paneDetalhes.style.display = 'none';
       if (paneConferencia) paneConferencia.style.display = 'none';
       if (readonlyBanner && isReadOnly) readonlyBanner.style.display = 'flex';
+      syncFooterForConference();
     } else if (tabName === 'detalhes') {
       if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.add('active');
@@ -565,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneDetalhes) paneDetalhes.style.display = 'block';
       if (paneConferencia) paneConferencia.style.display = 'none';
       if (readonlyBanner && isReadOnly) readonlyBanner.style.display = 'flex';
+      syncFooterForConference();
     } else if (tabName === 'conferencia') {
       if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.remove('active');
@@ -574,6 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneConferencia) paneConferencia.style.display = 'block';
       if (readonlyBanner) readonlyBanner.style.display = 'none';
       renderConference();
+      syncFooterForConference();
     }
   }
 
@@ -3361,6 +3417,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       renderConference();
+      syncFooterForConference();
       if (typeof Toast !== 'undefined') {
         const hasProgress = conferenceItems.some(p => p.statusConferencia === 'conferido');
         Toast.info(hasProgress ? 'Conferência retomada com sucesso!' : 'Conferência iniciada! Confirme os produtos abastecidos.');
@@ -3424,36 +3481,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnConfPause) {
-    btnConfPause.addEventListener('click', () => {
-      // Sincroniza valores digitados nos inputs de itens pendentes
-      document.querySelectorAll('.input-conf-qty').forEach(input => {
-        const id = input.getAttribute('data-id');
-        const item = conferenceItems.find(p => String(p.id) === String(id));
-        if (item && item.statusConferencia === 'pendente') {
-          let val = parseInt(input.value, 10);
-          if (!isNaN(val) && val >= 0) {
-            item.qtdeConferida = Math.min(item.qtdePedido, val);
-            item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
-          }
+  // Função centralizada para pausar a conferência
+  function pauseConference() {
+    // Sincroniza valores digitados nos inputs de itens pendentes
+    document.querySelectorAll('.input-conf-qty').forEach(input => {
+      const id = input.getAttribute('data-id');
+      const item = conferenceItems.find(p => String(p.id) === String(id));
+      if (item && item.statusConferencia === 'pendente') {
+        let val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          item.qtdeConferida = Math.min(item.qtdePedido, val);
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
         }
-      });
-
-      isConferenceActive = false;
-
-      if (currentLoadedOrder) {
-        currentLoadedOrder.conferencia = { isConferenceActive: false, isPaused: true, itens: conferenceItems };
-        if (typeof window.atualizarPedidoNoStorage === 'function') {
-          window.atualizarPedidoNoStorage(currentLoadedOrder);
-        }
-      }
-
-      renderConference();
-
-      if (typeof Toast !== 'undefined') {
-        Toast.info('Conferência pausada e progresso salvo com sucesso.');
       }
     });
+
+    isConferenceActive = false;
+
+    if (currentLoadedOrder) {
+      currentLoadedOrder.conferencia = { isConferenceActive: false, isPaused: true, itens: conferenceItems };
+      if (typeof window.atualizarPedidoNoStorage === 'function') {
+        window.atualizarPedidoNoStorage(currentLoadedOrder);
+      }
+    }
+
+    renderConference();
+    syncFooterForConference();
+
+    if (typeof Toast !== 'undefined') {
+      Toast.info('Conferência pausada e progresso salvo com sucesso.');
+    }
+  }
+
+  if (btnConfPause) {
+    btnConfPause.addEventListener('click', pauseConference);
+  }
+
+  if (btnFooterConfPause) {
+    btnFooterConfPause.addEventListener('click', pauseConference);
+  }
+
+  if (btnConfFinalizeMain) {
+    btnConfFinalizeMain.addEventListener('click', openConfirmFinalizeConfModal);
+  }
+
+  if (btnFooterConfFinalize) {
+    btnFooterConfFinalize.addEventListener('click', openConfirmFinalizeConfModal);
   }
 
   // 17.8 Finalização da Conferência e Modal
@@ -3592,6 +3665,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       applyModeUI();
       renderConference();
+      syncFooterForConference();
 
       if (typeof Toast !== 'undefined') {
         Toast.success(`Conferência concluída com sucesso! Pedido ${currentOrderCode} recebido e estoque atualizado.`);
