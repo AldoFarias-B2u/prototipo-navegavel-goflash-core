@@ -151,8 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerMoreActionsBtn = document.getElementById('headerMoreActionsBtn');
   const headerMoreActionsPopover = document.getElementById('headerMoreActionsPopover');
   const menuActionFinalizar = document.getElementById('menuActionFinalizar');
+  const menuActionEntradaDireta = document.getElementById('menuActionEntradaDireta');
   const menuActionImprimir = document.getElementById('menuActionImprimir');
   const menuActionCancelar = document.getElementById('menuActionCancelar');
+
+  // Modal Entrada Direta sem Conferência
+  const modalConfirmarEntradaDireta = document.getElementById('modalConfirmarEntradaDireta');
+  const btnCloseDirectEntryModal = document.getElementById('btnCloseDirectEntryModal');
+  const btnCancelDirectEntry = document.getElementById('btnCancelDirectEntry');
+  const btnConfirmDirectEntry = document.getElementById('btnConfirmDirectEntry');
+  const modalDirectTotalSolicitado = document.getElementById('modalDirectTotalSolicitado');
+  const modalDirectTotalEntrada = document.getElementById('modalDirectTotalEntrada');
 
   // Sticky Footer
   const footerSkusCount = document.getElementById('footerSkusCount');
@@ -419,8 +428,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
       if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
 
-      if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
-      if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+      if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
+        if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+        if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'flex';
+        if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
+      } else {
+        if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+        if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'none';
+        if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+      }
 
       // Itens de Mais Ações da Toolbar (Somente Leitura: apenas Colunas)
       if (actionAddByCategory) actionAddByCategory.style.display = 'none';
@@ -435,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       if (readonlyBanner) readonlyBanner.style.display = 'none';
       if (menuActionFinalizar) menuActionFinalizar.style.display = 'flex';
+      if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'none';
       if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
     }
 
@@ -2794,6 +2811,74 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 14.1 Finalização Direta (Sem Conferência)
+  function openDirectEntryModal() {
+    if (!modalConfirmarEntradaDireta) return;
+    const totalSolicitado = conferenceItems.length > 0
+      ? conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0)
+      : (currentLoadedOrder && currentLoadedOrder.itens ? currentLoadedOrder.itens.reduce((acc, p) => acc + (Number(p.quantidade) || 0), 0) : 0);
+
+    if (modalDirectTotalSolicitado) modalDirectTotalSolicitado.textContent = `${totalSolicitado} un`;
+    if (modalDirectTotalEntrada) modalDirectTotalEntrada.textContent = `${totalSolicitado} un (100%)`;
+    modalConfirmarEntradaDireta.classList.add('show');
+  }
+
+  function closeDirectEntryModal() {
+    if (modalConfirmarEntradaDireta) modalConfirmarEntradaDireta.classList.remove('show');
+  }
+
+  if (menuActionEntradaDireta) {
+    menuActionEntradaDireta.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openDirectEntryModal();
+    });
+  }
+
+  if (btnCloseDirectEntryModal) btnCloseDirectEntryModal.addEventListener('click', closeDirectEntryModal);
+  if (btnCancelDirectEntry) btnCancelDirectEntry.addEventListener('click', closeDirectEntryModal);
+
+  if (btnConfirmDirectEntry) {
+    btnConfirmDirectEntry.addEventListener('click', () => {
+      closeDirectEntryModal();
+
+      const totalSolicitado = conferenceItems.length > 0
+        ? conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0)
+        : (currentLoadedOrder && currentLoadedOrder.itens ? currentLoadedOrder.itens.reduce((acc, p) => acc + (Number(p.quantidade) || 0), 0) : 0);
+
+      // Marca todos os itens como 100% conferidos
+      conferenceItems.forEach(item => {
+        item.statusConferencia = 'conferido';
+        item.qtdeConferida = item.qtdePedido;
+        item.qtdeCancelada = 0;
+      });
+
+      if (currentLoadedOrder) {
+        currentLoadedOrder.status = 'Recebido';
+        currentLoadedOrder.conferencia = {
+          isConferenceActive: false,
+          isCompleted: true,
+          isDirectEntry: true,
+          finalizadoEm: new Date().toISOString(),
+          totalSolicitado: totalSolicitado,
+          totalConferido: totalSolicitado,
+          itens: JSON.parse(JSON.stringify(conferenceItems))
+        };
+
+        const directNote = `[Entrada Direta em ${new Date().toLocaleDateString('pt-BR')}]: Entrada total de ${totalSolicitado} unidades concluída no estoque sem conferência física individual.`;
+        currentLoadedOrder.observacoes = currentLoadedOrder.observacoes 
+          ? `${currentLoadedOrder.observacoes}\n\n${directNote}` 
+          : directNote;
+
+        saveOrderToStorage(currentLoadedOrder);
+      }
+
+      Toast.success('Entrada direta concluída com sucesso! Pedido finalizado como Recebido.');
+      applyModeUI();
+      renderConference();
+      syncFooterForConference();
+    });
+  }
+
   // ========================================================================
   // 17. MÓDULO DE CONFERÊNCIA DE ABASTECIMENTO NA LOJA
   // ========================================================================
@@ -2802,6 +2887,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let conferenceViewMode = 'cards'; // 'cards' ou 'table'
   let conferenceItems = [];
   let conferenceSearchQuery = '';
+  let conferenceSelectedCategory = 'all';
+  let conferenceSortBy = 'default';
+
+  const selectSortConferencia = document.getElementById('selectSortConferencia');
+  const confCategoryChipsRow = document.getElementById('confCategoryChipsRow');
 
   function initConferenceData() {
     if (!currentLoadedOrder) return;
@@ -2845,6 +2935,56 @@ document.addEventListener('DOMContentLoaded', () => {
     if (paramTab === 'conferencia' || (isPendente && !paramMode)) {
       switchTab('conferencia');
     }
+  }
+
+  function renderCategoryChips() {
+    if (!confCategoryChipsRow) return;
+
+    const baseList = conferenceCurrentSubTab === 'aconferir'
+      ? conferenceItems.filter(p => p.statusConferencia === 'pendente')
+      : conferenceItems.filter(p => p.statusConferencia === 'conferido');
+
+    const catCounts = {};
+    conferenceItems.forEach(p => {
+      const cat = p.categoria || 'Geral';
+      catCounts[cat] = (catCounts[cat] || 0) + 1;
+    });
+
+    const activeListCats = {};
+    baseList.forEach(p => {
+      const cat = p.categoria || 'Geral';
+      activeListCats[cat] = (activeListCats[cat] || 0) + 1;
+    });
+
+    const categories = Object.keys(catCounts).sort();
+
+    let html = `
+      <button type="button" class="conf-cat-chip ${conferenceSelectedCategory === 'all' ? 'active' : ''}" data-category="all">
+        <span>Todas</span>
+        <span class="conf-cat-chip-count">${baseList.length}</span>
+      </button>
+    `;
+
+    categories.forEach(cat => {
+      const count = activeListCats[cat] || 0;
+      if (count > 0 || conferenceSelectedCategory === cat) {
+        html += `
+          <button type="button" class="conf-cat-chip ${conferenceSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">
+            <span>${cat}</span>
+            <span class="conf-cat-chip-count">${count}</span>
+          </button>
+        `;
+      }
+    });
+
+    confCategoryChipsRow.innerHTML = html;
+
+    confCategoryChipsRow.querySelectorAll('.conf-cat-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        conferenceSelectedCategory = btn.getAttribute('data-category');
+        renderConference();
+      });
+    });
   }
 
   function renderConference() {
@@ -2896,10 +3036,37 @@ document.addEventListener('DOMContentLoaded', () => {
       heroConferenciaCount.textContent = pendentesList.length;
     }
 
-    // 3.3 Filtragem por Busca
+    // 3.3 Filtragem por Busca, Categoria e Ordenação
     const q = conferenceSearchQuery.toLowerCase().trim();
-    const filteredPendentes = pendentesList.filter(p => !q || p.nome.toLowerCase().includes(q) || p.ean.includes(q));
-    const filteredConferidos = conferidosList.filter(p => !q || p.nome.toLowerCase().includes(q) || p.ean.includes(q));
+
+    function filterItem(p) {
+      const matchText = !q || 
+        (p.nome && p.nome.toLowerCase().includes(q)) || 
+        (p.ean && p.ean.includes(q)) ||
+        (p.categoria && p.categoria.toLowerCase().includes(q));
+      
+      const matchCategory = conferenceSelectedCategory === 'all' || 
+        (p.categoria || 'Geral') === conferenceSelectedCategory;
+
+      return matchText && matchCategory;
+    }
+
+    function sortItems(list) {
+      const arr = [...list];
+      if (conferenceSortBy === 'categoria') {
+        arr.sort((a, b) => (a.categoria || '').localeCompare(b.categoria || '') || a.nome.localeCompare(b.nome));
+      } else if (conferenceSortBy === 'nome') {
+        arr.sort((a, b) => a.nome.localeCompare(b.nome));
+      } else if (conferenceSortBy === 'qtde') {
+        arr.sort((a, b) => (Number(b.qtdePedido) || 0) - (Number(a.qtdePedido) || 0));
+      }
+      return arr;
+    }
+
+    const filteredPendentes = sortItems(pendentesList.filter(filterItem));
+    const filteredConferidos = sortItems(conferidosList.filter(filterItem));
+
+    renderCategoryChips();
 
     // 3.4 Renderização da Sub-Aba Ativa
     if (conferenceCurrentSubTab === 'aconferir') {
@@ -2982,6 +3149,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>
                       <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                       <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                      <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
                     </td>
                     <td style="text-align: center;">
                       <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
@@ -3020,7 +3188,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="conf-card-body">
                   <div class="conf-card-top-info">
-                    <span class="conf-card-ean">${item.ean}</span>
+                    <div class="conf-card-meta-line">
+                      <span class="conf-card-ean">${item.ean}</span>
+                      <span class="conf-card-category">${item.categoria || 'Geral'}</span>
+                    </div>
                     <h4 class="conf-card-name">${item.nome}</h4>
                     <div class="conf-card-badge-row">
                       <span class="conf-badge-pill conf-pill-solicitado">Pedido: ${item.qtdePedido} un</span>
@@ -3078,6 +3249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>
                   <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                   <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                  <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
                 </td>
                 <td style="text-align: center;">
                   <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
@@ -3110,7 +3282,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="conf-card-body">
             <div class="conf-card-top-info">
-              <span class="conf-card-ean">${item.ean}</span>
+              <div class="conf-card-meta-line">
+                <span class="conf-card-ean">${item.ean}</span>
+                <span class="conf-card-category">${item.categoria || 'Geral'}</span>
+              </div>
               <h4 class="conf-card-name">${item.nome}</h4>
               <div class="conf-card-badge-row">
                 <span class="conf-badge-pill conf-pill-solicitado">
@@ -3180,6 +3355,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td>
                     <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                     <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                    <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
                   </td>
                   <td style="text-align: center;">
                     <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
@@ -3218,7 +3394,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="conf-card-body">
               <div class="conf-card-top-info">
-                <span class="conf-card-ean">${item.ean}</span>
+                <div class="conf-card-meta-line">
+                  <span class="conf-card-ean">${item.ean}</span>
+                  <span class="conf-card-category">${item.categoria || 'Geral'}</span>
+                </div>
                 <h4 class="conf-card-name">${item.nome}</h4>
                 <div class="conf-card-badge-row">
                   <span class="conf-badge-pill conf-pill-solicitado">Pedido: ${item.qtdePedido} un</span>
@@ -3463,6 +3642,13 @@ document.addEventListener('DOMContentLoaded', () => {
       inputSearchConferencia.value = '';
       conferenceSearchQuery = '';
       btnClearConfSearch.style.display = 'none';
+      renderConference();
+    });
+  }
+
+  if (selectSortConferencia) {
+    selectSortConferencia.addEventListener('change', (e) => {
+      conferenceSortBy = e.target.value;
       renderConference();
     });
   }

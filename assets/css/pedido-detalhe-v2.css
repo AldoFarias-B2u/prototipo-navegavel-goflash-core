@@ -3970,19 +3970,23 @@
   background-color: #10b981;
 }
 
-/* 4. Busca Rápida na Conferência */
+/* 4. Busca Rápida e Ordenação na Conferência */
 .conf-search-bar-wrapper {
-  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .conf-search-box {
+  flex: 1;
   display: flex;
   align-items: center;
   background-color: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 0 12px;
-  height: 42px;
+  height: 40px;
   transition: border-color var(--transition-fast);
 }
 
@@ -4015,6 +4019,93 @@
   display: flex;
   align-items: center;
   padding: 4px;
+}
+
+.conf-sort-box {
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0 10px;
+  height: 40px;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.conf-sort-icon {
+  font-size: 18px;
+  color: #64748b;
+}
+
+.conf-sort-select {
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Carrossel de Chips de Categorias */
+.conf-cat-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.conf-cat-chips-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.conf-cat-chips-row::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+.conf-cat-chip {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast, 0.2s ease);
+}
+
+.conf-cat-chip:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.conf-cat-chip.active {
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  border-color: var(--primary-color, #6530b5);
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25);
+}
+
+.conf-cat-chip-count {
+  font-size: 0.70rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.conf-cat-chip.active .conf-cat-chip-count {
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 /* 5. Grid de Cards Operacionais de Conferência (Opção 3: Split Vertical Integral) */
@@ -4084,6 +4175,15 @@
   margin-bottom: 2px;
 }
 
+.conf-card-meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 3px;
+  flex-wrap: wrap;
+}
+
 .conf-card-ean {
   font-family: 'Roboto Mono', monospace;
   font-size: 0.74rem;
@@ -4092,7 +4192,20 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 2px;
+}
+
+.conf-card-category {
+  font-size: 0.70rem;
+  font-weight: 600;
+  color: #64748b;
+  background-color: #f1f5f9;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .conf-card-name {
