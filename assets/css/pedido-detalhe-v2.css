@@ -336,6 +336,40 @@
   color: #6530b5;
 }
 
+@media (max-width: 600px) {
+  .order-hero-tabs-row {
+    gap: 8px;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+  }
+
+  .order-hero-tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .order-tab-item-btn {
+    font-size: 0.78rem;
+    letter-spacing: 0.3px;
+    padding: 8px 4px 10px 4px;
+    gap: 5px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .order-tab-item-btn .material-icons {
+    font-size: 16px !important;
+  }
+
+  .order-tab-count-tag {
+    font-size: 0.68rem;
+    padding: 1px 5px;
+  }
+}
+
 /* ==========================================================================
    4. FAB FLUTUANTE DE EDIÇÃO (SOBREPOSTO NO CANTO DIREITO)
    ========================================================================== */

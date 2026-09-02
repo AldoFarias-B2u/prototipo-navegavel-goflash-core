@@ -381,25 +381,32 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">lock</span> Somente Leitura';
       }
 
-      if (readonlyBanner) {
-        readonlyBanner.style.display = 'flex';
-        readonlyBanner.className = 'readonly-banner-alert';
+      const isConferenciaActive = (tabBtnConferencia && tabBtnConferencia.classList.contains('active')) ||
+                                  (paneConferencia && paneConferencia.style.display === 'block');
 
-        if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
-          readonlyBanner.classList.add('status-pendente');
-          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'local_shipping';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚚 Pedido em Trânsito (Pendente de Abastecimento)';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi despachado para a filial de destino. Alterações de itens e quantidades estão bloqueadas.';
-        } else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
-          readonlyBanner.classList.add('status-recebido');
-          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'task_alt';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '📦 Pedido Recebido';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido finalizado em modo de consulta.';
-        } else if (statusLower.includes('cancelado')) {
-          readonlyBanner.classList.add('status-cancelado');
-          if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'block';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚫 Pedido Cancelado';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi cancelado e está arquivado para histórico operacional.';
+      if (readonlyBanner) {
+        if (isConferenciaActive) {
+          readonlyBanner.style.display = 'none';
+        } else {
+          readonlyBanner.style.display = 'flex';
+          readonlyBanner.className = 'readonly-banner-alert';
+
+          if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
+            readonlyBanner.classList.add('status-pendente');
+            if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'local_shipping';
+            if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚚 Pedido em Trânsito (Pendente de Abastecimento)';
+            if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi despachado para a filial de destino. Alterações de itens e quantidades estão bloqueadas.';
+          } else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
+            readonlyBanner.classList.add('status-recebido');
+            if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'task_alt';
+            if (readonlyBannerTitle) readonlyBannerTitle.textContent = '📦 Pedido Recebido';
+            if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido finalizado em modo de consulta.';
+          } else if (statusLower.includes('cancelado')) {
+            readonlyBanner.classList.add('status-cancelado');
+            if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'block';
+            if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚫 Pedido Cancelado';
+            if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi cancelado e está arquivado para histórico operacional.';
+          }
         }
       }
 
@@ -3593,7 +3600,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 18. Inicialização da Interface
-  initConferenceData();
   applyModeUI();
+  initConferenceData();
 });
 
