@@ -3710,6 +3710,13 @@
   color: #92400e;
 }
 
+.conf-pre-start-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+}
+
 .conf-pre-start-icon-box {
   width: 48px;
   height: 48px;
@@ -4397,29 +4404,136 @@
 
 /* Responsividade Mobile para Conferência */
 @media (max-width: 600px) {
+  .conf-pane-header {
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    border-bottom: none;
+  }
+
+  .conf-pane-title {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .conf-pane-subtitle {
+    display: none;
+  }
+
+  .conf-header-actions {
+    display: none;
+  }
+
+  /* Banner Compacto Pré-Conferência no Mobile */
   .conf-pre-start-banner {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-    gap: 10px;
+    align-items: stretch;
+    padding: 10px 12px;
+    gap: 8px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+  }
+
+  .conf-pre-start-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .conf-pre-start-icon-box {
+    width: 32px;
+    height: 32px;
+  }
+
+  .conf-pre-start-icon-box .material-icons {
+    font-size: 18px;
+  }
+
+  .conf-pre-start-title {
+    font-size: 0.86rem;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  .conf-pre-start-desc {
+    display: none;
   }
 
   .btn-start-conference-hero {
     width: 100%;
+    height: 42px;
+    padding: 0 16px;
+    font-size: 0.82rem;
     justify-content: center;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(101, 48, 181, 0.2);
+  }
+
+  .conf-progress-card {
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+  }
+
+  .conf-progress-header {
+    margin-bottom: 6px;
+  }
+
+  .conf-progress-label {
+    font-size: 0.80rem;
+  }
+
+  .conf-progress-metric {
+    font-size: 0.85rem;
+  }
+
+  .conf-subtabs-row {
+    margin-bottom: 10px;
+    gap: 4px;
+  }
+
+  .conf-subtab-btn {
+    padding: 8px 10px;
+    font-size: 0.80rem;
+  }
+
+  .conf-search-bar-wrapper {
+    margin-bottom: 10px;
+  }
+
+  .conf-search-box {
+    height: 38px;
   }
 
   .conf-items-cards-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .conf-item-card {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .conf-card-photo-box {
+    width: 65px;
+    height: 80px;
+  }
+
+  .conf-card-name {
+    font-size: 0.85rem;
   }
 
   .conf-footer-action-bar {
     flex-direction: column-reverse;
+    margin-top: 1rem;
+    gap: 8px;
   }
 
   .conf-footer-action-bar button {
     width: 100%;
     justify-content: center;
+    height: 42px;
   }
 }
 

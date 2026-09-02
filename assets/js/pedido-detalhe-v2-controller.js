@@ -549,6 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneProdutos) paneProdutos.style.display = 'block';
       if (paneDetalhes) paneDetalhes.style.display = 'none';
       if (paneConferencia) paneConferencia.style.display = 'none';
+      if (readonlyBanner && isReadOnly) readonlyBanner.style.display = 'flex';
     } else if (tabName === 'detalhes') {
       if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.add('active');
@@ -556,6 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneProdutos) paneProdutos.style.display = 'none';
       if (paneDetalhes) paneDetalhes.style.display = 'block';
       if (paneConferencia) paneConferencia.style.display = 'none';
+      if (readonlyBanner && isReadOnly) readonlyBanner.style.display = 'flex';
     } else if (tabName === 'conferencia') {
       if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.remove('active');
@@ -563,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paneProdutos) paneProdutos.style.display = 'none';
       if (paneDetalhes) paneDetalhes.style.display = 'none';
       if (paneConferencia) paneConferencia.style.display = 'block';
+      if (readonlyBanner) readonlyBanner.style.display = 'none';
       renderConference();
     }
   }
