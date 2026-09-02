@@ -3131,8 +3131,8 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <button type="button" class="btn-conf-action-confirm btn-trigger-confirm-item" data-id="${item.id}">
-              <span class="material-icons">check_circle</span>
-              <span>Confirmar Abastecimento</span>
+              <span class="material-icons" style="font-size: 16px;">check_circle</span>
+              <span>CONFIRMAR ABASTECIMENTO</span>
             </button>
           </div>
         </div>
@@ -3222,14 +3222,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h4 class="conf-card-name">${item.nome}</h4>
                 <div class="conf-card-badge-row">
                   <span class="conf-badge-pill conf-pill-solicitado">Pedido: ${item.qtdePedido} un</span>
-                  <span class="conf-badge-pill ${isFull ? 'conf-pill-conferido' : 'conf-pill-divergente'}">Conferido: ${item.qtdeConferida} un</span>
+                  <span class="conf-badge-pill ${isFull ? 'conf-pill-conferido' : 'conf-pill-divergente'}">
+                    <span class="material-icons" style="font-size: 13px;">${isFull ? 'check' : 'warning'}</span>
+                    Conferido: ${item.qtdeConferida} un
+                  </span>
                   ${!isFull ? `<span class="conf-badge-pill conf-pill-divergente">Cancelado: ${cancelado} un</span>` : ''}
                 </div>
               </div>
 
-              <div style="margin-top: 8px;">
+              <div>
                 <button type="button" class="btn-conf-action-revert btn-trigger-revert-item" data-id="${item.id}">
-                  <span class="material-icons">undo</span>
+                  <span class="material-icons" style="font-size: 15px;">undo</span>
                   <span>Reverter Conferência</span>
                 </button>
               </div>
