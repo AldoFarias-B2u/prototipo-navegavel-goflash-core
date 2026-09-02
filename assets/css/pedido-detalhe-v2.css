@@ -3970,11 +3970,11 @@
   background-color: #10b981;
 }
 
-/* 4. Busca Rápida e Ordenação na Conferência */
+/* 4. Busca Rápida na Conferência e Painel de Filtros Opcionais */
 .conf-search-bar-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 0.75rem;
 }
 
@@ -4021,27 +4021,106 @@
   padding: 4px;
 }
 
+/* Botão Toggle Filtros / Categorias */
+.btn-conf-toggle-filters {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-conf-toggle-filters:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border-color: #94a3b8;
+}
+
+.btn-conf-toggle-filters.active {
+  background-color: #f3e8ff;
+  color: var(--primary-color, #6530b5);
+  border-color: var(--primary-color, #6530b5);
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.15);
+  font-weight: 700;
+}
+
+.btn-conf-toggle-filters .material-icons {
+  font-size: 18px;
+}
+
+/* Painel Expansível de Filtros Avançados */
+.conf-advanced-filters-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 12px 6px 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.conf-filters-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.conf-filters-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
 .conf-sort-box {
   display: flex;
   align-items: center;
   background-color: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0 10px;
-  height: 40px;
+  padding: 0 8px;
+  height: 32px;
   flex-shrink: 0;
   gap: 4px;
 }
 
 .conf-sort-icon {
-  font-size: 18px;
+  font-size: 16px;
   color: #64748b;
 }
 
 .conf-sort-select {
   border: none;
   background: transparent;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #334155;
   outline: none;
@@ -4055,7 +4134,7 @@
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 6px;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
 }
@@ -4683,10 +4762,18 @@
 
   .conf-search-bar-wrapper {
     margin-bottom: 10px;
+    gap: 6px;
   }
 
   .conf-search-box {
     height: 38px;
+  }
+
+  .btn-conf-toggle-filters {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+    gap: 4px;
   }
 
   .conf-items-cards-grid {

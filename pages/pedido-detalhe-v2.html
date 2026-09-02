@@ -628,7 +628,7 @@
             </button>
           </div>
 
-          <!-- Barra de Busca Rápida e Ordenação na Conferência -->
+          <!-- Barra de Busca Rápida na Conferência -->
           <div class="conf-search-bar-wrapper">
             <div class="conf-search-box">
               <span class="material-icons">search</span>
@@ -637,20 +637,36 @@
                 <span class="material-icons">close</span>
               </button>
             </div>
-            <div class="conf-sort-box">
-              <span class="material-icons conf-sort-icon">sort</span>
-              <select id="selectSortConferencia" class="conf-sort-select" title="Ordenar lista de conferência">
-                <option value="default">Padrão</option>
-                <option value="categoria">Categoria</option>
-                <option value="nome">Nome A-Z</option>
-                <option value="qtde">Maior Qtde</option>
-              </select>
-            </div>
+            
+            <!-- Botão Toggle Filtro por Categorias -->
+            <button type="button" class="btn-conf-toggle-filters" id="btnToggleConfFilters" title="Filtrar por categorias e ordenar">
+              <span class="material-icons">tune</span>
+              <span class="btn-conf-toggle-text">Categorias</span>
+            </button>
           </div>
 
-          <!-- Carrossel de Chips de Categorias -->
-          <div class="conf-cat-chips-row" id="confCategoryChipsRow">
-            <!-- Chips gerados dinamicamente via JS -->
+          <!-- Painel Expansível de Filtros de Categorias e Ordenação (Opcional - Oculto por padrão) -->
+          <div class="conf-advanced-filters-panel" id="confAdvancedFiltersPanel" style="display: none;">
+            <div class="conf-filters-header-row">
+              <div class="conf-filters-title-group">
+                <span class="material-icons" style="font-size: 16px; color: var(--primary-color, #6530b5);">category</span>
+                <span class="conf-filters-header-title">Filtrar por Categoria:</span>
+              </div>
+              <div class="conf-sort-box">
+                <span class="material-icons conf-sort-icon">sort</span>
+                <select id="selectSortConferencia" class="conf-sort-select" title="Ordenar lista de conferência">
+                  <option value="default">Padrão</option>
+                  <option value="categoria">Por Categoria</option>
+                  <option value="nome">Nome A-Z</option>
+                  <option value="qtde">Maior Qtde</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Carrossel de Chips de Categorias -->
+            <div class="conf-cat-chips-row" id="confCategoryChipsRow">
+              <!-- Chips gerados dinamicamente via JS -->
+            </div>
           </div>
 
           <!-- Container da Sub-Aba: À CONFERIR -->

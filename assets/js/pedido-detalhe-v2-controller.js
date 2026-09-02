@@ -2887,9 +2887,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let conferenceViewMode = 'cards'; // 'cards' ou 'table'
   let conferenceItems = [];
   let conferenceSearchQuery = '';
+  let isConfCategoryFiltersEnabled = false;
   let conferenceSelectedCategory = 'all';
   let conferenceSortBy = 'default';
 
+  const btnToggleConfFilters = document.getElementById('btnToggleConfFilters');
+  const confAdvancedFiltersPanel = document.getElementById('confAdvancedFiltersPanel');
   const selectSortConferencia = document.getElementById('selectSortConferencia');
   const confCategoryChipsRow = document.getElementById('confCategoryChipsRow');
 
@@ -3036,7 +3039,15 @@ document.addEventListener('DOMContentLoaded', () => {
       heroConferenciaCount.textContent = pendentesList.length;
     }
 
-    // 3.3 Filtragem por Busca, Categoria e Ordenação
+    // 3.3 Painel de Filtros e Chips
+    if (confAdvancedFiltersPanel) {
+      confAdvancedFiltersPanel.style.display = isConfCategoryFiltersEnabled ? 'block' : 'none';
+    }
+    if (btnToggleConfFilters) {
+      btnToggleConfFilters.classList.toggle('active', isConfCategoryFiltersEnabled);
+    }
+
+    // 3.4 Filtragem por Busca, Categoria e Ordenação
     const q = conferenceSearchQuery.toLowerCase().trim();
 
     function filterItem(p) {
@@ -3045,13 +3056,16 @@ document.addEventListener('DOMContentLoaded', () => {
         (p.ean && p.ean.includes(q)) ||
         (p.categoria && p.categoria.toLowerCase().includes(q));
       
-      const matchCategory = conferenceSelectedCategory === 'all' || 
+      const matchCategory = !isConfCategoryFiltersEnabled || conferenceSelectedCategory === 'all' || 
         (p.categoria || 'Geral') === conferenceSelectedCategory;
 
       return matchText && matchCategory;
     }
 
     function sortItems(list) {
+      if (!isConfCategoryFiltersEnabled || conferenceSortBy === 'default') {
+        return list;
+      }
       const arr = [...list];
       if (conferenceSortBy === 'categoria') {
         arr.sort((a, b) => (a.categoria || '').localeCompare(b.categoria || '') || a.nome.localeCompare(b.nome));
@@ -3066,9 +3080,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const filteredPendentes = sortItems(pendentesList.filter(filterItem));
     const filteredConferidos = sortItems(conferidosList.filter(filterItem));
 
-    renderCategoryChips();
+    if (isConfCategoryFiltersEnabled) {
+      renderCategoryChips();
+    }
 
-    // 3.4 Renderização da Sub-Aba Ativa
+    // 3.5 Renderização da Sub-Aba Ativa
     if (conferenceCurrentSubTab === 'aconferir') {
       if (subPaneAConferir) subPaneAConferir.style.display = 'block';
       if (subPaneConferidos) subPaneConferidos.style.display = 'none';
@@ -3642,6 +3658,18 @@ document.addEventListener('DOMContentLoaded', () => {
       inputSearchConferencia.value = '';
       conferenceSearchQuery = '';
       btnClearConfSearch.style.display = 'none';
+      renderConference();
+    });
+  }
+
+  if (btnToggleConfFilters) {
+    btnToggleConfFilters.addEventListener('click', () => {
+      isConfCategoryFiltersEnabled = !isConfCategoryFiltersEnabled;
+      if (!isConfCategoryFiltersEnabled) {
+        conferenceSelectedCategory = 'all';
+        conferenceSortBy = 'default';
+        if (selectSortConferencia) selectSortConferencia.value = 'default';
+      }
       renderConference();
     });
   }
