@@ -48,9 +48,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Elementos da Conferência
   const confPreStartSection = document.getElementById('confPreStartSection');
+  const confPreStartBanner = document.getElementById('confPreStartBanner');
+  const confPreStartIcon = document.getElementById('confPreStartIcon');
+  const confPreStartTitle = document.getElementById('confPreStartTitle');
+  const confPreStartDesc = document.getElementById('confPreStartDesc');
+  const btnStartConferenceHero = document.getElementById('btnStartConferenceHero');
+  const btnStartConfIcon = document.getElementById('btnStartConfIcon');
+  const btnStartConfTxt = document.getElementById('btnStartConfTxt');
+  
+  const confPreProgressCard = document.getElementById('confPreProgressCard');
+  const confPreProgressUnits = document.getElementById('confPreProgressUnits');
+  const confPreProgressPctBadge = document.getElementById('confPreProgressPctBadge');
+  const confPreProgressBar = document.getElementById('confPreProgressBar');
+
   const confActiveSection = document.getElementById('confActiveSection');
   const confCompletedSection = document.getElementById('confCompletedSection');
-  const btnStartConferenceHero = document.getElementById('btnStartConferenceHero');
   const confOverviewContainer = document.getElementById('confOverviewContainer');
   const confCompletedGrid = document.getElementById('confCompletedGrid');
   const confCompletedDetailsTxt = document.getElementById('confCompletedDetailsTxt');
@@ -2838,10 +2850,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 17.1 Renderização Pré-Conferência (Visão Geral)
+  // 17.1 Renderização Pré-Conferência (Visão Geral / Pausada)
   function renderPreStartConferenceOverview() {
     if (!confOverviewContainer) return;
-    
+
+    const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+    const conferidosList = conferenceItems.filter(p => p.statusConferencia === 'conferido');
+    const totalConferido = conferidosList.reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+    const pct = totalSolicitado > 0 ? Math.min(100, Math.round((totalConferido / totalSolicitado) * 100)) : 0;
+    const isPaused = totalConferido > 0 || (currentLoadedOrder && currentLoadedOrder.conferencia && currentLoadedOrder.conferencia.isPaused);
+
+    // 17.1.1 Atualiza o Banner e o Botão de Ação
+    if (isPaused) {
+      if (confPreStartBanner) confPreStartBanner.classList.add('is-paused');
+      if (confPreStartIcon) confPreStartIcon.textContent = 'pending_actions';
+      if (confPreStartTitle) confPreStartTitle.textContent = 'Conferência em Andamento (Pausada)';
+      if (confPreStartDesc) {
+        confPreStartDesc.innerHTML = `O progresso do abastecimento foi salvo. Você conferiu <strong>${totalConferido} de ${totalSolicitado} unidades (${pct}%)</strong>. Retome o processo para concluir a conferência na loja.`;
+      }
+      if (btnStartConfIcon) btnStartConfIcon.textContent = 'play_arrow';
+      if (btnStartConfTxt) btnStartConfTxt.textContent = 'RETOMAR CONFERÊNCIA';
+
+      if (confPreProgressCard) {
+        confPreProgressCard.style.display = 'block';
+        if (confPreProgressUnits) confPreProgressUnits.textContent = `${totalConferido} / ${totalSolicitado}`;
+        if (confPreProgressPctBadge) confPreProgressPctBadge.textContent = `${pct}%`;
+        if (confPreProgressBar) confPreProgressBar.style.width = `${pct}%`;
+      }
+    } else {
+      if (confPreStartBanner) confPreStartBanner.classList.remove('is-paused');
+      if (confPreStartIcon) confPreStartIcon.textContent = 'local_shipping';
+      if (confPreStartTitle) confPreStartTitle.textContent = 'Pedido em Trânsito / Aguardando Conferência';
+      if (confPreStartDesc) {
+        confPreStartDesc.textContent = 'As mercadorias deste pedido foram expedidas. Inicie o processo de conferência para registrar os produtos que estão sendo abastecidos na loja.';
+      }
+      if (btnStartConfIcon) btnStartConfIcon.textContent = 'play_circle';
+      if (btnStartConfTxt) btnStartConfTxt.textContent = 'INICIAR CONFERÊNCIA';
+
+      if (confPreProgressCard) confPreProgressCard.style.display = 'none';
+    }
+
+    // 17.1.2 Renderiza Lista Consolidada
     if (conferenceViewMode === 'table' && window.innerWidth > 600) {
       confOverviewContainer.innerHTML = `
         <div class="conf-table-wrapper">
@@ -2852,28 +2901,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 <th>Código / Produto</th>
                 <th style="text-align: center; width: 120px;">Qtde Pedido</th>
                 <th style="text-align: center; width: 120px;">Conferido</th>
-                <th style="text-align: center; width: 130px;">Qtde Cancelada</th>
+                <th style="text-align: center; width: 140px;">Status</th>
               </tr>
             </thead>
             <tbody>
-              ${conferenceItems.map(item => `
-                <tr>
-                  <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
-                  <td>
-                    <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
-                    <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
-                  </td>
-                  <td style="text-align: center;">
-                    <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
-                  </td>
-                  <td style="text-align: center;">
-                    <span class="conf-badge-pill" style="background-color: #f1f5f9; color: #64748b;">${item.qtdeConferida} un</span>
-                  </td>
-                  <td style="text-align: center;">
-                    <span class="conf-badge-pill" style="background-color: #f1f5f9; color: #64748b;">${item.qtdeCancelada} un</span>
-                  </td>
-                </tr>
-              `).join('')}
+              ${conferenceItems.map(item => {
+                const isConferido = item.statusConferencia === 'conferido';
+                const isFull = isConferido && item.qtdeConferida === item.qtdePedido;
+                const cancelado = Math.max(0, item.qtdePedido - (item.qtdeConferida || 0));
+                return `
+                  <tr>
+                    <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                    <td>
+                      <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
+                      <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill ${isConferido ? (isFull ? 'conf-pill-conferido' : 'conf-pill-divergente') : ''}" style="${!isConferido ? 'background-color: #f1f5f9; color: #64748b;' : ''}">
+                        ${isConferido ? `${item.qtdeConferida} un` : '0 un'}
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      ${isConferido 
+                        ? (isFull 
+                            ? `<span class="conf-badge-pill conf-pill-conferido"><span class="material-icons" style="font-size: 13px;">check</span> Conferido</span>`
+                            : `<span class="conf-badge-pill conf-pill-divergente"><span class="material-icons" style="font-size: 13px;">warning</span> -${cancelado} un</span>`)
+                        : `<span class="conf-badge-pill" style="background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;">À Conferir</span>`
+                      }
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
@@ -2881,23 +2942,36 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       confOverviewContainer.innerHTML = `
         <div class="conf-items-cards-grid">
-          ${conferenceItems.map(item => `
-            <div class="conf-item-card">
-              <div class="conf-card-photo-box">
-                <img src="${item.foto}" alt="${item.nome}">
-              </div>
-              <div class="conf-card-body">
-                <div class="conf-card-top-info">
-                  <span class="conf-card-ean">${item.ean}</span>
-                  <h4 class="conf-card-name">${item.nome}</h4>
-                  <div class="conf-card-badge-row">
-                    <span class="conf-badge-pill conf-pill-solicitado">Pedido: ${item.qtdePedido} un</span>
-                    <span class="conf-badge-pill" style="background-color: #f1f5f9; color: #64748b;">Conferido: ${item.qtdeConferida} un</span>
+          ${conferenceItems.map(item => {
+            const isConferido = item.statusConferencia === 'conferido';
+            const isFull = isConferido && item.qtdeConferida === item.qtdePedido;
+            const cancelado = Math.max(0, item.qtdePedido - (item.qtdeConferida || 0));
+            return `
+              <div class="conf-item-card">
+                <div class="conf-card-photo-box">
+                  <img src="${item.foto}" alt="${item.nome}">
+                </div>
+                <div class="conf-card-body">
+                  <div class="conf-card-top-info">
+                    <span class="conf-card-ean">${item.ean}</span>
+                    <h4 class="conf-card-name">${item.nome}</h4>
+                    <div class="conf-card-badge-row">
+                      <span class="conf-badge-pill conf-pill-solicitado">Pedido: ${item.qtdePedido} un</span>
+                      <span class="conf-badge-pill ${isConferido ? (isFull ? 'conf-pill-conferido' : 'conf-pill-divergente') : ''}" style="${!isConferido ? 'background-color: #f1f5f9; color: #64748b;' : ''}">
+                        Conferido: ${isConferido ? item.qtdeConferida : 0} un
+                      </span>
+                      ${isConferido 
+                        ? (isFull 
+                            ? `<span class="conf-badge-pill conf-pill-conferido">OK</span>` 
+                            : `<span class="conf-badge-pill conf-pill-divergente">-${cancelado} un</span>`)
+                        : `<span class="conf-badge-pill" style="background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;">À Conferir</span>`
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       `;
     }
@@ -3267,13 +3341,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnStartConferenceHero) {
     btnStartConferenceHero.addEventListener('click', () => {
       isConferenceActive = true;
-      conferenceCurrentSubTab = 'aconferir';
+      const pendentes = conferenceItems.filter(p => p.statusConferencia === 'pendente');
+      conferenceCurrentSubTab = pendentes.length > 0 ? 'aconferir' : 'conferidos';
+
       if (currentLoadedOrder) {
-        currentLoadedOrder.conferencia = { isConferenceActive: true, itens: conferenceItems };
+        currentLoadedOrder.conferencia = { isConferenceActive: true, isPaused: false, itens: conferenceItems };
+        if (typeof window.atualizarPedidoNoStorage === 'function') {
+          window.atualizarPedidoNoStorage(currentLoadedOrder);
+        }
       }
       renderConference();
       if (typeof Toast !== 'undefined') {
-        Toast.info('Conferência iniciada! Confirme os produtos abastecidos.');
+        const hasProgress = conferenceItems.some(p => p.statusConferencia === 'conferido');
+        Toast.info(hasProgress ? 'Conferência retomada com sucesso!' : 'Conferência iniciada! Confirme os produtos abastecidos.');
       }
     });
   }
@@ -3349,14 +3429,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      isConferenceActive = false;
+
       if (currentLoadedOrder) {
-        currentLoadedOrder.conferencia = { isConferenceActive: true, itens: conferenceItems };
+        currentLoadedOrder.conferencia = { isConferenceActive: false, isPaused: true, itens: conferenceItems };
         if (typeof window.atualizarPedidoNoStorage === 'function') {
           window.atualizarPedidoNoStorage(currentLoadedOrder);
         }
       }
+
+      renderConference();
+
       if (typeof Toast !== 'undefined') {
-        Toast.success('Progresso da conferência salvo com sucesso! Você pode retomar a qualquer momento.');
+        Toast.info('Conferência pausada e progresso salvo com sucesso.');
       }
     });
   }

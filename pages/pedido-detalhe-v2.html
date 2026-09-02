@@ -543,22 +543,39 @@
           </div>
         </div>
 
-        <!-- 1. FASE DE VISUALIZAÇÃO PRÉ-CONFERÊNCIA (Antes de Iniciar) -->
+        <!-- 1. FASE DE VISUALIZAÇÃO PRÉ-CONFERÊNCIA (Antes de Iniciar / Pausada) -->
         <div id="confPreStartSection" class="conf-pre-start-box">
-          <div class="conf-pre-start-banner">
-            <div class="conf-pre-start-icon-box">
-              <span class="material-icons">local_shipping</span>
+          <div class="conf-pre-start-banner" id="confPreStartBanner">
+            <div class="conf-pre-start-icon-box" id="confPreStartIconBox">
+              <span class="material-icons" id="confPreStartIcon">local_shipping</span>
             </div>
             <div class="conf-pre-start-info">
-              <strong class="conf-pre-start-title">Pedido em Trânsito / Aguardando Conferência</strong>
-              <p class="conf-pre-start-desc">
+              <strong class="conf-pre-start-title" id="confPreStartTitle">Pedido em Trânsito / Aguardando Conferência</strong>
+              <p class="conf-pre-start-desc" id="confPreStartDesc">
                 As mercadorias deste pedido foram expedidas. Inicie o processo de conferência para registrar os produtos que estão sendo abastecidos na loja.
               </p>
             </div>
             <button type="button" class="btn-start-conference-hero" id="btnStartConferenceHero">
-              <span class="material-icons">play_circle</span>
-              <span>INICIAR CONFERÊNCIA</span>
+              <span class="material-icons" id="btnStartConfIcon">play_circle</span>
+              <span id="btnStartConfTxt">INICIAR CONFERÊNCIA</span>
             </button>
+          </div>
+
+          <!-- Card de Progresso na Visão Geral (Exibido quando a conferência está pausada) -->
+          <div class="conf-progress-card" id="confPreProgressCard" style="display: none;">
+            <div class="conf-progress-header">
+              <div class="conf-progress-label">
+                <span class="material-icons" style="color: var(--primary-color, #6530b5);">pending_actions</span>
+                <span>Progresso da Conferência:</span>
+              </div>
+              <div class="conf-progress-metric">
+                <strong id="confPreProgressUnits">0 / 0</strong> <span class="conf-unit-tag">und</span>
+                <span class="conf-progress-pct-badge" id="confPreProgressPctBadge">0%</span>
+              </div>
+            </div>
+            <div class="conf-progress-track">
+              <div class="conf-progress-bar" id="confPreProgressBar" style="width: 0%;"></div>
+            </div>
           </div>
 
           <!-- Tabela / Cards de Visão Geral Pré-Conferência -->

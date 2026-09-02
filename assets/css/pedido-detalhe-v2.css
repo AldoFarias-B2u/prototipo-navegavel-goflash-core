@@ -3688,6 +3688,26 @@
   gap: 1.25rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(101, 48, 181, 0.06);
+  transition: all var(--transition-fast);
+}
+
+.conf-pre-start-banner.is-paused {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fde68a;
+  border-left-color: #f59e0b;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-icon-box {
+  background: #f59e0b;
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-title {
+  color: #78350f;
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-desc {
+  color: #92400e;
 }
 
 .conf-pre-start-icon-box {
@@ -3700,6 +3720,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: background-color var(--transition-fast);
 }
 
 .conf-pre-start-icon-box .material-icons {
