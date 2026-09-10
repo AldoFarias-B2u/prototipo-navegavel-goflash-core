@@ -2,6 +2,27 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.17] - 2026-09-10
+### ✨ Módulo Oficial de Conferência de Abastecimento, Tabela Padronizada & Ordenação Prioritária
+- **Processo Completo de Conferência de Abastecimento na Loja** ([`pages/pedido-detalhe-v2.html`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/pages/pedido-detalhe-v2.html), [`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Nova aba interativa de *Conferência* com sub-abas operacionais *"À CONFERIR"* e *"CONFERIDOS"*, barra de progresso em tempo real, contagem flexível sem travas, registro automático de faltas/sobras e cancelamento automático de mercadorias não entregues.
+  - Fluxo seguro de pausa (*Continuar Depois*) e retomada (*Retomar Conferência*), salvando o progresso intermediário sem perda de dados no `localStorage`.
+  - Modal de confirmação final com extrato completo e atualização imediata do pedido para o status *Recebido*.
+- **Padronização e Ergonomia da Visão em Tabela** ([`assets/css/pedido-detalhe-v2.css`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/css/pedido-detalhe-v2.css), [`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Controles numéricos em stepper horizontal unificado (`.conf-stepper-group`), botões táteis `−` e `+` com hover roxo (`#ede9fe`), campo centralizado de alta legibilidade e foco com anel `--primary-color`.
+  - Botão de confirmação de recebimento oficial (`.btn-conf-action-confirm`) na cor roxa oficial (`#6530b5`), com feedback tátil de elevação e ícone `check`.
+  - Botão secundário de reversão (`.btn-conf-action-revert`) em tom âmbar suave na sub-aba de conferidos.
+- **Ordenação e Priorização Universal de Itens Fora da Conferência Ativa** ([`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Algoritmo de classificação dinâmica que prioriza visualmente os itens na sequência mandatória de negócio:
+    1. **1º: À Conferir** (itens pendentes de recebimento);
+    2. **2º: Com alguma divergência** (itens conferidos com sobra ou falta);
+    3. **3º: 100% OK** (itens conferidos com exatidão).
+  - Aplicável para todos os status de pedido (pausado, pré-início, recebido/concluído), tanto na visualização em **Cards** quanto em **Tabela**, seja no **mobile** (< 600px) ou no **desktop**.
+- **Refinamentos Mobile Touch-First**:
+  - Sticky footer responsivo para as ações principais da conferência, transição fluida entre modos de visualização e eliminação de quebras de layout.
+
+---
+
 ## [1.9.16] - 2026-09-01
 ### ✨ Geração Fiel de Pedidos a partir da Consulta Dinâmica de Abastecimento
 - **Persistência Integral de Produtos e Quantidades da Consulta** ([`assets/js/consulta-abastecimento-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/consulta-abastecimento-controller.js)):

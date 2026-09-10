@@ -1,8 +1,8 @@
 {
   "name": "goflash-core-prototype",
   "displayName": "Goflash CORE - Protótipo Navegável",
-  "version": "1.9.16.0",
-  "releaseDate": "2026-09-01",
+  "version": "1.9.17.0",
+  "releaseDate": "2026-09-10",
   "author": "B2U Sistemas",
   "modules": [
     {
@@ -45,7 +45,7 @@
       "id": "pedidos-abastecimento",
       "name": "Pedidos de Abastecimento",
       "status": "concluido",
-      "version": "1.7.0"
+      "version": "1.8.0"
     },
     {
       "id": "consulta-abastecimento",
