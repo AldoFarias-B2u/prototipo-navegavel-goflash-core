@@ -862,14 +862,31 @@ function getStoredPedidos() {
   try {
     const raw = localStorage.getItem('goflash_pedidos_list');
     if (raw) {
-      const stored = JSON.parse(raw);
-      // Garante que o pedido 000071 de demonstração da conferência esteja presente
-      const demo71 = defaultPedidosData.find(p => p.codigo === '000071');
-      if (demo71 && !stored.some(p => p.codigo === '000071')) {
-        stored.unshift(demo71);
-        try { localStorage.setItem('goflash_pedidos_list', JSON.stringify(stored)); } catch (e) {}
+      let stored = JSON.parse(raw);
+      if (Array.isArray(stored)) {
+        let hasFixed = false;
+        stored.forEach(p => {
+          if (p && typeof p.status === 'object' && p.status !== null) {
+            p.status = (p.status.status && typeof p.status.status === 'string') ? p.status.status : 'Recebido';
+            hasFixed = true;
+          } else if (!p.status || typeof p.status !== 'string') {
+            p.status = 'Aberto';
+            hasFixed = true;
+          }
+        });
+
+        // Garante que o pedido 000071 de demonstração da conferência esteja presente
+        const demo71 = defaultPedidosData.find(p => p.codigo === '000071');
+        if (demo71 && !stored.some(p => p.codigo === '000071')) {
+          stored.unshift(demo71);
+          hasFixed = true;
+        }
+
+        if (hasFixed) {
+          try { localStorage.setItem('goflash_pedidos_list', JSON.stringify(stored)); } catch (e) {}
+        }
+        return stored;
       }
-      return stored;
     }
   } catch (e) {
     console.error('Erro ao ler storage de pedidos:', e);
@@ -881,6 +898,9 @@ window.PedidosAbastecimentoData = getStoredPedidos();
 
 window.salvarNovoPedidoNoStorage = function (novoPedido) {
   const lista = window.PedidosAbastecimentoData || [];
+  if (novoPedido && typeof novoPedido.status === 'object' && novoPedido.status !== null) {
+    novoPedido.status = (novoPedido.status.status && typeof novoPedido.status.status === 'string') ? novoPedido.status.status : 'Aberto';
+  }
   lista.unshift(novoPedido);
   window.PedidosAbastecimentoData = lista;
   try {
@@ -893,6 +913,9 @@ window.salvarNovoPedidoNoStorage = function (novoPedido) {
 
 window.atualizarPedidoNoStorage = function (pedidoAtualizado) {
   const lista = window.PedidosAbastecimentoData || [];
+  if (pedidoAtualizado && typeof pedidoAtualizado.status === 'object' && pedidoAtualizado.status !== null) {
+    pedidoAtualizado.status = (pedidoAtualizado.status.status && typeof pedidoAtualizado.status.status === 'string') ? pedidoAtualizado.status.status : 'Recebido';
+  }
   const index = lista.findIndex(p => String(p.id) === String(pedidoAtualizado.id) || p.codigo === pedidoAtualizado.codigo);
   if (index !== -1) {
     lista[index] = { ...lista[index], ...pedidoAtualizado };

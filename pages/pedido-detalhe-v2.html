@@ -51,6 +51,17 @@
         </button>
 
         <div class="header-actions-popover" id="headerMoreActionsPopover" role="menu">
+          <!-- Ação Dinâmica: Iniciar / Retomar Conferência (Exclusivo para Pendente de Abastecimento) -->
+          <button type="button" class="header-action-menu-item" id="menuActionIniciarConferencia" style="display: none;">
+            <span class="material-icons" id="iconMenuIniciarConferencia" style="color: #6530b5;">play_circle</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title" id="titleMenuIniciarConferencia">Iniciar Conferência</span>
+              <span class="action-menu-desc" id="descMenuIniciarConferencia">Conferir recebimento físico dos produtos</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider" id="dividerIniciarConferencia" style="display: none;"></div>
+
           <button type="button" class="header-action-menu-item" id="menuActionFinalizar">
             <span class="material-icons" style="color: #6530b5;">check_circle</span>
             <div class="action-menu-texts">
@@ -72,6 +83,17 @@
             <div class="action-menu-texts">
               <span class="action-menu-title">Imprimir Pedido</span>
               <span class="action-menu-desc">Gerar comprovante / PDF</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider" id="dividerToggleCategorias"></div>
+
+          <!-- Opção Opcional: Conferência por Categorias -->
+          <button type="button" class="header-action-menu-item" id="menuActionToggleCategorias">
+            <span class="material-icons" id="iconMenuToggleCategorias" style="color: #6530b5; font-size: 26px;">toggle_on</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Conferência por Categorias</span>
+              <span class="action-menu-desc" id="descMenuToggleCategorias">Ativada (Exibe filtro de categorias)</span>
             </div>
           </button>
 
@@ -232,7 +254,7 @@
       <div class="order-hero-tabs-row">
         <button type="button" class="order-tab-item-btn active" id="tabBtnProdutos" data-tab="produtos">
           <span class="material-icons" style="font-size: 18px;">inventory_2</span>
-          PRODUTOS
+          ITENS
           <span class="order-tab-count-tag" id="heroProductsCount">5</span>
         </button>
         <button type="button" class="order-tab-item-btn" id="tabBtnDetalhes" data-tab="detalhes">
@@ -540,11 +562,11 @@
 
           <!-- Ações do Topo da Conferência (Alternador de visualização Tabela/Cards) -->
           <div class="conf-header-actions" id="confHeaderActions">
-            <div class="view-mode-toggle" id="confViewToggle">
-              <button type="button" class="btn-toggle-view" id="btnConfViewTable" title="Visualização em Tabela">
-                <span class="material-icons">view_headline</span>
+            <div class="view-segmented-switcher" id="confViewToggle" role="group" aria-label="Modo de Visualização da Conferência">
+              <button type="button" class="view-segment-btn" id="btnConfViewTable" title="Visualização em Tabela">
+                <span class="material-icons">reorder</span>
               </button>
-              <button type="button" class="btn-toggle-view active" id="btnConfViewCards" title="Visualização em Cards">
+              <button type="button" class="view-segment-btn active" id="btnConfViewCards" title="Visualização em Cards">
                 <span class="material-icons">grid_view</span>
               </button>
             </div>
@@ -632,7 +654,7 @@
           <div class="conf-search-bar-wrapper">
             <div class="conf-search-box">
               <span class="material-icons">search</span>
-              <input type="text" id="inputSearchConferencia" class="conf-search-input" placeholder="Pesquisar por EAN, produto ou categoria...">
+              <input type="text" id="inputSearchConferencia" class="conf-search-input" placeholder="Pesquisar por EAN ou produto...">
               <button type="button" class="btn-clear-conf-search" id="btnClearConfSearch" style="display: none;">
                 <span class="material-icons">close</span>
               </button>
@@ -656,9 +678,10 @@
                 <span class="material-icons conf-sort-icon">sort</span>
                 <select id="selectSortConferencia" class="conf-sort-select" title="Ordenar lista de conferência">
                   <option value="default">Padrão</option>
-                  <option value="categoria">Por Categoria</option>
+                  <option value="categoria">Ordenar por Categoria (A-Z)</option>
                   <option value="nome">Nome A-Z</option>
                   <option value="qtde">Maior Qtde</option>
+                  <option value="qtde-asc">Menor Qtde</option>
                 </select>
               </div>
             </div>
@@ -754,12 +777,7 @@
       </div>
     </div>
 
-    <div class="footer-actions-container">
-      <button type="button" class="btn-footer-secondary" id="btnFooterBackToList" style="display: inline-flex;">
-        <span class="material-icons">arrow_back</span>
-        <span>Voltar</span>
-      </button>
-
+    <div class="footer-actions-container" id="footerActionsContainer">
       <!-- Ações Específicas da Conferência no Sticky Footer -->
       <button type="button" class="btn-footer-secondary btn-footer-conf-pause" id="btnFooterConfPause" style="display: none;">
         <span class="material-icons">pause_circle_outline</span>
@@ -1487,6 +1505,54 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 8: FILTRAR POR CATEGORIA (CONFERÊNCIA MINIMALISTA)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfCategorias" role="dialog" aria-modal="true" style="display: none;">
+    <div class="official-modal-card" style="max-width: 420px; width: 90%;">
+      <div class="official-modal-header">
+        <div class="official-modal-title">
+          <span class="material-icons" style="color: #6530b5;">tune</span>
+          <h3>Filtrar por Categoria</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseConfCategoriasModal">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.25rem 1.5rem;">
+        <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.85rem;">
+          Selecione uma categoria para focar o abastecimento dos produtos:
+        </p>
+        <div class="conf-modal-cat-list" id="confModalCatList">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+          <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">
+            Ordenar Lista:
+          </label>
+          <select id="modalSelectSortConferencia" class="custom-select" style="font-size: 0.82rem; padding: 6px 10px; border-radius: 6px; width: 100%; border: 1px solid #cbd5e1; background: #f8fafc;">
+            <option value="default">Ordem Padrão do Pedido</option>
+            <option value="categoria">Ordenar por Categoria (A-Z)</option>
+            <option value="nome">Nome do Produto (A-Z)</option>
+            <option value="qtde">Maior Quantidade</option>
+            <option value="qtde-asc">Menor Quantidade</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: space-between; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnClearConfCategoryFilter">
+          LIMPAR
+        </button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyConfCategoryFilter" style="background-color: #6530b5;">
+          APLICAR
+        </button>
+      </div>
     </div>
   </div>
 

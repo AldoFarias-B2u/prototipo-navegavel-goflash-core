@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let isCardsMode = window.innerWidth <= 768;
 
   function getStatusBadgeClass(status) {
-    const statusLower = (status || '').toLowerCase();
+    const raw = (status && typeof status === 'object') ? (status.status || 'Aberto') : status;
+    const statusLower = String(raw || '').toLowerCase();
     if (statusLower.includes('cancelado')) return 'badge-status-cancelado';
     if (statusLower.includes('recebido')) return 'badge-status-recebido';
     if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) return 'badge-status-pendente-abastecimento';
@@ -45,7 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tbody) return;
 
     const rowsHtml = dataToRender.map((item, index) => {
-      const statusBadgeClass = getStatusBadgeClass(item.status);
+      const displayStatus = (item.status && typeof item.status === 'object' ? item.status.status : item.status) || 'Aberto';
+      const statusBadgeClass = getStatusBadgeClass(displayStatus);
       return `
         <tr data-id="${item.id}" class="pedido-row" title="Clique para ver detalhes do Pedido ${item.codigo}">
           <td class="col-num-indicator">${index + 1}</td>
@@ -60,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td style="text-align: center;">${item.qtdeItens}</td>
           <td>${item.dataCriacao}</td>
           <td>
-            <span class="badge-status-pedido ${statusBadgeClass}">${item.status}</span>
+            <span class="badge-status-pedido ${statusBadgeClass}">${displayStatus}</span>
           </td>
         </tr>
       `;
@@ -84,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pedidosCardsContainer) return;
 
     const cardsHtml = dataToRender.map((item) => {
-      const statusBadgeClass = getStatusBadgeClass(item.status);
+      const displayStatus = (item.status && typeof item.status === 'object' ? item.status.status : item.status) || 'Aberto';
+      const statusBadgeClass = getStatusBadgeClass(displayStatus);
       const planoText = item.planoBase || (item.tipo === 'manual' ? 'Manual (Em branco)' : 'Sem plano associado');
       const itemLabel = item.qtdeItens == 1 ? 'item' : 'itens';
 
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="material-icons card-type-icon">assignment</span>
               <strong class="card-code-num">${item.codigo}</strong>
             </div>
-            <span class="badge-status-pedido ${statusBadgeClass}">${item.status}</span>
+            <span class="badge-status-pedido ${statusBadgeClass}">${displayStatus}</span>
           </div>
 
           <div class="card-mobile-body">
@@ -195,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cod = (item.codigo || '').toLowerCase();
         const fil = (item.filial || '').toLowerCase();
         const pla = (item.planoBase || '').toLowerCase();
-        const sta = (item.status || '').toLowerCase();
+        const sta = String((item.status && typeof item.status === 'object' ? item.status.status : item.status) || '').toLowerCase();
         const dat = (item.dataCriacao || '').toLowerCase();
         return cod.includes(query) || fil.includes(query) || pla.includes(query) || sta.includes(query) || dat.includes(query);
       });
