@@ -40,8 +40,71 @@ document.addEventListener('DOMContentLoaded', () => {
   // Abas
   const tabBtnProdutos = document.getElementById('tabBtnProdutos');
   const tabBtnDetalhes = document.getElementById('tabBtnDetalhes');
+  const tabBtnConferencia = document.getElementById('tabBtnConferencia');
+  const heroConferenciaCount = document.getElementById('heroConferenciaCount');
   const paneProdutos = document.getElementById('paneProdutos');
   const paneDetalhes = document.getElementById('paneDetalhes');
+  const paneConferencia = document.getElementById('paneConferencia');
+
+  // Elementos da Conferência
+  const confPreStartSection = document.getElementById('confPreStartSection');
+  const confPreStartBanner = document.getElementById('confPreStartBanner');
+  const confPreStartIcon = document.getElementById('confPreStartIcon');
+  const confPreStartTitle = document.getElementById('confPreStartTitle');
+  const confPreStartDesc = document.getElementById('confPreStartDesc');
+  const btnStartConferenceHero = document.getElementById('btnStartConferenceHero');
+  const btnStartConfIcon = document.getElementById('btnStartConfIcon');
+  const btnStartConfTxt = document.getElementById('btnStartConfTxt');
+  
+  const confPreProgressCard = document.getElementById('confPreProgressCard');
+  const confPreProgressUnits = document.getElementById('confPreProgressUnits');
+  const confPreProgressPctBadge = document.getElementById('confPreProgressPctBadge');
+  const confPreProgressBar = document.getElementById('confPreProgressBar');
+
+  const confActiveSection = document.getElementById('confActiveSection');
+  const confCompletedSection = document.getElementById('confCompletedSection');
+  const confOverviewContainer = document.getElementById('confOverviewContainer');
+  const confCompletedGrid = document.getElementById('confCompletedGrid');
+  const confCompletedDetailsTxt = document.getElementById('confCompletedDetailsTxt');
+  
+  const confProgressUnits = document.getElementById('confProgressUnits');
+  const confProgressPctBadge = document.getElementById('confProgressPctBadge');
+  const confProgressBar = document.getElementById('confProgressBar');
+
+  const btnSubTabAConferir = document.getElementById('btnSubTabAConferir');
+  const btnSubTabConferidos = document.getElementById('btnSubTabConferidos');
+  const badgeCountAConferir = document.getElementById('badgeCountAConferir');
+  const badgeCountConferidos = document.getElementById('badgeCountConferidos');
+
+  const subPaneAConferir = document.getElementById('subPaneAConferir');
+  const subPaneConferidos = document.getElementById('subPaneConferidos');
+  const confCardsGridAConferir = document.getElementById('confCardsGridAConferir');
+  const confTableWrapperAConferir = document.getElementById('confTableWrapperAConferir');
+  const confCardsGridConferidos = document.getElementById('confCardsGridConferidos');
+  const confTableWrapperConferidos = document.getElementById('confTableWrapperConferidos');
+  
+  const confEmptyAConferir = document.getElementById('confEmptyAConferir');
+  const confEmptyConferidos = document.getElementById('confEmptyConferidos');
+  const btnGoToConferidos = document.getElementById('btnGoToConferidos');
+  
+  const inputSearchConferencia = document.getElementById('inputSearchConferencia');
+  const btnClearConfSearch = document.getElementById('btnClearConfSearch');
+  
+  const btnConfPause = document.getElementById('btnConfPause');
+  const btnConfFinalizeMain = document.getElementById('btnConfFinalizeMain');
+  
+  const btnConfViewTable = document.getElementById('btnConfViewTable');
+  const btnConfViewCards = document.getElementById('btnConfViewCards');
+
+  // Modal de Finalização da Conferência
+  const modalConfirmarConferencia = document.getElementById('modalConfirmarConferencia');
+  const btnCloseConfirmConfModal = document.getElementById('btnCloseConfirmConfModal');
+  const btnCancelFinalizeConf = document.getElementById('btnCancelFinalizeConf');
+  const btnConfirmFinalizeConf = document.getElementById('btnConfirmFinalizeConf');
+  const modalConfTotalSolicitado = document.getElementById('modalConfTotalSolicitado');
+  const modalConfTotalConferido = document.getElementById('modalConfTotalConferido');
+  const modalConfTotalCancelado = document.getElementById('modalConfTotalCancelado');
+  const modalConfDiffRow = document.getElementById('modalConfDiffRow');
 
   // FAB e Pílula de Modo
   const fabEditOrder = document.getElementById('fabEditOrder');
@@ -87,9 +150,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Menu de Mais Ações do Header (Topbar)
   const headerMoreActionsBtn = document.getElementById('headerMoreActionsBtn');
   const headerMoreActionsPopover = document.getElementById('headerMoreActionsPopover');
+  const menuActionIniciarConferencia = document.getElementById('menuActionIniciarConferencia');
+  const iconMenuIniciarConferencia = document.getElementById('iconMenuIniciarConferencia');
+  const titleMenuIniciarConferencia = document.getElementById('titleMenuIniciarConferencia');
+  const descMenuIniciarConferencia = document.getElementById('descMenuIniciarConferencia');
+  const dividerIniciarConferencia = document.getElementById('dividerIniciarConferencia');
   const menuActionFinalizar = document.getElementById('menuActionFinalizar');
+  const menuActionEntradaDireta = document.getElementById('menuActionEntradaDireta');
   const menuActionImprimir = document.getElementById('menuActionImprimir');
   const menuActionCancelar = document.getElementById('menuActionCancelar');
+
+  // Modal Entrada Direta sem Conferência
+  const modalConfirmarEntradaDireta = document.getElementById('modalConfirmarEntradaDireta');
+  const btnCloseDirectEntryModal = document.getElementById('btnCloseDirectEntryModal');
+  const btnCancelDirectEntry = document.getElementById('btnCancelDirectEntry');
+  const btnConfirmDirectEntry = document.getElementById('btnConfirmDirectEntry');
+  const modalDirectTotalSolicitado = document.getElementById('modalDirectTotalSolicitado');
+  const modalDirectTotalEntrada = document.getElementById('modalDirectTotalEntrada');
 
   // Sticky Footer
   const footerSkusCount = document.getElementById('footerSkusCount');
@@ -103,6 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnFooterConfirm = document.getElementById('btnFooterConfirm');
   const btnFooterConfirmTxt = document.getElementById('btnFooterConfirmTxt');
   const btnFooterBackToList = document.getElementById('btnFooterBackToList');
+  const btnFooterConfPause = document.getElementById('btnFooterConfPause');
+  const btnFooterConfFinalize = document.getElementById('btnFooterConfFinalize');
 
   // Modal Cancelar Pedido
   const modalConfirmarCancelamento = document.getElementById('modalConfirmarCancelamento');
@@ -171,6 +250,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalConcluirQtde = document.getElementById('modalConcluirQtde');
   const modalConcluirDestino = document.getElementById('modalConcluirDestino');
 
+  // Modal 8: Categorias (Conferência Minimalista)
+  const modalConfCategorias = document.getElementById('modalConfCategorias');
+  const btnCloseConfCategoriasModal = document.getElementById('btnCloseConfCategoriasModal');
+  const confModalCatList = document.getElementById('confModalCatList');
+  const modalSelectSortConferencia = document.getElementById('modalSelectSortConferencia');
+  const btnClearConfCategoryFilter = document.getElementById('btnClearConfCategoryFilter');
+  const btnApplyConfCategoryFilter = document.getElementById('btnApplyConfCategoryFilter');
+  let tempSelectedCategory = 'all';
+
+  // Toggle Opcional de Categorias no menu do cabeçalho
+  const menuActionToggleCategorias = document.getElementById('menuActionToggleCategorias');
+  const iconMenuToggleCategorias = document.getElementById('iconMenuToggleCategorias');
+  const descMenuToggleCategorias = document.getElementById('descMenuToggleCategorias');
+  let isConfCategoriesFeatureEnabled = localStorage.getItem('goflash_conf_categories_enabled') !== 'false';
+
   // 3. Leitura dos Parâmetros da URL e Inicialização do Estado
   const urlParams = new URLSearchParams(window.location.search);
   const paramId = urlParams.get('id');
@@ -188,7 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (currentLoadedOrder) {
     // Pedido Existente
     currentOrderCode = currentLoadedOrder.codigo || '000042';
-    const statusLower = (currentLoadedOrder.status || 'Aberto').toLowerCase();
+    const rawStatus = (currentLoadedOrder.status && typeof currentLoadedOrder.status === 'object') ? currentLoadedOrder.status.status : currentLoadedOrder.status;
+    const statusLower = String(rawStatus || 'Aberto').toLowerCase();
     
     isReadOnly = (statusLower !== 'aberto');
     
@@ -260,22 +355,34 @@ document.addEventListener('DOMContentLoaded', () => {
   function setSelectValue(selectEl, value) {
     if (!selectEl) return;
     let exists = false;
-    for (let opt of selectEl.options) {
-      if (opt.value === value) {
-        opt.selected = true;
-        exists = true;
-        break;
+    if (selectEl.options) {
+      for (let i = 0; i < selectEl.options.length; i++) {
+        const opt = selectEl.options[i];
+        if (opt.value === value) {
+          opt.selected = true;
+          selectEl.value = value;
+          exists = true;
+          break;
+        }
       }
     }
     if (!exists) {
-      const newOpt = new Option(value, value, true, true);
-      selectEl.add(newOpt);
+      try {
+        const newOpt = new Option(value, value, true, true);
+        if (typeof selectEl.add === 'function') {
+          selectEl.add(newOpt);
+        }
+      } catch (e) {
+        // Fallback defensivo
+      }
+      selectEl.value = value;
     }
   }
 
   // 4. Aplicação do Modo de Visualização vs. Modo de Edição na UI
   function applyModeUI() {
-    const statusName = currentLoadedOrder ? (currentLoadedOrder.status || 'Aberto') : 'Aberto';
+    const rawStatusName = currentLoadedOrder ? ((currentLoadedOrder.status && typeof currentLoadedOrder.status === 'object') ? currentLoadedOrder.status.status : currentLoadedOrder.status) : 'Aberto';
+    const statusName = String(rawStatusName || 'Aberto');
     const statusLower = statusName.toLowerCase();
 
     // 4.1 Badge de Status do Header
@@ -294,6 +401,41 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (statusLower.includes('aberto')) shortStatus = 'Aberto';
 
       heroStatusBadge.innerHTML = `<span class="txt-short">${shortStatus}</span><span class="txt-long">${statusName}</span>`;
+    }
+
+    // 4.1.0 Opção de Iniciar/Retomar Conferência no Menu do Header (Apenas Pendente de Abastecimento)
+    const isPendenteStatus = statusLower.includes('pendente');
+    if (menuActionIniciarConferencia) {
+      if (isPendenteStatus) {
+        menuActionIniciarConferencia.style.display = 'flex';
+        if (dividerIniciarConferencia) dividerIniciarConferencia.style.display = 'block';
+
+        const totalConferido = conferenceItems.filter(p => p.statusConferencia === 'conferido')
+          .reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+        const hasStarted = totalConferido > 0 || (currentLoadedOrder && currentLoadedOrder.conferencia && currentLoadedOrder.conferencia.isPaused);
+
+        if (hasStarted) {
+          if (iconMenuIniciarConferencia) iconMenuIniciarConferencia.textContent = 'play_arrow';
+          if (titleMenuIniciarConferencia) titleMenuIniciarConferencia.textContent = 'Retomar Conferência';
+          if (descMenuIniciarConferencia) descMenuIniciarConferencia.textContent = 'Continuar conferência de abastecimento';
+        } else {
+          if (iconMenuIniciarConferencia) iconMenuIniciarConferencia.textContent = 'play_circle';
+          if (titleMenuIniciarConferencia) titleMenuIniciarConferencia.textContent = 'Iniciar Conferência';
+          if (descMenuIniciarConferencia) descMenuIniciarConferencia.textContent = 'Conferir recebimento físico dos produtos';
+        }
+      } else {
+        menuActionIniciarConferencia.style.display = 'none';
+        if (dividerIniciarConferencia) dividerIniciarConferencia.style.display = 'none';
+      }
+    }
+
+    // 4.1.1 Opção de Conferência por Categorias no Menu do Header (Apenas Pendente de Abastecimento)
+    if (menuActionToggleCategorias) {
+      menuActionToggleCategorias.style.display = isPendenteStatus ? 'flex' : 'none';
+    }
+    const dividerToggleCategorias = document.getElementById('dividerToggleCategorias');
+    if (dividerToggleCategorias) {
+      dividerToggleCategorias.style.display = isPendenteStatus ? 'block' : 'none';
     }
 
     // 4.2 Pedido Bloqueado (Read-Only Permanente)
@@ -318,25 +460,33 @@ document.addEventListener('DOMContentLoaded', () => {
         orderModePill.innerHTML = '<span class="material-icons" style="font-size: 13px;">lock</span> Somente Leitura';
       }
 
+      const isConferenciaActive = (tabBtnConferencia && tabBtnConferencia.classList.contains('active')) ||
+                                  (paneConferencia && paneConferencia.style.display === 'block');
+
       if (readonlyBanner) {
-        readonlyBanner.style.display = 'flex';
         readonlyBanner.className = 'readonly-banner-alert';
 
         if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
           readonlyBanner.classList.add('status-pendente');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'local_shipping';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚚 Pedido em Trânsito (Pendente de Abastecimento)';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi despachado para a filial de destino. Alterações de itens e quantidades estão bloqueadas.';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido em Trânsito (Pendente de Abastecimento)';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Pedido em trânsito para a filial de destino. Alterações bloqueadas. Aguardando conferência e confirmação do abastecimento no destino.';
         } else if (statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido') || statusLower.includes('finalizado')) {
           readonlyBanner.classList.add('status-recebido');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'task_alt';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '📦 Pedido Recebido';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido finalizado em modo de consulta.';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido Recebido';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido Finalizado!';
         } else if (statusLower.includes('cancelado')) {
           readonlyBanner.classList.add('status-cancelado');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'block';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚫 Pedido Cancelado';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido Cancelado';
           if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi cancelado e está arquivado para histórico operacional.';
+        }
+
+        if (isConferenciaActive) {
+          readonlyBanner.style.display = 'none';
+        } else {
+          readonlyBanner.style.display = 'flex';
         }
       }
 
@@ -344,10 +494,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
       if (btnFooterDraft) btnFooterDraft.style.display = 'none';
       if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
-      if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
 
-      if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
-      if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+      if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
+        if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+        if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'flex';
+        if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
+      } else {
+        if (menuActionFinalizar) menuActionFinalizar.style.display = 'none';
+        if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'none';
+        if (menuActionCancelar) menuActionCancelar.style.display = 'none';
+      }
 
       // Itens de Mais Ações da Toolbar (Somente Leitura: apenas Colunas)
       if (actionAddByCategory) actionAddByCategory.style.display = 'none';
@@ -362,6 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       if (readonlyBanner) readonlyBanner.style.display = 'none';
       if (menuActionFinalizar) menuActionFinalizar.style.display = 'flex';
+      if (menuActionEntradaDireta) menuActionEntradaDireta.style.display = 'none';
       if (menuActionCancelar) menuActionCancelar.style.display = 'flex';
     }
 
@@ -409,7 +566,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFooterConfirm.style.display = 'inline-flex';
         if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Confirmar</span><span class="txt-long">CONFIRMAR</span>';
       }
-      if (btnFooterBackToList) btnFooterBackToList.style.display = 'none';
 
     } else {
       // MODO DE VISUALIZAÇÃO ATIVO (Pedido Aberto)
@@ -454,9 +610,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btnFooterConfirm.style.display = 'inline-flex';
         if (btnFooterConfirmTxt) btnFooterConfirmTxt.innerHTML = '<span class="txt-short">Finalizar</span><span class="txt-long">FINALIZAR PEDIDO</span>';
       }
-      if (btnFooterBackToList) btnFooterBackToList.style.display = 'inline-flex';
     }
 
+    updateFooterActionsVisibility();
     renderProducts();
   }
 
@@ -477,23 +633,111 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Controle de Abas (Produtos vs. Detalhes)
+  // Botões de Iniciar / Cancelar Edição no Rodapé Fixo
+  if (btnFooterStartEdit) {
+    btnFooterStartEdit.addEventListener('click', () => {
+      toggleEditMode();
+    });
+  }
+
+  if (btnFooterCancelEdit) {
+    btnFooterCancelEdit.addEventListener('click', () => {
+      toggleEditMode();
+    });
+  }
+
+  // 5.5 Sincronização do Sticky Footer para a Conferência
+  function syncFooterForConference() {
+    const isConferenciaTab = (tabBtnConferencia && tabBtnConferencia.classList.contains('active')) ||
+                             (paneConferencia && paneConferencia.style.display === 'block');
+
+    if (isConferenciaTab && isConferenceActive) {
+      // Conferência Ativa: Exibe os botões de continuar depois e finalizar conferência fixos no footer
+      if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+      if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+      if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+      if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+      if (btnFooterConfPause) btnFooterConfPause.style.display = 'inline-flex';
+      if (btnFooterConfFinalize) btnFooterConfFinalize.style.display = 'inline-flex';
+    } else {
+      // Não é conferência ativa: Oculta botões de conferência do rodapé
+      if (btnFooterConfPause) btnFooterConfPause.style.display = 'none';
+      if (btnFooterConfFinalize) btnFooterConfFinalize.style.display = 'none';
+
+      if (isConferenciaTab) {
+        // Pré-conferência ou Concluída: Sem botões de ação extras no rodapé
+        if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+        if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+        if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+        if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+      } else {
+        // Abas Produtos ou Detalhes: Restaura botões padrão conforme o modo
+        if (isReadOnly) {
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'none';
+        } else if (isEditMode) {
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'none';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'inline-flex';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'inline-flex';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'inline-flex';
+        } else {
+          if (btnFooterStartEdit) btnFooterStartEdit.style.display = 'inline-flex';
+          if (btnFooterCancelEdit) btnFooterCancelEdit.style.display = 'none';
+          if (btnFooterDraft) btnFooterDraft.style.display = 'none';
+          if (btnFooterConfirm) btnFooterConfirm.style.display = 'inline-flex';
+        }
+      }
+    }
+
+    updateFooterActionsVisibility();
+  }
+
+  function updateFooterActionsVisibility() {
+    const footerActionsContainer = document.getElementById('footerActionsContainer');
+    if (!footerActionsContainer) return;
+    const buttons = footerActionsContainer.querySelectorAll('button');
+    const hasVisible = Array.from(buttons).some(b => b.style.display && b.style.display !== 'none');
+    footerActionsContainer.style.display = hasVisible ? 'flex' : 'none';
+  }
+
+  // 6. Controle de Abas (Produtos vs. Detalhes vs. Conferência)
   function switchTab(tabName) {
     if (tabName === 'produtos') {
       if (tabBtnProdutos) tabBtnProdutos.classList.add('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.remove('active');
+      if (tabBtnConferencia) tabBtnConferencia.classList.remove('active');
       if (paneProdutos) paneProdutos.style.display = 'block';
       if (paneDetalhes) paneDetalhes.style.display = 'none';
-    } else {
+      if (paneConferencia) paneConferencia.style.display = 'none';
+      applyModeUI();
+      syncFooterForConference();
+    } else if (tabName === 'detalhes') {
       if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
       if (tabBtnDetalhes) tabBtnDetalhes.classList.add('active');
+      if (tabBtnConferencia) tabBtnConferencia.classList.remove('active');
       if (paneProdutos) paneProdutos.style.display = 'none';
       if (paneDetalhes) paneDetalhes.style.display = 'block';
+      if (paneConferencia) paneConferencia.style.display = 'none';
+      applyModeUI();
+      syncFooterForConference();
+    } else if (tabName === 'conferencia') {
+      if (tabBtnProdutos) tabBtnProdutos.classList.remove('active');
+      if (tabBtnDetalhes) tabBtnDetalhes.classList.remove('active');
+      if (tabBtnConferencia) tabBtnConferencia.classList.add('active');
+      if (paneProdutos) paneProdutos.style.display = 'none';
+      if (paneDetalhes) paneDetalhes.style.display = 'none';
+      if (paneConferencia) paneConferencia.style.display = 'block';
+      if (readonlyBanner) readonlyBanner.style.display = 'none';
+      renderConference();
+      syncFooterForConference();
     }
   }
 
   if (tabBtnProdutos) tabBtnProdutos.addEventListener('click', () => switchTab('produtos'));
   if (tabBtnDetalhes) tabBtnDetalhes.addEventListener('click', () => switchTab('detalhes'));
+  if (tabBtnConferencia) tabBtnConferencia.addEventListener('click', () => switchTab('conferencia'));
 
   // 7. Sincronização de Visibilidade de Colunas na Tabela
   function syncTableColumnsHeader() {
@@ -2588,6 +2832,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveOrderToStorage(status) {
+    let finalStatus = 'Aberto';
+    if (typeof status === 'string') {
+      finalStatus = status;
+    } else if (status && typeof status === 'object' && typeof status.status === 'string') {
+      finalStatus = status.status;
+    } else if (currentLoadedOrder && typeof currentLoadedOrder.status === 'string') {
+      finalStatus = currentLoadedOrder.status;
+    }
+
     const totalUnits = cartItems.reduce((acc, curr) => acc + (Number(curr.quantidade) || 0), 0);
     const dest = heroDestinoSelect ? heroDestinoSelect.value : 'Mini Mercado 03 Simples Nacional';
     const orig = heroOrigemSelect ? heroOrigemSelect.value : '';
@@ -2603,7 +2856,7 @@ document.addEventListener('DOMContentLoaded', () => {
       planoBase: currentLoadedOrder ? (currentLoadedOrder.planoBase || (inputPlano ? inputPlano.value : 'Inserção Manual')) : (inputPlano ? inputPlano.value : 'Inserção Manual'),
       qtdeItens: totalUnits,
       dataCriacao: currentLoadedOrder ? currentLoadedOrder.dataCriacao : new Date().toLocaleDateString('pt-BR'),
-      status: status,
+      status: finalStatus,
       responsavel: inputResp ? inputResp.value : 'B2U Operações',
       observacoes: txtObs ? txtObs.value : '',
       itens: JSON.parse(JSON.stringify(cartItems))
@@ -2644,6 +2897,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 13.1 Toggle Opcional de Conferência por Categorias
+  function syncConfCategoriesFeatureUI() {
+    if (iconMenuToggleCategorias) {
+      iconMenuToggleCategorias.textContent = isConfCategoriesFeatureEnabled ? 'toggle_on' : 'toggle_off';
+      iconMenuToggleCategorias.style.color = isConfCategoriesFeatureEnabled ? '#6530b5' : '#94a3b8';
+    }
+    if (descMenuToggleCategorias) {
+      descMenuToggleCategorias.textContent = isConfCategoriesFeatureEnabled
+        ? 'Ativada (Exibe filtro de categorias)'
+        : 'Desativada (Busca ocupa 100% da barra)';
+    }
+    const searchBarWrapper = document.querySelector('.conf-search-bar-wrapper');
+    if (searchBarWrapper) {
+      searchBarWrapper.classList.toggle('categories-disabled', !isConfCategoriesFeatureEnabled);
+    }
+  }
+
+  if (menuActionToggleCategorias) {
+    menuActionToggleCategorias.addEventListener('click', () => {
+      isConfCategoriesFeatureEnabled = !isConfCategoriesFeatureEnabled;
+      localStorage.setItem('goflash_conf_categories_enabled', isConfCategoriesFeatureEnabled);
+      syncConfCategoriesFeatureUI();
+      if (!isConfCategoriesFeatureEnabled) {
+        conferenceSelectedCategory = 'all';
+      }
+      renderConference();
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      if (typeof Toast !== 'undefined') {
+        Toast.info(`Conferência por categorias ${isConfCategoriesFeatureEnabled ? 'ativada' : 'desativada'}.`);
+      }
+    });
+  }
+
+  // Sincroniza estado inicial da feature de categorias
+  syncConfCategoriesFeatureUI();
+
   if (menuActionCancelar) {
     menuActionCancelar.addEventListener('click', () => {
       if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
@@ -2651,41 +2940,1388 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 15. Botão "Editar Pedido" no Rodapé
-  if (btnFooterStartEdit) {
-    btnFooterStartEdit.addEventListener('click', () => {
-      if (isReadOnly) return;
-      toggleEditMode();
+  // 14.1 Finalização Direta (Sem Conferência)
+  function openDirectEntryModal() {
+    if (!modalConfirmarEntradaDireta) return;
+    const totalSolicitado = conferenceItems.length > 0
+      ? conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0)
+      : (currentLoadedOrder && currentLoadedOrder.itens ? currentLoadedOrder.itens.reduce((acc, p) => acc + (Number(p.quantidade) || 0), 0) : 0);
+
+    if (modalDirectTotalSolicitado) modalDirectTotalSolicitado.textContent = `${totalSolicitado} un`;
+    if (modalDirectTotalEntrada) modalDirectTotalEntrada.textContent = `${totalSolicitado} un (100%)`;
+    modalConfirmarEntradaDireta.classList.add('show');
+  }
+
+  function closeDirectEntryModal() {
+    if (modalConfirmarEntradaDireta) modalConfirmarEntradaDireta.classList.remove('show');
+  }
+
+  if (menuActionEntradaDireta) {
+    menuActionEntradaDireta.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      openDirectEntryModal();
     });
   }
 
-  // 16. Modal de Cancelamento de Pedido
-  function openCancelModal() {
-    if (cancelModalOrderCode) cancelModalOrderCode.textContent = currentOrderCode;
-    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.add('show', 'active');
-  }
+  if (btnCloseDirectEntryModal) btnCloseDirectEntryModal.addEventListener('click', closeDirectEntryModal);
+  if (btnCancelDirectEntry) btnCancelDirectEntry.addEventListener('click', closeDirectEntryModal);
 
-  function closeCancelModal() {
-    if (modalConfirmarCancelamento) modalConfirmarCancelamento.classList.remove('show', 'active');
-  }
+  if (btnConfirmDirectEntry) {
+    btnConfirmDirectEntry.addEventListener('click', () => {
+      closeDirectEntryModal();
 
-  if (btnCloseCancelModal) btnCloseCancelModal.addEventListener('click', closeCancelModal);
-  if (btnDismissCancelModal) btnDismissCancelModal.addEventListener('click', closeCancelModal);
+      const totalSolicitado = conferenceItems.length > 0
+        ? conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0)
+        : (currentLoadedOrder && currentLoadedOrder.itens ? currentLoadedOrder.itens.reduce((acc, p) => acc + (Number(p.quantidade) || 0), 0) : 0);
 
-  if (btnConfirmCancelOrder) {
-    btnConfirmCancelOrder.addEventListener('click', () => {
-      saveOrderToStorage('Cancelado');
-      closeCancelModal();
-      isReadOnly = true;
-      isEditMode = false;
-      if (currentLoadedOrder) currentLoadedOrder.status = 'Cancelado';
+      // Marca todos os itens como 100% conferidos
+      conferenceItems.forEach(item => {
+        item.statusConferencia = 'conferido';
+        item.qtdeConferida = item.qtdePedido;
+        item.qtdeCancelada = 0;
+      });
+
+      if (currentLoadedOrder) {
+        currentLoadedOrder.status = 'Recebido';
+        currentLoadedOrder.conferencia = {
+          isConferenceActive: false,
+          isCompleted: true,
+          isDirectEntry: true,
+          finalizadoEm: new Date().toISOString(),
+          totalSolicitado: totalSolicitado,
+          totalConferido: totalSolicitado,
+          itens: JSON.parse(JSON.stringify(conferenceItems))
+        };
+
+        const directNote = `[Entrada Direta em ${new Date().toLocaleDateString('pt-BR')}]: Entrada total de ${totalSolicitado} unidades concluída no estoque sem conferência física individual.`;
+        currentLoadedOrder.observacoes = currentLoadedOrder.observacoes 
+          ? `${currentLoadedOrder.observacoes}\n\n${directNote}` 
+          : directNote;
+
+        saveOrderToStorage('Recebido');
+      }
+
+      Toast.success('Entrada direta concluída com sucesso! Pedido finalizado como Recebido.');
       applyModeUI();
-      if (typeof Toast !== 'undefined') {
-        Toast.error(`Pedido ${currentOrderCode} cancelado com sucesso.`);
+      renderConference();
+      syncFooterForConference();
+    });
+  }
+
+  // ========================================================================
+  // 17. MÓDULO DE CONFERÊNCIA DE ABASTECIMENTO NA LOJA
+  // ========================================================================
+  let isConferenceActive = false;
+  let conferenceCurrentSubTab = 'aconferir'; // 'aconferir' ou 'conferidos'
+  let conferenceViewMode = 'cards'; // 'cards' ou 'table'
+  let conferenceItems = [];
+  let conferenceSearchQuery = '';
+  let isConfCategoryFiltersEnabled = false;
+  let conferenceSelectedCategory = 'all';
+  let conferenceSortBy = 'default';
+
+  const btnToggleConfFilters = document.getElementById('btnToggleConfFilters');
+  const confAdvancedFiltersPanel = document.getElementById('confAdvancedFiltersPanel');
+  const selectSortConferencia = document.getElementById('selectSortConferencia');
+  const confCategoryChipsRow = document.getElementById('confCategoryChipsRow');
+
+  function initConferenceData() {
+    if (!currentLoadedOrder) return;
+
+    const statusLower = (currentLoadedOrder.status || '').toLowerCase();
+    const isPendente = statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito');
+    const isRecebido = statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido');
+
+    if (!isPendente && !isRecebido) {
+      if (tabBtnConferencia) tabBtnConferencia.style.display = 'none';
+      return;
+    }
+
+    if (tabBtnConferencia) {
+      tabBtnConferencia.style.display = 'inline-flex';
+    }
+
+    // Carrega dados salvos de conferência ou inicializa
+    if (currentLoadedOrder.conferencia && currentLoadedOrder.conferencia.itens && currentLoadedOrder.conferencia.itens.length > 0) {
+      isConferenceActive = !!currentLoadedOrder.conferencia.isConferenceActive;
+      conferenceItems = JSON.parse(JSON.stringify(currentLoadedOrder.conferencia.itens));
+    } else {
+      isConferenceActive = false;
+      const baseItens = (currentLoadedOrder.itens && currentLoadedOrder.itens.length > 0) ? currentLoadedOrder.itens : cartItems;
+      conferenceItems = baseItens.map((item, idx) => ({
+        id: item.id || (idx + 1),
+        ean: item.ean || '7890000000000',
+        nome: item.nome || 'Produto Sem Nome',
+        categoria: item.categoria || item.grupo || 'Geral',
+        foto: item.foto || '../assets/images/products/monster-mango.jpg',
+        preco: Number(item.preco) || 0,
+        qtdePedido: Number(item.quantidade) || 1,
+        qtdeConferida: item.conferido !== undefined ? Number(item.conferido) : (isRecebido ? Number(item.quantidade) : 0),
+        qtdeCancelada: item.cancelado !== undefined ? Number(item.cancelado) : 0,
+        statusConferencia: isRecebido ? 'conferido' : (item.statusConferencia || 'pendente')
+      }));
+    }
+
+    // Se o pedido for Pendente e não houver tab explícita, pode abrir na conferência
+    const paramTab = urlParams.get('tab');
+    if (paramTab === 'conferencia' || (isPendente && !paramMode)) {
+      switchTab('conferencia');
+    }
+  }
+
+  function renderCategoryChips() {
+    if (!confCategoryChipsRow) return;
+
+    const baseList = conferenceCurrentSubTab === 'aconferir'
+      ? conferenceItems.filter(p => p.statusConferencia === 'pendente')
+      : conferenceItems.filter(p => p.statusConferencia === 'conferido');
+
+    const catCounts = {};
+    conferenceItems.forEach(p => {
+      const cat = p.categoria || 'Geral';
+      catCounts[cat] = (catCounts[cat] || 0) + 1;
+    });
+
+    const activeListCats = {};
+    baseList.forEach(p => {
+      const cat = p.categoria || 'Geral';
+      activeListCats[cat] = (activeListCats[cat] || 0) + 1;
+    });
+
+    const categories = Object.keys(catCounts).sort();
+
+    let html = `
+      <button type="button" class="conf-cat-chip ${conferenceSelectedCategory === 'all' ? 'active' : ''}" data-category="all">
+        <span>Todas</span>
+        <span class="conf-cat-chip-count">${baseList.length}</span>
+      </button>
+    `;
+
+    categories.forEach(cat => {
+      const count = activeListCats[cat] || 0;
+      if (count > 0 || conferenceSelectedCategory === cat) {
+        html += `
+          <button type="button" class="conf-cat-chip ${conferenceSelectedCategory === cat ? 'active' : ''}" data-category="${cat}">
+            <span>${cat}</span>
+            <span class="conf-cat-chip-count">${count}</span>
+          </button>
+        `;
+      }
+    });
+
+    confCategoryChipsRow.innerHTML = html;
+
+    confCategoryChipsRow.querySelectorAll('.conf-cat-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        conferenceSelectedCategory = btn.getAttribute('data-category');
+        renderConference();
+      });
+    });
+  }
+
+  function renderConference() {
+    if (!paneConferencia) return;
+
+    const statusLower = currentLoadedOrder ? (currentLoadedOrder.status || '').toLowerCase() : '';
+    const isRecebido = statusLower.includes('recebido') || statusLower.includes('concluído') || statusLower.includes('concluido');
+
+    // 1. Fase Concluída (Pedido já recebido)
+    if (isRecebido) {
+      document.body.classList.remove('is-conf-running');
+      if (confPreStartSection) confPreStartSection.style.display = 'none';
+      if (confActiveSection) confActiveSection.style.display = 'none';
+      if (confCompletedSection) confCompletedSection.style.display = 'block';
+      if (heroConferenciaCount) heroConferenciaCount.style.display = 'none';
+      renderCompletedConference();
+      return;
+    }
+
+    // 2. Fase Pré-Conferência (Não iniciada)
+    if (!isConferenceActive) {
+      document.body.classList.remove('is-conf-running');
+      if (confPreStartSection) confPreStartSection.style.display = 'block';
+      if (confActiveSection) confActiveSection.style.display = 'none';
+      if (confCompletedSection) confCompletedSection.style.display = 'none';
+      renderPreStartConferenceOverview();
+      return;
+    }
+
+    // 3. Fase Ativa de Conferência (Em Andamento)
+    document.body.classList.add('is-conf-running');
+    if (confPreStartSection) confPreStartSection.style.display = 'none';
+    if (confActiveSection) confActiveSection.style.display = 'block';
+    if (confCompletedSection) confCompletedSection.style.display = 'none';
+
+    // 3.1 Progresso
+    const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+    const conferidosList = conferenceItems.filter(p => p.statusConferencia === 'conferido');
+    const totalConferido = conferidosList.reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+    const pct = totalSolicitado > 0 ? Math.min(100, Math.round((totalConferido / totalSolicitado) * 100)) : 0;
+
+    if (confProgressUnits) confProgressUnits.textContent = `${totalConferido} / ${totalSolicitado}`;
+    if (confProgressPctBadge) confProgressPctBadge.textContent = `${pct}%`;
+    if (confProgressBar) confProgressBar.style.width = `${pct}%`;
+
+    // 3.2 Badges das Sub-Abas
+    const pendentesList = conferenceItems.filter(p => p.statusConferencia === 'pendente');
+    if (badgeCountAConferir) badgeCountAConferir.textContent = pendentesList.length;
+    if (badgeCountConferidos) badgeCountConferidos.textContent = conferidosList.length;
+    if (heroConferenciaCount) {
+      heroConferenciaCount.style.display = pendentesList.length > 0 ? 'inline-flex' : 'none';
+      heroConferenciaCount.textContent = pendentesList.length;
+    }
+
+    // 3.3 Painel de Filtros e Chips
+    if (confAdvancedFiltersPanel) {
+      confAdvancedFiltersPanel.style.display = isConfCategoryFiltersEnabled ? 'block' : 'none';
+    }
+    if (btnToggleConfFilters) {
+      btnToggleConfFilters.classList.toggle('active', isConfCategoryFiltersEnabled);
+    }
+
+    // 3.4 Filtragem por Busca, Categoria e Ordenação
+    const q = conferenceSearchQuery.toLowerCase().trim();
+
+    function filterItem(p) {
+      const matchText = !q || 
+        (p.nome && p.nome.toLowerCase().includes(q)) || 
+        (p.ean && p.ean.includes(q)) ||
+        (p.categoria && p.categoria.toLowerCase().includes(q));
+      
+      const matchCategory = !isConfCategoriesFeatureEnabled || conferenceSelectedCategory === 'all' || 
+        (p.categoria || 'Geral') === conferenceSelectedCategory;
+
+      return matchText && matchCategory;
+    }
+
+    function sortItems(list) {
+      if (conferenceSortBy === 'default') {
+        return list;
+      }
+      const arr = [...list];
+      if (conferenceSortBy === 'categoria') {
+        arr.sort((a, b) => (a.categoria || '').localeCompare(b.categoria || '') || a.nome.localeCompare(b.nome));
+      } else if (conferenceSortBy === 'nome') {
+        arr.sort((a, b) => a.nome.localeCompare(b.nome));
+      } else if (conferenceSortBy === 'qtde') {
+        arr.sort((a, b) => (Number(b.qtdePedido) || 0) - (Number(a.qtdePedido) || 0));
+      } else if (conferenceSortBy === 'qtde-asc') {
+        arr.sort((a, b) => (Number(a.qtdePedido) || 0) - (Number(b.qtdePedido) || 0));
+      }
+      return arr;
+    }
+
+    const filteredPendentes = sortItems(pendentesList.filter(filterItem));
+
+    // Para conferidos: itens com divergência (diff !== 0) SEMPRE no topo, seguidos dos 100% OK
+    function sortConferidosItems(list) {
+      const sorted = sortItems(list);
+      return sorted.sort((a, b) => {
+        const diffA = ((a.qtdeConferida !== undefined ? a.qtdeConferida : a.qtdePedido) - a.qtdePedido) !== 0 ? 1 : 0;
+        const diffB = ((b.qtdeConferida !== undefined ? b.qtdeConferida : b.qtdePedido) - b.qtdePedido) !== 0 ? 1 : 0;
+        return diffB - diffA; // Divergentes (1) vêm antes dos OKs (0)
+      });
+    }
+
+    const filteredConferidos = sortConferidosItems(conferidosList.filter(filterItem));
+
+    syncCategoryFilterButtonUI();
+
+    // 3.5 Renderização da Sub-Aba Ativa
+    if (conferenceCurrentSubTab === 'aconferir') {
+      if (subPaneAConferir) subPaneAConferir.style.display = 'block';
+      if (subPaneConferidos) subPaneConferidos.style.display = 'none';
+      if (btnSubTabAConferir) btnSubTabAConferir.classList.add('active');
+      if (btnSubTabConferidos) btnSubTabConferidos.classList.remove('active');
+      renderSubPaneAConferir(filteredPendentes);
+    } else {
+      if (subPaneAConferir) subPaneAConferir.style.display = 'none';
+      if (subPaneConferidos) subPaneConferidos.style.display = 'block';
+      if (btnSubTabAConferir) btnSubTabAConferir.classList.remove('active');
+      if (btnSubTabConferidos) btnSubTabConferidos.classList.add('active');
+      renderSubPaneConferidos(filteredConferidos);
+    }
+  }
+
+  // ==========================================================================
+  // ORDENAÇÃO E PRIORIZAÇÃO DE ITENS FORA DO PROCESSO DE CONFERÊNCIA
+  // Prioridade: 1º: À Conferir | 2º: Com divergência | 3º: 100% OK
+  // ==========================================================================
+  function getConferenceOverviewPriority(item) {
+    const isConferido = item.statusConferencia === 'conferido' || (currentLoadedOrder && currentLoadedOrder.status === 'Recebido');
+    // 1º: À Conferir (Pendente)
+    if (!isConferido) {
+      return 1;
+    }
+    const confQty = item.qtdeConferida !== undefined ? Number(item.qtdeConferida) : Number(item.qtdePedido);
+    const pedidoQty = Number(item.qtdePedido) || 0;
+    // 2º: Com alguma divergência (falta ou sobra)
+    if (confQty !== pedidoQty) {
+      return 2;
+    }
+    // 3º: 100% OK
+    return 3;
+  }
+
+  function sortConferenceOverviewItems(items) {
+    if (!Array.isArray(items)) return [];
+    return [...items].sort((a, b) => {
+      const prioA = getConferenceOverviewPriority(a);
+      const prioB = getConferenceOverviewPriority(b);
+      if (prioA !== prioB) {
+        return prioA - prioB;
+      }
+      return (a.id || 0) - (b.id || 0);
+    });
+  }
+
+  // 17.1 Renderização Pré-Conferência (Visão Geral / Pausada)
+  function renderPreStartConferenceOverview() {
+    if (!confOverviewContainer) return;
+
+    const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+    const conferidosList = conferenceItems.filter(p => p.statusConferencia === 'conferido');
+    const totalConferido = conferidosList.reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+    const pct = totalSolicitado > 0 ? Math.min(100, Math.round((totalConferido / totalSolicitado) * 100)) : 0;
+    const isPaused = totalConferido > 0 || (currentLoadedOrder && currentLoadedOrder.conferencia && currentLoadedOrder.conferencia.isPaused);
+
+    // 17.1.1 Atualiza o Banner e o Botão de Ação
+    if (isPaused) {
+      if (confPreStartBanner) confPreStartBanner.classList.add('is-paused');
+      if (confPreStartIcon) confPreStartIcon.textContent = 'pending_actions';
+      if (confPreStartTitle) confPreStartTitle.textContent = 'Conferência em Andamento (Pausada)';
+      if (confPreStartDesc) {
+        confPreStartDesc.innerHTML = `Progresso salvo: <strong>${totalConferido} de ${totalSolicitado} unidades (${pct}%)</strong>. Retome para concluir o abastecimento na loja.`;
+      }
+      if (btnStartConfIcon) btnStartConfIcon.textContent = 'play_arrow';
+      if (btnStartConfTxt) btnStartConfTxt.textContent = 'RETOMAR CONFERÊNCIA';
+
+      if (confPreProgressCard) {
+        confPreProgressCard.style.display = 'block';
+        if (confPreProgressUnits) confPreProgressUnits.textContent = `${totalConferido} / ${totalSolicitado}`;
+        if (confPreProgressPctBadge) confPreProgressPctBadge.textContent = `${pct}%`;
+        if (confPreProgressBar) confPreProgressBar.style.width = `${pct}%`;
+      }
+    } else {
+      if (confPreStartBanner) confPreStartBanner.classList.remove('is-paused');
+      if (confPreStartIcon) confPreStartIcon.textContent = 'local_shipping';
+      if (confPreStartTitle) confPreStartTitle.textContent = 'Pedido em Trânsito / Aguardando Conferência';
+      if (confPreStartDesc) {
+        confPreStartDesc.textContent = 'As mercadorias deste pedido foram expedidas. Inicie o processo de conferência para registrar os produtos que estão sendo abastecidos na loja.';
+      }
+      if (btnStartConfIcon) btnStartConfIcon.textContent = 'play_circle';
+      if (btnStartConfTxt) btnStartConfTxt.textContent = 'INICIAR CONFERÊNCIA';
+
+      if (confPreProgressCard) confPreProgressCard.style.display = 'none';
+    }
+
+    // 17.1.2 Renderiza Lista Consolidada Ordenada por Prioridade (À Conferir -> Divergência -> OK)
+    const sortedOverviewItems = sortConferenceOverviewItems(conferenceItems);
+
+    if (conferenceViewMode === 'table' && window.innerWidth > 600) {
+      confOverviewContainer.innerHTML = `
+        <div class="conf-table-wrapper">
+          <table class="conf-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Foto</th>
+                <th>Código / Produto</th>
+                <th style="text-align: center; width: 120px;">Qtde Pedido</th>
+                <th style="text-align: center; width: 120px;">Conferido</th>
+                <th style="text-align: center; width: 140px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedOverviewItems.map(item => {
+                const isConferido = item.statusConferencia === 'conferido';
+                const isFull = isConferido && item.qtdeConferida === item.qtdePedido;
+                const diff = isConferido ? (item.qtdeConferida - item.qtdePedido) : 0;
+                const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
+                return `
+                  <tr>
+                    <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                    <td>
+                      <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
+                      <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                      <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill ${isConferido ? (isFull ? 'conf-pill-conferido' : 'conf-pill-divergente') : 'conf-pill-zero'}">
+                        ${isConferido ? `${item.qtdeConferida} un` : '0 un'}
+                      </span>
+                    </td>
+                    <td style="text-align: center;">
+                      ${isConferido 
+                        ? (isFull 
+                            ? `<span class="conf-badge-pill conf-pill-conferido"><span class="material-icons" style="font-size: 13px;">check_circle</span> OK</span>`
+                            : `<span class="conf-badge-pill conf-pill-divergente"><span class="material-icons" style="font-size: 13px;">warning</span> ${diffText}</span>`)
+                        : `<span class="conf-badge-pill conf-pill-pendente"><span class="material-icons" style="font-size: 13px;">schedule</span> À Conferir</span>`
+                      }
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else {
+      confOverviewContainer.innerHTML = `
+        <div class="conf-items-cards-grid">
+          ${sortedOverviewItems.map(item => {
+            const isConferido = item.statusConferencia === 'conferido';
+            const confQty = isConferido ? (item.qtdeConferida || 0) : 0;
+            const isFull = isConferido && confQty === item.qtdePedido;
+            const diff = isConferido ? (confQty - item.qtdePedido) : 0;
+            const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
+            const diffDisplay = isConferido ? diffText : `-${item.qtdePedido} un`;
+            return `
+              <div class="conf-item-card ${isConferido && !isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
+                <div class="conf-accordion-header">
+                  <div class="conf-card-photo-box">
+                    <img src="${item.foto}" alt="${item.nome}">
+                  </div>
+                  <div class="conf-card-body">
+                    <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
+                    <div class="conf-card-meta-line">
+                      <span>${item.ean}</span>
+                      <span style="color: #94a3b8; margin: 0 4px;">•</span>
+                      <span>${item.categoria || 'Geral'}</span>
+                    </div>
+                    <div class="conf-card-bottom-row">
+                      <span class="conf-mini-pedido-tag">Pedido: <strong>${item.qtdePedido} un</strong></span>
+                      ${isConferido 
+                        ? (isFull 
+                            ? `<span class="conf-overview-status-pill status-ok is-interactive" title="Clique para ver detalhes do item"><span class="material-icons" style="font-size: 13px;">check_circle</span> <span>${confQty}/${item.qtdePedido} un (OK)</span> <span class="material-icons conf-chevron-icon">expand_more</span></span>` 
+                            : `<span class="conf-overview-status-pill status-divergent is-interactive" title="Clique para ver detalhes do item"><span class="material-icons" style="font-size: 13px;">warning</span> <span>${confQty}/${item.qtdePedido} un (${diffText})</span> <span class="material-icons conf-chevron-icon">expand_more</span></span>`)
+                        : `<span class="conf-overview-status-pill status-pending is-interactive" title="Clique para ver detalhes do item"><span class="material-icons" style="font-size: 13px;">schedule</span> <span>À Conferir</span> <span class="material-icons conf-chevron-icon">expand_more</span></span>`
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div class="conf-accordion-body">
+                  <div class="conf-metrics-detail-row">
+                    <div class="conf-metric-item">
+                      <span>Pedido</span>
+                      <strong>${item.qtdePedido} un</strong>
+                    </div>
+                    <div class="conf-metric-item">
+                      <span>Conferido</span>
+                      <strong>${confQty} un</strong>
+                    </div>
+                    <div class="conf-metric-item">
+                      <span>Divergência</span>
+                      <strong style="color: ${isConferido && isFull ? '#059669' : (isConferido ? '#dc2626' : '#64748b')};">${diffDisplay}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // Acordeão na Visão Geral (Pausada / Pré-início)
+      confOverviewContainer.querySelectorAll('.conf-item-card').forEach(card => {
+        card.addEventListener('click', () => {
+          card.classList.toggle('expanded');
+        });
+      });
+    }
+  }
+
+  // 17.2 Renderização da Sub-Aba "À CONFERIR"
+  function renderSubPaneAConferir(items) {
+    if (!confCardsGridAConferir || !confTableWrapperAConferir) return;
+
+    if (items.length === 0) {
+      if (confEmptyAConferir) confEmptyAConferir.style.display = 'flex';
+      confCardsGridAConferir.style.display = 'none';
+      confCardsGridAConferir.classList.add('is-hidden');
+      confCardsGridAConferir.innerHTML = '';
+      confTableWrapperAConferir.style.display = 'none';
+      return;
+    }
+
+    if (confEmptyAConferir) confEmptyAConferir.style.display = 'none';
+    confCardsGridAConferir.classList.remove('is-hidden');
+
+    if (conferenceViewMode === 'table' && window.innerWidth > 600) {
+      confCardsGridAConferir.style.display = 'none';
+      confCardsGridAConferir.innerHTML = '';
+      confTableWrapperAConferir.style.display = 'block';
+      confTableWrapperAConferir.innerHTML = `
+        <table class="conf-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Foto</th>
+              <th>Produto</th>
+              <th style="text-align: center; width: 110px;">Pedido</th>
+              <th style="text-align: center; width: 180px;">Conferir / Abastecer</th>
+              <th style="text-align: center; width: 140px;">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map(item => `
+              <tr data-conf-id="${item.id}">
+                <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                <td>
+                  <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
+                  <strong class="conf-table-prod-name" style="font-size: 0.88rem; font-weight: 500; color: #212529;">${item.nome}</strong>
+                  <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
+                </td>
+                <td style="text-align: center;">
+                  <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
+                </td>
+                <td style="text-align: center;">
+                  <div class="conf-stepper-group">
+                    <button type="button" class="conf-stepper-btn btn-conf-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+                    <input type="number" class="conf-stepper-input input-conf-qty" data-id="${item.id}" value="${item.qtdePedido}" min="0" inputmode="numeric">
+                    <button type="button" class="conf-stepper-btn btn-conf-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                  </div>
+                </td>
+                <td style="text-align: center;">
+                  <button type="button" class="btn-conf-action-confirm btn-trigger-confirm-item" data-id="${item.id}" title="Confirmar Abastecimento">
+                    <span class="material-icons">check</span>
+                    <span>Confirmar</span>
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } else {
+      confTableWrapperAConferir.style.display = 'none';
+      confTableWrapperAConferir.innerHTML = '';
+      confCardsGridAConferir.style.display = '';
+      confCardsGridAConferir.innerHTML = items.map(item => `
+        <div class="conf-item-card" data-conf-id="${item.id}">
+          <div class="conf-card-photo-box">
+            <img src="${item.foto}" alt="${item.nome}">
+          </div>
+          <div class="conf-card-body">
+            <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
+            <div class="conf-card-meta-line">
+              <span>${item.ean}</span>
+              <span style="color: #94a3b8; margin: 0 4px;">•</span>
+              <span>${item.categoria || 'Geral'}</span>
+            </div>
+            <div class="conf-card-bottom-row">
+              <span class="conf-mini-pedido-tag">Pedido: <strong>${item.qtdePedido} un</strong></span>
+              
+              <div class="conf-mini-actions-group">
+                <div class="conf-mini-stepper">
+                  <button type="button" class="conf-mini-stepper-btn btn-conf-minus" data-id="${item.id}" aria-label="Diminuir">−</button>
+                  <input type="number" class="conf-mini-stepper-input input-conf-qty" data-id="${item.id}" value="${item.qtdePedido}" min="0" inputmode="numeric">
+                  <button type="button" class="conf-mini-stepper-btn btn-conf-plus" data-id="${item.id}" aria-label="Aumentar">+</button>
+                </div>
+                
+                <button type="button" class="btn-conf-action-confirm-mini btn-trigger-confirm-item" data-id="${item.id}" title="Confirmar Abastecimento" aria-label="Confirmar">
+                  <span class="material-icons">check</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    bindConferenceItemEvents();
+  }
+
+  // 17.3 Renderização da Sub-Aba "CONFERIDOS"
+  function renderSubPaneConferidos(items) {
+    if (!confCardsGridConferidos || !confTableWrapperConferidos) return;
+
+    if (items.length === 0) {
+      if (confEmptyConferidos) confEmptyConferidos.style.display = 'flex';
+      confCardsGridConferidos.style.display = 'none';
+      confCardsGridConferidos.classList.add('is-hidden');
+      confCardsGridConferidos.innerHTML = '';
+      confTableWrapperConferidos.style.display = 'none';
+      return;
+    }
+
+    if (confEmptyConferidos) confEmptyConferidos.style.display = 'none';
+    confCardsGridConferidos.classList.remove('is-hidden');
+
+    if (conferenceViewMode === 'table' && window.innerWidth > 600) {
+      confCardsGridConferidos.style.display = 'none';
+      confCardsGridConferidos.innerHTML = '';
+      confTableWrapperConferidos.style.display = 'block';
+      confTableWrapperConferidos.innerHTML = `
+        <table class="conf-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Foto</th>
+              <th>Produto</th>
+              <th style="text-align: center; width: 100px;">Pedido</th>
+              <th style="text-align: center; width: 110px;">Conferido</th>
+              <th style="text-align: center; width: 140px;">Status</th>
+              <th style="text-align: center; width: 140px;">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map(item => {
+              const isFull = item.qtdeConferida === item.qtdePedido;
+              const diff = item.qtdeConferida - item.qtdePedido;
+              const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
+              return `
+                <tr data-conf-id="${item.id}">
+                  <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                  <td>
+                    <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
+                    <strong class="conf-table-prod-name" style="font-size: 0.88rem; font-weight: 500; color: #212529;">${item.nome}</strong>
+                    <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
+                  </td>
+                  <td style="text-align: center;">
+                    <span class="conf-badge-pill ${isFull ? 'conf-pill-conferido' : 'conf-pill-divergente'}">${item.qtdeConferida} un</span>
+                  </td>
+                  <td style="text-align: center;">
+                    ${isFull 
+                      ? `<span class="conf-badge-pill conf-pill-conferido"><span class="material-icons" style="font-size: 13px;">check_circle</span> 100% OK</span>`
+                      : `<span class="conf-badge-pill conf-pill-divergente"><span class="material-icons" style="font-size: 13px;">warning</span> ${diffText}</span>`
+                    }
+                  </td>
+                  <td style="text-align: center;">
+                    <button type="button" class="btn-conf-action-revert btn-trigger-revert-item" data-id="${item.id}" title="Reverter conferência deste item">
+                      <span class="material-icons" style="font-size: 16px;">undo</span>
+                      <span>Reverter</span>
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    } else {
+      confTableWrapperConferidos.style.display = 'none';
+      confTableWrapperConferidos.innerHTML = '';
+      confCardsGridConferidos.style.display = '';
+      confCardsGridConferidos.innerHTML = items.map(item => {
+        const isFull = item.qtdeConferida === item.qtdePedido;
+        const diff = item.qtdeConferida - item.qtdePedido;
+        const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
+        return `
+          <div class="conf-item-card ${!isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
+            <div class="conf-accordion-header">
+              <div class="conf-card-photo-box">
+                <img src="${item.foto}" alt="${item.nome}">
+              </div>
+              <div class="conf-card-body">
+                <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
+                <div class="conf-card-meta-line">
+                  <span>${item.ean}</span>
+                  <span style="color: #94a3b8; margin: 0 4px;">•</span>
+                  <span>${item.categoria || 'Geral'}</span>
+                </div>
+                <div class="conf-card-bottom-row">
+                  ${isFull 
+                    ? `<span class="conf-status-pill-ok"><span class="material-icons" style="font-size: 13px;">check</span> ${item.qtdeConferida}/${item.qtdePedido} un (OK)</span>`
+                    : `<span class="conf-status-pill-divergent"><span class="material-icons" style="font-size: 13px;">warning</span> ${item.qtdeConferida}/${item.qtdePedido} un (${diffText})</span>`
+                  }
+                  <button type="button" class="conf-accordion-icon-btn" title="Ver detalhes do item" aria-label="Ver detalhes">
+                    <span class="material-icons conf-chevron-icon">expand_more</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="conf-accordion-body">
+              <div class="conf-metrics-detail-row">
+                <div class="conf-metric-item">
+                  <span>Pedido</span>
+                  <strong>${item.qtdePedido} un</strong>
+                </div>
+                <div class="conf-metric-item">
+                  <span>Conferido</span>
+                  <strong>${item.qtdeConferida} un</strong>
+                </div>
+                <div class="conf-metric-item">
+                  <span>Divergência</span>
+                  <strong style="color: ${isFull ? '#059669' : '#dc2626'};">${diffText}</strong>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                <button type="button" class="btn-revert-conf-accordion btn-trigger-revert-item" data-id="${item.id}">
+                  <span class="material-icons" style="font-size: 15px;">undo</span>
+                  <span>Reverter Conferência</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    bindConferenceRevertEvents();
+  }
+
+  // 17.4 Renderização Fase Concluída / Recebido
+  function renderCompletedConference() {
+    if (!confCompletedGrid) return;
+    
+    const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+    const totalConferido = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdeConferida) || Number(p.qtdePedido) || 0), 0);
+    const diffTotal = totalConferido - totalSolicitado;
+
+    if (confCompletedDetailsTxt) {
+      confCompletedDetailsTxt.innerHTML = `
+        <strong>${totalConferido} de ${totalSolicitado} unidades abastecidas com sucesso.</strong>
+        ${diffTotal !== 0 ? `<span style="color: ${diffTotal < 0 ? '#b91c1c' : '#0369a1'}; display: block; margin-top: 2px;">(${diffTotal < 0 ? Math.abs(diffTotal) + ' unidades canceladas por divergência na entrega' : '+' + diffTotal + ' unidades excedentes registradas'}).</span>` : ''}
+      `;
+    }
+
+    // Lista de itens ordenada por prioridade (À Conferir -> Divergência -> OK)
+    const sortedCompletedItems = sortConferenceOverviewItems(conferenceItems);
+
+    if (conferenceViewMode === 'table' && window.innerWidth > 600) {
+      confCompletedGrid.innerHTML = `
+        <div class="conf-table-wrapper">
+          <table class="conf-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Foto</th>
+                <th>Código / Produto</th>
+                <th style="text-align: center; width: 110px;">Qtde Pedido</th>
+                <th style="text-align: center; width: 110px;">Abastecido</th>
+                <th style="text-align: center; width: 120px;">Divergência</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedCompletedItems.map(item => {
+                const confQty = item.qtdeConferida !== undefined ? item.qtdeConferida : item.qtdePedido;
+                const diff = confQty - item.qtdePedido;
+                const diffText = diff > 0 ? `+${diff} un` : (diff < 0 ? `${diff} un` : '0 un');
+                const isFull = confQty === item.qtdePedido;
+                return `
+                  <tr>
+                    <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                    <td>
+                      <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
+                      <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
+                      <span class="conf-card-category" style="display: inline-block; margin-top: 2px;">${item.categoria || 'Geral'}</span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill conf-pill-solicitado">${item.qtdePedido} un</span>
+                    </td>
+                    <td style="text-align: center;">
+                      <span class="conf-badge-pill ${isFull ? 'conf-pill-conferido' : 'conf-pill-divergente'}">${confQty} un</span>
+                    </td>
+                    <td style="text-align: center;">
+                      ${diff !== 0 
+                        ? `<span class="conf-badge-pill conf-pill-divergente"><span class="material-icons" style="font-size: 13px;">warning</span> ${diffText}</span>` 
+                        : `<span class="conf-badge-pill conf-pill-conferido"><span class="material-icons" style="font-size: 13px;">check_circle</span> 0 un (OK)</span>`
+                      }
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else {
+      confCompletedGrid.innerHTML = `
+        <div class="conf-items-cards-grid">
+          ${sortedCompletedItems.map(item => {
+            const confQty = item.qtdeConferida !== undefined ? item.qtdeConferida : item.qtdePedido;
+            const diffItem = confQty - item.qtdePedido;
+            const isFull = diffItem === 0;
+            const diffText = diffItem > 0 ? `+${diffItem} un` : `${diffItem} un`;
+            return `
+              <div class="conf-item-card ${!isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
+                <div class="conf-accordion-header">
+                  <div class="conf-card-photo-box">
+                    <img src="${item.foto}" alt="${item.nome}">
+                  </div>
+                  <div class="conf-card-body">
+                    <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
+                    <div class="conf-card-meta-line">
+                      <span>${item.ean}</span>
+                      <span style="color: #94a3b8; margin: 0 4px;">•</span>
+                      <span>${item.categoria || 'Geral'}</span>
+                    </div>
+                    <div class="conf-card-bottom-row">
+                      <span class="conf-mini-pedido-tag">Pedido: <strong>${item.qtdePedido} un</strong></span>
+                      ${isFull
+                        ? `<span class="conf-overview-status-pill status-ok is-interactive" title="Clique para ver detalhes do item"><span class="material-icons" style="font-size: 13px;">check_circle</span> <span>${confQty}/${item.qtdePedido} un (OK)</span> <span class="material-icons conf-chevron-icon">expand_more</span></span>`
+                        : `<span class="conf-overview-status-pill status-divergent is-interactive" title="Clique para ver detalhes do item"><span class="material-icons" style="font-size: 13px;">warning</span> <span>${confQty}/${item.qtdePedido} un (${diffText})</span> <span class="material-icons conf-chevron-icon">expand_more</span></span>`
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div class="conf-accordion-body">
+                  <div class="conf-metrics-detail-row">
+                    <div class="conf-metric-item">
+                      <span>Pedido</span>
+                      <strong>${item.qtdePedido} un</strong>
+                    </div>
+                    <div class="conf-metric-item">
+                      <span>Conferido</span>
+                      <strong>${confQty} un</strong>
+                    </div>
+                    <div class="conf-metric-item">
+                      <span>Divergência</span>
+                      <strong style="color: ${isFull ? '#059669' : '#dc2626'};">${diffText}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // Acordeão em Concluídos
+      confCompletedGrid.querySelectorAll('.conf-item-card').forEach(card => {
+        card.addEventListener('click', () => {
+          card.classList.toggle('expanded');
+        });
+      });
+    }
+  }
+
+  // 17.5 Bind de Eventos de Itens na Sub-Aba À Conferir (Contagem Flexível)
+  function bindConferenceItemEvents() {
+    // Steppers Minus
+    document.querySelectorAll('.btn-conf-minus').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const input = document.querySelector(`.input-conf-qty[data-id="${id}"]`);
+        if (input) {
+          let val = parseInt(input.value, 10) || 0;
+          if (val > 0) {
+            input.value = val - 1;
+          }
+        }
+      });
+    });
+
+    // Steppers Plus (Sem trava no valor máximo)
+    document.querySelectorAll('.btn-conf-plus').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const input = document.querySelector(`.input-conf-qty[data-id="${id}"]`);
+        if (input) {
+          let val = parseInt(input.value, 10) || 0;
+          input.value = val + 1;
+        }
+      });
+    });
+
+    // Inputs diretos
+    document.querySelectorAll('.input-conf-qty').forEach(input => {
+      input.addEventListener('change', (e) => {
+        e.stopPropagation();
+        let val = parseInt(input.value, 10);
+        if (isNaN(val) || val < 0) val = 0;
+        input.value = val;
+      });
+    });
+
+    // Botão Confirmar Item
+    document.querySelectorAll('.btn-trigger-confirm-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const item = conferenceItems.find(p => String(p.id) === String(id));
+        const input = document.querySelector(`.input-conf-qty[data-id="${id}"]`);
+        if (!item || !input) return;
+
+        const val = parseInt(input.value, 10);
+        item.qtdeConferida = isNaN(val) ? item.qtdePedido : Math.max(0, val);
+        item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+        item.statusConferencia = 'conferido';
+
+        if (typeof Toast !== 'undefined') {
+          Toast.success(`Item "${item.nome}" conferido (${item.qtdeConferida} un)!`);
+        }
+
+        if (currentLoadedOrder) {
+          currentLoadedOrder.conferencia = { isConferenceActive: true, itens: conferenceItems };
+        }
+
+        const restantes = conferenceItems.filter(p => p.statusConferencia === 'pendente');
+        if (restantes.length === 0) {
+          conferenceCurrentSubTab = 'conferidos';
+        }
+
+        renderConference();
+      });
+    });
+  }
+
+  // 17.6 Bind de Eventos de Reversão e Acordeão na Aba Conferidos
+  function bindConferenceRevertEvents() {
+    document.querySelectorAll('.btn-trigger-revert-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        const item = conferenceItems.find(p => String(p.id) === String(id));
+        if (!item) return;
+
+        item.statusConferencia = 'pendente';
+        item.qtdeConferida = 0;
+        item.qtdeCancelada = 0;
+
+        if (typeof Toast !== 'undefined') {
+          Toast.info(`Conferência do item "${item.nome}" revertida.`);
+        }
+
+        if (currentLoadedOrder) {
+          currentLoadedOrder.conferencia = { isConferenceActive: true, itens: conferenceItems };
+        }
+
+        renderConference();
+      });
+    });
+
+    // Acordeão Minimalista em Conferidos
+    document.querySelectorAll('#subPaneConferidos .conf-item-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-trigger-revert-item')) return;
+        card.classList.toggle('expanded');
+      });
+    });
+  }
+
+  // ========================================================================
+  // GERENCIAMENTO DO MODAL 8: FILTRAR POR CATEGORIA
+  // ========================================================================
+  function openConfCategoriesModal() {
+    if (!modalConfCategorias) return;
+
+    tempSelectedCategory = conferenceSelectedCategory;
+
+    if (modalSelectSortConferencia) {
+      modalSelectSortConferencia.value = conferenceSortBy;
+    }
+
+    if (confModalCatList) {
+      const catCount = {};
+      conferenceItems.forEach(p => {
+        const cat = p.categoria || 'Geral';
+        catCount[cat] = (catCount[cat] || 0) + 1;
+      });
+
+      const categories = Object.keys(catCount).sort();
+
+      confModalCatList.innerHTML = `
+        <div class="conf-modal-cat-item ${tempSelectedCategory === 'all' ? 'active' : ''}" data-cat="all">
+          <div class="conf-modal-cat-label">
+            <span class="material-icons" style="font-size: 18px;">apps</span>
+            <span>Todas as Categorias</span>
+          </div>
+          <span class="conf-modal-cat-count">${conferenceItems.length}</span>
+        </div>
+        ${categories.map(cat => `
+          <div class="conf-modal-cat-item ${tempSelectedCategory === cat ? 'active' : ''}" data-cat="${cat}">
+            <div class="conf-modal-cat-label">
+              <span class="material-icons" style="font-size: 18px;">category</span>
+              <span>${cat}</span>
+            </div>
+            <span class="conf-modal-cat-count">${catCount[cat]}</span>
+          </div>
+        `).join('')}
+      `;
+
+      confModalCatList.querySelectorAll('.conf-modal-cat-item').forEach(el => {
+        el.addEventListener('click', () => {
+          confModalCatList.querySelectorAll('.conf-modal-cat-item').forEach(i => i.classList.remove('active'));
+          el.classList.add('active');
+          tempSelectedCategory = el.getAttribute('data-cat');
+        });
+      });
+    }
+
+    modalConfCategorias.style.display = 'flex';
+  }
+
+  function closeConfCategoriesModal() {
+    if (modalConfCategorias) {
+      modalConfCategorias.style.display = 'none';
+    }
+  }
+
+  function applyConfCategoriesFilter() {
+    conferenceSelectedCategory = tempSelectedCategory;
+    if (modalSelectSortConferencia) {
+      conferenceSortBy = modalSelectSortConferencia.value;
+      if (selectSortConferencia) selectSortConferencia.value = conferenceSortBy;
+    }
+    closeConfCategoriesModal();
+    renderConference();
+    if (typeof Toast !== 'undefined') {
+      const catName = conferenceSelectedCategory === 'all' ? 'Todas' : conferenceSelectedCategory;
+      Toast.info(`Filtro aplicado: ${catName}`);
+    }
+  }
+
+  function clearConfCategoriesFilter() {
+    conferenceSelectedCategory = 'all';
+    conferenceSortBy = 'default';
+    tempSelectedCategory = 'all';
+    if (modalSelectSortConferencia) modalSelectSortConferencia.value = 'default';
+    if (selectSortConferencia) selectSortConferencia.value = 'default';
+    closeConfCategoriesModal();
+    renderConference();
+    if (typeof Toast !== 'undefined') {
+      Toast.info('Filtros de categoria limpos.');
+    }
+  }
+
+  function syncCategoryFilterButtonUI() {
+    if (btnToggleConfFilters) {
+      const hasFilter = (conferenceSelectedCategory && conferenceSelectedCategory !== 'all') || (conferenceSortBy && conferenceSortBy !== 'default');
+      if (hasFilter) {
+        btnToggleConfFilters.classList.add('has-active-filter');
+        btnToggleConfFilters.innerHTML = `
+          <span class="material-icons" style="font-size: 18px; color: #6530b5;">tune</span>
+          <span>${conferenceSelectedCategory !== 'all' ? conferenceSelectedCategory : 'Filtro Ativo'}</span>
+        `;
+      } else {
+        btnToggleConfFilters.classList.remove('has-active-filter');
+        btnToggleConfFilters.innerHTML = `
+          <span class="material-icons" style="font-size: 18px;">tune</span>
+          <span>Categorias</span>
+        `;
+      }
+    }
+  }
+
+  if (btnCloseConfCategoriasModal) {
+    btnCloseConfCategoriasModal.addEventListener('click', closeConfCategoriesModal);
+  }
+
+  if (modalConfCategorias) {
+    modalConfCategorias.addEventListener('click', (e) => {
+      if (e.target === modalConfCategorias) {
+        closeConfCategoriesModal();
       }
     });
   }
 
-  // 17. Inicialização da Interface
+  if (btnApplyConfCategoryFilter) {
+    btnApplyConfCategoryFilter.addEventListener('click', applyConfCategoriesFilter);
+  }
+
+  if (btnClearConfCategoryFilter) {
+    btnClearConfCategoryFilter.addEventListener('click', clearConfCategoriesFilter);
+  }
+
+  // 17.7 Listeners dos Controles Principais da Conferência
+  function startOrResumeConference() {
+    isConferenceActive = true;
+    const pendentes = conferenceItems.filter(p => p.statusConferencia === 'pendente');
+    conferenceCurrentSubTab = pendentes.length > 0 ? 'aconferir' : 'conferidos';
+
+    if (currentLoadedOrder) {
+      currentLoadedOrder.conferencia = { isConferenceActive: true, isPaused: false, itens: conferenceItems };
+      if (typeof window.atualizarPedidoNoStorage === 'function') {
+        window.atualizarPedidoNoStorage(currentLoadedOrder);
+      }
+    }
+    switchTab('conferencia');
+    renderConference();
+    syncFooterForConference();
+    if (typeof Toast !== 'undefined') {
+      const hasProgress = conferenceItems.some(p => p.statusConferencia === 'conferido');
+      Toast.info(hasProgress ? 'Conferência retomada com sucesso!' : 'Conferência iniciada! Confirme os produtos abastecidos.');
+    }
+    applyModeUI();
+  }
+
+  if (btnStartConferenceHero) {
+    btnStartConferenceHero.addEventListener('click', startOrResumeConference);
+  }
+
+  if (menuActionIniciarConferencia) {
+    menuActionIniciarConferencia.addEventListener('click', () => {
+      if (headerMoreActionsPopover) headerMoreActionsPopover.classList.remove('show');
+      startOrResumeConference();
+    });
+  }
+
+  if (btnSubTabAConferir) {
+    btnSubTabAConferir.addEventListener('click', () => {
+      conferenceCurrentSubTab = 'aconferir';
+      renderConference();
+    });
+  }
+
+  if (btnSubTabConferidos) {
+    btnSubTabConferidos.addEventListener('click', () => {
+      conferenceCurrentSubTab = 'conferidos';
+      renderConference();
+    });
+  }
+
+  if (btnGoToConferidos) {
+    btnGoToConferidos.addEventListener('click', () => {
+      conferenceCurrentSubTab = 'conferidos';
+      renderConference();
+    });
+  }
+
+  if (inputSearchConferencia) {
+    inputSearchConferencia.addEventListener('input', () => {
+      conferenceSearchQuery = inputSearchConferencia.value.trim();
+      if (btnClearConfSearch) {
+        btnClearConfSearch.style.display = conferenceSearchQuery ? 'inline-flex' : 'none';
+      }
+      renderConference();
+    });
+  }
+
+  if (btnClearConfSearch) {
+    btnClearConfSearch.addEventListener('click', () => {
+      if (inputSearchConferencia) {
+        inputSearchConferencia.value = '';
+        inputSearchConferencia.focus();
+      }
+      conferenceSearchQuery = '';
+      btnClearConfSearch.style.display = 'none';
+      renderConference();
+    });
+  }
+
+  if (btnToggleConfFilters) {
+    btnToggleConfFilters.addEventListener('click', () => {
+      openConfCategoriesModal();
+    });
+  }
+
+  if (selectSortConferencia) {
+    selectSortConferencia.addEventListener('change', (e) => {
+      conferenceSortBy = e.target.value;
+      renderConference();
+    });
+  }
+
+  if (btnConfViewTable) {
+    btnConfViewTable.addEventListener('click', () => {
+      conferenceViewMode = 'table';
+      btnConfViewTable.classList.add('active');
+      if (btnConfViewCards) btnConfViewCards.classList.remove('active');
+      renderConference();
+    });
+  }
+
+  if (btnConfViewCards) {
+    btnConfViewCards.addEventListener('click', () => {
+      conferenceViewMode = 'cards';
+      btnConfViewCards.classList.add('active');
+      if (btnConfViewTable) btnConfViewTable.classList.remove('active');
+      renderConference();
+    });
+  }
+
+  // Função centralizada para pausar a conferência
+  function pauseConference() {
+    document.querySelectorAll('.input-conf-qty').forEach(input => {
+      const id = input.getAttribute('data-id');
+      const item = conferenceItems.find(p => String(p.id) === String(id));
+      if (item && item.statusConferencia === 'pendente') {
+        let val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          item.qtdeConferida = val;
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+        }
+      }
+    });
+
+    isConferenceActive = false;
+
+    if (currentLoadedOrder) {
+      currentLoadedOrder.conferencia = { isConferenceActive: false, isPaused: true, itens: conferenceItems };
+      if (typeof window.atualizarPedidoNoStorage === 'function') {
+        window.atualizarPedidoNoStorage(currentLoadedOrder);
+      }
+    }
+
+    renderConference();
+    syncFooterForConference();
+
+    if (typeof Toast !== 'undefined') {
+      Toast.info('Conferência pausada e progresso salvo com sucesso.');
+    }
+  }
+
+  if (btnConfPause) {
+    btnConfPause.addEventListener('click', pauseConference);
+  }
+
+  if (btnFooterConfPause) {
+    btnFooterConfPause.addEventListener('click', pauseConference);
+  }
+
+  if (btnConfFinalizeMain) {
+    btnConfFinalizeMain.addEventListener('click', openConfirmFinalizeConfModal);
+  }
+
+  if (btnFooterConfFinalize) {
+    btnFooterConfFinalize.addEventListener('click', openConfirmFinalizeConfModal);
+  }
+
+  // 17.8 Finalização da Conferência e Modal
+  function openConfirmFinalizeConfModal() {
+    // Sincroniza valores digitados nos inputs de itens pendentes antes de calcular
+    document.querySelectorAll('.input-conf-qty').forEach(input => {
+      const id = input.getAttribute('data-id');
+      const item = conferenceItems.find(p => String(p.id) === String(id));
+      if (item && item.statusConferencia === 'pendente') {
+        let val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          item.qtdeConferida = val;
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+        }
+      }
+    });
+
+    const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+    const totalConferido = conferenceItems.reduce((acc, p) => {
+      if (p.statusConferencia === 'conferido') {
+        return acc + (Number(p.qtdeConferida) || 0);
+      } else {
+        const qConf = p.qtdeConferida !== undefined && p.qtdeConferida !== null ? Number(p.qtdeConferida) : Number(p.qtdePedido);
+        return acc + qConf;
+      }
+    }, 0);
+    const totalCancelado = Math.max(0, totalSolicitado - totalConferido);
+
+    if (modalConfTotalSolicitado) modalConfTotalSolicitado.textContent = `${totalSolicitado} un`;
+    if (modalConfTotalConferido) modalConfTotalConferido.textContent = `${totalConferido} un`;
+    if (modalConfTotalCancelado) modalConfTotalCancelado.textContent = `${totalCancelado} un`;
+
+    if (modalConfDiffRow) {
+      modalConfDiffRow.style.display = totalCancelado > 0 ? 'flex' : 'none';
+    }
+
+    if (modalConfirmarConferencia) {
+      modalConfirmarConferencia.style.display = 'flex';
+      modalConfirmarConferencia.classList.add('show', 'active');
+    }
+  }
+
+  function closeConfirmFinalizeConfModal() {
+    if (modalConfirmarConferencia) {
+      modalConfirmarConferencia.style.display = 'none';
+      modalConfirmarConferencia.classList.remove('show', 'active');
+    }
+  }
+
+  if (btnConfFinalizeMain) btnConfFinalizeMain.addEventListener('click', openConfirmFinalizeConfModal);
+  if (btnCloseConfirmConfModal) btnCloseConfirmConfModal.addEventListener('click', closeConfirmFinalizeConfModal);
+  if (btnCancelFinalizeConf) btnCancelFinalizeConf.addEventListener('click', closeConfirmFinalizeConfModal);
+
+  // Fechar modal ao clicar fora
+  if (modalConfirmarConferencia) {
+    modalConfirmarConferencia.addEventListener('click', (e) => {
+      if (e.target === modalConfirmarConferencia) {
+        closeConfirmFinalizeConfModal();
+      }
+    });
+  }
+
+  if (btnConfirmFinalizeConf) {
+    btnConfirmFinalizeConf.addEventListener('click', () => {
+      closeConfirmFinalizeConfModal();
+
+      // Finaliza todos os itens pendentes como conferidos
+      conferenceItems.forEach(item => {
+        if (item.statusConferencia !== 'conferido') {
+          item.statusConferencia = 'conferido';
+          if (item.qtdeConferida === undefined || item.qtdeConferida === null) {
+            item.qtdeConferida = item.qtdePedido;
+          }
+          item.qtdeCancelada = Math.max(0, item.qtdePedido - item.qtdeConferida);
+        }
+      });
+
+      const totalSolicitado = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdePedido) || 0), 0);
+      const totalConferido = conferenceItems.reduce((acc, p) => acc + (Number(p.qtdeConferida) || 0), 0);
+      const totalCancelado = Math.max(0, totalSolicitado - totalConferido);
+
+      // Atualiza status do pedido para "Recebido"
+      isConferenceActive = false;
+      isReadOnly = true;
+      isEditMode = false;
+
+      const hoje = new Date();
+      const dataHoraStr = `${hoje.toLocaleDateString('pt-BR')} às ${String(hoje.getHours()).padStart(2, '0')}:${String(hoje.getMinutes()).padStart(2, '0')}`;
+
+      // Monta o extrato formatado de conferência
+      let extratoConferencia = `\n\n--- EXTRATO DE CONFERÊNCIA DE ABASTECIMENTO ---\nData/Hora: ${dataHoraStr}\nOperador: B2U Operações\nTotal Solicitado no Pedido: ${totalSolicitado} un\nTotal Conferido e Abastecido: ${totalConferido} un\nTotal Cancelado (Divergências): ${totalCancelado} un\n`;
+      
+      const divergencias = conferenceItems.filter(p => p.qtdeCancelada > 0);
+      if (divergencias.length > 0) {
+        extratoConferencia += `\nDivergências Registradas:\n`;
+        divergencias.forEach(d => {
+          extratoConferencia += `• [${d.ean}] ${d.nome}: ${d.qtdeConferida}/${d.qtdePedido} un (-${d.qtdeCancelada} un canceladas)\n`;
+        });
+      } else {
+        extratoConferencia += `\nResultado: 100% dos itens conferidos e abastecidos integralmente sem divergências.\n`;
+      }
+      extratoConferencia += `-----------------------------------------------`;
+
+      const txtObs = document.getElementById('textareaObservacoes');
+      if (txtObs) {
+        txtObs.value = (txtObs.value ? txtObs.value : '') + extratoConferencia;
+      }
+
+      if (currentLoadedOrder) {
+        currentLoadedOrder.status = 'Recebido';
+        currentLoadedOrder.qtdeItens = totalConferido;
+        currentLoadedOrder.observacoes = txtObs ? txtObs.value : extratoConferencia;
+        currentLoadedOrder.conferencia = {
+          isConferenceActive: false,
+          isCompleted: true,
+          dataConferencia: dataHoraStr,
+          itens: conferenceItems,
+          totalSolicitado,
+          totalConferido,
+          totalCancelado
+        };
+
+        // Sincroniza cartItems com as quantidades abastecidas
+        cartItems = conferenceItems.map(item => ({
+          ...item,
+          quantidade: item.qtdeConferida,
+          cancelado: item.qtdeCancelada
+        }));
+        currentLoadedOrder.itens = JSON.parse(JSON.stringify(cartItems));
+
+        if (typeof window.atualizarPedidoNoStorage === 'function') {
+          window.atualizarPedidoNoStorage(currentLoadedOrder);
+        }
+      }
+
+      applyModeUI();
+      renderConference();
+      syncFooterForConference();
+
+      if (typeof Toast !== 'undefined') {
+        Toast.success(`Conferência concluída com sucesso! Pedido ${currentOrderCode} recebido e estoque atualizado.`);
+      }
+    });
+  }
+
+  // 18. Inicialização da Interface
   applyModeUI();
+  initConferenceData();
 });
+

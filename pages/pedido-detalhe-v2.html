@@ -51,6 +51,17 @@
         </button>
 
         <div class="header-actions-popover" id="headerMoreActionsPopover" role="menu">
+          <!-- Ação Dinâmica: Iniciar / Retomar Conferência (Exclusivo para Pendente de Abastecimento) -->
+          <button type="button" class="header-action-menu-item" id="menuActionIniciarConferencia" style="display: none;">
+            <span class="material-icons" id="iconMenuIniciarConferencia" style="color: #6530b5;">play_circle</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title" id="titleMenuIniciarConferencia">Iniciar Conferência</span>
+              <span class="action-menu-desc" id="descMenuIniciarConferencia">Conferir recebimento físico dos produtos</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider" id="dividerIniciarConferencia" style="display: none;"></div>
+
           <button type="button" class="header-action-menu-item" id="menuActionFinalizar">
             <span class="material-icons" style="color: #6530b5;">check_circle</span>
             <div class="action-menu-texts">
@@ -59,11 +70,30 @@
             </div>
           </button>
 
+          <button type="button" class="header-action-menu-item" id="menuActionEntradaDireta" style="display: none;">
+            <span class="material-icons" style="color: #10b981;">inventory</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Finalizar (Entrada Direta)</span>
+              <span class="action-menu-desc">Dar entrada total sem conferir</span>
+            </div>
+          </button>
+
           <button type="button" class="header-action-menu-item" id="menuActionImprimir">
             <span class="material-icons" style="color: #475569;">print</span>
             <div class="action-menu-texts">
               <span class="action-menu-title">Imprimir Pedido</span>
               <span class="action-menu-desc">Gerar comprovante / PDF</span>
+            </div>
+          </button>
+
+          <div class="dropdown-item-divider" id="dividerToggleCategorias"></div>
+
+          <!-- Opção Opcional: Conferência por Categorias -->
+          <button type="button" class="header-action-menu-item" id="menuActionToggleCategorias">
+            <span class="material-icons" id="iconMenuToggleCategorias" style="color: #6530b5; font-size: 26px;">toggle_on</span>
+            <div class="action-menu-texts">
+              <span class="action-menu-title">Conferência por Categorias</span>
+              <span class="action-menu-desc" id="descMenuToggleCategorias">Ativada (Exibe filtro de categorias)</span>
             </div>
           </button>
 
@@ -224,12 +254,17 @@
       <div class="order-hero-tabs-row">
         <button type="button" class="order-tab-item-btn active" id="tabBtnProdutos" data-tab="produtos">
           <span class="material-icons" style="font-size: 18px;">inventory_2</span>
-          PRODUTOS
+          ITENS
           <span class="order-tab-count-tag" id="heroProductsCount">5</span>
         </button>
         <button type="button" class="order-tab-item-btn" id="tabBtnDetalhes" data-tab="detalhes">
           <span class="material-icons" style="font-size: 18px;">description</span>
           DETALHES
+        </button>
+        <button type="button" class="order-tab-item-btn" id="tabBtnConferencia" data-tab="conferencia" style="display: none;">
+          <span class="material-icons" style="font-size: 18px;">checklist_rtl</span>
+          CONFERÊNCIA
+          <span class="order-tab-count-tag" id="heroConferenciaCount" style="display: none;">0</span>
         </button>
       </div>
 
@@ -508,6 +543,213 @@
         </div>
       </div>
 
+      <!-- ========================================================================
+           PAINEL 3: CONFERÊNCIA DE ABASTECIMENTO NA LOJA
+           ======================================================================== -->
+      <div class="order-tab-pane" id="paneConferencia" style="display: none;">
+        
+        <!-- Header da Conferência com Status e Ações -->
+        <div class="conf-pane-header">
+          <div class="conf-header-left">
+            <h3 class="conf-pane-title">
+              <span class="material-icons" style="color: var(--primary-color, #6530b5);">checklist_rtl</span>
+              <span>Conferência de Abastecimento</span>
+            </h3>
+            <p class="conf-pane-subtitle" id="confPaneSubtitle">
+              Confirme o recebimento físico das mercadorias na loja para atualizar o estoque.
+            </p>
+          </div>
+
+          <!-- Ações do Topo da Conferência (Alternador de visualização Tabela/Cards) -->
+          <div class="conf-header-actions" id="confHeaderActions">
+            <div class="view-segmented-switcher" id="confViewToggle" role="group" aria-label="Modo de Visualização da Conferência">
+              <button type="button" class="view-segment-btn" id="btnConfViewTable" title="Visualização em Tabela">
+                <span class="material-icons">reorder</span>
+              </button>
+              <button type="button" class="view-segment-btn active" id="btnConfViewCards" title="Visualização em Cards">
+                <span class="material-icons">grid_view</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. FASE DE VISUALIZAÇÃO PRÉ-CONFERÊNCIA (Antes de Iniciar / Pausada) -->
+        <div id="confPreStartSection" class="conf-pre-start-box">
+          <div class="conf-pre-start-banner" id="confPreStartBanner">
+            <div class="conf-pre-start-header-row">
+              <div class="conf-pre-start-icon-box" id="confPreStartIconBox">
+                <span class="material-icons" id="confPreStartIcon">local_shipping</span>
+              </div>
+              <div class="conf-pre-start-info">
+                <strong class="conf-pre-start-title" id="confPreStartTitle">Pedido em Trânsito / Aguardando Conferência</strong>
+                <p class="conf-pre-start-desc" id="confPreStartDesc">
+                  As mercadorias deste pedido foram expedidas. Inicie o processo de conferência para registrar os produtos que estão sendo abastecidos na loja.
+                </p>
+              </div>
+            </div>
+            <button type="button" class="btn-start-conference-hero" id="btnStartConferenceHero">
+              <span class="material-icons" id="btnStartConfIcon">play_circle</span>
+              <span id="btnStartConfTxt">INICIAR CONFERÊNCIA</span>
+            </button>
+          </div>
+
+          <!-- Card de Progresso na Visão Geral (Exibido quando a conferência está pausada) -->
+          <div class="conf-progress-card" id="confPreProgressCard" style="display: none;">
+            <div class="conf-progress-header">
+              <div class="conf-progress-label">
+                <span class="material-icons" style="color: var(--primary-color, #6530b5);">pending_actions</span>
+                <span>Progresso da Conferência:</span>
+              </div>
+              <div class="conf-progress-metric">
+                <strong id="confPreProgressUnits">0 / 0</strong> <span class="conf-unit-tag">und</span>
+                <span class="conf-progress-pct-badge" id="confPreProgressPctBadge">0%</span>
+              </div>
+            </div>
+            <div class="conf-progress-track">
+              <div class="conf-progress-bar" id="confPreProgressBar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Tabela / Cards de Visão Geral Pré-Conferência -->
+          <div class="conf-overview-container" id="confOverviewContainer">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+        <!-- 2. FASE ATIVA DE CONFERÊNCIA (Em Andamento) -->
+        <div id="confActiveSection" class="conf-active-box" style="display: none;">
+          
+          <!-- Card de Progresso Dinâmico da Conferência -->
+          <div class="conf-progress-card">
+            <div class="conf-progress-header">
+              <div class="conf-progress-label">
+                <span class="material-icons">trending_up</span>
+                <span>Progresso da Conferência:</span>
+              </div>
+              <div class="conf-progress-metric">
+                <strong id="confProgressUnits">0 / 0</strong> <span class="conf-unit-tag">und</span>
+                <span class="conf-progress-pct-badge" id="confProgressPctBadge">0%</span>
+              </div>
+            </div>
+            <div class="conf-progress-track">
+              <div class="conf-progress-bar" id="confProgressBar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Sub-Abas Táteis: À CONFERIR (X) e CONFERIDOS (Y) -->
+          <div class="conf-subtabs-row" id="confSubTabs">
+            <button type="button" class="conf-subtab-btn active" id="btnSubTabAConferir" data-subtab="aconferir">
+              <span class="material-icons">pending_actions</span>
+              <span>À CONFERIR</span>
+              <span class="conf-subtab-badge" id="badgeCountAConferir">0</span>
+            </button>
+            <button type="button" class="conf-subtab-btn" id="btnSubTabConferidos" data-subtab="conferidos">
+              <span class="material-icons">check_circle</span>
+              <span>CONFERIDOS</span>
+              <span class="conf-subtab-badge conf-badge-success" id="badgeCountConferidos">0</span>
+            </button>
+          </div>
+
+          <!-- Barra de Busca Rápida na Conferência -->
+          <div class="conf-search-bar-wrapper">
+            <div class="conf-search-box">
+              <span class="material-icons">search</span>
+              <input type="text" id="inputSearchConferencia" class="conf-search-input" placeholder="Pesquisar por EAN ou produto...">
+              <button type="button" class="btn-clear-conf-search" id="btnClearConfSearch" style="display: none;">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            
+            <!-- Botão Toggle Filtro por Categorias -->
+            <button type="button" class="btn-conf-toggle-filters" id="btnToggleConfFilters" title="Filtrar por categorias e ordenar">
+              <span class="material-icons">tune</span>
+              <span class="btn-conf-toggle-text">Categorias</span>
+            </button>
+          </div>
+
+          <!-- Painel Expansível de Filtros de Categorias e Ordenação (Opcional - Oculto por padrão) -->
+          <div class="conf-advanced-filters-panel" id="confAdvancedFiltersPanel" style="display: none;">
+            <div class="conf-filters-header-row">
+              <div class="conf-filters-title-group">
+                <span class="material-icons" style="font-size: 16px; color: var(--primary-color, #6530b5);">category</span>
+                <span class="conf-filters-header-title">Filtrar por Categoria:</span>
+              </div>
+              <div class="conf-sort-box">
+                <span class="material-icons conf-sort-icon">sort</span>
+                <select id="selectSortConferencia" class="conf-sort-select" title="Ordenar lista de conferência">
+                  <option value="default">Padrão</option>
+                  <option value="categoria">Ordenar por Categoria (A-Z)</option>
+                  <option value="nome">Nome A-Z</option>
+                  <option value="qtde">Maior Qtde</option>
+                  <option value="qtde-asc">Menor Qtde</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Carrossel de Chips de Categorias -->
+            <div class="conf-cat-chips-row" id="confCategoryChipsRow">
+              <!-- Chips gerados dinamicamente via JS -->
+            </div>
+          </div>
+
+          <!-- Container da Sub-Aba: À CONFERIR -->
+          <div class="conf-subpane" id="subPaneAConferir">
+            <!-- Cards de Itens a Conferir -->
+            <div class="conf-items-cards-grid" id="confCardsGridAConferir">
+              <!-- Renderizado via JS -->
+            </div>
+            <!-- Tabela Desktop -->
+            <div class="conf-table-wrapper" id="confTableWrapperAConferir" style="display: none;">
+              <!-- Renderizado via JS -->
+            </div>
+            <!-- Empty State À Conferir -->
+            <div class="conf-empty-state" id="confEmptyAConferir" style="display: none;">
+              <span class="material-icons conf-empty-icon">task_alt</span>
+              <h4>Todos os itens foram conferidos!</h4>
+              <p>Acesse a aba <strong>CONFERIDOS</strong> para revisar os abastecimentos ou finalizar a conferência.</p>
+              <button type="button" class="btn-go-to-conferidos" id="btnGoToConferidos">
+                <span>Ver Itens Conferidos</span>
+                <span class="material-icons">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Container da Sub-Aba: CONFERIDOS -->
+          <div class="conf-subpane" id="subPaneConferidos" style="display: none;">
+            <!-- Cards de Itens Conferidos -->
+            <div class="conf-items-cards-grid" id="confCardsGridConferidos">
+              <!-- Renderizado via JS -->
+            </div>
+            <!-- Tabela Desktop -->
+            <div class="conf-table-wrapper" id="confTableWrapperConferidos" style="display: none;">
+              <!-- Renderizado via JS -->
+            </div>
+            <!-- Empty State Conferidos -->
+            <div class="conf-empty-state" id="confEmptyConferidos" style="display: none;">
+              <span class="material-icons conf-empty-icon" style="color: #94a3b8;">hourglass_empty</span>
+              <h4>Nenhum item conferido ainda</h4>
+              <p>Confirme os produtos na aba <strong>À CONFERIR</strong> para que apareçam aqui.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. FASE CONCLUÍDA / HISTÓRICO DA CONFERÊNCIA -->
+        <div id="confCompletedSection" class="conf-completed-box" style="display: none;">
+          <div class="conf-completed-banner">
+            <span class="material-icons conf-completed-icon">verified</span>
+            <div class="conf-completed-text">
+              <strong>Conferência Concluída e Estoque Movimentado</strong>
+              <p id="confCompletedDetailsTxt">Este pedido foi conferido e recebido com sucesso na loja.</p>
+            </div>
+          </div>
+          <div class="conf-completed-grid" id="confCompletedGrid">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
   </main>
@@ -535,11 +777,17 @@
       </div>
     </div>
 
-    <div class="footer-actions-container">
-      <button type="button" class="btn-footer-secondary" id="btnFooterBackToList" style="display: inline-flex;">
-        <span class="material-icons">arrow_back</span>
-        <span>Voltar</span>
+    <div class="footer-actions-container" id="footerActionsContainer">
+      <!-- Ações Específicas da Conferência no Sticky Footer -->
+      <button type="button" class="btn-footer-secondary btn-footer-conf-pause" id="btnFooterConfPause" style="display: none;">
+        <span class="material-icons">pause_circle_outline</span>
+        <span>Continuar Depois</span>
       </button>
+      <button type="button" class="btn-footer-primary btn-footer-conf-finalize" id="btnFooterConfFinalize" style="display: none; background-color: var(--primary-color, #6530b5);">
+        <span class="material-icons">check_circle</span>
+        <span>FINALIZAR CONFERÊNCIA</span>
+      </button>
+
       <button type="button" class="btn-footer-secondary btn-footer-edit" id="btnFooterStartEdit" style="display: inline-flex;">
         <span class="material-icons btn-action-icon" style="color: #6530b5;">edit</span>
         <span class="btn-footer-edit-txt">
@@ -1163,6 +1411,148 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONFIRMAÇÃO DE FINALIZAÇÃO DA CONFERÊNCIA
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmarConferencia" role="dialog" aria-modal="true">
+    <div class="official-modal-box modal-confirm-box" style="max-width: 480px; width: 95%;">
+      
+      <div class="official-modal-header" style="background-color: var(--primary-color, #6530b5);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">verified</span>
+          <h2 class="official-modal-title">FINALIZAR CONFERÊNCIA</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseConfirmConfModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem;">
+        
+        <div class="conf-modal-summary-box">
+          <div class="conf-modal-summary-row">
+            <span>Total Solicitado no Pedido:</span>
+            <strong id="modalConfTotalSolicitado">0 un</strong>
+          </div>
+          <div class="conf-modal-summary-row">
+            <span>Total Conferido / Abastecido:</span>
+            <strong class="highlight-green" id="modalConfTotalConferido">0 un</strong>
+          </div>
+          <div class="conf-modal-summary-row conf-diff-row" id="modalConfDiffRow" style="display: none;">
+            <span>Divergência / Cancelado:</span>
+            <strong class="highlight-cancel" id="modalConfTotalCancelado">0 un</strong>
+          </div>
+        </div>
+
+        <p style="font-size: 0.88rem; color: #475569; line-height: 1.5; margin: 1.25rem 0 0.5rem 0;">
+          Este processo irá <strong>concluir a conferência</strong> e realizar a <strong>movimentação de estoque</strong> na loja.
+        </p>
+        <p style="font-size: 0.82rem; color: #64748b; line-height: 1.4; margin: 0;">
+          Após a confirmação, o pedido passará para o status <strong>Recebido</strong> e não será mais possível reverter esta operação. Deseja continuar?
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnCancelFinalizeConf">VOLTAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmFinalizeConf" style="background-color: var(--primary-color, #6530b5);">
+          OK, CONFIRMADO
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: CONFIRMAÇÃO DE ENTRADA DIRETA (SEM CONFERÊNCIA)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfirmarEntradaDireta" role="dialog" aria-modal="true">
+    <div class="official-modal-box modal-confirm-box" style="max-width: 480px; width: 95%;">
+      
+      <div class="official-modal-header" style="background-color: #10b981;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="material-icons" style="color: #ffffff; font-size: 22px;">inventory</span>
+          <h2 class="official-modal-title">FINALIZAR COM ENTRADA DIRETA</h2>
+        </div>
+        <button type="button" class="official-modal-close" id="btnCloseDirectEntryModal" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.5rem;">
+        
+        <div class="conf-modal-summary-box">
+          <div class="conf-modal-summary-row">
+            <span>Total Solicitado no Pedido:</span>
+            <strong id="modalDirectTotalSolicitado">0 un</strong>
+          </div>
+          <div class="conf-modal-summary-row">
+            <span>Entrada Integral no Estoque:</span>
+            <strong class="highlight-green" id="modalDirectTotalEntrada">0 un (100%)</strong>
+          </div>
+        </div>
+
+        <p style="font-size: 0.88rem; color: #475569; line-height: 1.5; margin: 1.25rem 0 0.5rem 0;">
+          Você está prestes a <strong>finalizar o pedido e creditar 100% dos itens no estoque da loja</strong> sem realizar a conferência física item a item.
+        </p>
+        <p style="font-size: 0.82rem; color: #64748b; line-height: 1.4; margin: 0;">
+          O pedido será alterado imediatamente para o status <strong>Recebido</strong>. Deseja confirmar a entrada direta?
+        </p>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnCancelDirectEntry">CANCELAR</button>
+        <button type="button" class="btn-modal-finalize" id="btnConfirmDirectEntry" style="background-color: #10b981;">
+          CONFIRMAR ENTRADA
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 8: FILTRAR POR CATEGORIA (CONFERÊNCIA MINIMALISTA)
+       ======================================================================== -->
+  <div class="official-modal-overlay" id="modalConfCategorias" role="dialog" aria-modal="true" style="display: none;">
+    <div class="official-modal-card" style="max-width: 420px; width: 90%;">
+      <div class="official-modal-header">
+        <div class="official-modal-title">
+          <span class="material-icons" style="color: #6530b5;">tune</span>
+          <h3>Filtrar por Categoria</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseConfCategoriasModal">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="official-modal-body" style="padding: 1.25rem 1.5rem;">
+        <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 0.85rem;">
+          Selecione uma categoria para focar o abastecimento dos produtos:
+        </p>
+        <div class="conf-modal-cat-list" id="confModalCatList">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+          <label style="font-size: 0.78rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;">
+            Ordenar Lista:
+          </label>
+          <select id="modalSelectSortConferencia" class="custom-select" style="font-size: 0.82rem; padding: 6px 10px; border-radius: 6px; width: 100%; border: 1px solid #cbd5e1; background: #f8fafc;">
+            <option value="default">Ordem Padrão do Pedido</option>
+            <option value="categoria">Ordenar por Categoria (A-Z)</option>
+            <option value="nome">Nome do Produto (A-Z)</option>
+            <option value="qtde">Maior Quantidade</option>
+            <option value="qtde-asc">Menor Quantidade</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="official-modal-footer" style="justify-content: space-between; gap: 10px;">
+        <button type="button" class="btn-modal-discard" id="btnClearConfCategoryFilter">
+          LIMPAR
+        </button>
+        <button type="button" class="btn-modal-finalize" id="btnApplyConfCategoryFilter" style="background-color: #6530b5;">
+          APLICAR
+        </button>
+      </div>
     </div>
   </div>
 

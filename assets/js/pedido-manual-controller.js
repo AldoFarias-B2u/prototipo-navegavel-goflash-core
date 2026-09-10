@@ -146,17 +146,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (statusLower.includes('pendente') || statusLower.includes('trânsito') || statusLower.includes('transito')) {
           readonlyBanner.classList.add('status-pendente');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'local_shipping';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚚 Pedido em Trânsito (Pendente de Abastecimento)';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi despachado para a filial de destino. Alterações de itens e quantidades estão bloqueadas.';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido em Trânsito (Pendente de Abastecimento)';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Pedido em trânsito para a filial de destino. Alterações bloqueadas. Aguardando conferência e confirmação do abastecimento no destino.';
         } else if (statusLower.includes('recebido')) {
           readonlyBanner.classList.add('status-recebido');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'task_alt';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '📦 Pedido Recebido';
-          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido finalizado em modo de consulta.';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido Recebido';
+          if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Abastecimento e movimentação de estoque concluídos na filial. Pedido Finalizado!';
         } else if (statusLower.includes('cancelado')) {
           readonlyBanner.classList.add('status-cancelado');
           if (readonlyBannerIcon) readonlyBannerIcon.textContent = 'block';
-          if (readonlyBannerTitle) readonlyBannerTitle.textContent = '🚫 Pedido Cancelado';
+          if (readonlyBannerTitle) readonlyBannerTitle.textContent = 'Pedido Cancelado';
           if (readonlyBannerDesc) readonlyBannerDesc.textContent = 'Este pedido foi cancelado e está arquivado para histórico operacional.';
         }
       }

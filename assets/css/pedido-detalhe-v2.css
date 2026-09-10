@@ -54,7 +54,7 @@
 
 @media (max-width: 768px) {
   .pedido-v2-main-container {
-    padding: 0.5rem 0.5rem 6.5rem 0.5rem;
+    padding: 0.5rem 0.5rem 4.5rem 0.5rem;
   }
 }
 
@@ -280,7 +280,7 @@
    ========================================================================== */
 .order-hero-tabs-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 1.5rem;
   margin-top: 0.75rem;
   padding-bottom: 0;
@@ -334,6 +334,43 @@
 .order-tab-item-btn.active .order-tab-count-tag {
   background-color: #ffffff;
   color: #6530b5;
+}
+
+@media (max-width: 600px) {
+  .order-hero-tabs-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 0 !important;
+  }
+
+  .order-hero-tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .order-tab-item-btn {
+    font-size: 0.78rem;
+    letter-spacing: 0.3px;
+    padding: 8px 4px 10px 4px;
+    gap: 5px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .order-tab-item-btn .material-icons {
+    font-size: 16px !important;
+  }
+
+  .order-tab-count-tag {
+    font-size: 0.68rem;
+    padding: 1px 5px;
+  }
 }
 
 /* ==========================================================================
@@ -1546,10 +1583,11 @@
 @media (max-width: 768px) {
   .order-sticky-footer {
     height: auto;
-    min-height: 56px;
-    padding: 0.5rem 0.5rem;
+    min-height: 48px;
+    padding: 0.55rem 1rem;
     flex-direction: column;
     gap: 6px;
+    box-sizing: border-box;
   }
 }
 
@@ -1563,37 +1601,41 @@
   .footer-metrics-container {
     width: 100%;
     justify-content: space-between;
-    gap: 4px;
+    gap: 8px;
   }
 }
 
 .footer-metric-pill {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .footer-metric-label {
   font-size: 0.7rem;
-  color: #757575;
+  color: #64748b;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.4px;
 }
 
 @media (max-width: 768px) {
   .footer-metric-label {
-    font-size: 0.64rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.3px;
   }
 }
 
 .footer-metric-val {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #212529;
+  color: #0f172a;
+  line-height: 1.2;
 }
 
 @media (max-width: 768px) {
   .footer-metric-val {
-    font-size: 0.92rem;
+    font-size: 1.02rem;
   }
 }
 
@@ -1611,10 +1653,16 @@
   gap: 10px;
 }
 
+.footer-actions-container[style*="display: none"] {
+  display: none !important;
+}
+
 /* Base Unificada para TODOS os botões do Rodapé */
 .btn-footer-secondary,
 .btn-footer-primary,
-.btn-footer-edit {
+.btn-footer-edit,
+.btn-footer-conf-pause,
+.btn-footer-conf-finalize {
   height: 38px;
   box-sizing: border-box;
   display: inline-flex;
@@ -1633,22 +1681,32 @@
 
 .btn-footer-secondary .material-icons,
 .btn-footer-primary .material-icons,
-.btn-footer-edit .material-icons {
+.btn-footer-edit .material-icons,
+.btn-footer-conf-pause .material-icons,
+.btn-footer-conf-finalize .material-icons {
   font-size: 18px !important;
   line-height: 1;
   display: inline-flex;
   align-items: center;
 }
 
-.btn-footer-secondary {
+.btn-footer-secondary,
+.btn-footer-conf-pause {
   background-color: #f1f3f6;
   color: #495057;
   border: 1px solid #ced4da;
 }
 
-.btn-footer-secondary:hover {
+.btn-footer-secondary:hover,
+.btn-footer-conf-pause:hover {
   background-color: #e2e8f0;
   color: #212529;
+}
+
+.btn-footer-conf-pause {
+  background-color: #f8fafc;
+  color: #475569;
+  border: 1px solid #cbd5e1;
 }
 
 .btn-footer-edit {
@@ -1663,7 +1721,8 @@
   border-color: #bfa5eb;
 }
 
-.btn-footer-primary {
+.btn-footer-primary,
+.btn-footer-conf-finalize {
   background: linear-gradient(135deg, #6530b5 0%, #522396 100%);
   color: #ffffff;
   border: 1px solid transparent;
@@ -1673,7 +1732,8 @@
   box-shadow: 0 3px 10px rgba(101, 48, 181, 0.35);
 }
 
-.btn-footer-primary:hover {
+.btn-footer-primary:hover,
+.btn-footer-conf-finalize:hover {
   background: linear-gradient(135deg, #743ec2 0%, #5e28a8 100%);
   box-shadow: 0 5px 14px rgba(101, 48, 181, 0.45);
   transform: translateY(-1px);
@@ -1709,9 +1769,11 @@
 
   .btn-footer-secondary,
   .btn-footer-primary,
-  .btn-footer-edit {
-    height: 36px;
-    padding: 0 5px;
+  .btn-footer-edit,
+  .btn-footer-conf-pause,
+  .btn-footer-conf-finalize {
+    height: 38px;
+    padding: 0 8px;
     font-size: 0.78rem;
     gap: 4px;
     white-space: nowrap;
@@ -1719,11 +1781,14 @@
 
   .btn-footer-secondary .material-icons,
   .btn-footer-primary .material-icons,
-  .btn-footer-edit .material-icons {
+  .btn-footer-edit .material-icons,
+  .btn-footer-conf-pause .material-icons,
+  .btn-footer-conf-finalize .material-icons {
     font-size: 16px !important;
   }
 
-  .btn-footer-secondary {
+  .btn-footer-secondary,
+  .btn-footer-conf-pause {
     flex: 1;
     min-width: 0;
   }
@@ -1733,8 +1798,9 @@
     min-width: 0;
   }
 
-  .btn-footer-primary {
-    flex: 1.15;
+  .btn-footer-primary,
+  .btn-footer-conf-finalize {
+    flex: 1.25;
     min-width: 0;
   }
 }
@@ -3644,3 +3710,1930 @@
     color: #000000 !important;
   }
 }
+
+/* ==========================================================================
+   MÓDULO DE CONFERÊNCIA DE ABASTECIMENTO NA LOJA
+   ========================================================================== */
+
+.conf-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.conf-pane-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conf-pane-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* 1. Banner Pré-Conferência */
+.conf-pre-start-banner {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  border: 1px solid #ddd6fe;
+  border-left: 4px solid var(--primary-color, #6530b5);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(101, 48, 181, 0.06);
+  transition: all var(--transition-fast);
+}
+
+.conf-pre-start-banner.is-paused {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: #fde68a;
+  border-left-color: #f59e0b;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-icon-box {
+  background: #f59e0b;
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-title {
+  color: #78350f;
+}
+
+.conf-pre-start-banner.is-paused .conf-pre-start-desc {
+  color: #92400e;
+}
+
+.conf-pre-start-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.conf-pre-start-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-color, #6530b5);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast);
+}
+
+.conf-pre-start-icon-box .material-icons {
+  font-size: 26px;
+}
+
+.conf-pre-start-info {
+  flex: 1;
+}
+
+.conf-pre-start-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3b0764;
+  margin-bottom: 4px;
+}
+
+.conf-pre-start-desc {
+  font-size: 0.86rem;
+  color: #581c87;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.btn-start-conference-hero {
+  background-color: var(--primary-color, #6530b5);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(101, 48, 181, 0.25);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.btn-start-conference-hero:hover {
+  background-color: #542599;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(101, 48, 181, 0.35);
+}
+
+@media (max-width: 768px) {
+  /* 1. Ocultar Alternador de Visualização Tabela/Cards no Mobile */
+  #confHeaderActions,
+  #confViewToggle {
+    display: none !important;
+  }
+
+  /* 2. Cabeçalho Compacto da Conferência */
+  .conf-pane-header {
+    padding-bottom: 0.5rem !important;
+    margin-bottom: 0.65rem !important;
+    gap: 4px !important;
+  }
+
+  .conf-pane-title {
+    font-size: 1.05rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .conf-pane-subtitle {
+    font-size: 0.78rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* 3. Banner Pré-Conferência / Pausada Slim no Mobile */
+  .conf-pre-start-banner {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .conf-pre-start-header-row {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .conf-pre-start-icon-box {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+  }
+
+  .conf-pre-start-icon-box .material-icons {
+    font-size: 18px !important;
+  }
+
+  .conf-pre-start-title {
+    font-size: 0.88rem !important;
+    margin-bottom: 2px !important;
+    line-height: 1.25 !important;
+  }
+
+  .conf-pre-start-desc {
+    font-size: 0.76rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .btn-start-conference-hero {
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 0.80rem !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+    justify-content: center !important;
+  }
+
+  /* 4. Card de Progresso Pré-Conferência/Pausada Transparente e Integrado */
+  #confPreProgressCard {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin-top: 4px !important;
+    padding: 4px 0 8px 0 !important;
+    margin-bottom: 16px !important;
+  }
+
+  #confPreProgressCard .conf-progress-header {
+    margin-bottom: 7px !important;
+  }
+
+  #confPreProgressCard .conf-progress-label {
+    font-size: 0.80rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+  }
+
+  #confPreProgressCard .conf-progress-label .material-icons {
+    display: none !important;
+  }
+
+  #confPreProgressCard .conf-progress-metric {
+    font-size: 0.80rem !important;
+    gap: 6px !important;
+  }
+
+  #confPreProgressCard .conf-progress-metric strong {
+    font-size: 0.92rem !important;
+  }
+
+  #confPreProgressCard .conf-progress-pct-badge {
+    font-size: 0.74rem !important;
+    padding: 1px 6px !important;
+  }
+
+  #confPreProgressCard .conf-progress-track {
+    height: 5px !important;
+    background-color: #e2e8f0 !important;
+    border-radius: 3px !important;
+  }
+}
+
+/* Ocultação do Título da Conferência no Mobile durante Conferência Ativa */
+@media (max-width: 600px) {
+  body.is-conf-running #paneConferencia .conf-pane-header,
+  body.is-conf-running .conf-pane-header,
+  body.is-conf-running .conf-section-header {
+    display: none !important;
+  }
+}
+
+/* 2. Card de Progresso Dinâmico da Conferência (Minimalista Integrado) */
+#confActiveSection .conf-progress-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 2px 0 8px 0 !important;
+  margin-bottom: 8px !important;
+}
+
+#confActiveSection .conf-progress-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 6px !important;
+}
+
+#confActiveSection .conf-progress-label {
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#confActiveSection .conf-progress-label .material-icons {
+  display: none !important;
+}
+
+#confActiveSection .conf-progress-metric {
+  font-size: 0.82rem !important;
+  color: #1e293b !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+#confActiveSection .conf-progress-metric strong {
+  font-size: 0.95rem !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+#confActiveSection .conf-unit-tag {
+  font-size: 0.80rem !important;
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+#confActiveSection .conf-progress-pct-badge {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+  border: 1px solid #d1fae5 !important;
+  border-radius: 6px !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  font-size: 0.76rem !important;
+}
+
+#confActiveSection .conf-progress-track {
+  width: 100% !important;
+  height: 6px !important;
+  background-color: #e2e8f0 !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+}
+
+#confActiveSection .conf-progress-bar {
+  height: 100% !important;
+  background: linear-gradient(90deg, #6530b5 0%, #10b981 100%) !important;
+  border-radius: 3px !important;
+  transition: width 0.4s ease !important;
+}
+
+/* Card de Progresso Pré-Conferência / Pausada */
+#confPreProgressCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+#confPreProgressCard .conf-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+#confPreProgressCard .conf-progress-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#confPreProgressCard .conf-progress-metric {
+  font-size: 0.82rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#confPreProgressCard .conf-progress-metric strong {
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+#confPreProgressCard .conf-progress-pct-badge {
+  background: #ede9fe;
+  color: #6530b5;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
+  font-weight: 700;
+  padding: 2px 6px;
+  font-size: 0.76rem;
+}
+
+#confPreProgressCard .conf-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#confPreProgressCard .conf-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #6530b5 0%, #a855f7 100%);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* 3. Sub-Abas Segmentadas (Pill Container Moderno) */
+#confSubTabs {
+  background-color: #f1f5f9 !important;
+  padding: 4px !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  gap: 4px !important;
+  border-bottom: none !important;
+  margin-bottom: 12px !important;
+}
+
+.conf-subtab-btn {
+  flex: 1 !important;
+  justify-content: center !important;
+  height: 40px !important;
+  border-radius: 20px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #64748b !important;
+  font-weight: 500 !important;
+  font-size: 0.86rem !important;
+  transition: all 0.2s ease !important;
+  padding: 0 12px !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+}
+
+.conf-subtab-btn::after,
+.conf-subtab-btn.active::after {
+  display: none !important;
+  content: none !important;
+}
+
+.conf-subtab-btn .material-icons {
+  display: none !important;
+}
+
+.conf-subtab-btn.active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.conf-subtab-badge {
+  font-size: 0.72rem !important;
+  padding: 1px 8px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  margin-left: 6px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#btnSubTabAConferir .conf-subtab-badge {
+  background: #ede9fe !important;
+  color: #6530b5 !important;
+}
+
+#btnSubTabConferidos .conf-subtab-badge {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+#btnSubTabConferidos.active .conf-subtab-badge {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+/* 4. Barra de Busca e Botão Categorias */
+.conf-search-bar-wrapper {
+  display: flex !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+  align-items: center !important;
+}
+
+.conf-search-box {
+  flex: 1 !important;
+  height: 40px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease !important;
+  min-width: 0 !important;
+}
+
+.conf-search-box:focus-within {
+  border-color: #6530b5 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(101, 48, 181, 0.12) !important;
+}
+
+.conf-search-box .material-icons {
+  font-size: 20px !important;
+  color: #94a3b8 !important;
+  margin-right: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.conf-search-input {
+  flex: 1 !important;
+  min-width: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.86rem !important;
+  color: #1e293b !important;
+  outline: none !important;
+  text-overflow: ellipsis !important;
+}
+
+.btn-clear-conf-search {
+  background: none !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4px !important;
+  flex-shrink: 0 !important;
+  transition: color 0.15s ease !important;
+}
+
+.btn-clear-conf-search:hover {
+  color: #475569 !important;
+}
+
+.btn-clear-conf-search[style*="display: none"] {
+  display: none !important;
+}
+
+.btn-conf-toggle-filters {
+  height: 40px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+  padding: 0 12px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.btn-conf-toggle-filters:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.btn-conf-toggle-filters.has-active-filter {
+  background: #ede9fe !important;
+  border-color: #6530b5 !important;
+  color: #6530b5 !important;
+  font-weight: 700 !important;
+}
+
+.conf-search-bar-wrapper.categories-disabled .btn-conf-toggle-filters {
+  display: none !important;
+}
+
+.conf-search-bar-wrapper.categories-disabled .conf-search-box {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#confAdvancedFiltersPanel {
+  display: none !important;
+}
+
+/* 5. Cards da Aba "À Conferir" (Opção 2 Minimalista Consolidada) */
+#subPaneAConferir .conf-items-cards-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+#subPaneAConferir .conf-item-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+#subPaneAConferir .conf-item-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+#subPaneAConferir .conf-card-photo-box {
+  width: 80px !important;
+  min-width: 80px !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+#subPaneAConferir .conf-card-photo-box img {
+  max-height: 70px !important;
+  max-width: 70px !important;
+  object-fit: contain !important;
+  transition: transform 0.2s ease !important;
+}
+
+#subPaneAConferir .conf-item-card:hover .conf-card-photo-box img {
+  transform: scale(1.05) !important;
+}
+
+#subPaneAConferir .conf-card-body {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 0 !important;
+}
+
+#subPaneAConferir .conf-card-name {
+  font-size: 0.90rem !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  margin: 0 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#subPaneAConferir .conf-card-meta-line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  color: #64748b !important;
+  margin: 2px 0 6px 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#subPaneAConferir .conf-card-bottom-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+
+#subPaneAConferir .conf-mini-pedido-tag {
+  font-size: 0.82rem !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+}
+
+#subPaneAConferir .conf-mini-pedido-tag strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+#subPaneAConferir .conf-mini-actions-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+#subPaneAConferir .conf-mini-stepper {
+  display: flex !important;
+  align-items: center !important;
+  background: #f1f5f9 !important;
+  border-radius: 8px !important;
+  padding: 2px 6px !important;
+  gap: 4px !important;
+}
+
+#subPaneAConferir .conf-mini-stepper-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #334155 !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background 0.15s !important;
+}
+
+#subPaneAConferir .conf-mini-stepper-btn:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #0f172a !important;
+}
+
+#subPaneAConferir .conf-mini-stepper-input {
+  width: 34px !important;
+  height: 32px !important;
+  border: none !important;
+  background: transparent !important;
+  text-align: center !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  padding: 0 !important;
+  outline: none !important;
+  -moz-appearance: textfield !important;
+}
+
+#subPaneAConferir .conf-mini-stepper-input::-webkit-outer-spin-button,
+#subPaneAConferir .conf-mini-stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+#subPaneAConferir .btn-conf-action-confirm-mini {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 10px !important;
+  background: #6530b5 !important;
+  color: #ffffff !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(101, 48, 181, 0.35) !important;
+  transition: all 0.15s ease !important;
+}
+
+#subPaneAConferir .btn-conf-action-confirm-mini:hover {
+  background: #542799 !important;
+  transform: scale(1.05) !important;
+}
+
+#subPaneAConferir .btn-conf-action-confirm-mini .material-icons {
+  font-size: 24px !important;
+}
+
+/* 6. Cards da Aba "Conferidos" (Accordion Minimalista) */
+#subPaneConferidos .conf-items-cards-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+#subPaneConferidos .conf-item-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#subPaneConferidos .conf-item-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+#subPaneConferidos .conf-item-card.is-divergent {
+  border-left: 4px solid #ef4444 !important;
+  background: #fffdfd !important;
+}
+
+#subPaneConferidos .conf-accordion-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#subPaneConferidos .conf-card-photo-box {
+  width: 80px !important;
+  min-width: 80px !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+#subPaneConferidos .conf-card-photo-box img {
+  max-height: 70px !important;
+  max-width: 70px !important;
+  object-fit: contain !important;
+}
+
+#subPaneConferidos .conf-card-body {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 0 !important;
+}
+
+#subPaneConferidos .conf-card-name {
+  font-size: 0.90rem !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  margin: 0 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#subPaneConferidos .conf-card-meta-line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  color: #64748b !important;
+  margin: 2px 0 6px 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#subPaneConferidos .conf-card-bottom-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+
+#subPaneConferidos .conf-status-pill-ok {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+  border: 1px solid #d1fae5 !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  padding: 4px 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+#subPaneConferidos .conf-status-pill-divergent {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fee2e2 !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  padding: 4px 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+#subPaneConferidos .conf-accordion-icon-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  border-radius: 50% !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  flex-shrink: 0 !important;
+}
+
+#subPaneConferidos .conf-item-card:hover .conf-accordion-icon-btn,
+#subPaneConferidos .conf-accordion-icon-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #6530b5 !important;
+}
+
+#subPaneConferidos .conf-item-card.expanded .conf-accordion-icon-btn {
+  background: #ede9fe !important;
+  border-color: #c4b5fd !important;
+  color: #6530b5 !important;
+}
+
+#subPaneConferidos .conf-chevron-icon,
+#confOverviewContainer .conf-chevron-icon,
+#confCompletedGrid .conf-chevron-icon {
+  font-size: 18px !important;
+  line-height: 1 !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#subPaneConferidos .conf-item-card.expanded .conf-chevron-icon,
+#confOverviewContainer .conf-item-card.expanded .conf-chevron-icon,
+#confCompletedGrid .conf-item-card.expanded .conf-chevron-icon {
+  transform: rotate(180deg) !important;
+}
+
+#subPaneConferidos .conf-accordion-body,
+#confOverviewContainer .conf-accordion-body,
+#confCompletedGrid .conf-accordion-body {
+  display: none !important;
+  padding-top: 10px !important;
+  margin-top: 8px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+#subPaneConferidos .conf-item-card.expanded .conf-accordion-body,
+#confOverviewContainer .conf-item-card.expanded .conf-accordion-body,
+#confCompletedGrid .conf-item-card.expanded .conf-accordion-body {
+  display: flex !important;
+}
+
+#subPaneConferidos .conf-metrics-detail-row,
+#confOverviewContainer .conf-metrics-detail-row,
+#confCompletedGrid .conf-metrics-detail-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  background: #f8fafc !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid #edf2f7 !important;
+}
+
+#subPaneConferidos .conf-metric-item,
+#confOverviewContainer .conf-metric-item,
+#confCompletedGrid .conf-metric-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+#subPaneConferidos .conf-metric-item span,
+#confOverviewContainer .conf-metric-item span,
+#confCompletedGrid .conf-metric-item span {
+  font-size: 0.72rem !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+}
+
+#subPaneConferidos .conf-metric-item strong,
+#confOverviewContainer .conf-metric-item strong,
+#confCompletedGrid .conf-metric-item strong {
+  font-size: 0.85rem !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+#subPaneConferidos .btn-revert-conf-accordion {
+  width: 100% !important;
+  height: 34px !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  color: #475569 !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+#subPaneConferidos .btn-revert-conf-accordion:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+/* 7. Cards da Visão Geral Consolidada (Pausada / Pré-Início) Minimalista */
+#confOverviewContainer .conf-items-cards-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+#confOverviewContainer .conf-item-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+#confOverviewContainer .conf-item-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+#confOverviewContainer .conf-accordion-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#confOverviewContainer .conf-item-card.is-divergent {
+  border-left: 4px solid #ef4444 !important;
+}
+
+#confOverviewContainer .conf-card-photo-box {
+  width: 80px !important;
+  min-width: 80px !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+#confOverviewContainer .conf-card-photo-box img {
+  max-height: 70px !important;
+  max-width: 70px !important;
+  object-fit: contain !important;
+}
+
+#confOverviewContainer .conf-card-body {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 0 !important;
+}
+
+#confOverviewContainer .conf-card-name {
+  font-size: 0.90rem !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  margin: 0 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#confOverviewContainer .conf-card-meta-line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  color: #64748b !important;
+  margin: 2px 0 6px 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#confOverviewContainer .conf-card-bottom-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+
+#confOverviewContainer .conf-mini-pedido-tag,
+#confCompletedGrid .conf-mini-pedido-tag {
+  font-size: 0.82rem !important;
+  color: #475569 !important;
+  white-space: nowrap !important;
+}
+
+#confOverviewContainer .conf-mini-pedido-tag strong,
+#confCompletedGrid .conf-mini-pedido-tag strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill,
+#confCompletedGrid .conf-overview-status-pill,
+#confCompletedGrid .conf-status-pill-ok,
+#confCompletedGrid .conf-status-pill-divergent {
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill.status-ok,
+#confCompletedGrid .conf-overview-status-pill.status-ok,
+#confCompletedGrid .conf-status-pill-ok {
+  background: #ecfdf5 !important;
+  color: #059669 !important;
+  border: 1px solid #d1fae5 !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill.status-divergent,
+#confCompletedGrid .conf-overview-status-pill.status-divergent,
+#confCompletedGrid .conf-status-pill-divergent {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fee2e2 !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill.status-pending,
+#confCompletedGrid .conf-overview-status-pill.status-pending {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill.is-interactive,
+#confCompletedGrid .conf-overview-status-pill.is-interactive {
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#confOverviewContainer .conf-overview-status-pill.is-interactive:hover,
+#confCompletedGrid .conf-overview-status-pill.is-interactive:hover {
+  filter: brightness(0.95) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+.conf-items-cards-grid.is-hidden,
+#subPaneAConferir .conf-items-cards-grid.is-hidden,
+#subPaneConferidos .conf-items-cards-grid.is-hidden,
+.conf-items-cards-grid[style*="display: none"],
+#subPaneAConferir .conf-items-cards-grid[style*="display: none"],
+#subPaneConferidos .conf-items-cards-grid[style*="display: none"] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   MODAL 8: FILTRAR POR CATEGORIA (ESTILIZAÇÃO OFICIAL)
+   ========================================================================== */
+#modalConfCategorias.official-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+}
+
+#modalConfCategorias .official-modal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.conf-modal-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.conf-modal-cat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.conf-modal-cat-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.conf-modal-cat-item.active {
+  background: #ede9fe;
+  border-color: #6530b5;
+  color: #6530b5;
+  font-weight: 700;
+}
+
+.conf-modal-cat-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+}
+
+.conf-modal-cat-count {
+  font-size: 0.76rem;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.conf-modal-cat-item.active .conf-modal-cat-count {
+  background: #6530b5;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   EMPTY STATES DA CONFERÊNCIA
+   ========================================================================== */
+.conf-empty-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background-color: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.conf-empty-state[style*="display: none"] {
+  display: none !important;
+}
+
+.conf-empty-icon {
+  font-size: 48px !important;
+  color: #10b981 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.conf-empty-state h4 {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.conf-empty-state p {
+  font-size: 0.86rem !important;
+  color: #64748b !important;
+  max-width: 360px !important;
+  margin: 0 !important;
+  text-align: center !important;
+  line-height: 1.45 !important;
+}
+
+.btn-go-to-conferidos {
+  margin-top: 6px !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-size: 0.84rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-go-to-conferidos:hover {
+  background: #059669 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+}
+
+.btn-go-to-conferidos .material-icons {
+  font-size: 18px !important;
+}
+
+/* ==========================================================================
+   FASE CONCLUÍDA / HISTÓRICO DA CONFERÊNCIA
+   ========================================================================== */
+.conf-completed-banner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+
+.conf-completed-icon {
+  font-size: 32px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.conf-completed-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #065f46;
+}
+
+.conf-completed-text p {
+  font-size: 0.84rem;
+  color: #047857;
+  margin: 0;
+}
+
+.conf-modal-summary-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.conf-modal-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.conf-diff-row {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 6px;
+}
+
+.highlight-cancel {
+  color: #dc2626 !important;
+}
+
+/* ==========================================================================
+   TABELAS DE CONFERÊNCIA E THUMBNAILS FORMATADOS
+   ========================================================================== */
+.conf-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.conf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  text-align: left;
+}
+
+.conf-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.conf-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  color: #1e293b;
+}
+
+.conf-table tr:last-child td {
+  border-bottom: none;
+}
+
+.conf-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+.conf-table .conf-table-prod-name,
+.conf-table td strong {
+  font-size: 0.88rem !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  line-height: 1.35 !important;
+  display: block;
+}
+
+.conf-table-thumb {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  object-fit: contain !important;
+  border-radius: 6px !important;
+  background: #f8fafc !important;
+  border: 1px solid #f1f5f9 !important;
+  padding: 2px !important;
+  display: block !important;
+}
+
+/* Pílulas de Status e Quantidade da Tabela de Conferência */
+.conf-badge-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  padding: 4px 10px !important;
+  font-size: 0.80rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  white-space: nowrap !important;
+  line-height: 1.3 !important;
+  transition: all 0.15s ease !important;
+}
+
+.conf-badge-pill .material-icons {
+  font-size: 14px !important;
+}
+
+/* Status: À Conferir (Âmbar / Pendente) */
+.conf-badge-pill.conf-pill-pendente {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+}
+
+/* Status: Conferido / 100% OK (Verde Esmeralda) */
+.conf-badge-pill.conf-pill-conferido {
+  background-color: #ecfdf5 !important;
+  color: #059669 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+/* Status: Divergência (Vermelho Alerta) */
+.conf-badge-pill.conf-pill-divergente {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca !important;
+}
+
+/* Quantidade Solicitada (Cinza Neutro) */
+.conf-badge-pill.conf-pill-solicitado {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Quantidade Não Conferida (0 un) */
+.conf-badge-pill.conf-pill-zero {
+  background-color: #f8fafc !important;
+  color: #94a3b8 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* ==========================================================================
+   CONTROLES DA TABELA DE CONFERÊNCIA (STEPPERS E BOTÕES DE AÇÃO)
+   ========================================================================== */
+
+/* Stepper Horizontal na Tabela */
+.conf-stepper-group {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 2px !important;
+  gap: 0 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease !important;
+  user-select: none !important;
+  vertical-align: middle !important;
+}
+
+.conf-stepper-group:focus-within {
+  border-color: #6530b5 !important;
+  box-shadow: 0 0 0 2px rgba(101, 48, 181, 0.15) !important;
+  background-color: #ffffff !important;
+}
+
+.conf-stepper-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  border: none !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-radius: 6px !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+}
+
+.conf-stepper-btn:hover {
+  background: #ede9fe !important;
+  color: #6530b5 !important;
+}
+
+.conf-stepper-btn:active {
+  background: #ddd6fe !important;
+  transform: scale(0.94) !important;
+}
+
+.conf-stepper-input {
+  width: 48px !important;
+  height: 32px !important;
+  border: none !important;
+  background: transparent !important;
+  text-align: center !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  padding: 0 4px !important;
+  outline: none !important;
+  -moz-appearance: textfield !important;
+}
+
+.conf-stepper-input::-webkit-outer-spin-button,
+.conf-stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Botão de Ação: Confirmar Abastecimento na Tabela */
+.btn-conf-action-confirm {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 34px !important;
+  padding: 0 16px !important;
+  background: #6530b5 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 6px rgba(101, 48, 181, 0.25) !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+
+.btn-conf-action-confirm:hover {
+  background: #542799 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 10px rgba(101, 48, 181, 0.35) !important;
+}
+
+.btn-conf-action-confirm:active {
+  transform: translateY(0) !important;
+}
+
+.btn-conf-action-confirm .material-icons {
+  font-size: 16px !important;
+}
+
+/* Botão de Ação: Reverter na Sub-Aba Conferidos */
+.btn-conf-action-revert {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+  border-radius: 6px !important;
+  font-size: 0.80rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+
+.btn-conf-action-revert:hover {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-conf-action-revert:active {
+  transform: translateY(0) !important;
+}
+
+.btn-conf-action-revert .material-icons {
+  font-size: 15px !important;
+}
+
+/* ==========================================================================
+   CARDS DA FASE CONCLUÍDA (#confCompletedGrid)
+   ========================================================================== */
+#confCompletedGrid .conf-items-cards-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+#confCompletedGrid .conf-item-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+#confCompletedGrid .conf-item-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+}
+
+#confCompletedGrid .conf-accordion-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#confCompletedGrid .conf-item-card.is-divergent {
+  border-left: 4px solid #ef4444 !important;
+}
+
+#confCompletedGrid .conf-card-photo-box {
+  width: 80px !important;
+  min-width: 80px !important;
+  height: 80px !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px !important;
+  flex-shrink: 0 !important;
+}
+
+#confCompletedGrid .conf-card-photo-box img {
+  max-height: 70px !important;
+  max-width: 70px !important;
+  object-fit: contain !important;
+}
+
+#confCompletedGrid .conf-card-body {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 0 !important;
+}
+
+#confCompletedGrid .conf-card-name {
+  font-size: 0.90rem !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  margin: 0 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#confCompletedGrid .conf-card-meta-line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  color: #64748b !important;
+  margin: 2px 0 6px 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+#confCompletedGrid .conf-card-bottom-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: 2px !important;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE ERGONÔMICA PARA TELAS ESTREITAS (< 420px / 375px / 360px)
+   ========================================================================== */
+@media (max-width: 420px) {
+  #subPaneAConferir .conf-items-cards-grid,
+  #subPaneConferidos .conf-items-cards-grid,
+  #confOverviewContainer .conf-items-cards-grid,
+  #confCompletedGrid .conf-items-cards-grid {
+    gap: 10px !important;
+  }
+
+  #subPaneAConferir .conf-item-card,
+  #subPaneConferidos .conf-item-card,
+  #confOverviewContainer .conf-item-card,
+  #confCompletedGrid .conf-item-card {
+    padding: 10px 10px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Thumbnail adaptativo robusto */
+  #subPaneAConferir .conf-card-photo-box,
+  #subPaneConferidos .conf-card-photo-box,
+  #confOverviewContainer .conf-card-photo-box,
+  #confCompletedGrid .conf-card-photo-box {
+    width: 76px !important;
+    min-width: 76px !important;
+    height: 76px !important;
+    border-radius: 8px !important;
+    padding: 4px !important;
+  }
+
+  #subPaneAConferir .conf-card-photo-box img,
+  #subPaneConferidos .conf-card-photo-box img,
+  #confOverviewContainer .conf-card-photo-box img,
+  #confCompletedGrid .conf-card-photo-box img {
+    max-height: 66px !important;
+    max-width: 66px !important;
+  }
+
+  /* Tipografia compacta */
+  #subPaneAConferir .conf-card-name,
+  #subPaneConferidos .conf-card-name,
+  #confOverviewContainer .conf-card-name,
+  #confCompletedGrid .conf-card-name {
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+  }
+
+  #subPaneAConferir .conf-card-meta-line,
+  #subPaneConferidos .conf-card-meta-line,
+  #confOverviewContainer .conf-card-meta-line,
+  #confCompletedGrid .conf-card-meta-line {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    font-size: 0.72rem !important;
+    margin: 1px 0 4px 0 !important;
+  }
+
+  /* Linha de ações na Aba À Conferir */
+  #subPaneAConferir .conf-card-bottom-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  #subPaneAConferir .conf-mini-pedido-tag {
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
+  }
+
+  #subPaneAConferir .conf-mini-actions-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  #subPaneAConferir .conf-mini-stepper {
+    padding: 2px 4px !important;
+    gap: 2px !important;
+    border-radius: 6px !important;
+  }
+
+  #subPaneAConferir .conf-mini-stepper-btn {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 1.1rem !important;
+  }
+
+  #subPaneAConferir .conf-mini-stepper-input {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 0.90rem !important;
+  }
+
+  #subPaneAConferir .btn-conf-action-confirm-mini {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    border-radius: 8px !important;
+  }
+
+  #subPaneAConferir .btn-conf-action-confirm-mini .material-icons {
+    font-size: 22px !important;
+  }
+
+  /* Aba Conferidos e Visões Consolidadas */
+  #subPaneConferidos .conf-accordion-header,
+  #confOverviewContainer .conf-accordion-header,
+  #confCompletedGrid .conf-accordion-header {
+    gap: 8px !important;
+  }
+
+  #subPaneConferidos .conf-card-name {
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+  }
+
+  #subPaneConferidos .conf-status-pill-ok,
+  #subPaneConferidos .conf-status-pill-divergent,
+  #confOverviewContainer .conf-overview-status-pill,
+  #confCompletedGrid .conf-overview-status-pill,
+  #confCompletedGrid .conf-status-pill-ok,
+  #confCompletedGrid .conf-status-pill-divergent {
+    font-size: 0.74rem !important;
+    padding: 3px 8px !important;
+  }
+
+  #subPaneConferidos .conf-accordion-icon-btn {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+
+  #subPaneConferidos .conf-chevron-icon {
+    font-size: 18px !important;
+  }
+}
+
+/* ==========================================================================
+   GRID RESPONSIVO PARA DESKTOP E TELAS GRANDES (>= 768px)
+   ========================================================================== */
+@media (min-width: 768px) {
+  #subPaneAConferir .conf-items-cards-grid:not(.is-hidden),
+  #subPaneConferidos .conf-items-cards-grid:not(.is-hidden),
+  #confOverviewContainer .conf-items-cards-grid:not(.is-hidden),
+  #confCompletedGrid .conf-items-cards-grid:not(.is-hidden) {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)) !important;
+    gap: 16px !important;
+    align-items: start !important;
+  }
+
+  #subPaneAConferir .conf-item-card,
+  #subPaneConferidos .conf-item-card,
+  #confOverviewContainer .conf-item-card,
+  #confCompletedGrid .conf-item-card {
+    height: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
