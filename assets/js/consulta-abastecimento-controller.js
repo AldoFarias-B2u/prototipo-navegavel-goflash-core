@@ -96,6 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper: Catálogo Mestre Consolidado Único por EAN
   function getMasterCatalog() {
+    if (typeof window !== 'undefined' && window.GoflashProdutosDatabase) {
+      return window.GoflashProdutosDatabase.getAll();
+    }
     const listA = window.ConsultaProdutosBase || [];
     const listB = window.CatalogoExtraProdutos || [];
     const map = new Map();
