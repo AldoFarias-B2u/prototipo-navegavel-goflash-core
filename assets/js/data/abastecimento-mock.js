@@ -45,119 +45,140 @@ const AbastecimentoMock = {
     { id: 'marca-nestle', nome: 'Nestlé' }
   ],
 
-  // 5. Catálogo de Produtos Enriquecido
-  produtos: [
-    {
-      id: 'prod-01',
-      ean: '7898938890113',
-      nome: 'Energético Ultra Fiesta Mango Zero Açúcar Monster Lata 473ml',
-      grupo: 'BEBIDAS',
-      marca: 'Monster Energy',
-      fornecedor: 'CD Central B2U Distribuição',
-      imagem: '../assets/images/products/monster-mango.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-02',
-      ean: '7898341430123',
-      nome: 'Suco Uva Caixa 200ml',
-      grupo: 'BEBIDAS',
-      marca: 'Natural One',
-      fornecedor: 'Natural One Indústria',
-      imagem: '../assets/images/products/suco-uva.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-03',
-      ean: '7894900701715',
-      nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 1l',
-      grupo: 'BEBIDAS',
-      marca: 'Coca-Cola',
-      fornecedor: 'Solar Coca-Cola Brasil',
-      imagem: '../assets/images/products/coca-zero-1l.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-04',
-      ean: '7898770420011',
-      nome: 'Energético Ultra Strawberry Dreams Zero Açúcar Monster Lata 473ml',
-      grupo: 'BEBIDAS',
-      marca: 'Monster Energy',
-      fornecedor: 'CD Central B2U Distribuição',
-      imagem: '../assets/images/products/monster-strawberry.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-05',
-      ean: '1220000250222',
-      nome: 'Energético Ultra Watermelon Zero Açúcar Monster Lata 473ml',
-      grupo: 'BEBIDAS',
-      marca: 'Monster Energy',
-      fornecedor: 'CD Central B2U Distribuição',
-      imagem: '../assets/images/products/monster-watermelon.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-06',
-      ean: '7891991008785',
-      nome: 'Refrigerante Zero Açúcar Guaraná Antarctica Garrafa 1,5l',
-      grupo: 'BEBIDAS',
-      marca: 'Guaraná Antarctica',
-      fornecedor: 'Ambev Logística e Distribuição',
-      imagem: '../assets/images/products/guarana-zero.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-07',
-      ean: '7894900701609',
-      nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 600ml',
-      grupo: 'BEBIDAS',
-      marca: 'Coca-Cola',
-      fornecedor: 'Solar Coca-Cola Brasil',
-      imagem: '../assets/images/products/coca-zero-600ml.jpg',
-      idealPadrao: 10,
-      minimoPadrao: 2
-    },
-    {
-      id: 'prod-08',
-      ean: '7892840222018',
-      nome: 'Batata Ruffles Original 76g',
-      grupo: 'SNACKS',
-      marca: 'Ruffles',
-      fornecedor: 'Pepsico do Brasil Snacks',
-      imagem: '../assets/images/products/ruffles-chips.jpg',
-      idealPadrao: 12,
-      minimoPadrao: 3
-    },
-    {
-      id: 'prod-09',
-      ean: '7892840222025',
-      nome: 'Doritos Queijo Nacho 78g',
-      grupo: 'SNACKS',
-      marca: 'Doritos',
-      fornecedor: 'Pepsico do Brasil Snacks',
-      imagem: '../assets/images/products/doritos-snack.jpg',
-      idealPadrao: 15,
-      minimoPadrao: 4
-    },
-    {
-      id: 'prod-10',
-      ean: '7891000248815',
-      nome: 'Chocolate Bis ao Leite 126g',
-      grupo: 'DOCES',
-      marca: 'Lacta / Bis',
-      fornecedor: 'Mondelez International Brasil',
-      imagem: '../assets/images/products/bis-wafer.jpg',
-      idealPadrao: 14,
-      minimoPadrao: 3
+  // 5. Catálogo de Produtos Enriquecido (Sincronizado com GoflashProdutosDatabase)
+  produtos: (function () {
+    if (typeof window !== 'undefined' && window.GoflashProdutosDatabase) {
+      return window.GoflashProdutosDatabase.produtos.map(p => ({
+        id: `prod-${String(p.id).padStart(2, '0')}`,
+        rawId: p.id,
+        ean: p.ean,
+        nome: p.nome,
+        grupo: p.grupo.toUpperCase(),
+        marca: p.marca,
+        fornecedor: p.fornecedor,
+        imagem: p.imagem || p.foto,
+        foto: p.foto || p.imagem,
+        idealPadrao: p.estoqueIdeal,
+        minimoPadrao: p.minimoCritico,
+        estoqueIdeal: p.estoqueIdeal,
+        minimoCritico: p.minimoCritico,
+        preco: p.preco,
+        precoCusto: p.precoCusto
+      }));
     }
-  ],
+    return [
+      {
+        id: 'prod-01',
+        ean: '7898938890113',
+        nome: 'Energético Ultra Fiesta Mango Zero Açúcar Monster Lata 473ml',
+        grupo: 'BEBIDAS',
+        marca: 'Monster Energy',
+        fornecedor: 'CD Central B2U Distribuição',
+        imagem: '../assets/images/products/monster-mango.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-02',
+        ean: '7898341430123',
+        nome: 'Suco Uva Caixa 200ml',
+        grupo: 'BEBIDAS',
+        marca: 'Del Valle',
+        fornecedor: 'Coca-Cola FEMSA',
+        imagem: '../assets/images/products/suco-uva.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-03',
+        ean: '7894900701715',
+        nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 1l',
+        grupo: 'BEBIDAS',
+        marca: 'Coca-Cola',
+        fornecedor: 'Solar Coca-Cola Brasil',
+        imagem: '../assets/images/products/coca-zero-1l.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-04',
+        ean: '7898770420011',
+        nome: 'Energético Ultra Strawberry Dreams Zero Açúcar Monster Lata 473ml',
+        grupo: 'BEBIDAS',
+        marca: 'Monster Energy',
+        fornecedor: 'CD Central B2U Distribuição',
+        imagem: '../assets/images/products/monster-strawberry.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-05',
+        ean: '1220000250222',
+        nome: 'Energético Ultra Watermelon Zero Açúcar Monster Lata 473ml',
+        grupo: 'BEBIDAS',
+        marca: 'Monster Energy',
+        fornecedor: 'CD Central B2U Distribuição',
+        imagem: '../assets/images/products/monster-watermelon.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-06',
+        ean: '7891991008785',
+        nome: 'Refrigerante Zero Açúcar Guaraná Antarctica Garrafa 1,5l',
+        grupo: 'BEBIDAS',
+        marca: 'Guaraná Antarctica',
+        fornecedor: 'Ambev Logística e Distribuição',
+        imagem: '../assets/images/products/guarana-zero.jpg',
+        idealPadrao: 10,
+        minimoPadrao: 2
+      },
+      {
+        id: 'prod-07',
+        ean: '7894900701609',
+        nome: 'Refrigerante Zero Açúcar Coca-Cola Garrafa 600ml',
+        grupo: 'BEBIDAS',
+        marca: 'Coca-Cola',
+        fornecedor: 'Solar Coca-Cola Brasil',
+        imagem: '../assets/images/products/coca-zero-600ml.jpg',
+        idealPadrao: 10,
+        minimoCritico: 2
+      },
+      {
+        id: 'prod-08',
+        ean: '7891149103102',
+        nome: 'Cerveja Skol Pilsen Lata 269ml',
+        grupo: 'CERVEJAS',
+        marca: 'Skol',
+        fornecedor: 'Ambev Distribuição',
+        imagem: '../assets/images/products/skol-lata-269ml.jpg',
+        idealPadrao: 12,
+        minimoPadrao: 4
+      },
+      {
+        id: 'prod-09',
+        ean: '7891000100103',
+        nome: 'Salgadinho Doritos Queijo Nacho 140g',
+        grupo: 'SNACKS',
+        marca: 'Doritos',
+        fornecedor: 'Pepsico do Brasil Snacks',
+        imagem: '../assets/images/products/doritos-snack.jpg',
+        idealPadrao: 15,
+        minimoPadrao: 4
+      },
+      {
+        id: 'prod-10',
+        ean: '7622210567890',
+        nome: 'Chocolate Bis Wafer Ao Leite Caixa 126g',
+        grupo: 'DOCES',
+        marca: 'Bis / Lacta',
+        fornecedor: 'Mondelez International Brasil',
+        imagem: '../assets/images/products/bis-wafer.jpg',
+        idealPadrao: 14,
+        minimoPadrao: 3
+      }
+    ];
+  })(),
 
   // 6. Planos Pré-Cadastrados
   planosIniciais: [
@@ -250,7 +271,14 @@ const AbastecimentoMock = {
   },
 
   getProdutoById(id) {
-    return this.produtos.find(p => p.id === id);
+    if (!id) return null;
+    const strId = String(id).trim();
+    return this.produtos.find(p => 
+      p.id === strId || 
+      String(p.rawId) === strId || 
+      p.ean === strId ||
+      p.id === `prod-${strId.padStart(2, '0')}`
+    );
   },
 
   getFilialById(id) {
