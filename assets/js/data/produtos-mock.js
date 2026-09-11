@@ -490,7 +490,7 @@
       estoqueIdeal: 10,
       minimoCritico: 2,
       estoqueLoja: 1,
-      estoqueCd: 28,
+      estoqueCd: 0,
       sugestao: 9,
       aRepor: 9,
       preco: 6.80,
