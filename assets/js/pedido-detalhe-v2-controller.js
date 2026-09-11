@@ -3275,6 +3275,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Helper defensivo para imagem de produto na conferência
+  function resolveItemPhoto(item) {
+    if (!item) return '../assets/images/products/monster-mango.jpg';
+    if (item.foto && typeof item.foto === 'string' && item.foto.trim() !== '') {
+      return item.foto;
+    }
+    if (typeof window !== 'undefined' && window.GoflashProdutosDatabase) {
+      const match = (item.ean ? window.GoflashProdutosDatabase.getByEan(item.ean) : null)
+        || (item.id ? window.GoflashProdutosDatabase.getById(item.id) : null)
+        || (item.nome ? window.GoflashProdutosDatabase.search(item.nome)[0] : null);
+      if (match && (match.foto || match.imagem)) return match.foto || match.imagem;
+    }
+    return item.imagem || '../assets/images/products/monster-mango.jpg';
+  }
+
   // 17.1 Renderização Pré-Conferência (Visão Geral / Pausada)
   function renderPreStartConferenceOverview() {
     if (!confOverviewContainer) return;
@@ -3339,7 +3354,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
                 return `
                   <tr>
-                    <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                    <td><img src="${resolveItemPhoto(item)}" alt="${item.nome}" class="conf-table-thumb" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';"></td>
                     <td>
                       <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                       <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
@@ -3382,7 +3397,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="conf-item-card ${isConferido && !isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
                 <div class="conf-accordion-header">
                   <div class="conf-card-photo-box">
-                    <img src="${item.foto}" alt="${item.nome}">
+                    <img src="${resolveItemPhoto(item)}" alt="${item.nome}" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';">
                   </div>
                   <div class="conf-card-body">
                     <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
@@ -3468,7 +3483,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <tbody>
             ${items.map(item => `
               <tr data-conf-id="${item.id}">
-                <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                <td><img src="${resolveItemPhoto(item)}" alt="${item.nome}" class="conf-table-thumb" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';"></td>
                 <td>
                   <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                   <strong class="conf-table-prod-name" style="font-size: 0.88rem; font-weight: 500; color: #212529;">${item.nome}</strong>
@@ -3502,7 +3517,7 @@ document.addEventListener('DOMContentLoaded', () => {
       confCardsGridAConferir.innerHTML = items.map(item => `
         <div class="conf-item-card" data-conf-id="${item.id}">
           <div class="conf-card-photo-box">
-            <img src="${item.foto}" alt="${item.nome}">
+            <img src="${resolveItemPhoto(item)}" alt="${item.nome}" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';">
           </div>
           <div class="conf-card-body">
             <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
@@ -3573,7 +3588,7 @@ document.addEventListener('DOMContentLoaded', () => {
               const diffText = diff > 0 ? `+${diff} un` : `${diff} un`;
               return `
                 <tr data-conf-id="${item.id}">
-                  <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                  <td><img src="${resolveItemPhoto(item)}" alt="${item.nome}" class="conf-table-thumb" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';"></td>
                   <td>
                     <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                     <strong class="conf-table-prod-name" style="font-size: 0.88rem; font-weight: 500; color: #212529;">${item.nome}</strong>
@@ -3615,7 +3630,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="conf-item-card ${!isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
             <div class="conf-accordion-header">
               <div class="conf-card-photo-box">
-                <img src="${item.foto}" alt="${item.nome}">
+                <img src="${resolveItemPhoto(item)}" alt="${item.nome}" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';">
               </div>
               <div class="conf-card-body">
                 <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>
@@ -3706,7 +3721,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isFull = confQty === item.qtdePedido;
                 return `
                   <tr>
-                    <td><img src="${item.foto}" alt="${item.nome}" class="conf-table-thumb"></td>
+                    <td><img src="${resolveItemPhoto(item)}" alt="${item.nome}" class="conf-table-thumb" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';"></td>
                     <td>
                       <span style="font-size: 0.78rem; font-weight: 600; color: #6530b5; display: block;">${item.ean}</span>
                       <strong style="font-size: 0.88rem; color: #1e293b;">${item.nome}</strong>
@@ -3743,7 +3758,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="conf-item-card ${!isFull ? 'is-divergent' : ''}" data-conf-id="${item.id}">
                 <div class="conf-accordion-header">
                   <div class="conf-card-photo-box">
-                    <img src="${item.foto}" alt="${item.nome}">
+                    <img src="${resolveItemPhoto(item)}" alt="${item.nome}" onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';">
                   </div>
                   <div class="conf-card-body">
                     <h4 class="conf-card-name" title="${item.nome}">${item.nome}</h4>

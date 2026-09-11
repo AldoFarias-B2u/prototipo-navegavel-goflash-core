@@ -873,6 +873,33 @@ function getStoredPedidos() {
             p.status = 'Aberto';
             hasFixed = true;
           }
+
+          // Reconciliação transparente de imagens dos itens sem afetar progresso de conferência
+          if (p && Array.isArray(p.itens)) {
+            p.itens.forEach(item => {
+              if (item) {
+                let canonical = null;
+                if (typeof window !== 'undefined' && window.GoflashProdutosDatabase) {
+                  if (item.ean) canonical = window.GoflashProdutosDatabase.getByEan(item.ean);
+                  if (!canonical && item.id) canonical = window.GoflashProdutosDatabase.getById(item.id);
+                  if (!canonical && item.nome) {
+                    const matches = window.GoflashProdutosDatabase.search(item.nome);
+                    if (matches && matches.length > 0) canonical = matches[0];
+                  }
+                }
+                if (canonical && (canonical.foto || canonical.imagem)) {
+                  const targetFoto = canonical.foto || canonical.imagem;
+                  if (!item.foto || item.foto !== targetFoto) {
+                    item.foto = targetFoto;
+                    hasFixed = true;
+                  }
+                } else if (!item.foto || item.foto.trim() === '') {
+                  item.foto = '../assets/images/products/monster-mango.jpg';
+                  hasFixed = true;
+                }
+              }
+            });
+          }
         });
 
         // Garante que o pedido 000071 de demonstração da conferência esteja presente
@@ -936,8 +963,22 @@ window.getPedidoByIdOrCode = function (id, codigo) {
   let pedido = lista.find(p => (id && String(p.id) === String(id)) || (codigo && p.codigo === codigo));
   if (!pedido) return null;
 
-  // Se o pedido já possui itens reais cadastrados, retorna-o diretamente
+  // Se o pedido já possui itens reais cadastrados, retorna-o diretamente com fotos reconciliadas
   if (pedido.itens && pedido.itens.length > 0) {
+    if (typeof window !== 'undefined' && window.GoflashProdutosDatabase) {
+      pedido.itens.forEach(item => {
+        if (item) {
+          const canonical = (item.ean ? window.GoflashProdutosDatabase.getByEan(item.ean) : null)
+            || (item.id ? window.GoflashProdutosDatabase.getById(item.id) : null);
+          if (canonical && (canonical.foto || canonical.imagem)) {
+            const targetFoto = canonical.foto || canonical.imagem;
+            if (!item.foto || item.foto !== targetFoto) {
+              item.foto = targetFoto;
+            }
+          }
+        }
+      });
+    }
     return pedido;
   }
 

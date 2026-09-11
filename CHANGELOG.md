@@ -2,6 +2,19 @@
 
 Todas as alterações notáveis, novas telas e refinamentos de design deste projeto serão documentados neste arquivo seguindo o padrão [Semantic Versioning (SemVer)](https://semver.org/lang/pt-BR/) e [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [1.9.19] - 2026-09-10
+### 🐛 Correção e Auto-Cura de Imagens de Itens de Pedidos (Pedido #000071)
+- **Disponibilização e Geração de Packshots em Disco** ([`assets/images/products/`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/images/products/)):
+  - Criação das 5 fotografias de estúdio que faltavam fisicamente para energéticos e águas: `redbull-sugarfree.jpg`, `redbull-tradicional.jpg`, `monster-zero.jpg`, `monster-peachy.jpg` e `agua-mineral.jpg`.
+- **Registro Canônico no Banco Central de Produtos** ([`assets/js/data/produtos-mock.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/data/produtos-mock.js)):
+  - Cadastro formal dos itens no `GoflashProdutosDatabase` com seus EANs oficiais (`611269101713`, `9002490100070`, `70847022305`, `7898938890090`, `7891000000011`).
+- **Rotina de Auto-Cura Transparente no Cache Local** ([`assets/js/data/pedidos-abastecimento-mock.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/data/pedidos-abastecimento-mock.js)):
+  - Em `getStoredPedidos()` e `getPedidoByIdOrCode()`, os pedidos salvos no `localStorage` do navegador têm os caminhos das imagens dos itens automaticamente reparados contra o catálogo canônico sem jamais resetar o progresso das contagens ou status de conferência já realizados pelo usuário.
+- **Resiliência e Fallback Defensivo na Conferência** ([`assets/js/pedido-detalhe-v2-controller.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/pedido-detalhe-v2-controller.js)):
+  - Implementação da função `resolveItemPhoto(item)` e adição de `onerror="this.onerror=null;this.src='../assets/images/products/monster-mango.jpg';"` em todas as visualizações da conferência (cards e tabelas em Pré-Conferência, À Conferir, Conferidos e Resumo Final).
+
+---
+
 ## [1.9.18] - 2026-09-10
 ### ✨ Padronização do Catálogo de Produtos, Fonte Única de Verdade & Imagens Fidedignas
 - **Criação da Fonte Única de Verdade de Produtos** ([`assets/js/data/produtos-mock.js`](file:///c:/Users/Aldo%20Farias/Documents/Projetos%20DEV/B2U/Prot%C3%B3tipo%20Navegavel%20Core/assets/js/data/produtos-mock.js)):
